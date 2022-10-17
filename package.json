@@ -1,0 +1,36 @@
+{
+  "name": "base",
+  "version": "0.1.0",
+  "private": false,
+  "scripts": {
+    "generate": "graphql-codegen -c codegen.yml",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@chakra-ui/icons": "2.0.9",
+    "@chakra-ui/react": "2.3.2",
+    "@emotion/react": "11.10.4",
+    "@emotion/styled": "11.10.4",
+    "@urql/devtools": "2.0.3",
+    "framer-motion": "7.3.2",
+    "graphql": "16.6.0",
+    "next": "12.3.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "urql": "3.0.3"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "2.12.0",
+    "@graphql-codegen/typescript": "2.7.3",
+    "@graphql-codegen/typescript-operations": "2.5.3",
+    "@graphql-codegen/typescript-urql": "3.7.0",
+    "@types/react": "18.0.19",
+    "eslint": "8.23.1",
+    "eslint-config-next": "12.3.0",
+    "prettier": "2.7.1",
+    "typescript": "4.8.3"
+  }
+}
