@@ -1,0 +1,15 @@
+overwrite: true
+schema:
+  "https://graphqlzero.almansi.me/api":
+    headers:
+      "Authorization": "Bearer <YOUR-TOKEN>"
+documents: "src/graphql/**/*.graphql"
+generates:
+  src/integration/graphql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-urql"
+    config:
+      withComponent: false
+      withHooks: true

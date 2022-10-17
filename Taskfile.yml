@@ -1,0 +1,29 @@
+version: "3"
+
+dotenv: [".env"]
+
+vars:
+  REGISTRY_ENDPOINT: "docker.io"
+  CONTAINER_NAME: "minskylab/base"
+  TAG: latest
+
+tasks:
+  generate:
+    cmds:
+      - yarn generate
+
+  start:
+    cmds:
+      - task: generate
+      - yarn dev
+
+  docker-publish:
+    cmds:
+      - task: generate
+      - docker build -t {{.REGISTRY_ENDPOINT}}/{{.CONTAINER_NAME}}:{{.TAG}} .
+      - docker push {{.REGISTRY_ENDPOINT}}/{{.CONTAINER_NAME}}:{{.TAG}}
+
+  helm-deploy:
+    cmds:
+      - helm upgrade --install base chart/
+    ignore_error: true
