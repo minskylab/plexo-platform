@@ -1,17 +1,15 @@
-import { Box, Flex } from "@chakra-ui/react";
 import { HelloWorld } from "components/ui/HelloWorld";
 import { ListUsers } from "modules/users/ListUsers";
+import { Center, Stack } from "@mantine/core";
 
 const HomePageContent = () => {
   return (
-    <Flex h="100vh" alignItems={"center"}>
-      <Flex justifyContent={"center"} w={"100%"}>
-        <Box maxWidth={72}>
-          <HelloWorld />
-          <ListUsers />
-        </Box>
-      </Flex>
-    </Flex>
+    <Center style={{ height: "100vh" }}>
+      <Stack>
+        <HelloWorld />
+        <ListUsers />
+      </Stack>
+    </Center>
   );
 };
 
