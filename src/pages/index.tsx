@@ -1,3 +1,3 @@
-import { HomePageContent } from "modules/home/HomePageContent";
+import { OverviewContent } from "modules/app/overview";
 
-export default HomePageContent;
+export default OverviewContent;
