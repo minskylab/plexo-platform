@@ -26,6 +26,7 @@ export type Task = {
   title: string;
   status: TaskStatus;
 
+  createdAt?: Date;
   description?: string;
   labels?: string[];
 

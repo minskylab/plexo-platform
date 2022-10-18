@@ -5,12 +5,16 @@ import { Task } from "../datatypes";
 
 export const OverviewContent = () => {
   const task: Task = {
-    code: "123",
-    title: "123",
+    code: "MIN-169",
+    title: "Definir e implementar Splash Screen e Icono del app Vax Canina",
     priority: "low",
     status: "in-progress",
+    // assigned: {
+    //   name: "BM",
+    // },
+    createdAt: new Date(),
     project: {
-      name: "123",
+      name: "Minsky",
     },
   };
 
@@ -31,6 +35,7 @@ export const OverviewContent = () => {
         },
       })}
     >
+      <Header height={60}> Issues</Header>
       <TaskListElement task={task} />
     </AppShell>
   );
