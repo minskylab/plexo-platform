@@ -1,6 +1,8 @@
-import { AppShell, Header, Space, Text } from "@mantine/core";
+import { useTheme } from "@emotion/react";
+import { AppShell, Group, Header, Space, Text, Title, useMantineTheme } from "@mantine/core";
 import { NavbarSearch } from "components/ui/NavBarWithSearch";
 import { TaskListElement } from "components/ui/Task";
+import { CircleHalf } from "tabler-icons-react";
 import { Task } from "../datatypes";
 
 export const OverviewContent = () => {
@@ -17,6 +19,8 @@ export const OverviewContent = () => {
       name: "Minsky",
     },
   };
+
+  const theme = useMantineTheme();
 
   return (
     <AppShell
@@ -35,6 +39,13 @@ export const OverviewContent = () => {
         },
       })}
     >
+      <Group spacing={6} my={8}>
+        <CircleHalf size={18} color={theme.colors.yellow[6]} />
+        <Title order={6}>In Progress</Title>
+        <Text color="dimmed" size="xs">
+          6
+        </Text>
+      </Group>
       {/* <Header height={60}> Issues</Header> */}
       <TaskListElement task={task} />
       {/* <Space h={1} /> */}
