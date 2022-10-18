@@ -9,6 +9,7 @@ import {
   Group,
   ActionIcon,
   Tooltip,
+  Kbd,
 } from "@mantine/core";
 import {
   IconBulb,
@@ -181,6 +182,11 @@ export function NavbarSearch() {
         icon={<IconSearch size={12} stroke={1.5} />}
         rightSectionWidth={70}
         rightSection={<Code className={classes.searchCode}>Ctrl + K</Code>}
+        // rightSection={
+        //   <>
+        //     <Kbd>Ctrl</Kbd> + <Kbd>K</Kbd>
+        //   </>
+        // }
         styles={{ rightSection: { pointerEvents: "none" } }}
         mb="sm"
       />

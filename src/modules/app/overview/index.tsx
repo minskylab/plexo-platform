@@ -1,4 +1,4 @@
-import { AppShell, Header, Text } from "@mantine/core";
+import { AppShell, Header, Space, Text } from "@mantine/core";
 import { NavbarSearch } from "components/ui/NavBarWithSearch";
 import { TaskListElement } from "components/ui/Task";
 import { Task } from "../datatypes";
@@ -35,7 +35,17 @@ export const OverviewContent = () => {
         },
       })}
     >
-      <Header height={60}> Issues</Header>
+      {/* <Header height={60}> Issues</Header> */}
+      <TaskListElement task={task} />
+      {/* <Space h={1} /> */}
+      <TaskListElement task={task} />
+      {/* <Space h={1} /> */}
+      <TaskListElement task={task} selected />
+      {/* <Space h={1} /> */}
+      <TaskListElement task={task} />
+      {/* <Space h={1} /> */}
+      <TaskListElement task={task} />
+      {/* <Space h={1} /> */}
       <TaskListElement task={task} />
     </AppShell>
   );
