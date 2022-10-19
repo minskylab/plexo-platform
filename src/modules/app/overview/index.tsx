@@ -17,10 +17,13 @@ import {
   TextInput,
   Modal,
   Textarea,
+  Switch,
 } from "@mantine/core";
 import { useFocusTrap } from "@mantine/hooks";
 import { NavbarSearch } from "components/ui/NavBarWithSearch";
 import { TaskListElement } from "components/ui/Task";
+import { PrioritySelector } from "components/ui/Task/priority";
+import { StatusSelector } from "components/ui/Task/status";
 import { useState } from "react";
 import {
   Archive,
@@ -82,36 +85,37 @@ export const OverviewContent = () => {
             >
               MIN
             </Button>
-            {/* <Button
-              compact
-              variant="subtle"
-              color={"gray"}
-
-              // leftIcon={<Dna size={16} color={theme.colors.red[4]} />}
-            >
-              New Issue
-            </Button> */}
             <Text size={"sm"}>New Task</Text>
           </Group>
         }
       >
-        {/* Modal content */}
         <Box>
           <TextInput placeholder="Task Title" variant="unstyled" size="lg" autoFocus />
           <Textarea placeholder="Add description..." variant="unstyled" size="sm" />
         </Box>
+        <Group spacing={6} mb={"md"}>
+          <StatusSelector initialStatus="backlog" />
+          <PrioritySelector initialPriority="low" />
+        </Group>
+        <Group
+          pt={"md"}
+          position="right"
+          sx={{
+            borderTopWidth: 1,
+            borderTopStyle: "solid",
+            borderTopColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }}
+        >
+          <Switch label="Create more" size="xs" />
+          <Button compact variant="filled">
+            Create Issue
+          </Button>
+        </Group>
       </Modal>
       <AppShell
-        //   padding="md"
-        //   padding={16}
         padding={0}
-        // navbar={<Navbar width={{ base: 300 }} height={500} p="xs">{/* Navbar content */}</Navbar>}
         navbar={<NavbarSearch onNewTask={() => setNewTaskOpened(true)} />}
-        //   header={
-        //     <Header height={60} p="xs">
-        //       {/* Header content */}
-        //     </Header>
-        //   }
         styles={theme => ({
           main: {
             backgroundColor:
