@@ -11,19 +11,27 @@ import {
   SegmentedControl,
   Box,
   Center,
+  UnstyledButton,
+  Button,
+  Menu,
+  TextInput,
 } from "@mantine/core";
 import { NavbarSearch } from "components/ui/NavBarWithSearch";
 import { TaskListElement } from "components/ui/Task";
 import {
+  Archive,
+  BoxModel,
+  BoxMultiple,
   Circle,
+  CircleDashed,
   CircleHalf,
   Columns,
+  Dna,
   DotsCircleHorizontal,
   GridPattern,
   LayoutColumns,
   LayoutRows,
   List,
-  Menu,
   Menu2,
 } from "tabler-icons-react";
 import { Task } from "../datatypes";
@@ -79,7 +87,43 @@ export const OverviewContent = () => {
           },
         }}
       >
-        <Title order={4}>Active Tasks</Title>
+        <Group>
+          <Button
+            compact
+            variant="light"
+            color={"gray"}
+            leftIcon={<Dna size={16} color={theme.colors.red[4]} />}
+          >
+            Minsky Phi
+          </Button>
+          <Menu shadow="md" width={200}>
+            <Menu.Target>
+              <Button
+                compact
+                variant="light"
+                color={"gray"}
+                // leftIcon={<Dna size={16} color={theme.colors.red[4]} />}
+              >
+                Active Tasks
+              </Button>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              {/* <Menu.Label>Set Priority</Menu.Label> */}
+              {/* <TextInput
+                placeholder="Change Priority..."
+                variant="filled"
+                rightSection={<Kbd px={8}>P</Kbd>}
+              ></TextInput>
+              <Menu.Divider /> */}
+              <Menu.Item icon={<BoxMultiple size={18} />}>Active</Menu.Item>
+              <Menu.Item icon={<CircleDashed size={18} />}>Backlog</Menu.Item>
+              <Menu.Item icon={<BoxModel size={18} />}>All</Menu.Item>
+              <Menu.Item icon={<Archive size={18} />}>Archive</Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+          {/* <Title order={5}>Active Tasks</Title> */}
+        </Group>
         <Group>
           <SegmentedControl
             data={[

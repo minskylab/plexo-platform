@@ -120,11 +120,11 @@ export const TaskListElement = ({
                 rightSection={<Kbd px={8}>P</Kbd>}
               ></TextInput>
               <Menu.Divider />
-              <Menu.Item icon={<AntennaBars1 />}>No Priority</Menu.Item>
-              <Menu.Item icon={<AntennaBars2 />}>Low</Menu.Item>
-              <Menu.Item icon={<AntennaBars3 />}>Medium</Menu.Item>
-              <Menu.Item icon={<AntennaBars4 />}>High</Menu.Item>
-              <Menu.Item icon={<AntennaBars5 />}>Urgent</Menu.Item>
+              <Menu.Item icon={<AntennaBars1 size={18} />}>No Priority</Menu.Item>
+              <Menu.Item icon={<AntennaBars2 size={18} />}>Low</Menu.Item>
+              <Menu.Item icon={<AntennaBars3 size={18} />}>Medium</Menu.Item>
+              <Menu.Item icon={<AntennaBars4 size={18} />}>High</Menu.Item>
+              <Menu.Item icon={<AntennaBars5 size={18} />}>Urgent</Menu.Item>
             </Menu.Dropdown>
           </Menu>
 

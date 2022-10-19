@@ -148,18 +148,6 @@ const links = [
   //   { icon: IconUser, label: "Contacts" },
 ];
 
-// const collections = [
-//   { emoji: "👍", label: "Sales" },
-//   { emoji: "🚚", label: "Deliveries" },
-//   { emoji: "💸", label: "Discounts" },
-//   { emoji: "💰", label: "Profits" },
-//   { emoji: "✨", label: "Reports" },
-//   { emoji: "🛒", label: "Orders" },
-//   { emoji: "📅", label: "Events" },
-//   { emoji: "🙈", label: "Debts" },
-//   { emoji: "💁‍♀️", label: "Customers" },
-// ];
-
 export function NavbarSearch() {
   const { classes } = useStyles();
 
@@ -176,17 +164,6 @@ export function NavbarSearch() {
       )}
     </UnstyledButton>
   ));
-
-  //   const collectionLinks = collections.map(collection => (
-  //     <a
-  //       //   href="/"
-  //       onClick={event => event.preventDefault()}
-  //       key={collection.label}
-  //       className={classes.collectionLink}
-  //     >
-  //       <span style={{ marginRight: 8, fontSize: 16 }}>{collection.emoji}</span> {collection.label}
-  //     </a>
-  //   ));
 
   const theme = useMantineTheme();
 
@@ -219,7 +196,6 @@ export function NavbarSearch() {
           </Button>
         </Group>
       </Navbar.Section>
-
       <Navbar.Section className={classes.section} mb="sm">
         <div className={classes.mainLinks}>{mainLinks}</div>
       </Navbar.Section>
