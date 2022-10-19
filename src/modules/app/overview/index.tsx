@@ -91,13 +91,13 @@ export const OverviewContent = () => {
             >
               New Issue
             </Button> */}
-            <Text size={"sm"}>New Issue</Text>
+            <Text size={"sm"}>New Task</Text>
           </Group>
         }
       >
         {/* Modal content */}
         <Box>
-          <TextInput placeholder="Issue Title" variant="unstyled" size="lg" autoFocus />
+          <TextInput placeholder="Task Title" variant="unstyled" size="lg" autoFocus />
           <Textarea placeholder="Add description..." variant="unstyled" size="sm" />
         </Box>
       </Modal>
