@@ -148,7 +148,11 @@ const links = [
   //   { icon: IconUser, label: "Contacts" },
 ];
 
-export function NavbarSearch() {
+type NavBarWithSearchProps = {
+  onNewTask?: () => void;
+};
+
+export function NavbarSearch({ onNewTask }: NavBarWithSearchProps) {
   const { classes } = useStyles();
 
   const mainLinks = links.map(link => (
@@ -191,7 +195,7 @@ export function NavbarSearch() {
         />
 
         <Group mx={16} mb="sm" grow>
-          <Button leftIcon={<Edit strokeWidth={1.5} />} size="sm">
+          <Button leftIcon={<Edit strokeWidth={1.5} />} size="sm" onClick={onNewTask}>
             New Task
           </Button>
         </Group>
@@ -257,7 +261,7 @@ export function NavbarSearch() {
           //   childrenOffset={28}
         >
           <NavLink icon={<Dna size={16} color={theme.colors.red[4]} />} label="Minsky Phi" active />
-          <NavLink icon={<Dna size={16} color={theme.colors.blue[4]} />} label="Minsky Alpha" />
+          <NavLink icon={<Dna size={16} color={theme.colors.violet[4]} />} label="Minsky Alpha" />
         </NavLink>
       </Navbar.Section>
     </Navbar>
