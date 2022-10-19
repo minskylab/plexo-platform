@@ -1,8 +1,31 @@
 import { useTheme } from "@emotion/react";
-import { AppShell, Group, Header, Space, Text, Title, useMantineTheme } from "@mantine/core";
+import {
+  AppShell,
+  Group,
+  Header,
+  Space,
+  Text,
+  Title,
+  useMantineTheme,
+  Container,
+  SegmentedControl,
+  Box,
+  Center,
+} from "@mantine/core";
 import { NavbarSearch } from "components/ui/NavBarWithSearch";
 import { TaskListElement } from "components/ui/Task";
-import { CircleHalf } from "tabler-icons-react";
+import {
+  Circle,
+  CircleHalf,
+  Columns,
+  DotsCircleHorizontal,
+  GridPattern,
+  LayoutColumns,
+  LayoutRows,
+  List,
+  Menu,
+  Menu2,
+} from "tabler-icons-react";
 import { Task } from "../datatypes";
 
 export const OverviewContent = () => {
@@ -24,7 +47,9 @@ export const OverviewContent = () => {
 
   return (
     <AppShell
-      padding="md"
+      //   padding="md"
+      //   padding={16}
+      padding={0}
       // navbar={<Navbar width={{ base: 300 }} height={500} p="xs">{/* Navbar content */}</Navbar>}
       navbar={<NavbarSearch />}
       //   header={
@@ -39,25 +64,87 @@ export const OverviewContent = () => {
         },
       })}
     >
-      <Group spacing={6} my={8}>
-        <CircleHalf size={18} color={theme.colors.yellow[6]} />
-        <Title order={6}>In Progress</Title>
-        <Text color="dimmed" size="xs">
-          6
-        </Text>
+      <Group
+        position="apart"
+        sx={{
+          backgroundColor:
+            theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0],
+          marginBottom: theme.spacing.md,
+          padding: theme.spacing.md,
+          height: 73.5,
+          "&:not(:last-of-type)": {
+            borderBottom: `1px solid ${
+              theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
+            }`,
+          },
+        }}
+      >
+        <Title order={4}>Active Tasks</Title>
+        <Group>
+          <SegmentedControl
+            data={[
+              {
+                label: (
+                  <Center>
+                    <LayoutRows size={16} />
+                    <Text ml={6} size={"xs"}>
+                      List
+                    </Text>
+                  </Center>
+                ),
+                value: "list",
+              },
+              {
+                label: (
+                  <Center>
+                    <LayoutColumns size={16} />
+                    <Text size={"xs"} ml={6}>
+                      Board
+                    </Text>
+                  </Center>
+                ),
+                value: "columns",
+              },
+              // { label: 'Vue', value: 'vue' },
+              // { label: 'Svelte', value: 'svelte' },
+            ]}
+          />
+        </Group>
       </Group>
-      {/* <Header height={60}> Issues</Header> */}
-      <TaskListElement task={task} />
-      {/* <Space h={1} /> */}
-      <TaskListElement task={task} />
-      {/* <Space h={1} /> */}
-      <TaskListElement task={task} selected />
-      {/* <Space h={1} /> */}
-      <TaskListElement task={task} />
-      {/* <Space h={1} /> */}
-      <TaskListElement task={task} />
-      {/* <Space h={1} /> */}
-      <TaskListElement task={task} />
+      <Container>
+        <Group spacing={6} mt={16} mb={8}>
+          <DotsCircleHorizontal size={18} color={theme.colors.green[6]} />
+          <Title order={6}>In Review</Title>
+          <Text color="dimmed" size="xs">
+            2
+          </Text>
+        </Group>
+        <TaskListElement task={{ ...task, status: "in-review" }} />
+        <TaskListElement task={{ ...task, status: "in-review" }} />
+        <Group spacing={6} mt={16} mb={8}>
+          <CircleHalf size={18} color={theme.colors.yellow[6]} />
+          <Title order={6}>In Progress</Title>
+          <Text color="dimmed" size="xs">
+            6
+          </Text>
+        </Group>
+        <TaskListElement task={task} />
+        <TaskListElement task={task} />
+        <TaskListElement task={task} active />
+        <TaskListElement task={task} />
+        <TaskListElement task={task} />
+        <TaskListElement task={task} />
+        <Group spacing={6} mt={16} mb={8}>
+          <Circle size={18} />
+          <Title order={6}>Todo</Title>
+          <Text color="dimmed" size="xs">
+            3
+          </Text>
+        </Group>
+        <TaskListElement task={{ ...task, status: "todo" }} />
+        <TaskListElement task={{ ...task, status: "todo" }} />
+        <TaskListElement task={{ ...task, status: "todo" }} />
+      </Container>
     </AppShell>
   );
 };

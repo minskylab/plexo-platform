@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Avatar,
   Badge,
+  Checkbox,
   Code,
   Group,
   Kbd,
@@ -13,32 +14,25 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { Task, TaskPriority, TaskStatus } from "modules/app/datatypes";
-import React from "react";
+import React, { useState } from "react";
 import {
   AntennaBars1,
   AntennaBars2,
   AntennaBars3,
   AntennaBars4,
   AntennaBars5,
-  AntennaBarsOff,
-  ArrowLeft,
   Circle,
   CircleCheck,
   CircleDashed,
   CircleHalf,
   CircleX,
   DotsCircleHorizontal,
-  Icon,
-  MessageCircle,
-  Photo,
-  Search,
-  Settings,
-  Trash,
 } from "tabler-icons-react";
 
 type TaskListElementProps = {
   task: Task;
-  selected?: boolean;
+  active?: boolean;
+  checked?: boolean;
 };
 
 const PriorityIcon = (priority?: TaskPriority) => {
@@ -75,9 +69,13 @@ const StatusIcon = (theme: MantineTheme, status?: TaskStatus) => {
   return <AntennaBars1 />;
 };
 
-export const TaskListElement = ({ task, selected = false }: TaskListElementProps) => {
+export const TaskListElement = ({
+  task,
+  active = false,
+  checked = false,
+}: TaskListElementProps) => {
   const smallDate = task.createdAt?.toDateString().split(" ").slice(1, 3).join(" ");
-
+  const [controlledChecked, setChecked] = useState(checked);
   const theme = useMantineTheme();
 
   return (
@@ -85,15 +83,28 @@ export const TaskListElement = ({ task, selected = false }: TaskListElementProps
       px={6}
       py={4}
       mt={1}
-      withBorder={selected}
+      withBorder={active}
       sx={theme => ({
+        backgroundColor: controlledChecked ? theme.colors.orange[5] + "10" : theme.colors.dark[7],
+
         ":hover": {
-          backgroundColor: theme.colors.dark[6],
+          backgroundColor: controlledChecked ? theme.colors.orange[5] + "10" : theme.colors.dark[6],
         },
       })}
     >
       <Group position="apart">
         <Group position="left" spacing={8}>
+          <Checkbox
+            checked={controlledChecked}
+            onChange={event => setChecked(event.currentTarget.checked)}
+            // size="xs"
+            sx={{
+              opacity: controlledChecked ? 1 : 0,
+              ":hover": {
+                opacity: 1,
+              },
+            }}
+          />
           <Menu shadow="md" width={180}>
             <Menu.Target>
               <ActionIcon variant="light" radius={"sm"}>

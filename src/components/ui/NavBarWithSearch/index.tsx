@@ -10,6 +10,11 @@ import {
   ActionIcon,
   Tooltip,
   Kbd,
+  Button,
+  NavLink,
+  useMantineTheme,
+  SegmentedControl,
+  Center,
 } from "@mantine/core";
 import {
   IconBulb,
@@ -20,7 +25,25 @@ import {
   IconSelector,
 } from "@tabler/icons";
 import Link from "next/link";
-import { Eye } from "tabler-icons-react";
+import {
+  Affiliate,
+  Book,
+  Dice,
+  Dna,
+  Dna2,
+  Edit,
+  Eye,
+  Fingerprint,
+  Gauge,
+  LayoutColumns,
+  LayoutGrid,
+  LayoutRows,
+  NewSection,
+  Note,
+  Plus,
+  Rocket,
+  Square,
+} from "tabler-icons-react";
 import { UserButton } from "../UserButton";
 // import { UserButton } from "../UserButton/UserButton";
 
@@ -32,7 +55,7 @@ const useStyles = createStyles(theme => ({
   section: {
     // marginLeft: -theme.spacing.md,
     // marginRight: -theme.spacing.md,
-    marginBottom: theme.spacing.md,
+    // marginBottom: theme.spacing.md,
 
     "&:not(:last-of-type)": {
       borderBottom: `1px solid ${
@@ -107,7 +130,7 @@ const useStyles = createStyles(theme => ({
     padding: `8px ${theme.spacing.xs}px`,
     textDecoration: "none",
     borderRadius: theme.radius.sm,
-    fontSize: theme.fontSizes.xs,
+    fontSize: theme.fontSizes.sm,
     color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.colors.gray[7],
     lineHeight: 1,
     fontWeight: 500,
@@ -125,17 +148,17 @@ const links = [
   //   { icon: IconUser, label: "Contacts" },
 ];
 
-const collections = [
-  { emoji: "👍", label: "Sales" },
-  { emoji: "🚚", label: "Deliveries" },
-  { emoji: "💸", label: "Discounts" },
-  { emoji: "💰", label: "Profits" },
-  { emoji: "✨", label: "Reports" },
-  { emoji: "🛒", label: "Orders" },
-  { emoji: "📅", label: "Events" },
-  { emoji: "🙈", label: "Debts" },
-  { emoji: "💁‍♀️", label: "Customers" },
-];
+// const collections = [
+//   { emoji: "👍", label: "Sales" },
+//   { emoji: "🚚", label: "Deliveries" },
+//   { emoji: "💸", label: "Discounts" },
+//   { emoji: "💰", label: "Profits" },
+//   { emoji: "✨", label: "Reports" },
+//   { emoji: "🛒", label: "Orders" },
+//   { emoji: "📅", label: "Events" },
+//   { emoji: "🙈", label: "Debts" },
+//   { emoji: "💁‍♀️", label: "Customers" },
+// ];
 
 export function NavbarSearch() {
   const { classes } = useStyles();
@@ -144,7 +167,7 @@ export function NavbarSearch() {
     <UnstyledButton key={link.label} className={classes.mainLink}>
       <div className={classes.mainLinkInner}>
         <link.icon size={20} className={classes.mainLinkIcon} stroke={1.5} />
-        <span>{link.label}</span>
+        <Text size="sm">{link.label}</Text>
       </div>
       {link.notifications && (
         <Badge size="sm" variant="filled" className={classes.mainLinkBadge}>
@@ -154,20 +177,22 @@ export function NavbarSearch() {
     </UnstyledButton>
   ));
 
-  const collectionLinks = collections.map(collection => (
-    <a
-      //   href="/"
-      onClick={event => event.preventDefault()}
-      key={collection.label}
-      className={classes.collectionLink}
-    >
-      <span style={{ marginRight: 9, fontSize: 16 }}>{collection.emoji}</span> {collection.label}
-    </a>
-  ));
+  //   const collectionLinks = collections.map(collection => (
+  //     <a
+  //       //   href="/"
+  //       onClick={event => event.preventDefault()}
+  //       key={collection.label}
+  //       className={classes.collectionLink}
+  //     >
+  //       <span style={{ marginRight: 8, fontSize: 16 }}>{collection.emoji}</span> {collection.label}
+  //     </a>
+  //   ));
+
+  const theme = useMantineTheme();
 
   return (
-    <Navbar width={{ sm: 300 }} p="md" className={classes.navbar}>
-      <Navbar.Section className={classes.section}>
+    <Navbar width={{ sm: 300 }} className={classes.navbar}>
+      <Navbar.Section className={classes.section} mb="sm">
         <UserButton
           image="https://uploads.linear.app/4389bd24-0b3b-438e-84be-56d33b0a8c76/ec023124-ed27-491a-a2d0-e2ca9370b620/256x256/a8a546b8-5668-43ce-be0e-ce4915f747dc"
           name="Minsky"
@@ -176,44 +201,88 @@ export function NavbarSearch() {
         />
       </Navbar.Section>
 
-      <TextInput
-        placeholder="Search"
-        size="xs"
-        icon={<IconSearch size={12} stroke={1.5} />}
-        rightSectionWidth={70}
-        rightSection={<Code className={classes.searchCode}>Ctrl + K</Code>}
-        // rightSection={
-        //   <>
-        //     <Kbd>Ctrl</Kbd> + <Kbd>K</Kbd>
-        //   </>
-        // }
-        styles={{ rightSection: { pointerEvents: "none" } }}
-        mb="sm"
-      />
+      <Navbar.Section className={classes.section} mb="sm">
+        <TextInput
+          mx={16}
+          placeholder="Search"
+          // size="xs"
+          icon={<IconSearch size={12} stroke={1.5} />}
+          rightSectionWidth={70}
+          rightSection={<Code className={classes.searchCode}>Ctrl + K</Code>}
+          styles={{ rightSection: { pointerEvents: "none" } }}
+          mb="sm"
+        />
 
-      <Navbar.Section className={classes.section}>
-        <div className={classes.mainLinks}>{mainLinks}</div>
+        <Group mx={16} mb="sm" grow>
+          <Button leftIcon={<Edit strokeWidth={1.5} />} size="sm">
+            New Task
+          </Button>
+        </Group>
       </Navbar.Section>
 
-      <Navbar.Section className={classes.section}>
-        <Group className={classes.collectionsHeader} position="apart">
-          <Text size="xs" weight={500} color="dimmed">
-            Teams
-          </Text>
-          <Group position="right">
-            <Tooltip label="By Projects" withArrow position="right">
-              <ActionIcon variant="default" size={18}>
-                <Eye size={12} />
-              </ActionIcon>
-            </Tooltip>
-            <Tooltip label="Create team" withArrow position="right">
-              <ActionIcon variant="default" size={18}>
-                <IconPlus size={12} stroke={1.5} />
-              </ActionIcon>
-            </Tooltip>
-          </Group>
-        </Group>
-        <div className={classes.collections}>{collectionLinks}</div>
+      <Navbar.Section className={classes.section} mb="sm">
+        <div className={classes.mainLinks}>{mainLinks}</div>
+      </Navbar.Section>
+      <Group position="apart" mx="sm" mb="sm">
+        <SegmentedControl
+          data={[
+            {
+              label: (
+                <Center>
+                  <Affiliate size={16} />
+                  <Text ml={6} size={"xs"}>
+                    Teams
+                  </Text>
+                </Center>
+              ),
+              value: "list",
+            },
+            {
+              label: (
+                <Center>
+                  <LayoutGrid size={16} />
+                  <Text ml={6} size={"xs"}>
+                    Projects
+                  </Text>
+                </Center>
+              ),
+              value: "columns",
+            },
+          ]}
+        />
+        <ActionIcon>
+          <Plus size={18} />
+        </ActionIcon>
+      </Group>
+      <Navbar.Section>
+        {/* <div className={classes.collections}>{collectionLinks}</div> */}
+        <NavLink label="Research" icon={<Rocket size={16} color={theme.colors.blue[4]} />}>
+          {/* <NavLink label="First child link" />
+          <NavLink label="Second child link" /> */}
+        </NavLink>
+
+        <NavLink
+          label="Management"
+          icon={<Book size={16} color={theme.colors.gray[5]} />}
+          //   childrenOffset={28}
+          defaultOpened
+          opened={true}
+        >
+          <NavLink icon={<Dice size={16} color={theme.colors.gray[6]} />} label="Main Team" />
+          {/* <NavLink label="Second child link" />
+          <NavLink label="Third child link" /> */}
+        </NavLink>
+
+        <NavLink
+          label="Development"
+          icon={<Dna2 size={16} color={theme.colors.orange[4]} />}
+          defaultOpened
+          opened={true}
+          //   childrenOffset={28}
+        >
+          <NavLink icon={<Dna size={16} color={theme.colors.red[4]} />} label="Minsky Phi" active />
+          <NavLink icon={<Dna size={16} color={theme.colors.blue[4]} />} label="Minsky Alpha" />
+        </NavLink>
       </Navbar.Section>
     </Navbar>
   );
