@@ -7,7 +7,7 @@ on:
       - dev
 
 env:
-  IMAGE_REPO: registry.minsky.cc/minskylab/minskylab/plexo-platform
+  IMAGE_REPO: registry.minsky.cc/minskylab/plexo-platform
 
 jobs:
   build-push-registry:
