@@ -10,7 +10,7 @@ import { colorBrandDark, colorBrandPrimary } from "theming";
 
 const client = URQLClient();
 
-const FairpayApp = (props: AppProps & { colorScheme: ColorScheme }) => {
+const PlexoApp = (props: AppProps & { colorScheme: ColorScheme }) => {
   const { Component, pageProps } = props;
   const [colorScheme, setColorScheme] = useState<ColorScheme>(props.colorScheme);
 
@@ -44,9 +44,9 @@ const FairpayApp = (props: AppProps & { colorScheme: ColorScheme }) => {
   );
 };
 
-FairpayApp.getInitialProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => ({
+PlexoApp.getInitialProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => ({
   // get color scheme from cookie
   colorScheme: getCookie("mantine-color-scheme", ctx) || "light",
 });
 
-export default FairpayApp;
+export default PlexoApp;

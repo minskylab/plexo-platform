@@ -2,8 +2,6 @@ import { useTheme } from "@emotion/react";
 import {
   AppShell,
   Group,
-  Header,
-  Space,
   Text,
   Title,
   useMantineTheme,
@@ -11,7 +9,6 @@ import {
   SegmentedControl,
   Box,
   Center,
-  UnstyledButton,
   Button,
   Menu,
   TextInput,
@@ -32,14 +29,10 @@ import {
   Circle,
   CircleDashed,
   CircleHalf,
-  Columns,
   Dna,
   DotsCircleHorizontal,
-  GridPattern,
   LayoutColumns,
   LayoutRows,
-  List,
-  Menu2,
 } from "tabler-icons-react";
 import { Task } from "../datatypes";
 
@@ -60,6 +53,7 @@ export const OverviewContent = () => {
 
   const theme = useMantineTheme();
   const [newTaskOpened, setNewTaskOpened] = useState(false);
+  const [createMore, setCreateMore] = useState(false);
 
   // const focusTrapRef = useFocusTrap();
 
@@ -107,9 +101,15 @@ export const OverviewContent = () => {
               theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
           }}
         >
-          <Switch label="Create more" size="xs" />
+          <Switch
+            label="Create more"
+            size="xs"
+            checked={createMore}
+            onChange={e => setCreateMore(e.currentTarget.checked)}
+          />
+          {/* {!createMore && "s"} */}
           <Button compact variant="filled">
-            Create Issue
+            Create Task
           </Button>
         </Group>
       </Modal>
@@ -162,11 +162,11 @@ export const OverviewContent = () => {
               <Menu.Dropdown>
                 {/* <Menu.Label>Set Priority</Menu.Label> */}
                 {/* <TextInput
-                placeholder="Change Priority..."
-                variant="filled"
-                rightSection={<Kbd px={8}>P</Kbd>}
-              ></TextInput>
-              <Menu.Divider /> */}
+                  placeholder="Change Priority..."
+                  variant="filled"
+                  rightSection={<Kbd px={8}>P</Kbd>}
+                ></TextInput>
+                <Menu.Divider /> */}
                 <Menu.Item icon={<BoxMultiple size={18} />}>Active</Menu.Item>
                 <Menu.Item icon={<CircleDashed size={18} />}>Backlog</Menu.Item>
                 <Menu.Item icon={<BoxModel size={18} />}>All</Menu.Item>
