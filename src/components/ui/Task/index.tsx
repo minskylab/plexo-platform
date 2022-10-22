@@ -48,7 +48,7 @@ export const TaskListElement = ({
           <Checkbox
             checked={controlledChecked}
             onChange={event => setChecked(event.currentTarget.checked)}
-            // size="xs"
+            size="xs"
             sx={{
               opacity: controlledChecked ? 1 : 0,
               ":hover": {

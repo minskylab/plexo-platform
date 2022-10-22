@@ -70,7 +70,7 @@ export const GenericStatusMenu = ({ children, onSelect }: GenericStatusMenuProps
           placeholder="Change Status..."
           variant="filled"
           rightSection={<Kbd px={8}>S</Kbd>}
-        ></TextInput>
+        />
         <Menu.Divider />
         <Menu.Item
           icon={<CircleDashed size={18} color={theme.colors.gray[6]} />}
