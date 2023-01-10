@@ -10,7 +10,12 @@ import {
 
 export const URQLClient = () => {
   return createClient({
-    url: "https://graphqlzero.almansi.me/api",
+    url: "https://plexo-minsky.internal.minsky.cc/graphql",
+    fetchOptions: {
+      headers: {
+        Authorization: "Bearer xxx",
+      },
+    },
     exchanges: [
       devtoolsExchange,
       dedupExchange,

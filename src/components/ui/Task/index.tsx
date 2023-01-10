@@ -25,7 +25,7 @@ export const TaskListElement = ({
   active = false,
   checked = false,
 }: TaskListElementProps) => {
-  const smallDate = task.createdAt?.toDateString().split(" ").slice(1, 3).join(" ");
+  const smallDate = new Date(task.createdAt).toDateString().split(" ").slice(1, 3).join(" ");
   const [controlledChecked, setChecked] = useState(checked);
   const theme = useMantineTheme();
   // theme.
@@ -67,18 +67,18 @@ export const TaskListElement = ({
             </ActionIcon>
           </GenericStatusMenu>
           <Text size={"sm"} color={"dimmed"}>
-            {task.code}
+            MIN-169
           </Text>
           <Text size={"sm"}>{task.title}</Text>
         </Group>
         {/* <Group position="left"></Group> */}
         <Group position="right">
-          <Badge>{task.project.name}</Badge>
+          <Badge>MINSKY{/* {task.projectId} */}</Badge>
           <Text size={"sm"} color={"dimmed"}>
             {smallDate}
           </Text>
           <Avatar size="sm" radius="xl">
-            {task.assigned?.name}
+            {task.assigneeId}
           </Avatar>
         </Group>
       </Group>

@@ -1,15 +1,15 @@
 overwrite: true
 schema:
-  "https://graphqlzero.almansi.me/api":
+  "https://plexo-minsky.internal.minsky.cc/graphql":
     headers:
-      "Authorization": "Bearer <YOUR-TOKEN>"
+      "Authorization": "Bearer xxx"
 documents: "src/graphql/**/*.graphql"
 generates:
   src/integration/graphql.tsx:
     plugins:
       - "typescript"
       - "typescript-operations"
-      - "typescript-urql"
-    config:
-      withComponent: false
-      withHooks: true
+      - "typed-document-node"
+    hooks:
+      afterOneFileWrite:
+        - yarn prettier --write

@@ -1,0 +1,11 @@
+query Teams {
+  teams {
+    id
+    name
+    ownerId
+    visibility
+    members {
+      id
+    }
+  }
+}

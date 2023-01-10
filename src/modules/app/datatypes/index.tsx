@@ -1,43 +1,6 @@
-export type TeamScope = "private" | "public" | "internal";
+import { TasksQuery, MembersQuery, ProjectsQuery, TeamsQuery } from "integration/graphql";
 
-export type Member = {
-  name: string;
-  email?: string;
-
-  teams?: Team[];
-};
-
-export type Team = {
-  name: string;
-  scope: TeamScope;
-
-  members?: Member[];
-};
-
-export type TaskStatus = "backlog" | "todo" | "in-progress" | "in-review" | "done" | "canceled";
-
-export type TaskPriority = "low" | "medium" | "high" | "urgent";
-
-export type Task = {
-  code: string;
-
-  project: Project;
-
-  title: string;
-  status: TaskStatus;
-
-  createdAt?: Date;
-  description?: string;
-  labels?: string[];
-
-  priority?: TaskPriority;
-
-  assigned?: Member;
-  parent?: Task;
-};
-
-export type Project = {
-  name: string;
-
-  issues?: Task[];
-};
+export type Task = TasksQuery["tasks"][number];
+export type Project = ProjectsQuery["projects"][number];
+export type Member = MembersQuery["members"][number];
+export type Team = TeamsQuery["teams"][number];

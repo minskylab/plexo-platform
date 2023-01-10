@@ -1,4 +1,3 @@
-import { useTheme } from "@emotion/react";
 import {
   AppShell,
   Group,
@@ -15,13 +14,9 @@ import {
   Modal,
   Textarea,
   Switch,
+  Skeleton,
 } from "@mantine/core";
-import { useFocusTrap } from "@mantine/hooks";
-import { NavbarSearch } from "components/ui/NavBarWithSearch";
-import { TaskListElement } from "components/ui/Task";
-import { PrioritySelector } from "components/ui/Task/priority";
-import { StatusSelector } from "components/ui/Task/status";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Archive,
   BoxModel,
@@ -34,10 +29,16 @@ import {
   LayoutColumns,
   LayoutRows,
 } from "tabler-icons-react";
-import { Task } from "../datatypes";
+import { useQuery } from "urql";
+
+import { TaskPriority, TasksDocument, TaskStatus } from "../../../integration/graphql";
+import { NavbarSearch } from "components/ui/NavBarWithSearch";
+import { TaskListElement } from "components/ui/Task";
+import { PrioritySelector } from "components/ui/Task/priority";
+import { StatusSelector } from "components/ui/Task/status";
 
 export const OverviewContent = () => {
-  const task: Task = {
+  /*  const task: Task = {
     code: "MIN-169",
     title: "Definir e implementar Splash Screen e Icono del app Vax Canina",
     priority: "low",
@@ -49,12 +50,15 @@ export const OverviewContent = () => {
     project: {
       name: "Minsky",
     },
-  };
+  }; */
 
   const theme = useMantineTheme();
   const [newTaskOpened, setNewTaskOpened] = useState(false);
   const [createMore, setCreateMore] = useState(false);
 
+  const [{ data: tasksData, fetching: isFetchingTasks }] = useQuery({
+    query: TasksDocument,
+  });
   // const focusTrapRef = useFocusTrap();
 
   return (
@@ -88,8 +92,8 @@ export const OverviewContent = () => {
           <Textarea placeholder="Add description..." variant="unstyled" size="sm" />
         </Box>
         <Group spacing={6} mb={"md"}>
-          <StatusSelector initialStatus="backlog" />
-          <PrioritySelector initialPriority="low" />
+          <StatusSelector initialStatus={TaskStatus.Backlog} />
+          <PrioritySelector initialPriority={TaskPriority.Low} />
         </Group>
         <Group
           pt={"md"}
@@ -211,34 +215,33 @@ export const OverviewContent = () => {
             <DotsCircleHorizontal size={18} color={theme.colors.green[6]} />
             <Title order={6}>In Review</Title>
             <Text color="dimmed" size="xs">
-              2
+              {tasksData?.tasks.length}
             </Text>
           </Group>
-          <TaskListElement task={{ ...task, status: "in-review" }} />
-          <TaskListElement task={{ ...task, status: "in-review" }} />
+          {isFetchingTasks ? (
+            <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+          ) : (
+            tasksData?.tasks.map(t => {
+              return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
+            })
+          )}
           <Group spacing={6} mt={16} mb={8}>
             <CircleHalf size={18} color={theme.colors.yellow[6]} />
             <Title order={6}>In Progress</Title>
             <Text color="dimmed" size="xs">
-              6
+              {/* 3 */}
             </Text>
           </Group>
-          <TaskListElement task={task} />
-          <TaskListElement task={task} />
-          <TaskListElement task={task} active />
-          <TaskListElement task={task} />
-          <TaskListElement task={task} />
-          <TaskListElement task={task} />
+          {/* <TaskListElement task={task} />
+          <TaskListElement task={task} active /> */}
           <Group spacing={6} mt={16} mb={8}>
             <Circle size={18} />
             <Title order={6}>Todo</Title>
             <Text color="dimmed" size="xs">
-              3
+              {/* 6 */}
             </Text>
           </Group>
-          <TaskListElement task={{ ...task, status: "todo" }} />
-          <TaskListElement task={{ ...task, status: "todo" }} />
-          <TaskListElement task={{ ...task, status: "todo" }} />
+          {/* <TaskListElement task={{ ...task, status: "todo" }} /> */}
         </Container>
       </AppShell>
     </>

@@ -1,9 +1,0 @@
-query ListUsers {
-  users {
-    data {
-      id
-      name
-      email
-    }
-  }
-}

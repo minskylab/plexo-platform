@@ -1,0 +1,15 @@
+query Members {
+  members {
+    id
+    name
+    email
+    photoUrl
+    role
+    tasks {
+      id
+    }
+    projects {
+      id
+    }
+  }
+}

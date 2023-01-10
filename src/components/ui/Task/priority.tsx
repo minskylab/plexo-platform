@@ -1,5 +1,6 @@
 import { Button, Kbd, Menu, Text, TextInput } from "@mantine/core";
-import { TaskPriority } from "modules/app/datatypes";
+import { TaskPriority } from "integration/graphql";
+/* import { TaskPriority } from "modules/app/datatypes"; */
 import { useState } from "react";
 import {
   AntennaBars1,
@@ -7,7 +8,6 @@ import {
   AntennaBars3,
   AntennaBars4,
   AntennaBars5,
-  IconProps,
 } from "tabler-icons-react";
 
 export const PriorityIcon = (
@@ -15,13 +15,15 @@ export const PriorityIcon = (
   size?: string | number | undefined
 ) => {
   switch (priority) {
-    case "low":
+    case "NONE":
+      return <AntennaBars1 size={size} />;
+    case "LOW":
       return <AntennaBars2 size={size} />;
-    case "medium":
+    case "MEDIUM":
       return <AntennaBars3 size={size} />;
-    case "high":
+    case "HIGH":
       return <AntennaBars4 size={size} />;
-    case "urgent":
+    case "URGENT":
       return <AntennaBars5 size={size} />;
   }
 
@@ -30,13 +32,15 @@ export const PriorityIcon = (
 
 export const priorityName = (priority: TaskPriority | undefined) => {
   switch (priority) {
-    case "low":
+    case "NONE":
+      return "None";
+    case "LOW":
       return "Low";
-    case "medium":
+    case "MEDIUM":
       return "Medium";
-    case "high":
+    case "HIGH":
       return "High";
-    case "urgent":
+    case "URGENT":
       return "Urgent";
   }
 
@@ -67,20 +71,32 @@ export const GenericPriorityMenu = ({ children, onSelect }: GenericPriorityMenuP
         <Menu.Divider />
         <Menu.Item
           icon={<AntennaBars1 size={18} />}
-          onClick={() => onSelect && onSelect(undefined)}
+          onClick={() => onSelect && onSelect(TaskPriority.None)}
         >
           No Priority
         </Menu.Item>
-        <Menu.Item icon={<AntennaBars2 size={18} />} onClick={() => onSelect && onSelect("low")}>
+        <Menu.Item
+          icon={<AntennaBars2 size={18} />}
+          onClick={() => onSelect && onSelect(TaskPriority.Low)}
+        >
           Low
         </Menu.Item>
-        <Menu.Item icon={<AntennaBars3 size={18} />} onClick={() => onSelect && onSelect("medium")}>
+        <Menu.Item
+          icon={<AntennaBars3 size={18} />}
+          onClick={() => onSelect && onSelect(TaskPriority.Medium)}
+        >
           Medium
         </Menu.Item>
-        <Menu.Item icon={<AntennaBars4 size={18} />} onClick={() => onSelect && onSelect("high")}>
+        <Menu.Item
+          icon={<AntennaBars4 size={18} />}
+          onClick={() => onSelect && onSelect(TaskPriority.High)}
+        >
           High
         </Menu.Item>
-        <Menu.Item icon={<AntennaBars5 size={18} />} onClick={() => onSelect && onSelect("urgent")}>
+        <Menu.Item
+          icon={<AntennaBars5 size={18} />}
+          onClick={() => onSelect && onSelect(TaskPriority.Urgent)}
+        >
           Urgent
         </Menu.Item>
       </Menu.Dropdown>

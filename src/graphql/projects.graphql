@@ -1,0 +1,12 @@
+query Projects {
+  projects {
+    id
+    title
+    description
+    ownerId
+    labels
+    members {
+      id
+    }
+  }
+}
