@@ -29,9 +29,14 @@ import {
   LayoutColumns,
   LayoutRows,
 } from "tabler-icons-react";
-import { useQuery } from "urql";
+import { useQuery, useSubscription } from "urql";
 
-import { TaskPriority, TasksDocument, TaskStatus } from "../../../integration/graphql";
+import {
+  TaskPriority,
+  TasksDocument,
+  TaskStatus,
+  TasksSubscriptionDocument,
+} from "../../../integration/graphql";
 import { NavbarSearch } from "components/ui/NavBarWithSearch";
 import { TaskListElement } from "components/ui/Task";
 import { PrioritySelector } from "components/ui/Task/priority";
@@ -56,9 +61,13 @@ export const OverviewContent = () => {
   const [newTaskOpened, setNewTaskOpened] = useState(false);
   const [createMore, setCreateMore] = useState(false);
 
-  const [{ data: tasksData, fetching: isFetchingTasks }] = useQuery({
+  const [{ data: tasksData, fetching: isFetchingTasksData }] = useQuery({
     query: TasksDocument,
   });
+
+  /*  const [{ data: tasks }] = useSubscription({
+    query: TasksSubscriptionDocument,
+  }); */
   // const focusTrapRef = useFocusTrap();
 
   return (
@@ -218,7 +227,7 @@ export const OverviewContent = () => {
               {tasksData?.tasks.length}
             </Text>
           </Group>
-          {isFetchingTasks ? (
+          {isFetchingTasksData ? (
             <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
           ) : (
             tasksData?.tasks.map(t => {

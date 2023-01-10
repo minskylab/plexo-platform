@@ -283,6 +283,26 @@ export type TasksQuery = {
   }>;
 };
 
+export type TasksSubscriptionSubscriptionVariables = Exact<{ [key: string]: never }>;
+
+export type TasksSubscriptionSubscription = {
+  __typename?: "SubscriptionRoot";
+  tasks: {
+    __typename?: "Task";
+    id: any;
+    status: TaskStatus;
+    title: string;
+    description?: string | null;
+    createdAt: any;
+    updatedAt: any;
+    priority: TaskPriority;
+    ownerId: any;
+    labels: Array<string>;
+    assigneeId?: any | null;
+    projectId?: any | null;
+  };
+};
+
 export type TeamsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type TeamsQuery = {
@@ -414,6 +434,41 @@ export const TasksDocument = {
     },
   ],
 } as unknown as DocumentNode<TasksQuery, TasksQueryVariables>;
+export const TasksSubscriptionDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "subscription",
+      name: { kind: "Name", value: "TasksSubscription" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tasks" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "status" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+                { kind: "Field", name: { kind: "Name", value: "priority" } },
+                { kind: "Field", name: { kind: "Name", value: "ownerId" } },
+                { kind: "Field", name: { kind: "Name", value: "labels" } },
+                { kind: "Field", name: { kind: "Name", value: "assigneeId" } },
+                { kind: "Field", name: { kind: "Name", value: "projectId" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TasksSubscriptionSubscription, TasksSubscriptionSubscriptionVariables>;
 export const TeamsDocument = {
   kind: "Document",
   definitions: [

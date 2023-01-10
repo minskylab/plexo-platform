@@ -13,3 +13,19 @@ query Tasks {
     projectId
   }
 }
+
+subscription TasksSubscription {
+  tasks {
+    id
+    status
+    title
+    description
+    createdAt
+    updatedAt
+    priority
+    ownerId
+    labels
+    assigneeId
+    projectId
+  }
+}
