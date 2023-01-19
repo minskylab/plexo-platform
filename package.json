@@ -6,7 +6,7 @@
     "generate": "graphql-codegen -c codegen.yml",
     "format": "prettier --write '**/*.{ts,tsx,graphql}'",
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && next export",
     "start": "next start",
     "lint": "next lint"
   },
