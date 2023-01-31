@@ -1,10 +1,10 @@
 query Projects {
   projects {
     id
-    title
+    #title
     description
     ownerId
-    labels
+    #labels
     members {
       id
     }
