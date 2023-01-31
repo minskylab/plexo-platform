@@ -30,6 +30,7 @@ export const TaskListElement = ({
   const theme = useMantineTheme();
   // theme.
 
+  console.log(task.assigneeId);
   return (
     <Paper
       px={6}
@@ -78,7 +79,7 @@ export const TaskListElement = ({
             {smallDate}
           </Text>
           <Avatar size="sm" radius="xl">
-            {task.assigneeId}
+            {/* {task.assigneeId} */}
           </Avatar>
         </Group>
       </Group>
