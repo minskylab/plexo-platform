@@ -9,6 +9,8 @@ import {
   ActionIcon,
   useMantineColorScheme,
   Select,
+  Switch,
+  useMantineTheme,
 } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons";
 import { useState } from "react";
@@ -38,6 +40,7 @@ export function UserButton({ image, name, email, icon, ...others }: UserButtonPr
   const { classes } = useStyles();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
+  const theme = useMantineTheme();
 
   return (
     // <UnstyledButton className={classes.user} {...others}>
@@ -91,7 +94,7 @@ export function UserButton({ image, name, email, icon, ...others }: UserButtonPr
         </Menu.Target>
         <Menu.Dropdown>
           <Menu.Item closeMenuOnClick={!userMenuOpened}>
-            <Select
+            {/* <Select
               data={[
                 { value: "light", label: "Light" },
                 { value: "dark", label: "Dark" },
@@ -102,16 +105,32 @@ export function UserButton({ image, name, email, icon, ...others }: UserButtonPr
                 toggleColorScheme();
               }}
               styles={{
-                root: { width: 120, marginLeft: -10},
+                root: { width: 120, marginLeft: -10 },
                 rightSection: { pointerEvents: "none", display: "none" },
               }}
               variant="unstyled"
-            ></Select>
+            ></Select> */}
+            <Switch
+              color="yellow"
+              onLabel={
+                <Group spacing={5}>
+                  <Sun color={theme.white} size={18} />
+                  <Text size="sm">Light</Text>
+                </Group>
+              }
+              offLabel={
+                <Group spacing="xs" grow>
+                  <Text size="sm">Dark</Text>
+                  <Moon color={theme.colors.gray[6]} size={18} />
+                </Group>
+              }
+              checked={colorScheme === "dark"}
+              onChange={() => toggleColorScheme()}
+              size="md"
+              styles={{ root: { width: 120, marginLeft: -4 } }}
+            />
           </Menu.Item>
-          <Menu.Item
-            component="button"
-            icon={<Logout size={14} />}
-          >
+          <Menu.Item component="button" icon={<Logout size={14} />}>
             Log out
           </Menu.Item>
         </Menu.Dropdown>
