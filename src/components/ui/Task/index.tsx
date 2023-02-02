@@ -30,7 +30,7 @@ export const TaskListElement = ({
   const theme = useMantineTheme();
   // theme.
 
-  console.log(task.assigneeId);
+  // console.log(task.assigneeId);
   return (
     <Paper
       px={6}

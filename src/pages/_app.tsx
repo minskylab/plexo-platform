@@ -47,6 +47,7 @@ const PlexoApp = (props: AppProps & { colorScheme: ColorScheme }) => {
 PlexoApp.getInitialProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => ({
   // get color scheme from cookie
   colorScheme: getCookie("mantine-color-scheme", ctx) || "light",
+  viewMode: getCookie("viewMode", ctx) || "list",
 });
 
 export default PlexoApp;

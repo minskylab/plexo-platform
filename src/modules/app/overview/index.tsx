@@ -15,6 +15,9 @@ import {
   Textarea,
   Switch,
   Skeleton,
+  SimpleGrid,
+  ScrollArea,
+  Stack,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import {
@@ -36,16 +39,12 @@ import {
 } from "tabler-icons-react";
 import { useQuery, useSubscription } from "urql";
 
-import {
-  TaskPriority,
-  TasksDocument,
-  TaskStatus,
-  TasksSubscriptionDocument,
-} from "../../../integration/graphql";
+import { TaskPriority, TasksDocument, TaskStatus } from "../../../integration/graphql";
 import { NavbarSearch } from "components/ui/NavBarWithSearch";
 import { TaskListElement } from "components/ui/Task";
 import { PrioritySelector } from "components/ui/Task/priority";
 import { StatusSelector } from "components/ui/Task/status";
+import { getCookie, setCookie } from "cookies-next";
 
 export const OverviewContent = () => {
   /*  const task: Task = {
@@ -65,6 +64,18 @@ export const OverviewContent = () => {
   const theme = useMantineTheme();
   const [newTaskOpened, setNewTaskOpened] = useState(false);
   const [createMore, setCreateMore] = useState(false);
+
+  const [viewMode, setViewMode] = useState<"list" | "columns">("list");
+
+  useEffect(() => {
+    setViewMode(getCookie("viewMode") === "columns" ? "columns" : "list");
+  }, []);
+
+  useEffect(() => {
+    setCookie("viewMode", viewMode, {
+      maxAge: 30 * 24 * 60 * 60,
+    });
+  }, [viewMode]);
 
   const [{ data: tasksData, fetching: isFetchingTasksData }] = useQuery({
     query: TasksDocument,
@@ -196,6 +207,9 @@ export const OverviewContent = () => {
           </Group>
           <Group>
             <SegmentedControl
+              value={viewMode}
+              onChange={value => setViewMode(value as "list" | "columns")}
+              transitionTimingFunction="ease"
               data={[
                 {
                   label: (
@@ -225,105 +239,268 @@ export const OverviewContent = () => {
             />
           </Group>
         </Group>
-        <Container>
-          <Group spacing={6} mt={16} mb={8}>
-            <MoodNeutral size={18} color={theme.colors.indigo[6]} />
-            <Title order={6}>None</Title>
-            <Text color="dimmed" size="xs">
-              {tasksData?.tasks.filter(task => task.status == "NONE").length}
-            </Text>
-          </Group>
-          {isFetchingTasksData ? (
-            <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
-          ) : (
-            tasksData?.tasks
-              .filter(t => t.status == "NONE")
-              .map(t => {
-                return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              })
-          )}
-          <Group spacing={6} mt={16} mb={8}>
-            <ChartPie2 size={18} color={theme.colors.yellow[6]} />
-            <Title order={6}>In Progress</Title>
-            <Text color="dimmed" size="xs">
-              {tasksData?.tasks.filter(task => task.status == "IN_PROGRESS").length}
-            </Text>
-          </Group>
-          {isFetchingTasksData ? (
-            <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
-          ) : (
-            tasksData?.tasks
-              .filter(t => t.status == "IN_PROGRESS")
-              .map(t => {
-                return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              })
-          )}
-          <Group spacing={6} mt={16} mb={8}>
-            <Circle size={18} />
-            <Title order={6}>Todo</Title>
-            <Text color="dimmed" size="xs">
-              {tasksData?.tasks.filter(task => task.status == "TO_DO").length}
-            </Text>
-          </Group>
-          {/* <TaskListElement task={{ ...task, status: "todo" }} /> */}
-          {isFetchingTasksData ? (
-            <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
-          ) : (
-            tasksData?.tasks
-              .filter(t => t.status == "TO_DO")
-              .map(t => {
-                return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              })
-          )}
-          <Group spacing={6} mt={16} mb={8}>
-            <CircleDotted size={18} />
-            <Title order={6}>Backlog</Title>
-            <Text color="dimmed" size="xs">
-              {tasksData?.tasks.filter(task => task.status == "BACKLOG").length}
-            </Text>
-          </Group>
-          {isFetchingTasksData ? (
-            <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
-          ) : (
-            tasksData?.tasks
-              .filter(t => t.status == "BACKLOG")
-              .map(t => {
-                return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              })
-          )}
-          <Group spacing={6} mt={16} mb={8}>
-            <CircleCheck size={18} color={theme.colors.green[6]} />
-            <Title order={6}>Done</Title>
-            <Text color="dimmed" size="xs">
-              {tasksData?.tasks.filter(task => task.status == "DONE").length}
-            </Text>
-          </Group>
-          {isFetchingTasksData ? (
-            <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
-          ) : (
-            tasksData?.tasks
-              .filter(t => t.status == "DONE")
-              .map(t => {
-                return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              })
-          )}
-          <Group spacing={6} mt={16} mb={8}>
-            <CircleX size={18} color={theme.colors.red[6]} />
-            <Title order={6}>Canceled</Title>
-            <Text color="dimmed" size="xs">
-              {tasksData?.tasks.filter(task => task.status == "CANCELED").length}
-            </Text>
-          </Group>
-          {isFetchingTasksData ? (
-            <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
-          ) : (
-            tasksData?.tasks
-              .filter(t => t.status == "CANCELED")
-              .map(t => {
-                return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              })
-          )}
-        </Container>
+        {viewMode === "list" ? (
+          <Container>
+            <Group spacing={6} mt={16} mb={8}>
+              <MoodNeutral size={18} color={theme.colors.indigo[6]} />
+              <Title order={6}>None</Title>
+              <Text color="dimmed" size="xs">
+                {tasksData?.tasks.filter(task => task.status == "NONE").length}
+              </Text>
+            </Group>
+            {isFetchingTasksData ? (
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+            ) : (
+              tasksData?.tasks
+                .filter(t => t.status == "NONE")
+                .map(t => {
+                  return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
+                })
+            )}
+            <Group spacing={6} mt={16} mb={8}>
+              <ChartPie2 size={18} color={theme.colors.yellow[6]} />
+              <Title order={6}>In Progress</Title>
+              <Text color="dimmed" size="xs">
+                {tasksData?.tasks.filter(task => task.status == "IN_PROGRESS").length}
+              </Text>
+            </Group>
+            {isFetchingTasksData ? (
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+            ) : (
+              tasksData?.tasks
+                .filter(t => t.status == "IN_PROGRESS")
+                .map(t => {
+                  return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
+                })
+            )}
+            <Group spacing={6} mt={16} mb={8}>
+              <Circle size={18} />
+              <Title order={6}>Todo</Title>
+              <Text color="dimmed" size="xs">
+                {tasksData?.tasks.filter(task => task.status == "TO_DO").length}
+              </Text>
+            </Group>
+            {/* <TaskListElement task={{ ...task, status: "todo" }} /> */}
+            {isFetchingTasksData ? (
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+            ) : (
+              tasksData?.tasks
+                .filter(t => t.status == "TO_DO")
+                .map(t => {
+                  return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
+                })
+            )}
+            <Group spacing={6} mt={16} mb={8}>
+              <CircleDotted size={18} />
+              <Title order={6}>Backlog</Title>
+              <Text color="dimmed" size="xs">
+                {tasksData?.tasks.filter(task => task.status == "BACKLOG").length}
+              </Text>
+            </Group>
+            {isFetchingTasksData ? (
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+            ) : (
+              tasksData?.tasks
+                .filter(t => t.status == "BACKLOG")
+                .map(t => {
+                  return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
+                })
+            )}
+            <Group spacing={6} mt={16} mb={8}>
+              <CircleCheck size={18} color={theme.colors.green[6]} />
+              <Title order={6}>Done</Title>
+              <Text color="dimmed" size="xs">
+                {tasksData?.tasks.filter(task => task.status == "DONE").length}
+              </Text>
+            </Group>
+            {isFetchingTasksData ? (
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+            ) : (
+              tasksData?.tasks
+                .filter(t => t.status == "DONE")
+                .map(t => {
+                  return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
+                })
+            )}
+            <Group spacing={6} mt={16} mb={8}>
+              <CircleX size={18} color={theme.colors.red[6]} />
+              <Title order={6}>Canceled</Title>
+              <Text color="dimmed" size="xs">
+                {tasksData?.tasks.filter(task => task.status == "CANCELED").length}
+              </Text>
+            </Group>
+            {isFetchingTasksData ? (
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+            ) : (
+              tasksData?.tasks
+                .filter(t => t.status == "CANCELED")
+                .map(t => {
+                  return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
+                })
+            )}
+          </Container>
+        ) : (
+          <Container size="xl">
+            <SimpleGrid cols={6}>
+              <Stack>
+                <Group>
+                  <MoodNeutral size={18} color={theme.colors.indigo[6]} />
+                  <Title order={6}>None</Title>
+                  <Text color="dimmed" size="xs">
+                    {tasksData?.tasks.filter(task => task.status == "NONE").length}
+                  </Text>
+                </Group>
+                <ScrollArea offsetScrollbars>
+                  {isFetchingTasksData ? (
+                    <Skeleton
+                      height={36}
+                      radius="sm"
+                      sx={{ "&::after": { background: "#e8ebed" } }}
+                    />
+                  ) : (
+                    tasksData?.tasks
+                      .filter(t => t.status == "NONE")
+                      .map(t => {
+                        return (
+                          <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />
+                        );
+                      })
+                  )}
+                </ScrollArea>
+              </Stack>
+              <Stack>
+                <Group>
+                  <ChartPie2 size={18} color={theme.colors.yellow[6]} />
+                  <Title order={6}>In Progress</Title>
+                  <Text color="dimmed" size="xs">
+                    {tasksData?.tasks.filter(task => task.status == "IN_PROGRESS").length}
+                  </Text>
+                </Group>
+                <ScrollArea style={{ height: 800 }}>
+                  {isFetchingTasksData ? (
+                    <Skeleton
+                      height={36}
+                      radius="sm"
+                      sx={{ "&::after": { background: "#e8ebed" } }}
+                    />
+                  ) : (
+                    tasksData?.tasks
+                      .filter(t => t.status == "IN_PROGRESS")
+                      .map(t => {
+                        return (
+                          <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />
+                        );
+                      })
+                  )}
+                </ScrollArea>
+              </Stack>
+              <Stack>
+                <Group>
+                  <Circle size={18} />
+                  <Title order={6}>Todo</Title>
+                  <Text color="dimmed" size="xs">
+                    {tasksData?.tasks.filter(task => task.status == "TO_DO").length}
+                  </Text>
+                </Group>
+                <ScrollArea style={{ height: 800 }}>
+                  {isFetchingTasksData ? (
+                    <Skeleton
+                      height={36}
+                      radius="sm"
+                      sx={{ "&::after": { background: "#e8ebed" } }}
+                    />
+                  ) : (
+                    tasksData?.tasks
+                      .filter(t => t.status == "TO_DO")
+                      .map(t => {
+                        return (
+                          <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />
+                        );
+                      })
+                  )}
+                </ScrollArea>
+              </Stack>
+              <Stack>
+                <Group>
+                  <CircleDotted size={18} />
+                  <Title order={6}>Backlog</Title>
+                  <Text color="dimmed" size="xs">
+                    {tasksData?.tasks.filter(task => task.status == "BACKLOG").length}
+                  </Text>
+                </Group>
+                <ScrollArea style={{ height: 800 }}>
+                  {isFetchingTasksData ? (
+                    <Skeleton
+                      height={36}
+                      radius="sm"
+                      sx={{ "&::after": { background: "#e8ebed" } }}
+                    />
+                  ) : (
+                    tasksData?.tasks
+                      .filter(t => t.status == "BACKLOG")
+                      .map(t => {
+                        return (
+                          <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />
+                        );
+                      })
+                  )}
+                </ScrollArea>
+              </Stack>
+              <Stack>
+                <Group>
+                  <CircleCheck size={18} color={theme.colors.green[6]} />
+                  <Title order={6}>Done</Title>
+                  <Text color="dimmed" size="xs">
+                    {tasksData?.tasks.filter(task => task.status == "DONE").length}
+                  </Text>
+                </Group>
+                <ScrollArea>
+                  {isFetchingTasksData ? (
+                    <Skeleton
+                      height={36}
+                      radius="sm"
+                      sx={{ "&::after": { background: "#e8ebed" } }}
+                    />
+                  ) : (
+                    tasksData?.tasks
+                      .filter(t => t.status == "DONE")
+                      .map(t => {
+                        return (
+                          <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />
+                        );
+                      })
+                  )}
+                </ScrollArea>
+              </Stack>
+              <Stack>
+                <Group>
+                  <CircleX size={18} color={theme.colors.red[6]} />
+                  <Title order={6}>Canceled</Title>
+                  <Text color="dimmed" size="xs">
+                    {tasksData?.tasks.filter(task => task.status == "CANCELED").length}
+                  </Text>
+                </Group>
+                <ScrollArea style={{ height: 800 }}>
+                  {isFetchingTasksData ? (
+                    <Skeleton
+                      height={36}
+                      radius="sm"
+                      sx={{ "&::after": { background: "#e8ebed" } }}
+                    />
+                  ) : (
+                    tasksData?.tasks
+                      .filter(t => t.status == "CANCELED")
+                      .map(t => {
+                        return (
+                          <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />
+                        );
+                      })
+                  )}
+                </ScrollArea>
+              </Stack>
+            </SimpleGrid>
+          </Container>
+        )}
       </AppShell>
     </>
   );
