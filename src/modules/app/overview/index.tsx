@@ -148,7 +148,7 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
             ) : (
               <NoneDndTaskList data={data} />
             )}
@@ -167,7 +167,7 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
             ) : (
               <InProgressDndTaskList data={data} />
             )}
@@ -183,7 +183,7 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
             ) : (
               <ToDoDndTaskList data={data} />
             )}
@@ -199,7 +199,7 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
             ) : (
               <BacklogDndTaskList data={data} />
             )}
@@ -215,7 +215,7 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
             ) : (
               <DoneDndTaskList data={data} />
             )}
@@ -231,7 +231,7 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
             ) : (
               <CancelDndTaskList data={data} />
             )}
@@ -441,7 +441,7 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
             ) : (
               tasksData?.tasks
                 .filter(t => t.status == "NONE")
@@ -457,7 +457,7 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
             ) : (
               tasksData?.tasks
                 .filter(t => t.status == "IN_PROGRESS")
@@ -474,7 +474,7 @@ export const OverviewContent = () => {
             </Group>
             {/* <TaskListElement task={{ ...task, status: "todo" }} /> */}
             {isFetchingTasksData ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
             ) : (
               tasksData?.tasks
                 .filter(t => t.status == "TO_DO")
@@ -490,7 +490,7 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
             ) : (
               tasksData?.tasks
                 .filter(t => t.status == "BACKLOG")
@@ -506,7 +506,7 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
             ) : (
               tasksData?.tasks
                 .filter(t => t.status == "DONE")
@@ -522,7 +522,7 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
             ) : (
               tasksData?.tasks
                 .filter(t => t.status == "CANCELED")
