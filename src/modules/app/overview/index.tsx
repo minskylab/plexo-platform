@@ -46,6 +46,9 @@ import { PrioritySelector } from "components/ui/Task/priority";
 import { StatusSelector } from "components/ui/Task/status";
 import { getCookie, setCookie } from "cookies-next";
 import { DndTaskListElement } from "components/ui/CardTask";
+import { AssigneeSelector } from "components/ui/Task/assignee";
+import { ProjectSelector } from "components/ui/Task/project";
+import { TeamSelector } from "components/ui/Task/team";
 
 export const OverviewContent = () => {
   /*  const task: Task = {
@@ -104,14 +107,15 @@ export const OverviewContent = () => {
         shadow="md"
         title={
           <Group spacing={8}>
-            <Button
+            {/* <Button
               compact
               variant="light"
               color={"gray"}
               leftIcon={<Dna size={16} color={theme.colors.red[4]} />}
             >
               MIN
-            </Button>
+            </Button> */}
+            <TeamSelector initialTeam={undefined}/> {/* change to current team*/}
             <Text size={"sm"}>New Task</Text>
           </Group>
         }
@@ -123,6 +127,8 @@ export const OverviewContent = () => {
         <Group spacing={6} mb={"md"}>
           <StatusSelector initialStatus={TaskStatus.Backlog} />
           <PrioritySelector initialPriority={TaskPriority.Low} />
+          <AssigneeSelector initialAssignee={undefined} />
+          <ProjectSelector initialProject={undefined}/>
         </Group>
         <Group
           pt={"md"}

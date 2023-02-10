@@ -4,8 +4,5 @@ query Teams {
     name
     ownerId
     visibility
-    members {
-      id
-    }
   }
 }
