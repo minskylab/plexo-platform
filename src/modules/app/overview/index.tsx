@@ -49,6 +49,8 @@ import { DndTaskListElement } from "components/ui/CardTask";
 import { AssigneeSelector } from "components/ui/Task/assignee";
 import { ProjectSelector } from "components/ui/Task/project";
 import { TeamSelector } from "components/ui/Task/team";
+import { LabelSelector } from "components/ui/Task/label";
+import { LabelType } from "components/ui/Task/labelType";
 
 export const OverviewContent = () => {
   /*  const task: Task = {
@@ -128,6 +130,7 @@ export const OverviewContent = () => {
           <StatusSelector initialStatus={TaskStatus.Backlog} />
           <PrioritySelector initialPriority={TaskPriority.Low} />
           <AssigneeSelector initialAssignee={undefined} />
+          <LabelSelector/>
           <ProjectSelector initialProject={undefined}/>
         </Group>
         <Group
