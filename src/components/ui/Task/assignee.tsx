@@ -77,9 +77,13 @@ export const AssigneeSelector = ({ initialAssignee }: AssigneeSelectorProps) => 
 
   return (
     <GenericAssigneeMenu onSelect={member => setAssignee(member)}>
+      {typeof assignee === "undefined" ?
+      <Button compact variant="light" color={"gray"}>{AssigneePhoto(assignee)}</Button>
+      :
       <Button compact variant="light" color={"gray"} leftIcon={AssigneePhoto(assignee)}>
-        <Text size={"xs"}>{AssigneeName(assignee)}</Text>
+      <Text size={"xs"}>{AssigneeName(assignee)}</Text>
       </Button>
+      }
     </GenericAssigneeMenu>
   );
 };
