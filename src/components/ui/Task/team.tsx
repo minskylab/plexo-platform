@@ -1,18 +1,14 @@
-import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton, useMantineTheme} from "@mantine/core";
-import { TeamsDocument, Team } from "../../../integration/graphql";
-/* import { TaskPriority } from "modules/app/datatypes"; */
+import { Button, Kbd, Menu, Text, TextInput, Skeleton, useMantineTheme } from "@mantine/core";
 import { useState } from "react";
-import { useQuery, useSubscription } from "urql";
-import { Dna, LayoutGrid } from "tabler-icons-react";
+import { useQuery } from "urql";
+import { Dna } from "tabler-icons-react";
 
+import { TeamsDocument, Team } from "../../../integration/graphql";
 
-export const TeamIcon = (
-  team: Team | undefined,
-) => {
-    const theme = useMantineTheme();
-    //insert teamicon
-    return <Dna size={16} color={theme.colors.red[4]} />;
-
+export const TeamIcon = (team: Team | undefined) => {
+  const theme = useMantineTheme();
+  //insert teamicon
+  return <Dna size={16} color={theme.colors.red[4]} />;
 };
 
 export const TeamName = (team: Team | undefined) => {
@@ -26,11 +22,11 @@ type GenericTeamsMenuProps = {
 };
 
 export const GenericTeamMenu = ({ children, onSelect }: GenericTeamsMenuProps) => {
-    const [{ data: teamsData, fetching: isFetchingTeamsData }] = useQuery({
-        query: TeamsDocument,
-        });
+  const [{ data: teamsData, fetching: isFetchingTeamsData }] = useQuery({
+    query: TeamsDocument,
+  });
 
-    const theme = useMantineTheme();
+  const theme = useMantineTheme();
 
   return (
     <Menu shadow="md" width={180}>
@@ -49,19 +45,20 @@ export const GenericTeamMenu = ({ children, onSelect }: GenericTeamsMenuProps) =
         ></TextInput>
         <Menu.Divider />
         {isFetchingTeamsData ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
-            ) : (
-              teamsData?.teams
-                .map(t => {
-                  return <Menu.Item
-                        key={t.id}
-                        icon={<Dna size={16} color={theme.colors.red[4]} />}
-                        onClick={() => onSelect && onSelect(t)}
-                        >
-                        {t.name}
-                    </Menu.Item>;
-                })
-            )}
+          <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+        ) : (
+          teamsData?.teams.map(t => {
+            return (
+              <Menu.Item
+                key={t.id}
+                icon={<Dna size={16} color={theme.colors.red[4]} />}
+                onClick={() => onSelect && onSelect(t)}
+              >
+                {t.name}
+              </Menu.Item>
+            );
+          })
+        )}
       </Menu.Dropdown>
     </Menu>
   );
@@ -71,8 +68,8 @@ type TeamSelectorProps = {
   initialTeam?: Team;
 };
 
-export const TeamSelector = ({ initialTeam } : TeamSelectorProps) => {
-  const [team, setTeam] = useState< Team | undefined>(initialTeam);
+export const TeamSelector = ({ initialTeam }: TeamSelectorProps) => {
+  const [team, setTeam] = useState<Team | undefined>(initialTeam);
 
   return (
     <GenericTeamMenu onSelect={team => setTeam(team)}>

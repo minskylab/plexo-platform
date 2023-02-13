@@ -117,7 +117,7 @@ export const OverviewContent = () => {
             >
               MIN
             </Button> */}
-            <TeamSelector initialTeam={undefined}/> {/* change to current team*/}
+            <TeamSelector initialTeam={undefined} /> {/* change to current team*/}
             <Text size={"sm"}>New Task</Text>
           </Group>
         }
@@ -130,8 +130,8 @@ export const OverviewContent = () => {
           <StatusSelector initialStatus={TaskStatus.Backlog} />
           <PrioritySelector initialPriority={TaskPriority.None} />
           <AssigneeSelector initialAssignee={undefined} />
-          <LabelSelector/>
-          <ProjectSelector initialProject={undefined}/>
+          <LabelSelector />
+          <ProjectSelector initialProject={undefined} />
         </Group>
         <Group
           pt={"md"}
