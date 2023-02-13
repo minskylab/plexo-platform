@@ -15,7 +15,7 @@ export const ProjectIcon = (
 };
 
 export const ProjectName = (project: Project | undefined) => {
-  return project ? project?.id : "Project";
+  return project ? project?.name : "Project";
 };
 
 type GenericProjectsMenuProps = {
@@ -62,7 +62,7 @@ export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuP
                         }
                         onClick={() => onSelect && onSelect(p)}
                         >
-                        {p.id}
+                        {p.name}
                     </Menu.Item>;
                 })
             )}

@@ -2,6 +2,7 @@ query Projects {
   projects {
     id
     #title
+    name
     description
     ownerId
     #labels
