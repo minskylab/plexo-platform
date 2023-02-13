@@ -16,7 +16,7 @@ export const PriorityIcon = (
 ) => {
   switch (priority) {
     case "NONE":
-      return <AntennaBars1 size={size} />;
+      return <AntennaBars5 size={size} />;
     case "LOW":
       return <AntennaBars2 size={size} />;
     case "MEDIUM":
@@ -113,9 +113,14 @@ export const PrioritySelector = ({ initialPriority }: PrioritySelectorProps) => 
 
   return (
     <GenericPriorityMenu onSelect={priority => setPriority(priority)}>
+      {priority == TaskPriority.None ?
+      <Button compact variant="light" color={"gray"}>{PriorityIcon(priority, 18)}</Button>
+      :
       <Button compact variant="light" color={"gray"} leftIcon={PriorityIcon(priority, 18)}>
         <Text size={"xs"}>{priorityName(priority)}</Text>
       </Button>
+      }
+
     </GenericPriorityMenu>
   );
 };

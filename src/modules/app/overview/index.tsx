@@ -128,7 +128,7 @@ export const OverviewContent = () => {
         </Box>
         <Group spacing={6} mb={"md"}>
           <StatusSelector initialStatus={TaskStatus.Backlog} />
-          <PrioritySelector initialPriority={TaskPriority.Low} />
+          <PrioritySelector initialPriority={TaskPriority.None} />
           <AssigneeSelector initialAssignee={undefined} />
           <LabelSelector/>
           <ProjectSelector initialProject={undefined}/>
