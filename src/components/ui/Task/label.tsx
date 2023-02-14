@@ -1,6 +1,6 @@
-import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton, ColorSwatch, useMantineTheme,Checkbox, Group} from "@mantine/core";
+import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton, ColorSwatch, useMantineTheme,Checkbox, Group, MantineTheme} from "@mantine/core";
 import { Member, MembersDocument} from "../../../integration/graphql";
-import { useState } from "react";
+import { useState, useContext} from "react";
 import { useQuery, useSubscription } from "urql";
 import { LabelType } from "./labelType";
 import { Tag } from "tabler-icons-react";
@@ -8,8 +8,8 @@ import { Tag } from "tabler-icons-react";
 
 export const LabelColor = (
   labels: LabelType[] | LabelType | undefined,
+  theme: MantineTheme
   ) => {
-    const theme = useMantineTheme();
     if (labels){
         if (Array.isArray(labels)) {
             if (labels.length == 1){
@@ -25,13 +25,13 @@ export const LabelColor = (
                 }
             }
             else if (labels.length > 1){
-                return (
-                    <Group spacing={0} >
-                      {labels.map(label => {
-                        return LabelColor(label)
-                      })}
-                    </Group>
-                  );
+              return (
+                <Group spacing={0}>
+                  {labels.map((label) => {
+                    return LabelColor(label, theme);
+                  })}
+                </Group>
+              );
             }
             else{
                 return <Tag size={16} />;
@@ -40,13 +40,13 @@ export const LabelColor = (
         else{
             switch (labels) {
                 case "BUG":
-                    return <ColorSwatch color={theme.colors.red[7]}  size={10}/>;
+                    return <ColorSwatch key={labels} color={theme.colors.red[7]}  size={10}/>;
                 case "FEATURE":
-                    return <ColorSwatch color={theme.colors.violet[3]} size={10} />;
+                    return <ColorSwatch key={labels} color={theme.colors.violet[3]} size={10} />;
                 case "IMPROVEMENT":
-                    return <ColorSwatch color={theme.colors.blue[6]} size={10}/>;
+                    return <ColorSwatch key={labels} color={theme.colors.blue[6]} size={10}/>;
                 case "MIGRATED":
-                    return <ColorSwatch color={theme.colors.blue[4]} size={10}/>;
+                    return <ColorSwatch key={labels} color={theme.colors.blue[4]} size={10}/>;
             }
         }
     }
@@ -100,9 +100,7 @@ type GenericLabelsMenuProps = {
 };
 
 export const GenericLabelMenu = ({ children, selectedLabels, onChange }: GenericLabelsMenuProps) => {
-    // const [{ data: membersData, fetching: isFetchingMembersData }] = useQuery({
-    //     query: MembersDocument,
-    //     });
+  const theme = useMantineTheme();
   return (
     <Menu shadow="md" width={180} closeOnItemClick={false}>
       <Menu.Target>
@@ -121,7 +119,8 @@ export const GenericLabelMenu = ({ children, selectedLabels, onChange }: Generic
         <Menu.Divider />
         {Object.values(LabelType).map((label) => (
             <Menu.Item 
-                onClick={()=>onChange(label)}
+                onClick={()=>{
+                  onChange(label);}}
                 key={label}
             >
             <Group spacing={10}>
@@ -129,10 +128,11 @@ export const GenericLabelMenu = ({ children, selectedLabels, onChange }: Generic
                     size="xs"
                     id={label}
                     checked={selectedLabels.includes(label)}
+                    onChange={()=>onChange(label)}
                 />
-                    {LabelColor(label)}
+                    {LabelColor(label, theme)}
                     {LabelName(label)}
-                    </Group>
+              </Group>
             </Menu.Item>
         ))}
       </Menu.Dropdown>
@@ -140,13 +140,13 @@ export const GenericLabelMenu = ({ children, selectedLabels, onChange }: Generic
   );
 };
 
-// type LabelSelectorProps = {
-//   initialLabel?: LabelType;
-// };
+type LabelSelectorProps = {
+  initialLabel: LabelType[];
+};
 
-export const LabelSelector = () => {
-  //const [label, setLabel] = useState< LabelType | undefined>(initialLabel);
-  const [selectedLabels, setSelectedLabels] = useState<LabelType[]>([]);
+export const LabelSelector = ({initialLabel} :LabelSelectorProps ) => {
+  const theme = useMantineTheme();
+  const [selectedLabels, setSelectedLabels] = useState<LabelType[]>(initialLabel);
 
   const handleCheckboxChange = ( label: LabelType) => {
 
@@ -161,11 +161,10 @@ export const LabelSelector = () => {
   return (
     <GenericLabelMenu onChange={handleCheckboxChange} selectedLabels={selectedLabels}>
       {selectedLabels.length ? 
-      <Button compact variant="light" color={"gray"} leftIcon={LabelColor(selectedLabels)}>
-        {selectedLabels.length == 1 ? <Text size={"xs"}>{LabelName(selectedLabels[0])}</Text>
-        : <Text size={"xs"}>{selectedLabels.length} labels</Text> }
+      <Button compact variant="light" color={"gray"} leftIcon={LabelColor(selectedLabels, theme)}>
+      <Text size={"xs"}>{LabelName(selectedLabels)}</Text>
       </Button> :
-      <Button compact variant="light" color={"gray"}>{LabelColor(selectedLabels)}</Button>
+      <Button compact variant="light" color={"gray"}>{LabelColor(selectedLabels, theme)}</Button>
       }
     </GenericLabelMenu>
   );
