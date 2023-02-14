@@ -18,6 +18,10 @@ import {
   SimpleGrid,
   ScrollArea,
   Stack,
+  createStyles,
+  Burger,
+  Drawer,
+  MediaQuery,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import {
@@ -46,6 +50,61 @@ import { getCookie, setCookie } from "cookies-next";
 import { DndTaskListElement } from "components/ui/CardTask";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useListState } from "@mantine/hooks";
+
+const useStyles = createStyles(theme => ({
+  burger: {
+    [theme.fn.largerThan("sm")]: {
+      display: "none",
+    },
+    [theme.fn.smallerThan("xs")]: {
+      marginRight: -10,
+    },
+  },
+  drawer: {
+    [theme.fn.largerThan("sm")]: {
+      display: "none",
+    },
+  },
+  "text-view-buttons": {
+    [theme.fn.smallerThan("sm")]: {
+      display: "none",
+    },
+  },
+  "text-header-buttons": {
+    [theme.fn.smallerThan("sm")]: {
+      fontSize: "90%",
+    },
+    [theme.fn.smallerThan("xs")]: {
+      fontSize: "70%",
+      marginRight: -15,
+      marginLeft: -5,
+    },
+  },
+  "icon-header-buttons": {
+    [theme.fn.smallerThan("sm")]: {
+      width: "90%",
+      height: "90%",
+    },
+    [theme.fn.smallerThan("xs")]: {
+      display: "none",
+    },
+  },
+  "icon-view-buttons": {
+    [theme.fn.smallerThan("sm")]: {
+      width: "90%",
+      height: "90%",
+    },
+    [theme.fn.smallerThan("xs")]: {
+      width: "70%",
+      height: "70%",
+    },
+  },
+  "segmented-control": {
+    [theme.fn.smallerThan("xs")]: {
+      marginLeft: -5,
+    },
+  },
+}));
 
 const DndTaskList = ({ statusData }: { statusData: any }) => {
   const [state, handlers] = useListState([...statusData]);
@@ -148,7 +207,15 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
             ) : (
               <NoneDndTaskList data={data} />
             )}
@@ -167,7 +234,15 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
             ) : (
               <InProgressDndTaskList data={data} />
             )}
@@ -183,7 +258,15 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
             ) : (
               <ToDoDndTaskList data={data} />
             )}
@@ -199,7 +282,15 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
             ) : (
               <BacklogDndTaskList data={data} />
             )}
@@ -215,7 +306,15 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
             ) : (
               <DoneDndTaskList data={data} />
             )}
@@ -231,7 +330,15 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
             ) : (
               <CancelDndTaskList data={data} />
             )}
@@ -256,8 +363,9 @@ export const OverviewContent = () => {
       name: "Minsky",
     },
   }; */
+  const { classes, theme } = useStyles();
 
-  const theme = useMantineTheme();
+  // const theme = useMantineTheme();
   const [newTaskOpened, setNewTaskOpened] = useState(false);
   const [createMore, setCreateMore] = useState(false);
 
@@ -277,6 +385,7 @@ export const OverviewContent = () => {
     query: TasksDocument,
   });
 
+  const [opened, setOpened] = useState(false);
   // console.log(tasksData);
   // const [scrollPosition, onScrollPositionChange] = useState({ x: 0, y: 0 });
   return (
@@ -335,15 +444,47 @@ export const OverviewContent = () => {
           </Button>
         </Group>
       </Modal>
+      <Drawer
+        className={classes.drawer}
+        size="100%"
+        opened={opened}
+        onClose={() => setOpened(false)}
+        // size={theme.fn.largerThan(300)}
+        sx={theme => ({
+          main: {
+            backgroundColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
+          },
+        })}
+      >
+        <NavbarSearch
+          onNewTask={() => {
+            setNewTaskOpened(true);
+            setOpened(false);
+          }}
+          openedNav={opened}
+          setOpenedNav={setOpened}
+        />
+      </Drawer>
       <AppShell
         padding={0}
-        navbar={<NavbarSearch onNewTask={() => setNewTaskOpened(true)} />}
+        navbar={
+          <NavbarSearch
+            onNewTask={() => {
+              setNewTaskOpened(true);
+            }}
+            openedNav={false}
+            setOpenedNav={() => true}
+          />
+        }
         styles={theme => ({
           main: {
             backgroundColor:
               theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
           },
         })}
+        navbarOffsetBreakpoint="sm"
+        fixed
       >
         <Group
           position="apart"
@@ -360,18 +501,34 @@ export const OverviewContent = () => {
             },
           }}
         >
-          <Group>
+          <Group spacing="xs">
+            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+              <Burger
+                opened={opened}
+                onClick={() => setOpened(true)}
+                className={classes.burger}
+                size="sm"
+              />
+            </MediaQuery>
             <Button
+              className={classes["text-header-buttons"]}
               compact
               variant="light"
               color={"gray"}
-              leftIcon={<Dna size={16} color={theme.colors.red[4]} />}
+              leftIcon={
+                <Dna
+                  className={classes["icon-header-buttons"]}
+                  size={16}
+                  color={theme.colors.red[4]}
+                />
+              }
             >
               Minsky Phi
             </Button>
             <Menu shadow="md" width={120}>
               <Menu.Target>
                 <Button
+                  className={classes["text-header-buttons"]}
                   compact
                   variant="subtle"
                   color={"gray"}
@@ -399,6 +556,8 @@ export const OverviewContent = () => {
           </Group>
           <Group>
             <SegmentedControl
+              className={classes["segmented-control"]}
+              size={"xs"}
               value={viewMode}
               onChange={value => setViewMode(value as "list" | "columns")}
               transitionTimingFunction="ease"
@@ -406,8 +565,8 @@ export const OverviewContent = () => {
                 {
                   label: (
                     <Center>
-                      <LayoutRows size={16} />
-                      <Text ml={6} size={"xs"}>
+                      <LayoutRows className={classes["icon-view-buttons"]} size={16} />
+                      <Text className={classes["text-view-buttons"]} ml={6} size={"xs"}>
                         List
                       </Text>
                     </Center>
@@ -417,8 +576,8 @@ export const OverviewContent = () => {
                 {
                   label: (
                     <Center>
-                      <LayoutColumns size={16} />
-                      <Text size={"xs"} ml={6}>
+                      <LayoutColumns className={classes["icon-view-buttons"]} size={16} />
+                      <Text className={classes["text-view-buttons"]} size={"xs"} ml={6}>
                         Board
                       </Text>
                     </Center>
@@ -441,7 +600,15 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
             ) : (
               tasksData?.tasks
                 .filter(t => t.status == "NONE")
@@ -457,7 +624,15 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
             ) : (
               tasksData?.tasks
                 .filter(t => t.status == "IN_PROGRESS")
@@ -474,7 +649,15 @@ export const OverviewContent = () => {
             </Group>
             {/* <TaskListElement task={{ ...task, status: "todo" }} /> */}
             {isFetchingTasksData ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
             ) : (
               tasksData?.tasks
                 .filter(t => t.status == "TO_DO")
@@ -490,7 +673,15 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
             ) : (
               tasksData?.tasks
                 .filter(t => t.status == "BACKLOG")
@@ -506,7 +697,15 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
             ) : (
               tasksData?.tasks
                 .filter(t => t.status == "DONE")
@@ -522,7 +721,15 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton height={36} radius="sm" sx={{ "&::after": { background: theme.colorScheme ==="dark"? "#343A4033":"#e8ebed" } }} />
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
             ) : (
               tasksData?.tasks
                 .filter(t => t.status == "CANCELED")

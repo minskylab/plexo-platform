@@ -3,6 +3,7 @@ import {
   Avatar,
   Badge,
   Checkbox,
+  createStyles,
   Group,
   Paper,
   Text,
@@ -20,6 +21,43 @@ type TaskListElementProps = {
   checked?: boolean;
 };
 
+const useStyles = createStyles(theme => ({
+  MIN: {
+    [theme.fn.smallerThan("xs")]: {
+      display: "none",
+    },
+  },
+  date: {
+    [theme.fn.smallerThan("xs")]: {
+      display: "none",
+    },
+  },
+  badge: {
+    [theme.fn.smallerThan(375)]: {
+      width: "65px",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
+    [theme.fn.smallerThan(330)]: {
+      width: "40px",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
+  },
+  task: {
+    [theme.fn.smallerThan(375)]: {
+      width: "65px",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
+    [theme.fn.smallerThan(330)]: {
+      width: "40px",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
+  },
+}));
+
 export const TaskListElement = ({
   task,
   active = false,
@@ -27,7 +65,8 @@ export const TaskListElement = ({
 }: TaskListElementProps) => {
   const smallDate = new Date(task.createdAt).toDateString().split(" ").slice(1, 3).join(" ");
   const [controlledChecked, setChecked] = useState(checked);
-  const theme = useMantineTheme();
+  // const theme = useMantineTheme();
+  const { classes, theme } = useStyles();
   // theme.
 
   // console.log(task.assigneeId);
@@ -67,15 +106,17 @@ export const TaskListElement = ({
               {StatusIcon(theme, task.status)}
             </ActionIcon>
           </GenericStatusMenu>
-          <Text size={"sm"} color={"dimmed"}>
+          <Text lineClamp={1} className={classes.MIN} size={"sm"} color={"dimmed"}>
             MIN-169
           </Text>
-          <Text size={"sm"}>{task.title}</Text>
+          <Text className={classes.task} lineClamp={1} size={"sm"}>
+            {task.title}
+          </Text>
         </Group>
         {/* <Group position="left"></Group> */}
         <Group position="right">
-          <Badge>MINSKY{/* {task.projectId} */}</Badge>
-          <Text size={"sm"} color={"dimmed"}>
+          <Badge className={classes.badge}>MINSKY{/* {task.projectId} */}</Badge>
+          <Text lineClamp={1} className={classes.date} size={"sm"} color={"dimmed"}>
             {smallDate}
           </Text>
           <Avatar size="sm" radius="xl">
