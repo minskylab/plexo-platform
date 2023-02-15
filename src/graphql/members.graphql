@@ -5,11 +5,5 @@ query Members {
     email
     photoUrl
     role
-    tasks {
-      id
-    }
-    projects {
-      id
-    }
   }
 }

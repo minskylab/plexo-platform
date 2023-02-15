@@ -31,6 +31,13 @@ export type Member = {
   updatedAt: Scalars["DateTime"];
 };
 
+export type MemberFilter = {
+  email?: InputMaybe<Scalars["String"]>;
+  githubId?: InputMaybe<Scalars["String"]>;
+  name?: InputMaybe<Scalars["String"]>;
+  role?: InputMaybe<Scalars["String"]>;
+};
+
 export enum MemberRole {
   Admin = "ADMIN",
   Member = "MEMBER",
@@ -41,6 +48,7 @@ export type MutationRoot = {
   __typename?: "MutationRoot";
   createProject: Project;
   createTask: Task;
+  deleteMember: Member;
   deleteProject: Project;
   deleteTask: Task;
   updateMember: Member;
@@ -50,19 +58,26 @@ export type MutationRoot = {
 
 export type MutationRootCreateProjectArgs = {
   description?: InputMaybe<Scalars["String"]>;
-  labels: Array<Scalars["String"]>;
+  labels?: InputMaybe<Array<Scalars["String"]>>;
+  name: Scalars["String"];
   ownerId: Scalars["UUID"];
-  title: Scalars["String"];
+  prefix: Scalars["String"];
 };
 
 export type MutationRootCreateTaskArgs = {
   assigneeId?: InputMaybe<Scalars["UUID"]>;
   description?: InputMaybe<Scalars["String"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
-  priority: TaskPriority;
-  projectId: Scalars["UUID"];
-  status: TaskStatus;
+  labels?: InputMaybe<Array<Scalars["String"]>>;
+  ownerId: Scalars["UUID"];
+  priority?: InputMaybe<Scalars["String"]>;
+  projectId?: InputMaybe<Scalars["UUID"]>;
+  status?: InputMaybe<Scalars["String"]>;
   title: Scalars["String"];
+};
+
+export type MutationRootDeleteMemberArgs = {
+  id: Scalars["UUID"];
 };
 
 export type MutationRootDeleteProjectArgs = {
@@ -75,18 +90,16 @@ export type MutationRootDeleteTaskArgs = {
 
 export type MutationRootUpdateMemberArgs = {
   email?: InputMaybe<Scalars["String"]>;
-  firstName?: InputMaybe<Scalars["String"]>;
   id: Scalars["UUID"];
-  lastName?: InputMaybe<Scalars["String"]>;
-  password?: InputMaybe<Scalars["String"]>;
+  name?: InputMaybe<Scalars["String"]>;
 };
 
 export type MutationRootUpdateProjectArgs = {
   description?: InputMaybe<Scalars["String"]>;
   id: Scalars["UUID"];
   labels?: InputMaybe<Array<Scalars["String"]>>;
-  ownerId?: InputMaybe<Scalars["UUID"]>;
-  title?: InputMaybe<Scalars["String"]>;
+  name?: InputMaybe<Scalars["String"]>;
+  prefix?: InputMaybe<Scalars["String"]>;
 };
 
 export type MutationRootUpdateTaskArgs = {
@@ -94,9 +107,10 @@ export type MutationRootUpdateTaskArgs = {
   description?: InputMaybe<Scalars["String"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   id: Scalars["UUID"];
-  priority?: InputMaybe<TaskPriority>;
+  labels?: InputMaybe<Array<Scalars["String"]>>;
+  priority?: InputMaybe<Scalars["String"]>;
   projectId?: InputMaybe<Scalars["UUID"]>;
-  status?: InputMaybe<TaskStatus>;
+  status?: InputMaybe<Scalars["String"]>;
   title?: InputMaybe<Scalars["String"]>;
 };
 
@@ -105,13 +119,18 @@ export type Project = {
   createdAt: Scalars["DateTime"];
   description?: Maybe<Scalars["String"]>;
   id: Scalars["UUID"];
-  labels: Array<Scalars["String"]>;
   members: Array<Member>;
+  name: Scalars["String"];
   owner: Member;
   ownerId: Scalars["UUID"];
+  prefix: Scalars["String"];
   tasks: Array<Task>;
-  title: Scalars["String"];
   updatedAt: Scalars["DateTime"];
+};
+
+export type ProjectFilter = {
+  description?: InputMaybe<Scalars["String"]>;
+  title?: InputMaybe<Scalars["String"]>;
 };
 
 export type QueryRoot = {
@@ -135,8 +154,16 @@ export type QueryRootMemberByIdArgs = {
   id: Scalars["UUID"];
 };
 
+export type QueryRootMembersArgs = {
+  filter?: InputMaybe<MemberFilter>;
+};
+
 export type QueryRootProjectByIdArgs = {
   id: Scalars["UUID"];
+};
+
+export type QueryRootProjectsArgs = {
+  filter?: InputMaybe<ProjectFilter>;
 };
 
 export type QueryRootTaskByIdArgs = {
@@ -149,6 +176,10 @@ export type QueryRootTasksArgs = {
 
 export type QueryRootTeamByIdArgs = {
   id: Scalars["UUID"];
+};
+
+export type QueryRootTeamsArgs = {
+  filter?: InputMaybe<TeamFilter>;
 };
 
 export type SubscriptionRoot = {
@@ -225,6 +256,11 @@ export type Team = {
   visibility: TeamVisibility;
 };
 
+export type TeamFilter = {
+  name?: InputMaybe<Scalars["String"]>;
+  visibility?: InputMaybe<Scalars["String"]>;
+};
+
 export enum TeamVisibility {
   Internal = "INTERNAL",
   None = "NONE",
@@ -243,8 +279,6 @@ export type MembersQuery = {
     email: string;
     photoUrl?: string | null;
     role: MemberRole;
-    tasks: Array<{ __typename?: "Task"; id: any }>;
-    projects: Array<{ __typename?: "Project"; id: any }>;
   }>;
 };
 
@@ -255,11 +289,9 @@ export type ProjectsQuery = {
   projects: Array<{
     __typename?: "Project";
     id: any;
-    title: string;
+    name: string;
     description?: string | null;
     ownerId: any;
-    labels: Array<string>;
-    members: Array<{ __typename?: "Member"; id: any }>;
   }>;
 };
 
@@ -313,7 +345,6 @@ export type TeamsQuery = {
     name: string;
     ownerId: any;
     visibility: TeamVisibility;
-    members: Array<{ __typename?: "Member"; id: any }>;
   }>;
 };
 
@@ -338,22 +369,6 @@ export const MembersDocument = {
                 { kind: "Field", name: { kind: "Name", value: "email" } },
                 { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
                 { kind: "Field", name: { kind: "Name", value: "role" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "tasks" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "projects" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
-                  },
-                },
               ],
             },
           },
@@ -379,18 +394,9 @@ export const ProjectsDocument = {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
                 { kind: "Field", name: { kind: "Name", value: "description" } },
                 { kind: "Field", name: { kind: "Name", value: "ownerId" } },
-                { kind: "Field", name: { kind: "Name", value: "labels" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "members" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
-                  },
-                },
               ],
             },
           },
@@ -489,14 +495,6 @@ export const TeamsDocument = {
                 { kind: "Field", name: { kind: "Name", value: "name" } },
                 { kind: "Field", name: { kind: "Name", value: "ownerId" } },
                 { kind: "Field", name: { kind: "Name", value: "visibility" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "members" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
-                  },
-                },
               ],
             },
           },
