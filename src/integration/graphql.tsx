@@ -24,10 +24,10 @@ export type Member = {
   googleId?: Maybe<Scalars["String"]>;
   id: Scalars["UUID"];
   name: Scalars["String"];
+  ownedProjects: Array<Project>;
+  ownedTasks: Array<Task>;
   photoUrl?: Maybe<Scalars["String"]>;
-  projects: Array<Project>;
   role: MemberRole;
-  tasks: Array<Task>;
   updatedAt: Scalars["DateTime"];
 };
 
@@ -121,7 +121,7 @@ export type Project = {
   id: Scalars["UUID"];
   members: Array<Member>;
   name: Scalars["String"];
-  owner: Member;
+  owner?: Maybe<Member>;
   ownerId: Scalars["UUID"];
   prefix: Scalars["String"];
   tasks: Array<Task>;
@@ -275,10 +275,17 @@ export type MembersQuery = {
   members: Array<{
     __typename?: "Member";
     id: any;
+    createdAt: any;
+    updatedAt: any;
     name: string;
     email: string;
+    githubId?: string | null;
+    googleId?: string | null;
     photoUrl?: string | null;
     role: MemberRole;
+    ownedTasks: Array<{ __typename?: "Task"; id: any }>;
+    assignedTasks: Array<{ __typename?: "Task"; id: any }>;
+    ownedProjects: Array<{ __typename?: "Project"; id: any }>;
   }>;
 };
 
@@ -289,9 +296,14 @@ export type ProjectsQuery = {
   projects: Array<{
     __typename?: "Project";
     id: any;
+    createdAt: any;
+    updatedAt: any;
     name: string;
     description?: string | null;
+    prefix: string;
     ownerId: any;
+    owner?: { __typename?: "Member"; id: any } | null;
+    tasks: Array<{ __typename?: "Task"; id: any }>;
   }>;
 };
 
@@ -302,16 +314,20 @@ export type TasksQuery = {
   tasks: Array<{
     __typename?: "Task";
     id: any;
-    status: TaskStatus;
-    title: string;
-    description?: string | null;
     createdAt: any;
     updatedAt: any;
+    title: string;
+    description?: string | null;
+    status: TaskStatus;
     priority: TaskPriority;
     ownerId: any;
     labels: Array<string>;
     assigneeId?: any | null;
     projectId?: any | null;
+    dueDate?: any | null;
+    owner: { __typename?: "Member"; id: any };
+    assignee?: { __typename?: "Member"; id: any } | null;
+    project?: { __typename?: "Project"; id: any } | null;
   }>;
 };
 
@@ -342,9 +358,13 @@ export type TeamsQuery = {
   teams: Array<{
     __typename?: "Team";
     id: any;
+    createdAt: any;
+    updatedAt: any;
     name: string;
     ownerId: any;
     visibility: TeamVisibility;
+    owner: { __typename?: "Member"; id: any };
+    members: Array<{ __typename?: "Member"; id: any }>;
   }>;
 };
 
@@ -365,10 +385,38 @@ export const MembersDocument = {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
                 { kind: "Field", name: { kind: "Name", value: "email" } },
+                { kind: "Field", name: { kind: "Name", value: "githubId" } },
+                { kind: "Field", name: { kind: "Name", value: "googleId" } },
                 { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
                 { kind: "Field", name: { kind: "Name", value: "role" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "ownedTasks" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "assignedTasks" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "ownedProjects" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+                  },
+                },
               ],
             },
           },
@@ -394,9 +442,28 @@ export const ProjectsDocument = {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
                 { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "prefix" } },
                 { kind: "Field", name: { kind: "Name", value: "ownerId" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "owner" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "tasks" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+                  },
+                },
               ],
             },
           },
@@ -422,16 +489,41 @@ export const TasksDocument = {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "status" } },
-                { kind: "Field", name: { kind: "Name", value: "title" } },
-                { kind: "Field", name: { kind: "Name", value: "description" } },
                 { kind: "Field", name: { kind: "Name", value: "createdAt" } },
                 { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "status" } },
                 { kind: "Field", name: { kind: "Name", value: "priority" } },
                 { kind: "Field", name: { kind: "Name", value: "ownerId" } },
                 { kind: "Field", name: { kind: "Name", value: "labels" } },
                 { kind: "Field", name: { kind: "Name", value: "assigneeId" } },
                 { kind: "Field", name: { kind: "Name", value: "projectId" } },
+                { kind: "Field", name: { kind: "Name", value: "dueDate" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "owner" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "assignee" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "project" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+                  },
+                },
               ],
             },
           },
@@ -492,9 +584,27 @@ export const TeamsDocument = {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
                 { kind: "Field", name: { kind: "Name", value: "ownerId" } },
                 { kind: "Field", name: { kind: "Name", value: "visibility" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "owner" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "members" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+                  },
+                },
               ],
             },
           },

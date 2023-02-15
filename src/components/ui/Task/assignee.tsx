@@ -1,11 +1,11 @@
 import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton } from "@mantine/core";
+import { Member } from "modules/app/datatypes";
 import { useState } from "react";
 import { useQuery } from "urql";
 
 import { MembersDocument } from "../../../integration/graphql";
-import { MemberType } from "./types";
 
-export const AssigneePhoto = (member: MemberType | undefined) => {
+export const AssigneePhoto = (member: Member | undefined) => {
   return member?.photoUrl ? (
     <Avatar src={member.photoUrl} size="sm" radius="xl" />
   ) : (
@@ -13,13 +13,13 @@ export const AssigneePhoto = (member: MemberType | undefined) => {
   );
 };
 
-export const AssigneeName = (member: MemberType | undefined) => {
+export const AssigneeName = (member: Member | undefined) => {
   return member ? member?.name : "Assignee";
 };
 
 type GenericMembersMenuProps = {
   children: React.ReactNode;
-  onSelect?: (member: MemberType | undefined) => void;
+  onSelect?: (member: Member | undefined) => void;
 };
 
 export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuProps) => {
@@ -75,11 +75,11 @@ export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuPr
 };
 
 type AssigneeSelectorProps = {
-  initialAssignee?: MemberType;
+  initialAssignee?: Member;
 };
 
 export const AssigneeSelector = ({ initialAssignee }: AssigneeSelectorProps) => {
-  const [assignee, setAssignee] = useState<MemberType | undefined>(initialAssignee);
+  const [assignee, setAssignee] = useState<Member | undefined>(initialAssignee);
 
   return (
     <GenericAssigneeMenu onSelect={member => setAssignee(member)}>
