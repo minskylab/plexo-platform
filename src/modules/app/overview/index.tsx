@@ -111,7 +111,7 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-const DndTaskList = ({ statusData }: { statusData: any }) => {
+const DndTaskBoard = ({ statusData }: { statusData: any }) => {
   const [state, handlers] = useListState([...statusData]);
   const [task, setTasks] = useState<{ id: string }[]>([]);
 
@@ -138,6 +138,249 @@ const DndTaskList = ({ statusData }: { statusData: any }) => {
                     {...provided.dragHandleProps}
                   >
                     <DndTaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
+  );
+};
+
+const InProgressDndTaskBoard = ({ data }: { data: any }) => {
+  const inProgressData = data?.tasks.filter((t: { status: string }) => t.status == "IN_PROGRESS");
+
+  return <DndTaskBoard statusData={inProgressData} />;
+};
+
+const ToDoDndTaskBoard = ({ data }: { data: any }) => {
+  const toDoData = data?.tasks.filter((t: { status: string }) => t.status == "TO_DO");
+
+  return <DndTaskBoard statusData={toDoData} />;
+};
+
+const BacklogDndTaskBoard = ({ data }: { data: any }) => {
+  const backlogData = data?.tasks.filter((t: { status: string }) => t.status == "BACKLOG");
+
+  return <DndTaskBoard statusData={backlogData} />;
+};
+
+const DoneDndTaskBoard = ({ data }: { data: any }) => {
+  const doneData = data?.tasks.filter((t: { status: string }) => t.status == "DONE");
+
+  return <DndTaskBoard statusData={doneData} />;
+};
+
+const NoneDndTaskBoard = ({ data }: { data: any }) => {
+  const noneData = data?.tasks.filter((t: { status: string }) => t.status == "NONE");
+
+  return <DndTaskBoard statusData={noneData} />;
+};
+
+const CancelDndTaskBoard = ({ data }: { data: any }) => {
+  const cancelData = data?.tasks.filter((t: { status: string }) => t.status == "CANCELED");
+
+  return <DndTaskBoard statusData={cancelData} />;
+};
+
+const OverviewContentBoard = (props: { data: any; fetching: any }) => {
+  const theme = useMantineTheme();
+  const [scrollPosition, onScrollPositionChange] = useState({ x: 0, y: 0 });
+  const { data, fetching } = props;
+
+  // console.log(data.tasks);
+  // console.log(typeof data.tasks);
+
+  return (
+    <ScrollArea
+      type="auto"
+      offsetScrollbars
+      style={{ height: innerHeight - 90 }}
+      onScrollPositionChange={onScrollPositionChange}
+    >
+      <SimpleGrid cols={6} spacing={325}>
+        <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
+          <Group>
+            <MoodNeutral size={18} color={theme.colors.indigo[6]} />
+            <Title order={6}>None</Title>
+            <Text color="dimmed" size="xs">
+              {data?.tasks.filter((task: { status: string }) => task.status == "NONE").length}
+            </Text>
+          </Group>
+          <ScrollArea style={{ height: 812 }} offsetScrollbars>
+            {fetching ? (
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
+            ) : (
+              <NoneDndTaskBoard data={data} />
+            )}
+          </ScrollArea>
+        </Stack>
+        <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
+          <Group>
+            <ChartPie2 size={18} color={theme.colors.yellow[6]} />
+            <Title order={6}>In Progress</Title>
+            <Text color="dimmed" size="xs">
+              {
+                data?.tasks.filter((task: { status: string }) => task.status == "IN_PROGRESS")
+                  .length
+              }
+            </Text>
+          </Group>
+          <ScrollArea style={{ height: 812 }} offsetScrollbars>
+            {fetching ? (
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
+            ) : (
+              <InProgressDndTaskBoard data={data} />
+            )}
+          </ScrollArea>
+        </Stack>
+        <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
+          <Group>
+            <Circle size={18} />
+            <Title order={6}>Todo</Title>
+            <Text color="dimmed" size="xs">
+              {data?.tasks.filter((task: { status: string }) => task.status == "TO_DO").length}
+            </Text>
+          </Group>
+          <ScrollArea style={{ height: 812 }} offsetScrollbars>
+            {fetching ? (
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
+            ) : (
+              <ToDoDndTaskBoard data={data} />
+            )}
+          </ScrollArea>
+        </Stack>
+        <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
+          <Group>
+            <CircleDotted size={18} />
+            <Title order={6}>Backlog</Title>
+            <Text color="dimmed" size="xs">
+              {data?.tasks.filter((task: { status: string }) => task.status == "BACKLOG").length}
+            </Text>
+          </Group>
+          <ScrollArea style={{ height: 812 }} offsetScrollbars>
+            {fetching ? (
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
+            ) : (
+              <BacklogDndTaskBoard data={data} />
+            )}
+          </ScrollArea>
+        </Stack>
+        <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
+          <Group>
+            <CircleCheck size={18} color={theme.colors.green[6]} />
+            <Title order={6}>Done</Title>
+            <Text color="dimmed" size="xs">
+              {data?.tasks.filter((task: { status: string }) => task.status == "DONE").length}
+            </Text>
+          </Group>
+          <ScrollArea style={{ height: 812 }} offsetScrollbars>
+            {fetching ? (
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
+            ) : (
+              <DoneDndTaskBoard data={data} />
+            )}
+          </ScrollArea>
+        </Stack>
+        <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
+          <Group>
+            <CircleX size={18} color={theme.colors.red[6]} />
+            <Title order={6}>Canceled</Title>
+            <Text color="dimmed" size="xs">
+              {data?.tasks.filter((task: { status: string }) => task.status == "CANCELED").length}
+            </Text>
+          </Group>
+          <ScrollArea style={{ height: 812 }} offsetScrollbars>
+            {fetching ? (
+              <Skeleton
+                height={36}
+                radius="sm"
+                sx={{
+                  "&::after": {
+                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
+                  },
+                }}
+              />
+            ) : (
+              <CancelDndTaskBoard data={data} />
+            )}
+          </ScrollArea>
+        </Stack>
+      </SimpleGrid>
+    </ScrollArea>
+  );
+};
+
+const DndTaskList = ({ statusData }: { statusData: any }) => {
+  const [state, handlers] = useListState([...statusData]);
+  const [task, setTasks] = useState<{ id: string }[]>([]);
+
+  useEffect(() => {
+    setTasks(state);
+  }, [state]);
+
+  return (
+    <DragDropContext
+      onDragEnd={({ destination, source }) => {
+        handlers.reorder({ from: source.index, to: destination?.index || 0 });
+        setTasks(state);
+      }}
+    >
+      <Droppable droppableId="task-list" direction="vertical">
+        {provided => (
+          <div ref={provided.innerRef} {...provided.droppableProps}>
+            {state.map((t: any, index: number) => (
+              <Draggable key={t.id} draggableId={t.id} index={index}>
+                {provided => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                  >
+                    <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />
                   </div>
                 )}
               </Draggable>
@@ -184,174 +427,6 @@ const CancelDndTaskList = ({ data }: { data: any }) => {
   const cancelData = data?.tasks.filter((t: { status: string }) => t.status == "CANCELED");
 
   return <DndTaskList statusData={cancelData} />;
-};
-
-const OverviewContentBoard = (props: { data: any; fetching: any }) => {
-  const theme = useMantineTheme();
-  const [scrollPosition, onScrollPositionChange] = useState({ x: 0, y: 0 });
-  const { data, fetching } = props;
-
-  // console.log(data.tasks);
-  // console.log(typeof data.tasks);
-
-  return (
-    <ScrollArea
-      type="auto"
-      offsetScrollbars
-      style={{ height: innerHeight - 90 }}
-      onScrollPositionChange={onScrollPositionChange}
-    >
-      <SimpleGrid cols={6} spacing={325}>
-        <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
-          <Group>
-            <MoodNeutral size={18} color={theme.colors.indigo[6]} />
-            <Title order={6}>None</Title>
-            <Text color="dimmed" size="xs">
-              {data?.tasks.filter((task: { status: string }) => task.status == "NONE").length}
-            </Text>
-          </Group>
-          <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
-            ) : (
-              <NoneDndTaskList data={data} />
-            )}
-          </ScrollArea>
-        </Stack>
-        <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
-          <Group>
-            <ChartPie2 size={18} color={theme.colors.yellow[6]} />
-            <Title order={6}>In Progress</Title>
-            <Text color="dimmed" size="xs">
-              {
-                data?.tasks.filter((task: { status: string }) => task.status == "IN_PROGRESS")
-                  .length
-              }
-            </Text>
-          </Group>
-          <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
-            ) : (
-              <InProgressDndTaskList data={data} />
-            )}
-          </ScrollArea>
-        </Stack>
-        <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
-          <Group>
-            <Circle size={18} />
-            <Title order={6}>Todo</Title>
-            <Text color="dimmed" size="xs">
-              {data?.tasks.filter((task: { status: string }) => task.status == "TO_DO").length}
-            </Text>
-          </Group>
-          <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
-            ) : (
-              <ToDoDndTaskList data={data} />
-            )}
-          </ScrollArea>
-        </Stack>
-        <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
-          <Group>
-            <CircleDotted size={18} />
-            <Title order={6}>Backlog</Title>
-            <Text color="dimmed" size="xs">
-              {data?.tasks.filter((task: { status: string }) => task.status == "BACKLOG").length}
-            </Text>
-          </Group>
-          <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
-            ) : (
-              <BacklogDndTaskList data={data} />
-            )}
-          </ScrollArea>
-        </Stack>
-        <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
-          <Group>
-            <CircleCheck size={18} color={theme.colors.green[6]} />
-            <Title order={6}>Done</Title>
-            <Text color="dimmed" size="xs">
-              {data?.tasks.filter((task: { status: string }) => task.status == "DONE").length}
-            </Text>
-          </Group>
-          <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
-            ) : (
-              <DoneDndTaskList data={data} />
-            )}
-          </ScrollArea>
-        </Stack>
-        <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
-          <Group>
-            <CircleX size={18} color={theme.colors.red[6]} />
-            <Title order={6}>Canceled</Title>
-            <Text color="dimmed" size="xs">
-              {data?.tasks.filter((task: { status: string }) => task.status == "CANCELED").length}
-            </Text>
-          </Group>
-          <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
-            ) : (
-              <CancelDndTaskList data={data} />
-            )}
-          </ScrollArea>
-        </Stack>
-      </SimpleGrid>
-    </ScrollArea>
-  );
 };
 
 export const OverviewContent = () => {
@@ -619,11 +694,12 @@ export const OverviewContent = () => {
                 }}
               />
             ) : (
-              tasksData?.tasks
-                .filter(t => t.status == "NONE")
-                .map(t => {
-                  return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-                })
+              // tasksData?.tasks
+              //   .filter(t => t.status == "NONE")
+              //   .map(t => {
+              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
+              //   })
+              <NoneDndTaskList data={tasksData} />
             )}
             <Group spacing={6} mt={16} mb={8}>
               <ChartPie2 size={18} color={theme.colors.yellow[6]} />
@@ -643,11 +719,12 @@ export const OverviewContent = () => {
                 }}
               />
             ) : (
-              tasksData?.tasks
-                .filter(t => t.status == "IN_PROGRESS")
-                .map(t => {
-                  return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-                })
+              // tasksData?.tasks
+              //   .filter(t => t.status == "IN_PROGRESS")
+              //   .map(t => {
+              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
+              //   })
+              <InProgressDndTaskList data={tasksData} />
             )}
             <Group spacing={6} mt={16} mb={8}>
               <Circle size={18} />
@@ -668,11 +745,12 @@ export const OverviewContent = () => {
                 }}
               />
             ) : (
-              tasksData?.tasks
-                .filter(t => t.status == "TO_DO")
-                .map(t => {
-                  return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-                })
+              // tasksData?.tasks
+              //   .filter(t => t.status == "TO_DO")
+              //   .map(t => {
+              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
+              //   })
+              <ToDoDndTaskList data={tasksData} />
             )}
             <Group spacing={6} mt={16} mb={8}>
               <CircleDotted size={18} />
@@ -692,11 +770,12 @@ export const OverviewContent = () => {
                 }}
               />
             ) : (
-              tasksData?.tasks
-                .filter(t => t.status == "BACKLOG")
-                .map(t => {
-                  return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-                })
+              // tasksData?.tasks
+              //   .filter(t => t.status == "BACKLOG")
+              //   .map(t => {
+              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
+              //   })
+              <BacklogDndTaskList data={tasksData} />
             )}
             <Group spacing={6} mt={16} mb={8}>
               <CircleCheck size={18} color={theme.colors.green[6]} />
@@ -716,11 +795,12 @@ export const OverviewContent = () => {
                 }}
               />
             ) : (
-              tasksData?.tasks
-                .filter(t => t.status == "DONE")
-                .map(t => {
-                  return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-                })
+              // tasksData?.tasks
+              //   .filter(t => t.status == "DONE")
+              //   .map(t => {
+              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
+              //   })
+              <DoneDndTaskList data={tasksData} />
             )}
             <Group spacing={6} mt={16} mb={8}>
               <CircleX size={18} color={theme.colors.red[6]} />
@@ -740,11 +820,12 @@ export const OverviewContent = () => {
                 }}
               />
             ) : (
-              tasksData?.tasks
-                .filter(t => t.status == "CANCELED")
-                .map(t => {
-                  return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-                })
+              // tasksData?.tasks
+              //   .filter(t => t.status == "CANCELED")
+              //   .map(t => {
+              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
+              //   })
+              <CancelDndTaskList data={tasksData} />
             )}
           </Container>
         ) : (
