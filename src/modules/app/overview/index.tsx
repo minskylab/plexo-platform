@@ -130,7 +130,7 @@ export const OverviewContent = () => {
           <StatusSelector initialStatus={TaskStatus.Backlog} />
           <PrioritySelector initialPriority={TaskPriority.None} />
           <AssigneeSelector initialAssignee={undefined} />
-          <LabelSelector initialLabel={[]}/>
+          <LabelSelector initialLabel={[]} />
           <ProjectSelector initialProject={undefined} />
         </Group>
         <Group
