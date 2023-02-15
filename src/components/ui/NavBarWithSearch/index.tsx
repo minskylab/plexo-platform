@@ -150,9 +150,11 @@ const links = [
 
 type NavBarWithSearchProps = {
   onNewTask?: () => void;
+  openedNav: boolean;
+  setOpenedNav: (value: boolean) => void;
 };
 
-export function NavbarSearch({ onNewTask }: NavBarWithSearchProps) {
+export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithSearchProps) {
   const { classes } = useStyles();
 
   const mainLinks = links.map(link => (
@@ -172,7 +174,12 @@ export function NavbarSearch({ onNewTask }: NavBarWithSearchProps) {
   const theme = useMantineTheme();
 
   return (
-    <Navbar width={{ sm: 300 }} className={classes.navbar}>
+    <Navbar
+      width={{ sm: 300 }}
+      className={classes.navbar}
+      hiddenBreakpoint="sm"
+      hidden={!openedNav}
+    >
       <Navbar.Section className={classes.section} mb="sm">
         <UserButton
           image="https://uploads.linear.app/4389bd24-0b3b-438e-84be-56d33b0a8c76/ec023124-ed27-491a-a2d0-e2ca9370b620/256x256/a8a546b8-5668-43ce-be0e-ce4915f747dc"
