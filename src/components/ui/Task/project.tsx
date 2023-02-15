@@ -3,20 +3,21 @@ import { useState } from "react";
 import { useQuery } from "urql";
 import { LayoutGrid } from "tabler-icons-react";
 
-import { ProjectsDocument, Project } from "../../../integration/graphql";
+import { ProjectsDocument } from "../../../integration/graphql";
+import { ProjectsType } from "./types";
 
-export const ProjectIcon = (project: Project | undefined) => {
+export const ProjectIcon = (project: ProjectsType | undefined) => {
   //insert project icon
   return <LayoutGrid size={16} />;
 };
 
-export const ProjectName = (project: Project | undefined) => {
+export const ProjectName = (project: ProjectsType | undefined) => {
   return project ? project?.name : "Project";
 };
 
 type GenericProjectsMenuProps = {
   children: React.ReactNode;
-  onSelect?: (project: Project | undefined) => void;
+  onSelect?: (project: ProjectsType | undefined) => void;
 };
 
 export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuProps) => {
@@ -66,11 +67,11 @@ export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuP
 };
 
 type ProjectSelectorProps = {
-  initialProject?: Project;
+  initialProject?: ProjectsType;
 };
 
 export const ProjectSelector = ({ initialProject }: ProjectSelectorProps) => {
-  const [project, setProject] = useState<Project | undefined>(initialProject);
+  const [project, setProject] = useState<ProjectsType | undefined>(initialProject);
 
   return (
     <GenericProjectsMenu onSelect={project => setProject(project)}>

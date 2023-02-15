@@ -15,7 +15,7 @@ import {
 import { Member, MembersDocument } from "../../../integration/graphql";
 import { useState, useContext } from "react";
 import { useQuery, useSubscription } from "urql";
-import { LabelType } from "./labelType";
+import { LabelType } from "./types";
 import { Tag } from "tabler-icons-react";
 
 export const LabelColor = (labels: LabelType[] | LabelType | undefined, theme: MantineTheme) => {

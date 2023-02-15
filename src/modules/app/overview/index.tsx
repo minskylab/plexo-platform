@@ -52,7 +52,7 @@ import { AssigneeSelector } from "components/ui/Task/assignee";
 import { ProjectSelector } from "components/ui/Task/project";
 import { TeamSelector } from "components/ui/Task/team";
 import { LabelSelector } from "components/ui/Task/label";
-import { LabelType } from "components/ui/Task/labelType";
+import { LabelType } from "components/ui/Task/types";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useListState } from "@mantine/hooks";
 

@@ -3,22 +3,23 @@ import { useState } from "react";
 import { useQuery } from "urql";
 import { Dna } from "tabler-icons-react";
 
-import { TeamsDocument, Team } from "../../../integration/graphql";
+import { TeamsDocument } from "../../../integration/graphql";
+import { TeamsType } from "./types";
 
-export const TeamIcon = (team: Team | undefined) => {
+export const TeamIcon = (team: TeamsType | undefined) => {
   const theme = useMantineTheme();
   //insert teamicon
   return <Dna size={16} color={theme.colors.red[4]} />;
 };
 
-export const TeamName = (team: Team | undefined) => {
+export const TeamName = (team: TeamsType | undefined) => {
   //change to team prefix
   return team ? team.name : "NT"; //(No Team)
 };
 
 type GenericTeamsMenuProps = {
   children: React.ReactNode;
-  onSelect?: (team: Team | undefined) => void;
+  onSelect?: (team: TeamsType | undefined) => void;
 };
 
 export const GenericTeamMenu = ({ children, onSelect }: GenericTeamsMenuProps) => {
@@ -65,11 +66,11 @@ export const GenericTeamMenu = ({ children, onSelect }: GenericTeamsMenuProps) =
 };
 
 type TeamSelectorProps = {
-  initialTeam?: Team;
+  initialTeam?: TeamsType;
 };
 
 export const TeamSelector = ({ initialTeam }: TeamSelectorProps) => {
-  const [team, setTeam] = useState<Team | undefined>(initialTeam);
+  const [team, setTeam] = useState<TeamsType | undefined>(initialTeam);
 
   return (
     <GenericTeamMenu onSelect={team => setTeam(team)}>

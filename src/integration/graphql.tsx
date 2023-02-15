@@ -17,18 +17,18 @@ export type Scalars = {
 
 export type Member = {
   __typename?: "Member";
-  //assignedTasks: Array<Task>;
-  //createdAt: Scalars["DateTime"];
+  assignedTasks: Array<Task>;
+  createdAt: Scalars["DateTime"];
   email: Scalars["String"];
   githubId?: Maybe<Scalars["String"]>;
   googleId?: Maybe<Scalars["String"]>;
   id: Scalars["UUID"];
   name: Scalars["String"];
   photoUrl?: Maybe<Scalars["String"]>;
-  //projects: Array<Project>;
+  projects: Array<Project>;
   role: MemberRole;
-  //tasks: Array<Task>;
-  //updatedAt: Scalars["DateTime"];
+  tasks: Array<Task>;
+  updatedAt: Scalars["DateTime"];
 };
 
 export type MemberFilter = {
@@ -116,16 +116,16 @@ export type MutationRootUpdateTaskArgs = {
 
 export type Project = {
   __typename?: "Project";
-  //createdAt: Scalars["DateTime"];
+  createdAt: Scalars["DateTime"];
   description?: Maybe<Scalars["String"]>;
   id: Scalars["UUID"];
-  //members: Array<Member>;
+  members: Array<Member>;
   name: Scalars["String"];
-  //owner: Member;
+  owner: Member;
   ownerId: Scalars["UUID"];
-  //prefix: Scalars["String"];
-  //tasks: Array<Task>;
-  //updatedAt: Scalars["DateTime"];
+  prefix: Scalars["String"];
+  tasks: Array<Task>;
+  updatedAt: Scalars["DateTime"];
 };
 
 export type ProjectFilter = {
@@ -246,13 +246,13 @@ export enum TaskStatus {
 
 export type Team = {
   __typename?: "Team";
-  //createdAt: Scalars["DateTime"];
+  createdAt: Scalars["DateTime"];
   id: Scalars["UUID"];
-  //members: Array<Member>;
+  members: Array<Member>;
   name: Scalars["String"];
-  //owner: Member;
+  owner: Member;
   ownerId: Scalars["UUID"];
-  //updatedAt: Scalars["DateTime"];
+  updatedAt: Scalars["DateTime"];
   visibility: TeamVisibility;
 };
 
