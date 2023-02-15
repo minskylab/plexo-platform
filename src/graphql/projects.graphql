@@ -2,9 +2,19 @@ query Projects {
   projects {
     id
     #title
+    createdAt
+    updatedAt
     name
     description
+    prefix
     ownerId
     #labels
+    
+    owner{
+      id
+    }
+    tasks{
+      id
+    }
   }
 }

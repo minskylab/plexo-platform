@@ -1,9 +1,23 @@
 query Members {
   members {
     id
+    createdAt
+    updatedAt
     name
     email
+    githubId
+    googleId
     photoUrl
     role
+    
+    ownedTasks{
+      id
+    }
+    assignedTasks{
+      id
+    }
+    ownedProjects{
+      id
+    }
   }
 }

@@ -1,16 +1,27 @@
 query Tasks {
   tasks {
     id
-    status
-    title
-    description
     createdAt
     updatedAt
+    title
+    description
+    status
     priority
     ownerId
     labels
     assigneeId
     projectId
+    dueDate
+    
+    owner{
+      id
+    }
+    assignee{
+      id
+    }
+    project{
+      id
+    }
   }
 }
 
