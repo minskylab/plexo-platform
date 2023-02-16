@@ -15,6 +15,18 @@ export type Scalars = {
   UUID: any;
 };
 
+export type DataDiffEvent = {
+  __typename?: "DataDiffEvent";
+  data: Scalars["String"];
+  kind: DataDiffEventKind;
+};
+
+export enum DataDiffEventKind {
+  Created = "CREATED",
+  Deleted = "DELETED",
+  Updated = "UPDATED",
+}
+
 export type Member = {
   __typename?: "Member";
   assignedTasks: Array<Task>;
@@ -65,10 +77,10 @@ export type MutationRootCreateProjectArgs = {
 };
 
 export type MutationRootCreateTaskArgs = {
-  assigneeId?: InputMaybe<Scalars["UUID"]>;
   description?: InputMaybe<Scalars["String"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   labels?: InputMaybe<Array<Scalars["String"]>>;
+  leadId?: InputMaybe<Scalars["UUID"]>;
   ownerId: Scalars["UUID"];
   priority?: InputMaybe<Scalars["String"]>;
   projectId?: InputMaybe<Scalars["UUID"]>;
@@ -103,11 +115,11 @@ export type MutationRootUpdateProjectArgs = {
 };
 
 export type MutationRootUpdateTaskArgs = {
-  assigneeId?: InputMaybe<Scalars["UUID"]>;
   description?: InputMaybe<Scalars["String"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   id: Scalars["UUID"];
   labels?: InputMaybe<Array<Scalars["String"]>>;
+  leadId?: InputMaybe<Scalars["UUID"]>;
   priority?: InputMaybe<Scalars["String"]>;
   projectId?: InputMaybe<Scalars["UUID"]>;
   status?: InputMaybe<Scalars["String"]>;
@@ -184,6 +196,7 @@ export type QueryRootTeamsArgs = {
 
 export type SubscriptionRoot = {
   __typename?: "SubscriptionRoot";
+  example: DataDiffEvent;
   integers: Scalars["Int"];
   projects: Project;
   taskById: Task;
@@ -202,12 +215,12 @@ export type SubscriptionRootTaskByIdArgs = {
 export type Task = {
   __typename?: "Task";
   assignee?: Maybe<Member>;
-  assigneeId?: Maybe<Scalars["UUID"]>;
   createdAt: Scalars["DateTime"];
   description?: Maybe<Scalars["String"]>;
   dueDate?: Maybe<Scalars["DateTime"]>;
   id: Scalars["UUID"];
   labels: Array<Scalars["String"]>;
+  leadId?: Maybe<Scalars["UUID"]>;
   owner: Member;
   ownerId: Scalars["UUID"];
   priority: TaskPriority;
@@ -219,9 +232,9 @@ export type Task = {
 };
 
 export type TaskFilter = {
-  assigneeId?: InputMaybe<Scalars["UUID"]>;
   dueDateFrom?: InputMaybe<Scalars["DateTime"]>;
   dueDateTo?: InputMaybe<Scalars["DateTime"]>;
+  leadId?: InputMaybe<Scalars["UUID"]>;
   priority?: InputMaybe<TaskPriority>;
   projectId?: InputMaybe<Scalars["UUID"]>;
   status?: InputMaybe<TaskStatus>;
@@ -322,7 +335,7 @@ export type TasksQuery = {
     priority: TaskPriority;
     ownerId: any;
     labels: Array<string>;
-    assigneeId?: any | null;
+    leadId?: any | null;
     projectId?: any | null;
     dueDate?: any | null;
     owner: { __typename?: "Member"; id: any };
@@ -346,7 +359,7 @@ export type TasksSubscriptionSubscription = {
     priority: TaskPriority;
     ownerId: any;
     labels: Array<string>;
-    assigneeId?: any | null;
+    leadId?: any | null;
     projectId?: any | null;
   };
 };
@@ -497,7 +510,7 @@ export const TasksDocument = {
                 { kind: "Field", name: { kind: "Name", value: "priority" } },
                 { kind: "Field", name: { kind: "Name", value: "ownerId" } },
                 { kind: "Field", name: { kind: "Name", value: "labels" } },
-                { kind: "Field", name: { kind: "Name", value: "assigneeId" } },
+                { kind: "Field", name: { kind: "Name", value: "leadId" } },
                 { kind: "Field", name: { kind: "Name", value: "projectId" } },
                 { kind: "Field", name: { kind: "Name", value: "dueDate" } },
                 {
@@ -557,7 +570,7 @@ export const TasksSubscriptionDocument = {
                 { kind: "Field", name: { kind: "Name", value: "priority" } },
                 { kind: "Field", name: { kind: "Name", value: "ownerId" } },
                 { kind: "Field", name: { kind: "Name", value: "labels" } },
-                { kind: "Field", name: { kind: "Name", value: "assigneeId" } },
+                { kind: "Field", name: { kind: "Name", value: "leadId" } },
                 { kind: "Field", name: { kind: "Name", value: "projectId" } },
               ],
             },

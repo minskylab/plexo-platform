@@ -9,17 +9,17 @@ query Tasks {
     priority
     ownerId
     labels
-    assigneeId
+    leadId
     projectId
     dueDate
-    
-    owner{
+
+    owner {
       id
     }
-    assignee{
+    assignee {
       id
     }
-    project{
+    project {
       id
     }
   }
@@ -36,7 +36,7 @@ subscription TasksSubscription {
     priority
     ownerId
     labels
-    assigneeId
+    leadId
     projectId
   }
 }
