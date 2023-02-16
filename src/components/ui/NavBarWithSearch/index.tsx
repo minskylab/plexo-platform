@@ -8,44 +8,18 @@ import {
   Text,
   Group,
   ActionIcon,
-  Tooltip,
-  Kbd,
   Button,
-  NavLink,
-  useMantineTheme,
   SegmentedControl,
   Center,
 } from "@mantine/core";
-import {
-  IconBulb,
-  IconUser,
-  IconCheckbox,
-  IconSearch,
-  IconPlus,
-  IconSelector,
-} from "@tabler/icons";
-import Link from "next/link";
-import {
-  Affiliate,
-  Book,
-  Dice,
-  Dna,
-  Dna2,
-  Edit,
-  Eye,
-  Fingerprint,
-  Gauge,
-  LayoutColumns,
-  LayoutGrid,
-  LayoutRows,
-  NewSection,
-  Note,
-  Plus,
-  Rocket,
-  Square,
-} from "tabler-icons-react";
+import { IconBulb, IconCheckbox, IconSearch, IconSelector } from "@tabler/icons";
+import { useState } from "react";
+import { Affiliate, Edit, LayoutGrid, Plus } from "tabler-icons-react";
+import NewProject from "../Project/newProject";
+import JoinTeam from "../Team/joinTeam";
 import { UserButton } from "../UserButton";
-// import { UserButton } from "../UserButton/UserButton";
+import ProjectsList from "./projects";
+import TeamsList from "./teams";
 
 const useStyles = createStyles(theme => ({
   navbar: {
@@ -155,7 +129,10 @@ type NavBarWithSearchProps = {
 };
 
 export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithSearchProps) {
-  const { classes } = useStyles();
+  const { classes, theme } = useStyles();
+  const [section, setSection] = useState<"teams" | "projects">("teams");
+  const [newProjectOpened, setNewProjectOpened] = useState(false);
+  const [joinTeamOpened, setJoinTeamOpened] = useState(false);
 
   const mainLinks = links.map(link => (
     <UnstyledButton key={link.label} className={classes.mainLink}>
@@ -171,106 +148,87 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
     </UnstyledButton>
   ));
 
-  const theme = useMantineTheme();
-
   return (
-    <Navbar
-      width={{ sm: 300 }}
-      className={classes.navbar}
-      hiddenBreakpoint="sm"
-      hidden={!openedNav}
-    >
-      <Navbar.Section className={classes.section} mb="sm">
-        <UserButton
-          image="https://uploads.linear.app/4389bd24-0b3b-438e-84be-56d33b0a8c76/ec023124-ed27-491a-a2d0-e2ca9370b620/256x256/a8a546b8-5668-43ce-be0e-ce4915f747dc"
-          name="Minsky"
-          email="Bregy Malpartida"
-          icon={<IconSelector size={14} stroke={1.5} />}
-        />
-      </Navbar.Section>
+    <>
+      <NewProject newProjectOpened={newProjectOpened} setNewProjectOpened={setNewProjectOpened} />
+      <JoinTeam joinTeamOpened={joinTeamOpened} setJoinTeamOpened={setJoinTeamOpened} />
+      <Navbar
+        width={{ sm: 300 }}
+        className={classes.navbar}
+        hiddenBreakpoint="sm"
+        hidden={!openedNav}
+      >
+        <Navbar.Section className={classes.section} mb="sm">
+          <UserButton
+            image="https://uploads.linear.app/4389bd24-0b3b-438e-84be-56d33b0a8c76/ec023124-ed27-491a-a2d0-e2ca9370b620/256x256/a8a546b8-5668-43ce-be0e-ce4915f747dc"
+            name="Minsky"
+            email="Bregy Malpartida"
+            icon={<IconSelector size={14} stroke={1.5} />}
+          />
+        </Navbar.Section>
 
-      <Navbar.Section className={classes.section} mb="sm">
-        <TextInput
-          mx={16}
-          placeholder="Search"
-          // size="xs"
-          icon={<IconSearch size={12} stroke={1.5} />}
-          rightSectionWidth={70}
-          rightSection={<Code className={classes.searchCode}>Ctrl + K</Code>}
-          styles={{ rightSection: { pointerEvents: "none" } }}
-          mb="sm"
-        />
+        <Navbar.Section className={classes.section} mb="sm">
+          <TextInput
+            mx={16}
+            placeholder="Search"
+            // size="xs"
+            icon={<IconSearch size={12} stroke={1.5} />}
+            rightSectionWidth={70}
+            rightSection={<Code className={classes.searchCode}>Ctrl + K</Code>}
+            styles={{ rightSection: { pointerEvents: "none" } }}
+            mb="sm"
+          />
 
-        <Group mx={16} mb="sm" grow>
-          <Button leftIcon={<Edit strokeWidth={1.5} />} size="sm" onClick={onNewTask}>
-            New Task
-          </Button>
+          <Group mx={16} mb="sm" grow>
+            <Button leftIcon={<Edit strokeWidth={1.5} />} size="sm" onClick={onNewTask}>
+              New Task
+            </Button>
+          </Group>
+        </Navbar.Section>
+        <Navbar.Section className={classes.section} mb="sm">
+          <div className={classes.mainLinks}>{mainLinks}</div>
+        </Navbar.Section>
+        <Group position="apart" mx="sm" mb="sm">
+          <SegmentedControl
+            size={"xs"}
+            value={section}
+            onChange={value => setSection(value as "teams" | "projects")}
+            transitionTimingFunction="ease"
+            data={[
+              {
+                label: (
+                  <Center>
+                    <Affiliate size={16} />
+                    <Text ml={6} size={"xs"}>
+                      Teams
+                    </Text>
+                  </Center>
+                ),
+                value: "teams",
+              },
+              {
+                label: (
+                  <Center>
+                    <LayoutGrid size={16} />
+                    <Text ml={6} size={"xs"}>
+                      Projects
+                    </Text>
+                  </Center>
+                ),
+                value: "projects",
+              },
+            ]}
+          />
+          <ActionIcon
+            onClick={() =>
+              section === "teams" ? setJoinTeamOpened(true) : setNewProjectOpened(true)
+            }
+          >
+            <Plus size={18} />
+          </ActionIcon>
         </Group>
-      </Navbar.Section>
-      <Navbar.Section className={classes.section} mb="sm">
-        <div className={classes.mainLinks}>{mainLinks}</div>
-      </Navbar.Section>
-      <Group position="apart" mx="sm" mb="sm">
-        <SegmentedControl
-          data={[
-            {
-              label: (
-                <Center>
-                  <Affiliate size={16} />
-                  <Text ml={6} size={"xs"}>
-                    Teams
-                  </Text>
-                </Center>
-              ),
-              value: "list",
-            },
-            {
-              label: (
-                <Center>
-                  <LayoutGrid size={16} />
-                  <Text ml={6} size={"xs"}>
-                    Projects
-                  </Text>
-                </Center>
-              ),
-              value: "columns",
-            },
-          ]}
-        />
-        <ActionIcon>
-          <Plus size={18} />
-        </ActionIcon>
-      </Group>
-      <Navbar.Section>
-        {/* <div className={classes.collections}>{collectionLinks}</div> */}
-        <NavLink label="Research" icon={<Rocket size={16} color={theme.colors.blue[4]} />}>
-          {/* <NavLink label="First child link" />
-          <NavLink label="Second child link" /> */}
-        </NavLink>
-
-        <NavLink
-          label="Management"
-          icon={<Book size={16} color={theme.colors.gray[5]} />}
-          //   childrenOffset={28}
-          defaultOpened
-          opened={true}
-        >
-          <NavLink icon={<Dice size={16} color={theme.colors.gray[6]} />} label="Main Team" />
-          {/* <NavLink label="Second child link" />
-          <NavLink label="Third child link" /> */}
-        </NavLink>
-
-        <NavLink
-          label="Development"
-          icon={<Dna2 size={16} color={theme.colors.orange[4]} />}
-          defaultOpened
-          opened={true}
-          //   childrenOffset={28}
-        >
-          <NavLink icon={<Dna size={16} color={theme.colors.red[4]} />} label="Minsky Phi" active />
-          <NavLink icon={<Dna size={16} color={theme.colors.violet[4]} />} label="Minsky Alpha" />
-        </NavLink>
-      </Navbar.Section>
-    </Navbar>
+        {section === "teams" ? <TeamsList /> : <ProjectsList />}
+      </Navbar>
+    </>
   );
 }

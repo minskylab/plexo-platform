@@ -4,19 +4,16 @@ import {
   Menu,
   Text,
   TextInput,
-  Avatar,
-  Skeleton,
   ColorSwatch,
   useMantineTheme,
   Checkbox,
   Group,
   MantineTheme,
 } from "@mantine/core";
-import { Member, MembersDocument } from "../../../integration/graphql";
-import { useState, useContext } from "react";
-import { useQuery, useSubscription } from "urql";
-import { LabelType } from "./types";
 import { Tag } from "tabler-icons-react";
+import { useState } from "react";
+
+import { LabelType } from "./types";
 
 export const LabelColor = (labels: LabelType[] | LabelType | undefined, theme: MantineTheme) => {
   if (labels) {

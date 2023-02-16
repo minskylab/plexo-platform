@@ -1,10 +1,9 @@
 import { Button, Kbd, Menu, Text, TextInput, Skeleton, useMantineTheme } from "@mantine/core";
 import { useState } from "react";
-import { useQuery } from "urql";
 import { Dna } from "tabler-icons-react";
 
-import { TeamsDocument } from "../../../integration/graphql";
 import { Team } from "modules/app/datatypes";
+import { useData } from "lib/useData";
 
 export const TeamIcon = (team: Team | undefined) => {
   const theme = useMantineTheme();
@@ -23,9 +22,7 @@ type GenericTeamsMenuProps = {
 };
 
 export const GenericTeamMenu = ({ children, onSelect }: GenericTeamsMenuProps) => {
-  const [{ data: teamsData, fetching: isFetchingTeamsData }] = useQuery({
-    query: TeamsDocument,
-  });
+  const { teamsData, isLoadingTeams } = useData();
 
   const theme = useMantineTheme();
 
@@ -45,7 +42,7 @@ export const GenericTeamMenu = ({ children, onSelect }: GenericTeamsMenuProps) =
           rightSection={<Kbd px={8}>T</Kbd>}
         ></TextInput>
         <Menu.Divider />
-        {isFetchingTeamsData ? (
+        {isLoadingTeams ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
           teamsData?.teams.map(t => {
