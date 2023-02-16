@@ -2,23 +2,23 @@ import { Button, Kbd, Menu, Text, TextInput, Skeleton, useMantineTheme } from "@
 import { useState } from "react";
 import { Dna } from "tabler-icons-react";
 
-import { TeamsType } from "./types";
+import { Team } from "modules/app/datatypes";
 import { useData } from "lib/useData";
 
-export const TeamIcon = (team: TeamsType | undefined) => {
+export const TeamIcon = (team: Team | undefined) => {
   const theme = useMantineTheme();
   //insert teamicon
   return <Dna size={16} color={theme.colors.red[4]} />;
 };
 
-export const TeamName = (team: TeamsType | undefined) => {
+export const TeamName = (team: Team | undefined) => {
   //change to team prefix
   return team ? team.name : "NT"; //(No Team)
 };
 
 type GenericTeamsMenuProps = {
   children: React.ReactNode;
-  onSelect?: (team: TeamsType | undefined) => void;
+  onSelect?: (team: Team | undefined) => void;
 };
 
 export const GenericTeamMenu = ({ children, onSelect }: GenericTeamsMenuProps) => {
@@ -63,11 +63,11 @@ export const GenericTeamMenu = ({ children, onSelect }: GenericTeamsMenuProps) =
 };
 
 type TeamSelectorProps = {
-  initialTeam?: TeamsType;
+  initialTeam?: Team;
 };
 
 export const TeamSelector = ({ initialTeam }: TeamSelectorProps) => {
-  const [team, setTeam] = useState<TeamsType | undefined>(initialTeam);
+  const [team, setTeam] = useState<Team | undefined>(initialTeam);
 
   return (
     <GenericTeamMenu onSelect={team => setTeam(team)}>

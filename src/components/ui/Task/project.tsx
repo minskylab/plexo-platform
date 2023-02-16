@@ -2,21 +2,21 @@ import { Button, Kbd, Menu, Text, TextInput, Skeleton } from "@mantine/core";
 import { useState } from "react";
 import { LayoutGrid } from "tabler-icons-react";
 
-import { ProjectsType } from "./types";
+import { Project } from "modules/app/datatypes";
 import { useData } from "lib/useData";
 
-export const ProjectIcon = (project: ProjectsType | undefined) => {
+export const ProjectIcon = (project: Project | undefined) => {
   //insert project icon
   return <LayoutGrid size={16} />;
 };
 
-export const ProjectName = (project: ProjectsType | undefined) => {
+export const ProjectName = (project: Project | undefined) => {
   return project ? project?.name : "Project";
 };
 
 type GenericProjectsMenuProps = {
   children: React.ReactNode;
-  onSelect?: (project: ProjectsType | undefined) => void;
+  onSelect?: (project: Project | undefined) => void;
 };
 
 export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuProps) => {
@@ -65,11 +65,11 @@ export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuP
 };
 
 type ProjectSelectorProps = {
-  initialProject?: ProjectsType;
+  initialProject?: Project;
 };
 
 export const ProjectSelector = ({ initialProject }: ProjectSelectorProps) => {
-  const [project, setProject] = useState<ProjectsType | undefined>(initialProject);
+  const [project, setProject] = useState<Project | undefined>(initialProject);
 
   return (
     <GenericProjectsMenu onSelect={project => setProject(project)}>

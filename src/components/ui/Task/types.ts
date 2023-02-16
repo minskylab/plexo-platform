@@ -6,7 +6,3 @@ export enum LabelType {
   Improvement = "IMPROVEMENT",
   Migrated = "MIGRATED",
 }
-
-export type MemberType = MembersQuery["members"][number];
-export type ProjectsType = ProjectsQuery["projects"][number];
-export type TeamsType = TeamsQuery["teams"][number];

@@ -1,8 +1,18 @@
 query Teams {
   teams {
     id
+    createdAt
+    updatedAt
     name
     ownerId
     visibility
+    
+    owner{
+      id
+    }
+    
+    members{
+      id
+    }
   }
 }
