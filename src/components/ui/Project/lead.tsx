@@ -1,10 +1,10 @@
-import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton } from "@mantine/core";
+import { Button, Menu, Text, TextInput, Avatar, Skeleton, Tooltip } from "@mantine/core";
 import { useState } from "react";
 
 import { useData } from "lib/useData";
-import { MemberType } from "./types";
+import { MemberType } from "../Task/types";
 
-export const AssigneePhoto = (member: MemberType | undefined) => {
+export const LeadPhoto = (member: MemberType | undefined) => {
   return member?.photoUrl ? (
     <Avatar src={member.photoUrl} size="sm" radius="xl" />
   ) : (
@@ -12,8 +12,8 @@ export const AssigneePhoto = (member: MemberType | undefined) => {
   );
 };
 
-export const AssigneeName = (member: MemberType | undefined) => {
-  return member ? member?.name : "Assignee";
+export const LeadName = (member: MemberType | undefined) => {
+  return member ? member?.name : "Lead";
 };
 
 type GenericMembersMenuProps = {
@@ -21,24 +21,19 @@ type GenericMembersMenuProps = {
   onSelect?: (member: MemberType | undefined) => void;
 };
 
-export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuProps) => {
+export const GenericLeadMenu = ({ children, onSelect }: GenericMembersMenuProps) => {
   const { membersData, isLoadingMembers } = useData();
 
   return (
-    <Menu shadow="md" width={180}>
+    <Menu shadow="md">
       <Menu.Target>
-        {/* <ActionIcon variant="light" radius={"sm"}>
-                {PriorityIcon(task.priority)}
-              </ActionIcon> */}
-        {children}
+        <Tooltip label="Set project lead" position="bottom">
+          {children}
+        </Tooltip>
       </Menu.Target>
 
       <Menu.Dropdown>
-        <TextInput
-          placeholder="Assign to..."
-          variant="filled"
-          rightSection={<Kbd px={8}>A</Kbd>}
-        ></TextInput>
+        <TextInput placeholder="Set project lead..." variant="filled"></TextInput>
         <Menu.Divider />
         <Menu.Item
           icon={<Avatar size="sm" radius="xl" />}
@@ -72,24 +67,25 @@ export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuPr
   );
 };
 
-type AssigneeSelectorProps = {
-  initialAssignee?: MemberType;
+type LeadSelectorProps = {
+  initialLead?: MemberType;
 };
 
-export const AssigneeSelector = ({ initialAssignee }: AssigneeSelectorProps) => {
-  const [assignee, setAssignee] = useState<MemberType | undefined>(initialAssignee);
+export const LeadSelector = ({ initialLead }: LeadSelectorProps) => {
+  const [Lead, setLead] = useState<MemberType | undefined>(initialLead);
 
   return (
-    <GenericAssigneeMenu onSelect={member => setAssignee(member)}>
-      {typeof assignee === "undefined" ? (
+    <GenericLeadMenu onSelect={member => setLead(member)}>
+      {typeof Lead === "undefined" ? (
         <Button compact variant="light" color={"gray"}>
-          {AssigneePhoto(assignee)}
+          {LeadPhoto(Lead)}
+          <Text size={"xs"}>Lead</Text>
         </Button>
       ) : (
-        <Button compact variant="light" color={"gray"} leftIcon={AssigneePhoto(assignee)}>
-          <Text size={"xs"}>{AssigneeName(assignee)}</Text>
+        <Button compact variant="light" color={"gray"} leftIcon={LeadPhoto(Lead)}>
+          <Text size={"xs"}>{LeadName(Lead)}</Text>
         </Button>
       )}
-    </GenericAssigneeMenu>
+    </GenericLeadMenu>
   );
 };

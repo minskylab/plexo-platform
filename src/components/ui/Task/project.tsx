@@ -1,10 +1,9 @@
 import { Button, Kbd, Menu, Text, TextInput, Skeleton } from "@mantine/core";
 import { useState } from "react";
-import { useQuery } from "urql";
 import { LayoutGrid } from "tabler-icons-react";
 
-import { ProjectsDocument } from "../../../integration/graphql";
 import { ProjectsType } from "./types";
+import { useData } from "lib/useData";
 
 export const ProjectIcon = (project: ProjectsType | undefined) => {
   //insert project icon
@@ -21,9 +20,8 @@ type GenericProjectsMenuProps = {
 };
 
 export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuProps) => {
-  const [{ data: projectsData, fetching: isFetchingProjectsData }] = useQuery({
-    query: ProjectsDocument,
-  });
+  const { projectsData, isLoadingProjects } = useData();
+
   return (
     <Menu shadow="md" width={180}>
       <Menu.Target>
@@ -43,7 +41,7 @@ export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuP
         <Menu.Item icon={<LayoutGrid size={16} />} onClick={() => onSelect && onSelect(undefined)}>
           No project
         </Menu.Item>
-        {isFetchingProjectsData ? (
+        {isLoadingProjects ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
           projectsData?.projects.map(p => {
