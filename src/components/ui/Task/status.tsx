@@ -6,11 +6,10 @@ import {
   AntennaBars1,
   Circle,
   CircleCheck,
-  CircleDashed,
-  CircleHalf,
-  DotsCircleHorizontal,
   CircleDot,
   CircleX,
+  CircleDotted,
+  ChartPie2,
 } from "tabler-icons-react";
 
 export const StatusIcon = (
@@ -22,11 +21,11 @@ export const StatusIcon = (
     case "NONE":
       return <CircleDot size={size} color={theme.colors.gray[6]} />;
     case "BACKLOG":
-      return <CircleDashed size={size} color={theme.colors.gray[6]} />;
+      return <CircleDotted size={size} color={theme.colors.gray[6]} />;
     case "TO_DO":
       return <Circle size={size} />;
     case "IN_PROGRESS":
-      return <CircleHalf size={size} color={theme.colors.yellow[6]} />;
+      return <ChartPie2 size={size} color={theme.colors.yellow[6]} />;
     /* case "in-review":
       return <DotsCircleHorizontal size={size} color={theme.colors.green[6]} />; */
     case "DONE":
@@ -85,7 +84,7 @@ export const GenericStatusMenu = ({ children, onSelect }: GenericStatusMenuProps
           None
         </Menu.Item>
         <Menu.Item
-          icon={<CircleDashed size={18} color={theme.colors.gray[6]} />}
+          icon={<CircleDotted size={18} color={theme.colors.gray[6]} />}
           onClick={() => onSelect && onSelect(TaskStatus.Backlog)}
         >
           Backlog
@@ -97,7 +96,7 @@ export const GenericStatusMenu = ({ children, onSelect }: GenericStatusMenuProps
           Todo
         </Menu.Item>
         <Menu.Item
-          icon={<CircleHalf size={18} color={theme.colors.yellow[6]} />}
+          icon={<ChartPie2 size={18} color={theme.colors.yellow[6]} />}
           onClick={() => onSelect && onSelect(TaskStatus.InProgress)}
         >
           In Progress
