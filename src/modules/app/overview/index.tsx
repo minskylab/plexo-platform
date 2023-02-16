@@ -55,6 +55,7 @@ import { LabelSelector } from "components/ui/Task/label";
 import { LabelType } from "components/ui/Task/types";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useListState } from "@mantine/hooks";
+import NewTask from "components/ui/Task/newTask";
 
 const useStyles = createStyles(theme => ({
   burger: {
@@ -470,64 +471,12 @@ export const OverviewContent = () => {
   // const [scrollPosition, onScrollPositionChange] = useState({ x: 0, y: 0 });
   return (
     <>
-      <Modal
-        centered
-        overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
-        overlayOpacity={0.5}
-        // overlayBlur={3}
-        transition={"slide-up"}
-        size={"lg"}
-        opened={newTaskOpened}
-        onClose={() => setNewTaskOpened(false)}
-        shadow="md"
-        title={
-          <Group spacing={8}>
-            {/* <Button
-              compact
-              variant="light"
-              color={"gray"}
-              leftIcon={<Dna size={16} color={theme.colors.red[4]} />}
-            >
-              MIN
-            </Button> */}
-            <TeamSelector initialTeam={undefined} /> {/* change to current team*/}
-            <Text size={"sm"}>New Task</Text>
-          </Group>
-        }
-      >
-        <Box>
-          <TextInput placeholder="Task Title" variant="unstyled" size="lg" autoFocus />
-          <Textarea placeholder="Add description..." variant="unstyled" size="sm" />
-        </Box>
-        <Group spacing={6} mb={"md"}>
-          <StatusSelector initialStatus={TaskStatus.Backlog} />
-          <PrioritySelector initialPriority={TaskPriority.None} />
-          <AssigneeSelector initialAssignee={undefined} />
-          <LabelSelector initialLabel={[]} />
-          <ProjectSelector initialProject={undefined} />
-        </Group>
-        <Group
-          pt={"md"}
-          position="right"
-          sx={{
-            borderTopWidth: 1,
-            borderTopStyle: "solid",
-            borderTopColor:
-              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
-          }}
-        >
-          <Switch
-            label="Create more"
-            size="xs"
-            checked={createMore}
-            onChange={e => setCreateMore(e.currentTarget.checked)}
-          />
-          {/* {!createMore && "s"} */}
-          <Button compact variant="filled">
-            Create Task
-          </Button>
-        </Group>
-      </Modal>
+      <NewTask
+        newTaskOpened={newTaskOpened}
+        setNewTaskOpened={setNewTaskOpened}
+        createMore={createMore}
+        setCreateMore={setCreateMore}
+      />
       <Drawer
         className={classes.drawer}
         size="100%"
