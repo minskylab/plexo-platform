@@ -12,14 +12,14 @@ query Tasks {
     assigneeId
     projectId
     dueDate
-    
-    owner{
+
+    owner {
       id
     }
-    assignee{
+    assignee {
       id
     }
-    project{
+    project {
       id
     }
   }
@@ -38,5 +38,31 @@ subscription TasksSubscription {
     labels
     assigneeId
     projectId
+  }
+}
+
+mutation newTask(
+  $title: String!
+  $ownerId: UUID!
+  $description: String
+  $status: String
+  $priority: String
+  $dueDate: DateTime
+  $projectId: UUID
+  $assigneeId: UUID
+  $labels: [String!]
+) {
+  createTask(
+    title: $title
+    ownerId: $ownerId
+    description: $description
+    status: $status
+    priority: $priority
+    dueDate: $dueDate
+    projectId: $projectId
+    assigneeId: $assigneeId
+    labels: $labels
+  ) {
+    id
   }
 }

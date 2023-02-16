@@ -351,6 +351,23 @@ export type TasksSubscriptionSubscription = {
   };
 };
 
+export type NewTaskMutationVariables = Exact<{
+  title: Scalars["String"];
+  ownerId: Scalars["UUID"];
+  description?: InputMaybe<Scalars["String"]>;
+  status?: InputMaybe<Scalars["String"]>;
+  priority?: InputMaybe<Scalars["String"]>;
+  dueDate?: InputMaybe<Scalars["DateTime"]>;
+  projectId?: InputMaybe<Scalars["UUID"]>;
+  assigneeId?: InputMaybe<Scalars["UUID"]>;
+  labels?: InputMaybe<Array<Scalars["String"]> | Scalars["String"]>;
+}>;
+
+export type NewTaskMutation = {
+  __typename?: "MutationRoot";
+  createTask: { __typename?: "Task"; id: any };
+};
+
 export type TeamsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type TeamsQuery = {
@@ -567,6 +584,135 @@ export const TasksSubscriptionDocument = {
     },
   ],
 } as unknown as DocumentNode<TasksSubscriptionSubscription, TasksSubscriptionSubscriptionVariables>;
+export const NewTaskDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "newTask" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "title" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "ownerId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "status" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "priority" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "DateTime" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "projectId" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "assigneeId" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "labels" } },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "createTask" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "title" },
+                value: { kind: "Variable", name: { kind: "Name", value: "title" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "ownerId" },
+                value: { kind: "Variable", name: { kind: "Name", value: "ownerId" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "description" },
+                value: { kind: "Variable", name: { kind: "Name", value: "description" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "status" },
+                value: { kind: "Variable", name: { kind: "Name", value: "status" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "priority" },
+                value: { kind: "Variable", name: { kind: "Name", value: "priority" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "dueDate" },
+                value: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "projectId" },
+                value: { kind: "Variable", name: { kind: "Name", value: "projectId" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "assigneeId" },
+                value: { kind: "Variable", name: { kind: "Name", value: "assigneeId" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "labels" },
+                value: { kind: "Variable", name: { kind: "Name", value: "labels" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<NewTaskMutation, NewTaskMutationVariables>;
 export const TeamsDocument = {
   kind: "Document",
   definitions: [
