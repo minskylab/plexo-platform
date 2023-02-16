@@ -3,9 +3,9 @@ import { Users } from "tabler-icons-react";
 import { useState } from "react";
 
 import { useData } from "lib/useData";
-import { MemberType } from "../Task/types";
+import { Member } from "modules/app/datatypes";
 
-export const MembersIcon = (member: MemberType | undefined) => {
+export const MembersIcon = (member: Member | undefined) => {
   return member?.photoUrl ? (
     <Avatar src={member.photoUrl} size="sm" radius="xl" />
   ) : (
@@ -13,7 +13,7 @@ export const MembersIcon = (member: MemberType | undefined) => {
   );
 };
 
-export const MemberPhoto = (member: MemberType | undefined) => {
+export const MemberPhoto = (member: Member | undefined) => {
   return (
     <Group spacing={5}>
       {member?.photoUrl ? (
@@ -26,7 +26,7 @@ export const MemberPhoto = (member: MemberType | undefined) => {
   );
 };
 
-export const MemberName = (member: MemberType | undefined) => {
+export const MemberName = (member: Member | undefined) => {
   return member ? member?.name : "Member";
 };
 

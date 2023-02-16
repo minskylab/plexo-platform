@@ -2,9 +2,9 @@ import { Button, Menu, Text, TextInput, Avatar, Skeleton, Tooltip } from "@manti
 import { useState } from "react";
 
 import { useData } from "lib/useData";
-import { MemberType } from "../Task/types";
+import { Member } from "modules/app/datatypes";
 
-export const LeadPhoto = (member: MemberType | undefined) => {
+export const LeadPhoto = (member: Member | undefined) => {
   return member?.photoUrl ? (
     <Avatar src={member.photoUrl} size="sm" radius="xl" />
   ) : (
@@ -12,13 +12,13 @@ export const LeadPhoto = (member: MemberType | undefined) => {
   );
 };
 
-export const LeadName = (member: MemberType | undefined) => {
+export const LeadName = (member: Member | undefined) => {
   return member ? member?.name : "Lead";
 };
 
 type GenericMembersMenuProps = {
   children: React.ReactNode;
-  onSelect?: (member: MemberType | undefined) => void;
+  onSelect?: (member: Member | undefined) => void;
 };
 
 export const GenericLeadMenu = ({ children, onSelect }: GenericMembersMenuProps) => {
@@ -68,11 +68,11 @@ export const GenericLeadMenu = ({ children, onSelect }: GenericMembersMenuProps)
 };
 
 type LeadSelectorProps = {
-  initialLead?: MemberType;
+  initialLead?: Member;
 };
 
 export const LeadSelector = ({ initialLead }: LeadSelectorProps) => {
-  const [Lead, setLead] = useState<MemberType | undefined>(initialLead);
+  const [Lead, setLead] = useState<Member | undefined>(initialLead);
 
   return (
     <GenericLeadMenu onSelect={member => setLead(member)}>
