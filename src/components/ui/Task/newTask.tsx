@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 
 import { TaskStatus, TaskPriority } from "integration/graphql";
+import { useState } from "react";
 import { AssigneeSelector } from "./assignee";
 import { LabelSelector } from "./label";
 import { PrioritySelector } from "./priority";
@@ -27,6 +28,10 @@ type NewTaskProps = {
 
 const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }: NewTaskProps) => {
   const theme = useMantineTheme();
+
+  const [status, setStatus] = useState<TaskStatus | undefined>(TaskStatus.Backlog);
+  const [priority, setPriority] = useState<TaskPriority | undefined>(TaskPriority.None);
+
   return (
     <Modal
       centered
@@ -50,8 +55,8 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
         <Textarea placeholder="Add description..." variant="unstyled" size="sm" />
       </Box>
       <Group spacing={6} mb={"md"}>
-        <StatusSelector initialStatus={TaskStatus.Backlog} />
-        <PrioritySelector initialPriority={TaskPriority.None} />
+        <StatusSelector status={status} setStatus={setStatus} />
+        <PrioritySelector priority={priority} setPriority={setPriority} />
         <AssigneeSelector initialAssignee={undefined} />
         <LabelSelector initialLabel={[]} />
         <ProjectSelector initialProject={undefined} />

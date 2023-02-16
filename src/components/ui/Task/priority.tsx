@@ -105,22 +105,22 @@ export const GenericPriorityMenu = ({ children, onSelect }: GenericPriorityMenuP
 };
 
 type PrioritySelectorProps = {
-  initialPriority?: TaskPriority;
+  priority: TaskPriority | undefined;
+  setPriority: (priority: TaskPriority | undefined) => void;
 };
 
-export const PrioritySelector = ({ initialPriority }: PrioritySelectorProps) => {
-  const [priority, setPriority] = useState<TaskPriority | undefined>(initialPriority);
-
+export const PrioritySelector = ({ priority, setPriority }: PrioritySelectorProps) => {
   return (
     <GenericPriorityMenu onSelect={priority => setPriority(priority)}>
-      {priority == TaskPriority.None ?
-      <Button compact variant="light" color={"gray"}>{PriorityIcon(priority, 18)}</Button>
-      :
-      <Button compact variant="light" color={"gray"} leftIcon={PriorityIcon(priority, 18)}>
-        <Text size={"xs"}>{priorityName(priority)}</Text>
-      </Button>
-      }
-
+      {priority == TaskPriority.None ? (
+        <Button compact variant="light" color={"gray"}>
+          {PriorityIcon(priority, 18)}
+        </Button>
+      ) : (
+        <Button compact variant="light" color={"gray"} leftIcon={PriorityIcon(priority, 18)}>
+          <Text size={"xs"}>{priorityName(priority)}</Text>
+        </Button>
+      )}
     </GenericPriorityMenu>
   );
 };

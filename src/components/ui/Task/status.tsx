@@ -130,11 +130,12 @@ export const GenericStatusMenu = ({ children, onSelect }: GenericStatusMenuProps
 };
 
 type StatusSelectorProps = {
-  initialStatus?: TaskStatus;
+  status: TaskStatus | undefined;
+  setStatus: (status: TaskStatus | undefined) => void;
 };
 
-export const StatusSelector = ({ initialStatus }: StatusSelectorProps) => {
-  const [status, setStatus] = useState<TaskStatus | undefined>(initialStatus);
+export const StatusSelector = ({ status, setStatus }: StatusSelectorProps) => {
+  /* const [status, setStatus] = useState<TaskStatus | undefined>(initialStatus); */
   const theme = useMantineTheme();
 
   return (
