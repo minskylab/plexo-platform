@@ -82,7 +82,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
           checked={createMore}
           onChange={e => setCreateMore(e.currentTarget.checked)}
         />
-        {/* {!createMore && "s"} */}
+
         <Button compact variant="filled">
           Create Task
         </Button>

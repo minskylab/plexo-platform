@@ -1,4 +1,14 @@
-import { Button, Menu, Text, TextInput, Avatar, Skeleton, Checkbox, Group } from "@mantine/core";
+import {
+  Button,
+  Menu,
+  Text,
+  TextInput,
+  Avatar,
+  Skeleton,
+  Checkbox,
+  Group,
+  Tooltip,
+} from "@mantine/core";
 import { Users } from "tabler-icons-react";
 import { useState } from "react";
 
@@ -45,7 +55,9 @@ export const GenericMemberMenu = ({
 
   return (
     <Menu shadow="md" closeOnItemClick={false}>
-      <Menu.Target>{children}</Menu.Target>
+      <Tooltip label="Project members" position="bottom">
+        {children}
+      </Tooltip>
 
       <Menu.Dropdown>
         <TextInput placeholder="Change project members" variant="filled"></TextInput>

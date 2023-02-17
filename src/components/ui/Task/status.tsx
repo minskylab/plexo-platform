@@ -1,4 +1,4 @@
-import { Button, Kbd, Menu, Text, TextInput, useMantineTheme } from "@mantine/core";
+import { Button, Kbd, Menu, Text, TextInput, Tooltip, useMantineTheme } from "@mantine/core";
 import { TaskStatus } from "integration/graphql";
 import {
   AntennaBars1,
@@ -64,7 +64,9 @@ export const GenericStatusMenu = ({ children, onSelect }: GenericStatusMenuProps
 
   return (
     <Menu shadow="md" width={180}>
-      <Menu.Target>{children}</Menu.Target>
+      <Tooltip label="Change status" position="bottom">
+        {children}
+      </Tooltip>
 
       <Menu.Dropdown>
         <TextInput

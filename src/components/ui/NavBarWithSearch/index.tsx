@@ -11,6 +11,7 @@ import {
   Button,
   SegmentedControl,
   Center,
+  Tooltip,
 } from "@mantine/core";
 import { IconBulb, IconCheckbox, IconSearch, IconSelector } from "@tabler/icons";
 import { useState } from "react";
@@ -219,13 +220,15 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
               },
             ]}
           />
-          <ActionIcon
-            onClick={() =>
-              section === "teams" ? setJoinTeamOpened(true) : setNewProjectOpened(true)
-            }
-          >
-            <Plus size={18} />
-          </ActionIcon>
+          <Tooltip label={section === "teams" ? "New team" : "New project"} position="top">
+            <ActionIcon
+              onClick={() =>
+                section === "teams" ? setJoinTeamOpened(true) : setNewProjectOpened(true)
+              }
+            >
+              <Plus size={18} />
+            </ActionIcon>
+          </Tooltip>
         </Group>
         {section === "teams" ? <TeamsList /> : <ProjectsList />}
       </Navbar>

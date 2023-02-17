@@ -1,4 +1,4 @@
-import { Button, Kbd, Menu, Text, TextInput } from "@mantine/core";
+import { Button, Kbd, Menu, Text, TextInput, Tooltip } from "@mantine/core";
 import { TaskPriority } from "integration/graphql";
 import {
   AntennaBars1,
@@ -49,7 +49,9 @@ type GenericPriorityMenuProps = {
 export const GenericPriorityMenu = ({ children, onSelect }: GenericPriorityMenuProps) => {
   return (
     <Menu shadow="md" width={180}>
-      <Menu.Target>{children}</Menu.Target>
+      <Tooltip label="Set priority" position="bottom">
+        {children}
+      </Tooltip>
 
       <Menu.Dropdown>
         <TextInput

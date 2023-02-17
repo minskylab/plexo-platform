@@ -1,4 +1,4 @@
-import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton } from "@mantine/core";
+import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton, Tooltip } from "@mantine/core";
 import { Member } from "modules/app/datatypes";
 
 import { useData } from "lib/useData";
@@ -25,12 +25,9 @@ export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuPr
 
   return (
     <Menu shadow="md" width={180}>
-      <Menu.Target>
-        {/* <ActionIcon variant="light" radius={"sm"}>
-                {PriorityIcon(task.priority)}
-              </ActionIcon> */}
+      <Tooltip label="Assign to" position="bottom">
         {children}
-      </Menu.Target>
+      </Tooltip>
 
       <Menu.Dropdown>
         <TextInput

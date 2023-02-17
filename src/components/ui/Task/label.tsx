@@ -8,6 +8,7 @@ import {
   useMantineTheme,
   Checkbox,
   Group,
+  Tooltip,
 } from "@mantine/core";
 import { Tag } from "tabler-icons-react";
 
@@ -113,7 +114,9 @@ export const GenericLabelMenu = ({
 }: GenericLabelsMenuProps) => {
   return (
     <Menu shadow="md" width={180} closeOnItemClick={false}>
-      <Menu.Target>{children}</Menu.Target>
+      <Tooltip label="Add labels" position="bottom">
+        {children}
+      </Tooltip>
 
       <Menu.Dropdown>
         <TextInput

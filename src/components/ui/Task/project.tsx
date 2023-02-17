@@ -1,4 +1,4 @@
-import { Button, Kbd, Menu, Text, TextInput, Skeleton } from "@mantine/core";
+import { Button, Kbd, Menu, Text, TextInput, Skeleton, Tooltip } from "@mantine/core";
 import { LayoutGrid } from "tabler-icons-react";
 
 import { Project } from "modules/app/datatypes";
@@ -23,12 +23,9 @@ export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuP
 
   return (
     <Menu shadow="md" width={180}>
-      <Menu.Target>
-        {/* <ActionIcon variant="light" radius={"sm"}>
-                {PriorityIcon(task.priority)}
-              </ActionIcon> */}
+      <Tooltip label="Add to project" position="bottom">
         {children}
-      </Menu.Target>
+      </Tooltip>
 
       <Menu.Dropdown>
         <TextInput
