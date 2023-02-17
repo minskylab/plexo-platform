@@ -9,7 +9,7 @@ query Tasks {
     priority
     ownerId
     labels
-    assigneeId
+    leadId
     projectId
     dueDate
 
@@ -36,7 +36,7 @@ subscription TasksSubscription {
     priority
     ownerId
     labels
-    assigneeId
+    leadId
     projectId
   }
 }

@@ -14,14 +14,14 @@ export const colorBrandPrimary: Tuple<string, 10> = [
 ];
 
 export const colorBrandDark: Tuple<string, 10> = [
-  "#CBCBCD",
-  "#97979B",
-  "#505053",
-  "#28282A",
-  "#1B1B1D",
-  "#121213",
-  "#0C0C0D",
-  "#060607",
-  "#030303",
-  "#020202",
+  "#C1C2C5",
+  "#A6A7AB",
+  "#909296",
+  "#5C5F66",
+  "#373A40",
+  "#2C2E33",
+  "#25262B",
+  "#1A1B1E",
+  "#141517",
+  "#101113",
 ];
