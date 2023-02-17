@@ -49,7 +49,7 @@ mutation newTask(
   $priority: String
   $dueDate: DateTime
   $projectId: UUID
-  $assigneeId: UUID
+  $leadId: UUID
   $labels: [String!]
 ) {
   createTask(
@@ -60,7 +60,7 @@ mutation newTask(
     priority: $priority
     dueDate: $dueDate
     projectId: $projectId
-    assigneeId: $assigneeId
+    leadId: $leadId
     labels: $labels
   ) {
     id

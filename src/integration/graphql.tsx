@@ -372,7 +372,7 @@ export type NewTaskMutationVariables = Exact<{
   priority?: InputMaybe<Scalars["String"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   projectId?: InputMaybe<Scalars["UUID"]>;
-  assigneeId?: InputMaybe<Scalars["UUID"]>;
+  leadId?: InputMaybe<Scalars["UUID"]>;
   labels?: InputMaybe<Array<Scalars["String"]> | Scalars["String"]>;
 }>;
 
@@ -648,7 +648,7 @@ export const NewTaskDocument = {
         },
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "assigneeId" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "leadId" } },
           type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
         },
         {
@@ -707,8 +707,8 @@ export const NewTaskDocument = {
               },
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "assigneeId" },
-                value: { kind: "Variable", name: { kind: "Name", value: "assigneeId" } },
+                name: { kind: "Name", value: "leadId" },
+                value: { kind: "Variable", name: { kind: "Name", value: "leadId" } },
               },
               {
                 kind: "Argument",
