@@ -8,14 +8,14 @@ import {
   useMantineTheme,
   Checkbox,
   Group,
-  MantineTheme,
 } from "@mantine/core";
 import { Tag } from "tabler-icons-react";
-import { useState } from "react";
 
 import { LabelType } from "./types";
 
-export const LabelColor = (labels: LabelType[] | LabelType | undefined, theme: MantineTheme) => {
+export const LabelColor = (labels: LabelType[] | LabelType | undefined) => {
+  const theme = useMantineTheme();
+
   if (labels) {
     if (Array.isArray(labels)) {
       if (labels.length == 1) {
@@ -33,7 +33,7 @@ export const LabelColor = (labels: LabelType[] | LabelType | undefined, theme: M
         return (
           <Group spacing={0}>
             {labels.map(label => {
-              return LabelColor(label, theme);
+              return LabelColor(label);
             })}
           </Group>
         );
@@ -91,26 +91,29 @@ export const LabelName = (labels: LabelType[] | LabelType | undefined) => {
   return "";
 };
 
+const LabelData = (label: LabelType | undefined) => {
+  return (
+    <Group spacing={10} sx={{ width: "100%" }}>
+      {LabelColor(label)}
+      {LabelName(label)}
+    </Group>
+  );
+};
+
 type GenericLabelsMenuProps = {
   children: React.ReactNode;
   selectedLabels: LabelType[];
-  onChange: (label: LabelType) => void;
+  setSelectedLabels: (selectedLabels: LabelType[]) => void;
 };
 
 export const GenericLabelMenu = ({
   children,
   selectedLabels,
-  onChange,
+  setSelectedLabels,
 }: GenericLabelsMenuProps) => {
-  const theme = useMantineTheme();
   return (
     <Menu shadow="md" width={180} closeOnItemClick={false}>
-      <Menu.Target>
-        {/* <ActionIcon variant="light" radius={"sm"}>
-                {PriorityIcon(task.priority)}
-              </ActionIcon> */}
-        {children}
-      </Menu.Target>
+      <Menu.Target>{children}</Menu.Target>
 
       <Menu.Dropdown>
         <TextInput
@@ -119,55 +122,49 @@ export const GenericLabelMenu = ({
           rightSection={<Kbd px={8}>L</Kbd>}
         ></TextInput>
         <Menu.Divider />
-        {Object.values(LabelType).map(label => (
-          <Menu.Item
-            onClick={() => {
-              onChange(label);
-            }}
-            key={label}
-          >
-            <Group spacing={10}>
+        <Checkbox.Group spacing={0} value={selectedLabels} onChange={setSelectedLabels}>
+          {Object.values(LabelType).map(label => (
+            <Menu.Item key={label} p={0}>
               <Checkbox
                 size="xs"
-                id={label}
-                checked={selectedLabels.includes(label)}
-                onChange={() => onChange(label)}
+                value={label}
+                label={LabelData(label)}
+                styles={{
+                  body: {
+                    width: "100%",
+                    padding: 10,
+                    alignItems: "center",
+                  },
+                  labelWrapper: {
+                    width: "100%",
+                  },
+                }}
               />
-              {LabelColor(label, theme)}
-              {LabelName(label)}
-            </Group>
-          </Menu.Item>
-        ))}
+            </Menu.Item>
+          ))}
+        </Checkbox.Group>
       </Menu.Dropdown>
     </Menu>
   );
 };
 
 type LabelSelectorProps = {
-  initialLabel: LabelType[];
+  selectedLabels: LabelType[];
+  setSelectedLabels: (selectedLabels: LabelType[]) => void;
 };
 
-export const LabelSelector = ({ initialLabel }: LabelSelectorProps) => {
+export const LabelSelector = ({ selectedLabels, setSelectedLabels }: LabelSelectorProps) => {
   const theme = useMantineTheme();
-  const [selectedLabels, setSelectedLabels] = useState<LabelType[]>(initialLabel);
-
-  const handleCheckboxChange = (label: LabelType) => {
-    if (selectedLabels.includes(label)) {
-      setSelectedLabels(selectedLabels.filter(selectedLabel => selectedLabel !== label));
-    } else {
-      setSelectedLabels([...selectedLabels, label]);
-    }
-  };
 
   return (
-    <GenericLabelMenu onChange={handleCheckboxChange} selectedLabels={selectedLabels}>
+    <GenericLabelMenu selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels}>
       {selectedLabels.length ? (
-        <Button compact variant="light" color={"gray"} leftIcon={LabelColor(selectedLabels, theme)}>
+        <Button compact variant="light" color={"gray"} leftIcon={LabelColor(selectedLabels)}>
           <Text size={"xs"}>{LabelName(selectedLabels)}</Text>
         </Button>
       ) : (
         <Button compact variant="light" color={"gray"}>
-          {LabelColor(selectedLabels, theme)}
+          {LabelColor(selectedLabels)}
         </Button>
       )}
     </GenericLabelMenu>

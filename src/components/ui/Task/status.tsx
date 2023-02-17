@@ -1,7 +1,5 @@
-import { Button, Kbd, MantineTheme, Menu, Text, TextInput, useMantineTheme } from "@mantine/core";
+import { Button, Kbd, Menu, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { TaskStatus } from "integration/graphql";
-/* import { TaskStatus } from "modules/app/datatypes"; */
-import { useState } from "react";
 import {
   AntennaBars1,
   Circle,
@@ -12,11 +10,9 @@ import {
   ChartPie2,
 } from "tabler-icons-react";
 
-export const StatusIcon = (
-  theme: MantineTheme,
-  status?: TaskStatus,
-  size: string | number | undefined = 18
-) => {
+export const StatusIcon = (status?: TaskStatus, size: string | number | undefined = 18) => {
+  const theme = useMantineTheme();
+
   switch (status) {
     case "NONE":
       return <CircleDot size={size} color={theme.colors.gray[6]} />;
@@ -140,7 +136,7 @@ export const StatusSelector = ({ status, setStatus }: StatusSelectorProps) => {
 
   return (
     <GenericStatusMenu onSelect={priority => setStatus(priority)}>
-      <Button compact variant="light" color={"gray"} leftIcon={StatusIcon(theme, status, 18)}>
+      <Button compact variant="light" color={"gray"} leftIcon={StatusIcon(status, 18)}>
         <Text size={"xs"}>{statusName(status)}</Text>
       </Button>
     </GenericStatusMenu>

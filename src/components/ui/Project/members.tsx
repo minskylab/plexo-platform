@@ -53,25 +53,23 @@ export const GenericMemberMenu = ({
         {isLoadingMembers ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
-          <Checkbox.Group value={selectedMembers} onChange={setSelectedMembers}>
+          <Checkbox.Group spacing={0} value={selectedMembers} onChange={setSelectedMembers}>
             {membersData?.members.map(m => {
               return (
                 <Menu.Item key={m.id}>
-                  <Group spacing={10}>
-                    <Checkbox
-                      size="xs"
-                      value={m.id}
-                      label={MemberPhoto(m)}
-                      styles={{
-                        body: {
-                          alignItems: "center",
-                        },
-                        label: {
-                          paddingLeft: 5,
-                        },
-                      }}
-                    />
-                  </Group>
+                  <Checkbox
+                    size="xs"
+                    value={m.id}
+                    label={MemberPhoto(m)}
+                    styles={{
+                      body: {
+                        alignItems: "center",
+                      },
+                      label: {
+                        paddingLeft: 5,
+                      },
+                    }}
+                  />
                 </Menu.Item>
               );
             })}

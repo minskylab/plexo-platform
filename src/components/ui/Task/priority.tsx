@@ -1,7 +1,5 @@
 import { Button, Kbd, Menu, Text, TextInput } from "@mantine/core";
 import { TaskPriority } from "integration/graphql";
-/* import { TaskPriority } from "modules/app/datatypes"; */
-import { useState } from "react";
 import {
   AntennaBars1,
   AntennaBars2,
@@ -51,12 +49,7 @@ type GenericPriorityMenuProps = {
 export const GenericPriorityMenu = ({ children, onSelect }: GenericPriorityMenuProps) => {
   return (
     <Menu shadow="md" width={180}>
-      <Menu.Target>
-        {/* <ActionIcon variant="light" radius={"sm"}>
-                {PriorityIcon(task.priority)}
-              </ActionIcon> */}
-        {children}
-      </Menu.Target>
+      <Menu.Target>{children}</Menu.Target>
 
       <Menu.Dropdown>
         <TextInput

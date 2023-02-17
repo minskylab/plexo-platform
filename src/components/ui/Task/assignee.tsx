@@ -1,6 +1,5 @@
 import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton } from "@mantine/core";
 import { Member } from "modules/app/datatypes";
-import { useState } from "react";
 
 import { useData } from "lib/useData";
 
@@ -73,12 +72,11 @@ export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuPr
 };
 
 type AssigneeSelectorProps = {
-  initialAssignee?: Member;
+  assignee: Member | undefined;
+  setAssignee: (assignee: Member | undefined) => void;
 };
 
-export const AssigneeSelector = ({ initialAssignee }: AssigneeSelectorProps) => {
-  const [assignee, setAssignee] = useState<Member | undefined>(initialAssignee);
-
+export const AssigneeSelector = ({ assignee, setAssignee }: AssigneeSelectorProps) => {
   return (
     <GenericAssigneeMenu onSelect={member => setAssignee(member)}>
       {typeof assignee === "undefined" ? (

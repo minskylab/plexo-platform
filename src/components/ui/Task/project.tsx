@@ -1,5 +1,4 @@
 import { Button, Kbd, Menu, Text, TextInput, Skeleton } from "@mantine/core";
-import { useState } from "react";
 import { LayoutGrid } from "tabler-icons-react";
 
 import { Project } from "modules/app/datatypes";
@@ -65,12 +64,11 @@ export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuP
 };
 
 type ProjectSelectorProps = {
-  initialProject?: Project;
+  project: Project | undefined;
+  setProject: (project: Project | undefined) => void;
 };
 
-export const ProjectSelector = ({ initialProject }: ProjectSelectorProps) => {
-  const [project, setProject] = useState<Project | undefined>(initialProject);
-
+export const ProjectSelector = ({ project, setProject }: ProjectSelectorProps) => {
   return (
     <GenericProjectsMenu onSelect={project => setProject(project)}>
       <Button compact variant="light" color={"gray"} leftIcon={ProjectIcon(project)}>

@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 
 import { TaskStatus, TaskPriority } from "integration/graphql";
+import { Member, Project } from "modules/app/datatypes";
 import { useState } from "react";
 import { AssigneeSelector } from "./assignee";
 import { LabelSelector } from "./label";
@@ -18,6 +19,7 @@ import { PrioritySelector } from "./priority";
 import { ProjectSelector } from "./project";
 import { StatusSelector } from "./status";
 import { TeamSelector } from "./team";
+import { LabelType } from "./types";
 
 type NewTaskProps = {
   newTaskOpened: boolean;
@@ -31,6 +33,9 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
 
   const [status, setStatus] = useState<TaskStatus | undefined>(TaskStatus.Backlog);
   const [priority, setPriority] = useState<TaskPriority | undefined>(TaskPriority.None);
+  const [assignee, setAssignee] = useState<Member | undefined>(undefined);
+  const [selectedLabels, setSelectedLabels] = useState<LabelType[]>([]);
+  const [project, setProject] = useState<Project | undefined>(undefined);
 
   return (
     <Modal
@@ -45,7 +50,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       shadow="md"
       title={
         <Group spacing={8}>
-          <TeamSelector initialTeam={undefined} /> {/* change to current team*/}
+          {/* <TeamSelector initialTeam={undefined} /> */}
           <Text size={"sm"}>New Task</Text>
         </Group>
       }
@@ -57,9 +62,9 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       <Group spacing={6} mb={"md"}>
         <StatusSelector status={status} setStatus={setStatus} />
         <PrioritySelector priority={priority} setPriority={setPriority} />
-        <AssigneeSelector initialAssignee={undefined} />
-        <LabelSelector initialLabel={[]} />
-        <ProjectSelector initialProject={undefined} />
+        <AssigneeSelector assignee={assignee} setAssignee={setAssignee} />
+        <LabelSelector selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels} />
+        <ProjectSelector project={project} setProject={setProject} />
       </Group>
       <Group
         pt={"md"}
