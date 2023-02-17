@@ -53,16 +53,10 @@ export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuPr
             return (
               <Menu.Item
                 key={m.id}
-                icon={
-                  m?.photoUrl ? (
-                    <Avatar src={m.photoUrl} size="sm" radius="xl" />
-                  ) : (
-                    <Avatar size="sm" radius="xl" />
-                  )
-                }
+                icon={ AssigneePhoto(m)}
                 onClick={() => onSelect && onSelect(m)}
               >
-                {m.name}
+                {AssigneeName(m)}
               </Menu.Item>
             );
           })

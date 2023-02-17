@@ -26,6 +26,7 @@ import {
   Avatar,
   Checkbox,
 } from "@mantine/core";
+import { useClickOutside } from '@mantine/hooks';
 import { ReactNode, useEffect, useState } from "react";
 import {
   AntennaBars1,
@@ -59,18 +60,19 @@ import { useQuery, useSubscription } from "urql";
 import { TaskPriority, TasksDocument, TaskStatus } from "../../../integration/graphql";
 import { NavbarSearch } from "components/ui/NavBarWithSearch";
 import { TaskListElement } from "components/ui/Task";
-import { PrioritySelector } from "components/ui/Task/priority";
-import { StatusSelector } from "components/ui/Task/status";
+import { PriorityIcon, priorityName, PrioritySelector } from "components/ui/Task/priority";
+import { StatusIcon, StatusSelector, statusName} from "components/ui/Task/status";
 import { getCookie, setCookie } from "cookies-next";
 import { DndTaskListElement } from "components/ui/CardTask";
-import { AssigneeSelector } from "components/ui/Task/assignee";
-import { ProjectSelector } from "components/ui/Task/project";
+import { AssigneeName, AssigneePhoto, AssigneeSelector } from "components/ui/Task/assignee";
+import { ProjectIcon, ProjectName, ProjectSelector } from "components/ui/Task/project";
 import { TeamSelector } from "components/ui/Task/team";
 import { LabelColor, LabelName, LabelSelector } from "components/ui/Task/label";
 import { LabelType } from "components/ui/Task/types";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useListState } from "@mantine/hooks";
 import { useData } from "lib/useData";
+import { Member, Project } from "../datatypes";
 
 const useStyles = createStyles(theme => ({
   burger: {
@@ -481,18 +483,61 @@ export const OverviewContent = () => {
     query: TasksDocument,
   });
 
+  type filterTypes =  TaskStatus[] | Member[] | TaskPriority[] | LabelType[] | Project[];
+
+  const [filterList, setFilterList] = useState<filterTypes[]>([]);
+
+    const [openedMenu, setOpenedMenu] = useState(false);
+    const ref = useClickOutside(() => {
+      switch (filter) {
+        case "status":
+          setFilterList([...filterList, statusFilters]);
+          console.log(filterList);
+          addFilter("");
+          setStatusFilters([]);
+        case "assignee":
+          return;
+        case "creator":
+          return;
+        case "priority":
+          return;
+        case "labels":
+          return;
+        case "project":
+          return;
+      }
+      setOpenedMenu(false);
+    });
+
+
   const [filter, setFilter] = useState<String>("");
 
   const addFilter = (newFilter : String) => {
     setFilter(newFilter);
   };
 
+  const [statusFilters, setStatusFilters] = useState<TaskStatus[]>([]);
+  const handleChangeStatus = (status: TaskStatus) => {
+    if (statusFilters.includes(status)) {
+      setStatusFilters(statusFilters.filter(filter => filter !== status));
+    } else {
+      setStatusFilters([...statusFilters, status]);
+    }
+  };
+  const [assigneeFilters, setAssigneeFilters] = useState<Member[]>([]);
+  const [creatorFilters, setCreatorFilters] = useState<Member[]>([]);
+  const [priorityFilters, setPriorityFilters] = useState<TaskPriority[]>([]);
+  const [labelsFilters, setLabelsFilters] = useState<LabelType[]>([]);
+  const [projectFilters, setProjectFilters] = useState<Project[]>([]);
+
   const FilterDropdown= (
     filter: String,
   ) : React.ReactNode => {
 
     const { membersData, isLoadingMembers } = useData();
-    const { teamsData, isLoadingTeams } = useData();
+    const { projectsData, isLoadingProjects } = useData();
+    const theme = useMantineTheme();
+
     
     switch (filter) {
       case "status":
@@ -503,12 +548,72 @@ export const OverviewContent = () => {
             rightSection={<Kbd px={8}>P</Kbd>}
           ></TextInput>
           <Menu.Divider />
-          <Menu.Item onClick={()=>{addFilter("")}} icon={<CircleDot size={18} />}>None</Menu.Item>
-          <Menu.Item onClick={()=>{addFilter("")}} icon={<CircleDashed size={18} />}>Backlog</Menu.Item>
-          <Menu.Item onClick={()=>{addFilter("")}} icon={<Circle size={18} />}>Todo</Menu.Item>
-          <Menu.Item onClick={()=>{addFilter("")}} icon={<CircleHalf size={18} />}>In Progress</Menu.Item>
-          <Menu.Item onClick={()=>{addFilter("")}} icon={<CircleCheck size={18} />}>Done</Menu.Item>
-          <Menu.Item onClick={()=>{addFilter("")}} icon={<CircleX size={18} />}>Canceled</Menu.Item>
+          <Menu.Item onClick={() => handleChangeStatus(TaskStatus.None)}>
+          <Group spacing={10}>
+              <Checkbox
+                size="xs"
+                checked={statusFilters.includes(TaskStatus.None)}
+                onChange={() => handleChangeStatus(TaskStatus.None)}
+              />
+              {StatusIcon(theme, TaskStatus.None, 18)}
+              {statusName(TaskStatus.None)}
+            </Group>
+          </Menu.Item>
+          <Menu.Item onClick={() => handleChangeStatus(TaskStatus.Backlog)}>
+          <Group spacing={10}>
+              <Checkbox
+                size="xs"
+                checked={statusFilters.includes(TaskStatus.Backlog)}
+                onChange={() => handleChangeStatus(TaskStatus.Backlog)}
+              />
+              {StatusIcon(theme, TaskStatus.Backlog, 18)}
+              {statusName(TaskStatus.Backlog)}
+            </Group>
+          </Menu.Item>
+          <Menu.Item onClick={() => handleChangeStatus(TaskStatus.ToDo)}>
+          <Group spacing={10}>
+              <Checkbox
+                size="xs"
+                checked={statusFilters.includes(TaskStatus.ToDo)}
+                onChange={() => handleChangeStatus(TaskStatus.ToDo)}
+              />
+              {StatusIcon(theme, TaskStatus.ToDo, 18)}
+              {statusName(TaskStatus.ToDo)}
+            </Group>
+          </Menu.Item>
+          <Menu.Item onClick={() => handleChangeStatus(TaskStatus.InProgress)}>
+          <Group spacing={10}>
+              <Checkbox
+                size="xs"
+                checked={statusFilters.includes(TaskStatus.InProgress)}
+                onChange={() => handleChangeStatus(TaskStatus.InProgress)}
+              />
+              {StatusIcon(theme, TaskStatus.InProgress, 18)}
+              {statusName(TaskStatus.InProgress)}
+            </Group>
+          </Menu.Item>
+          <Menu.Item onClick={() => handleChangeStatus(TaskStatus.Done)}>
+          <Group spacing={10}>
+              <Checkbox
+                size="xs"
+                checked={statusFilters.includes(TaskStatus.Done)}
+                onChange={() => handleChangeStatus(TaskStatus.Done)}
+              />
+              {StatusIcon(theme, TaskStatus.Done, 18)}
+              {statusName(TaskStatus.Done)}
+            </Group>
+          </Menu.Item>
+          <Menu.Item onClick={() => handleChangeStatus(TaskStatus.Canceled)}>
+          <Group spacing={10}>
+              <Checkbox
+                size="xs"
+                checked={statusFilters.includes(TaskStatus.Canceled)}
+                onChange={() => handleChangeStatus(TaskStatus.Canceled)}
+              />
+              {StatusIcon(theme, TaskStatus.Canceled, 18)}
+              {statusName(TaskStatus.Canceled)}
+            </Group>
+          </Menu.Item>
         </>;
       case "assignee":
         return <>
@@ -523,18 +628,16 @@ export const OverviewContent = () => {
         ) : (
           membersData?.members.map(m => {
             return (
-              <Menu.Item
-                key={m.id}
-                icon={
-                  m?.photoUrl ? (
-                    <Avatar src={m.photoUrl}  size={18} radius="xl" />
-                  ) : (
-                    <UserCircle  size={18} radius="xl" />
-                  )
-                }
-                onClick={()=>{addFilter("")}}
-              >
-                {m.name}
+              <Menu.Item key={m.id} onClick={()=>{addFilter("")}}>
+              <Group spacing={10}>
+                  <Checkbox
+                    size="xs"
+                    //checked={selectedLabels.includes(label)}
+                    //onChange={() => onChange(label)}
+                  />
+                  {AssigneePhoto(m)}
+                  {AssigneeName(m)}
+                </Group>
               </Menu.Item>
             );
           })
@@ -553,18 +656,16 @@ export const OverviewContent = () => {
         ) : (
           membersData?.members.map(m => {
             return (
-              <Menu.Item
-                key={m.id}
-                icon={
-                  m?.photoUrl ? (
-                    <Avatar src={m.photoUrl}  size={18} radius="xl" />
-                  ) : (
-                    <UserCircle  size={18} radius="xl" />
-                  )
-                }
-                onClick={()=>{addFilter("")}}
-              >
-                {m.name}
+              <Menu.Item key={m.id} onClick={()=>{addFilter("")}}>
+              <Group spacing={10}>
+                  <Checkbox
+                    size="xs"
+                    //checked={selectedLabels.includes(label)}
+                    //onChange={() => onChange(label)}
+                  />
+                  {AssigneePhoto(m)}
+                  {AssigneeName(m)}
+                </Group>
               </Menu.Item>
             );
           })
@@ -578,11 +679,61 @@ export const OverviewContent = () => {
             rightSection={<Kbd px={8}>P</Kbd>}
           ></TextInput>
           <Menu.Divider />
-          <Menu.Item onClick={()=>{addFilter("")}} icon={<AntennaBars1 size={18} />}>None</Menu.Item>
-          <Menu.Item onClick={()=>{addFilter("")}} icon={<AntennaBars2 size={18} />}>Low</Menu.Item>
-          <Menu.Item onClick={()=>{addFilter("")}} icon={<AntennaBars3 size={18} />}>Medium</Menu.Item>
-          <Menu.Item onClick={()=>{addFilter("")}} icon={<AntennaBars4 size={18} />}>High</Menu.Item>
-          <Menu.Item onClick={()=>{addFilter("")}} icon={<AntennaBars5 size={18} />}>Urgent</Menu.Item>
+          <Menu.Item onClick={()=>{addFilter("")}}>
+          <Group spacing={10}>
+              <Checkbox
+                size="xs"
+                //checked={selectedLabels.includes(label)}
+                //onChange={() => onChange(label)}
+              />
+              {PriorityIcon(TaskPriority.None, 18)}
+              {priorityName(TaskPriority.None)}
+            </Group>
+          </Menu.Item>
+          <Menu.Item onClick={()=>{addFilter("")}}>
+          <Group spacing={10}>
+              <Checkbox
+                size="xs"
+                //checked={selectedLabels.includes(label)}
+                //onChange={() => onChange(label)}
+              />
+              {PriorityIcon(TaskPriority.Low, 18)}
+              {priorityName(TaskPriority.Low)}
+            </Group>
+          </Menu.Item>
+          <Menu.Item onClick={()=>{addFilter("")}}>
+          <Group spacing={10}>
+              <Checkbox
+                size="xs"
+                //checked={selectedLabels.includes(label)}
+                //onChange={() => onChange(label)}
+              />
+              {PriorityIcon(TaskPriority.Medium, 18)}
+              {priorityName(TaskPriority.Medium)}
+            </Group>
+          </Menu.Item>
+          <Menu.Item onClick={()=>{addFilter("")}}>
+          <Group spacing={10}>
+              <Checkbox
+                size="xs"
+                //checked={selectedLabels.includes(label)}
+                //onChange={() => onChange(label)}
+              />
+              {PriorityIcon(TaskPriority.High, 18)}
+              {priorityName(TaskPriority.High)}
+            </Group>
+          </Menu.Item>
+          <Menu.Item onClick={()=>{addFilter("")}}>
+          <Group spacing={10}>
+              <Checkbox
+                size="xs"
+                //checked={selectedLabels.includes(label)}
+                //onChange={() => onChange(label)}
+              />
+              {PriorityIcon(TaskPriority.Urgent, 18)}
+              {priorityName(TaskPriority.Urgent)}
+            </Group>
+          </Menu.Item>
         </>;
       case "labels":
         return <>
@@ -610,7 +761,7 @@ export const OverviewContent = () => {
             </Menu.Item>
           ))}
         </>;
-      case "team":
+      case "project":
         return <>
           <TextInput
             placeholder="Status"
@@ -618,17 +769,21 @@ export const OverviewContent = () => {
             rightSection={<Kbd px={8}>P</Kbd>}
           ></TextInput>
           <Menu.Divider />
-          {isLoadingTeams ? (
+          {isLoadingProjects ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
-          teamsData?.teams.map(t => {
+          projectsData?.projects.map(p => {
             return (
-              <Menu.Item
-                key={t.id}
-                icon={<Dna size={16} color={theme.colors.red[4]} />}
-                onClick={()=>{addFilter("")}}
-              >
-                {t.name}
+              <Menu.Item key={p.id} onClick={()=>{addFilter("")}}>
+              <Group spacing={10}>
+                  <Checkbox
+                    size="xs"
+                    //checked={selectedLabels.includes(label)}
+                    //onChange={() => onChange(label)}
+                  />
+                  {ProjectIcon(p)}
+                  {ProjectName(p)}
+                </Group>
               </Menu.Item>
             );
           })
@@ -647,7 +802,7 @@ export const OverviewContent = () => {
         <Menu.Item onClick={()=>{addFilter("creator")}} icon={<UserCheck size={18} />}>Creator</Menu.Item>
         <Menu.Item onClick={()=>{addFilter("priority")}} icon={<AntennaBars5 size={18} />}>Priority</Menu.Item>
         <Menu.Item onClick={()=>{addFilter("labels")}} icon={<Tag size={18} />}>Labels</Menu.Item>
-        <Menu.Item onClick={()=>{addFilter("team")}} icon={<LayoutGrid size={18} />}>Team</Menu.Item>
+        <Menu.Item onClick={()=>{addFilter("project")}} icon={<LayoutGrid size={18} />}>Project</Menu.Item>
       </>;
   };
 
@@ -822,7 +977,7 @@ export const OverviewContent = () => {
                 <Menu.Item icon={<Archive size={18} />}>Archive</Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <Menu shadow="md" width={180} closeOnItemClick={false}>
+            <Menu shadow="md" width={250} opened={openedMenu}>
               <Menu.Target>
                 <Button
                   styles={{root: {border:'1px dashed'}}}
@@ -831,13 +986,16 @@ export const OverviewContent = () => {
                   variant="subtle"
                   color={"gray"}
                   leftIcon={<Plus size={16} color={theme.colors.red[4]} />}
+                  onClick={() => setOpenedMenu(true)}
                 >
                   Filter
                 </Button>
               </Menu.Target>
-              <Menu.Dropdown>
-                {FilterDropdown(filter)}
-              </Menu.Dropdown>
+              <Box ref={ref}>
+                <Menu.Dropdown>
+                  {FilterDropdown(filter)}
+                </Menu.Dropdown>
+              </Box>
             </Menu>
             {/* <Title order={5}>Active Tasks</Title> */}
           </Group>

@@ -48,13 +48,10 @@ export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuP
             return (
               <Menu.Item
                 key={p.id}
-                icon={
-                  //insert project icon
-                  <LayoutGrid size={16} />
-                }
+                icon={ProjectIcon(p)}
                 onClick={() => onSelect && onSelect(p)}
               >
-                {p.name}
+                {ProjectName(p)}
               </Menu.Item>
             );
           })

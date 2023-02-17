@@ -38,7 +38,7 @@ export const StatusIcon = (
   return <AntennaBars1 />;
 };
 
-const statusName = (status?: TaskStatus) => {
+export const statusName = (status?: TaskStatus) => {
   switch (status) {
     case "NONE":
       return "None";
