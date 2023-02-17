@@ -22,9 +22,17 @@ import {
   Burger,
   Drawer,
   MediaQuery,
+  Kbd,
+  Avatar,
+  Checkbox,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
+  AntennaBars1,
+  AntennaBars2,
+  AntennaBars3,
+  AntennaBars4,
+  AntennaBars5,
   Archive,
   BoxModel,
   BoxMultiple,
@@ -32,12 +40,19 @@ import {
   Circle,
   CircleCheck,
   CircleDashed,
+  CircleDot,
   CircleDotted,
+  CircleHalf,
   CircleX,
   Dna,
   LayoutColumns,
+  LayoutGrid,
   LayoutRows,
   MoodNeutral,
+  Plus,
+  Tag,
+  UserCheck,
+  UserCircle
 } from "tabler-icons-react";
 import { useQuery, useSubscription } from "urql";
 
@@ -51,10 +66,11 @@ import { DndTaskListElement } from "components/ui/CardTask";
 import { AssigneeSelector } from "components/ui/Task/assignee";
 import { ProjectSelector } from "components/ui/Task/project";
 import { TeamSelector } from "components/ui/Task/team";
-import { LabelSelector } from "components/ui/Task/label";
+import { LabelColor, LabelName, LabelSelector } from "components/ui/Task/label";
 import { LabelType } from "components/ui/Task/types";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useListState } from "@mantine/hooks";
+import { useData } from "lib/useData";
 
 const useStyles = createStyles(theme => ({
   burger: {
@@ -465,6 +481,176 @@ export const OverviewContent = () => {
     query: TasksDocument,
   });
 
+  const [filter, setFilter] = useState<String>("");
+
+  const addFilter = (newFilter : String) => {
+    setFilter(newFilter);
+  };
+
+  const FilterDropdown= (
+    filter: String,
+  ) : React.ReactNode => {
+
+    const { membersData, isLoadingMembers } = useData();
+    const { teamsData, isLoadingTeams } = useData();
+    
+    switch (filter) {
+      case "status":
+        return <>
+          <TextInput
+            placeholder="Status"
+            variant="filled"
+            rightSection={<Kbd px={8}>P</Kbd>}
+          ></TextInput>
+          <Menu.Divider />
+          <Menu.Item onClick={()=>{addFilter("")}} icon={<CircleDot size={18} />}>None</Menu.Item>
+          <Menu.Item onClick={()=>{addFilter("")}} icon={<CircleDashed size={18} />}>Backlog</Menu.Item>
+          <Menu.Item onClick={()=>{addFilter("")}} icon={<Circle size={18} />}>Todo</Menu.Item>
+          <Menu.Item onClick={()=>{addFilter("")}} icon={<CircleHalf size={18} />}>In Progress</Menu.Item>
+          <Menu.Item onClick={()=>{addFilter("")}} icon={<CircleCheck size={18} />}>Done</Menu.Item>
+          <Menu.Item onClick={()=>{addFilter("")}} icon={<CircleX size={18} />}>Canceled</Menu.Item>
+        </>;
+      case "assignee":
+        return <>
+          <TextInput
+            placeholder="Assignee"
+            variant="filled"
+            rightSection={<Kbd px={8}>P</Kbd>}
+          ></TextInput>
+          <Menu.Divider />
+          {isLoadingMembers ? (
+          <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+        ) : (
+          membersData?.members.map(m => {
+            return (
+              <Menu.Item
+                key={m.id}
+                icon={
+                  m?.photoUrl ? (
+                    <Avatar src={m.photoUrl}  size={18} radius="xl" />
+                  ) : (
+                    <UserCircle  size={18} radius="xl" />
+                  )
+                }
+                onClick={()=>{addFilter("")}}
+              >
+                {m.name}
+              </Menu.Item>
+            );
+          })
+        )}
+        </>;
+      case "creator":
+        return <>
+          <TextInput
+            placeholder="Creator"
+            variant="filled"
+            rightSection={<Kbd px={8}>P</Kbd>}
+          ></TextInput>
+          <Menu.Divider />
+          {isLoadingMembers ? (
+          <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+        ) : (
+          membersData?.members.map(m => {
+            return (
+              <Menu.Item
+                key={m.id}
+                icon={
+                  m?.photoUrl ? (
+                    <Avatar src={m.photoUrl}  size={18} radius="xl" />
+                  ) : (
+                    <UserCircle  size={18} radius="xl" />
+                  )
+                }
+                onClick={()=>{addFilter("")}}
+              >
+                {m.name}
+              </Menu.Item>
+            );
+          })
+        )}
+        </>;
+      case "priority":
+        return <>
+          <TextInput
+            placeholder="Status"
+            variant="filled"
+            rightSection={<Kbd px={8}>P</Kbd>}
+          ></TextInput>
+          <Menu.Divider />
+          <Menu.Item onClick={()=>{addFilter("")}} icon={<AntennaBars1 size={18} />}>None</Menu.Item>
+          <Menu.Item onClick={()=>{addFilter("")}} icon={<AntennaBars2 size={18} />}>Low</Menu.Item>
+          <Menu.Item onClick={()=>{addFilter("")}} icon={<AntennaBars3 size={18} />}>Medium</Menu.Item>
+          <Menu.Item onClick={()=>{addFilter("")}} icon={<AntennaBars4 size={18} />}>High</Menu.Item>
+          <Menu.Item onClick={()=>{addFilter("")}} icon={<AntennaBars5 size={18} />}>Urgent</Menu.Item>
+        </>;
+      case "labels":
+        return <>
+          <TextInput
+            placeholder="Status"
+            variant="filled"
+            rightSection={<Kbd px={8}>P</Kbd>}
+          ></TextInput>
+          <Menu.Divider />
+            {Object.values(LabelType).map(label => (
+            <Menu.Item
+              onClick={()=>{addFilter("")}}
+              key={label}
+            >
+              <Group spacing={10}>
+                <Checkbox
+                  size="xs"
+                  id={label}
+                  //checked={selectedLabels.includes(label)}
+                  //onChange={() => onChange(label)}
+                />
+                {LabelColor(label, theme)}
+                {LabelName(label)}
+              </Group>
+            </Menu.Item>
+          ))}
+        </>;
+      case "team":
+        return <>
+          <TextInput
+            placeholder="Status"
+            variant="filled"
+            rightSection={<Kbd px={8}>P</Kbd>}
+          ></TextInput>
+          <Menu.Divider />
+          {isLoadingTeams ? (
+          <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+        ) : (
+          teamsData?.teams.map(t => {
+            return (
+              <Menu.Item
+                key={t.id}
+                icon={<Dna size={16} color={theme.colors.red[4]} />}
+                onClick={()=>{addFilter("")}}
+              >
+                {t.name}
+              </Menu.Item>
+            );
+          })
+        )}
+        </>;
+    }
+      return <>
+        <TextInput
+          placeholder="Filter..."
+          variant="filled"
+          rightSection={<Kbd px={8}>P</Kbd>}
+        ></TextInput>
+        <Menu.Divider />
+        <Menu.Item onClick={()=>{addFilter("status")}} icon={<CircleDashed size={18} />}>Status</Menu.Item>
+        <Menu.Item onClick={()=>{addFilter("assignee")}} icon={<UserCircle size={18} />}>Assignee</Menu.Item>
+        <Menu.Item onClick={()=>{addFilter("creator")}} icon={<UserCheck size={18} />}>Creator</Menu.Item>
+        <Menu.Item onClick={()=>{addFilter("priority")}} icon={<AntennaBars5 size={18} />}>Priority</Menu.Item>
+        <Menu.Item onClick={()=>{addFilter("labels")}} icon={<Tag size={18} />}>Labels</Menu.Item>
+        <Menu.Item onClick={()=>{addFilter("team")}} icon={<LayoutGrid size={18} />}>Team</Menu.Item>
+      </>;
+  };
+
   const [opened, setOpened] = useState(false);
   // console.log(tasksData);
   // const [scrollPosition, onScrollPositionChange] = useState({ x: 0, y: 0 });
@@ -634,6 +820,23 @@ export const OverviewContent = () => {
                 <Menu.Item icon={<CircleDashed size={18} />}>Backlog</Menu.Item>
                 <Menu.Item icon={<BoxModel size={18} />}>All</Menu.Item>
                 <Menu.Item icon={<Archive size={18} />}>Archive</Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+            <Menu shadow="md" width={180} closeOnItemClick={false}>
+              <Menu.Target>
+                <Button
+                  styles={{root: {border:'1px dashed'}}}
+                  className={classes["text-header-buttons"]}
+                  compact
+                  variant="subtle"
+                  color={"gray"}
+                  leftIcon={<Plus size={16} color={theme.colors.red[4]} />}
+                >
+                  Filter
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                {FilterDropdown(filter)}
               </Menu.Dropdown>
             </Menu>
             {/* <Title order={5}>Active Tasks</Title> */}
