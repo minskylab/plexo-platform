@@ -16,7 +16,7 @@ export const PriorityIcon = (
 ) => {
   switch (priority) {
     case "NONE":
-      return <AntennaBars5 size={size} />;
+      return <AntennaBars1 size={size} />;
     case "LOW":
       return <AntennaBars2 size={size} />;
     case "MEDIUM":
@@ -26,14 +26,12 @@ export const PriorityIcon = (
     case "URGENT":
       return <AntennaBars5 size={size} />;
   }
-
-  return <AntennaBars1 size={size} />;
 };
 
 export const priorityName = (priority: TaskPriority | undefined) => {
   switch (priority) {
     case "NONE":
-      return "None";
+      return "No Priority";
     case "LOW":
       return "Low";
     case "MEDIUM":
@@ -43,8 +41,6 @@ export const priorityName = (priority: TaskPriority | undefined) => {
     case "URGENT":
       return "Urgent";
   }
-
-  return "No Priority";
 };
 
 type GenericPriorityMenuProps = {
