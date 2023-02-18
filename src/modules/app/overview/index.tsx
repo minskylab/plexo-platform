@@ -6,14 +6,9 @@ import {
   useMantineTheme,
   Container,
   SegmentedControl,
-  Box,
   Center,
   Button,
   Menu,
-  TextInput,
-  Modal,
-  Textarea,
-  Switch,
   Skeleton,
   SimpleGrid,
   ScrollArea,
@@ -32,29 +27,23 @@ import {
   Circle,
   CircleCheck,
   CircleDashed,
+  CircleDot,
   CircleDotted,
   CircleX,
   Dna,
   LayoutColumns,
   LayoutRows,
-  MoodNeutral,
 } from "tabler-icons-react";
-import { useQuery, useSubscription } from "urql";
+import { useQuery } from "urql";
 
-import { TaskPriority, TasksDocument, TaskStatus } from "../../../integration/graphql";
+import { TasksDocument } from "../../../integration/graphql";
 import { NavbarSearch } from "components/ui/NavBarWithSearch";
 import { TaskListElement } from "components/ui/Task";
-import { PrioritySelector } from "components/ui/Task/priority";
-import { StatusSelector } from "components/ui/Task/status";
 import { getCookie, setCookie } from "cookies-next";
 import { DndTaskListElement } from "components/ui/CardTask";
-import { AssigneeSelector } from "components/ui/Task/assignee";
-import { ProjectSelector } from "components/ui/Task/project";
-import { TeamSelector } from "components/ui/Task/team";
-import { LabelSelector } from "components/ui/Task/label";
-import { LabelType } from "components/ui/Task/types";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useListState } from "@mantine/hooks";
+import NewTask from "components/ui/Task/newTask";
 
 const useStyles = createStyles(theme => ({
   burger: {
@@ -137,7 +126,7 @@ const DndTaskBoard = ({ statusData }: { statusData: any }) => {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                   >
-                    <DndTaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />
+                    <DndTaskListElement key={t.id} task={{ ...t, status: t.status }} />
                   </div>
                 )}
               </Draggable>
@@ -204,7 +193,7 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
       <SimpleGrid cols={6} spacing={325}>
         <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
           <Group>
-            <MoodNeutral size={18} color={theme.colors.indigo[6]} />
+            <CircleDot size={18} color={theme.colors.gray[6]} />
             <Title order={6}>None</Title>
             <Text color="dimmed" size="xs">
               {data?.tasks.filter((task: { status: string }) => task.status == "NONE").length}
@@ -303,7 +292,7 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
         </Stack>
         <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
           <Group>
-            <CircleCheck size={18} color={theme.colors.green[6]} />
+            <CircleCheck size={18} color={theme.colors.indigo[6]} />
             <Title order={6}>Done</Title>
             <Text color="dimmed" size="xs">
               {data?.tasks.filter((task: { status: string }) => task.status == "DONE").length}
@@ -380,7 +369,7 @@ const DndTaskList = ({ statusData }: { statusData: any }) => {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                   >
-                    <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />
+                    <TaskListElement key={t.id} task={{ ...t, status: t.status }} />
                   </div>
                 )}
               </Draggable>
@@ -470,64 +459,12 @@ export const OverviewContent = () => {
   // const [scrollPosition, onScrollPositionChange] = useState({ x: 0, y: 0 });
   return (
     <>
-      <Modal
-        centered
-        overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
-        overlayOpacity={0.5}
-        // overlayBlur={3}
-        transition={"slide-up"}
-        size={"lg"}
-        opened={newTaskOpened}
-        onClose={() => setNewTaskOpened(false)}
-        shadow="md"
-        title={
-          <Group spacing={8}>
-            {/* <Button
-              compact
-              variant="light"
-              color={"gray"}
-              leftIcon={<Dna size={16} color={theme.colors.red[4]} />}
-            >
-              MIN
-            </Button> */}
-            <TeamSelector initialTeam={undefined} /> {/* change to current team*/}
-            <Text size={"sm"}>New Task</Text>
-          </Group>
-        }
-      >
-        <Box>
-          <TextInput placeholder="Task Title" variant="unstyled" size="lg" autoFocus />
-          <Textarea placeholder="Add description..." variant="unstyled" size="sm" />
-        </Box>
-        <Group spacing={6} mb={"md"}>
-          <StatusSelector initialStatus={TaskStatus.Backlog} />
-          <PrioritySelector initialPriority={TaskPriority.None} />
-          <AssigneeSelector initialAssignee={undefined} />
-          <LabelSelector initialLabel={[]} />
-          <ProjectSelector initialProject={undefined} />
-        </Group>
-        <Group
-          pt={"md"}
-          position="right"
-          sx={{
-            borderTopWidth: 1,
-            borderTopStyle: "solid",
-            borderTopColor:
-              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
-          }}
-        >
-          <Switch
-            label="Create more"
-            size="xs"
-            checked={createMore}
-            onChange={e => setCreateMore(e.currentTarget.checked)}
-          />
-          {/* {!createMore && "s"} */}
-          <Button compact variant="filled">
-            Create Task
-          </Button>
-        </Group>
-      </Modal>
+      <NewTask
+        newTaskOpened={newTaskOpened}
+        setNewTaskOpened={setNewTaskOpened}
+        createMore={createMore}
+        setCreateMore={setCreateMore}
+      />
       <Drawer
         className={classes.drawer}
         size="100%"
@@ -677,7 +614,7 @@ export const OverviewContent = () => {
         {viewMode === "list" ? (
           <Container>
             <Group spacing={6} mt={16} mb={8}>
-              <MoodNeutral size={18} color={theme.colors.indigo[6]} />
+              <CircleDot size={18} color={theme.colors.gray[6]} />
               <Title order={6}>None</Title>
               <Text color="dimmed" size="xs">
                 {tasksData?.tasks.filter(task => task.status == "NONE").length}
@@ -753,7 +690,7 @@ export const OverviewContent = () => {
               <ToDoDndTaskList data={tasksData} />
             )}
             <Group spacing={6} mt={16} mb={8}>
-              <CircleDotted size={18} />
+              <CircleDotted size={18} color={theme.colors.gray[6]} />
               <Title order={6}>Backlog</Title>
               <Text color="dimmed" size="xs">
                 {tasksData?.tasks.filter(task => task.status == "BACKLOG").length}
@@ -778,7 +715,7 @@ export const OverviewContent = () => {
               <BacklogDndTaskList data={tasksData} />
             )}
             <Group spacing={6} mt={16} mb={8}>
-              <CircleCheck size={18} color={theme.colors.green[6]} />
+              <CircleCheck size={18} color={theme.colors.indigo[6]} />
               <Title order={6}>Done</Title>
               <Text color="dimmed" size="xs">
                 {tasksData?.tasks.filter(task => task.status == "DONE").length}

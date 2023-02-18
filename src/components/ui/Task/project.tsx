@@ -1,22 +1,21 @@
-import { Button, Kbd, Menu, Text, TextInput, Skeleton } from "@mantine/core";
-import { useState } from "react";
+import { Button, Kbd, Menu, Text, TextInput, Skeleton, Tooltip } from "@mantine/core";
 import { LayoutGrid } from "tabler-icons-react";
 
 import { Project } from "modules/app/datatypes";
 import { useData } from "lib/useData";
 
-export const ProjectIcon = (project: Project | undefined) => {
+export const ProjectIcon = (project: Project | null) => {
   //insert project icon
   return <LayoutGrid size={16} />;
 };
 
-export const ProjectName = (project: Project | undefined) => {
+export const ProjectName = (project: Project | null) => {
   return project ? project?.name : "Project";
 };
 
 type GenericProjectsMenuProps = {
   children: React.ReactNode;
-  onSelect?: (project: Project | undefined) => void;
+  onSelect?: (project: Project | null) => void;
 };
 
 export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuProps) => {
@@ -25,10 +24,9 @@ export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuP
   return (
     <Menu shadow="md" width={180}>
       <Menu.Target>
-        {/* <ActionIcon variant="light" radius={"sm"}>
-                {PriorityIcon(task.priority)}
-              </ActionIcon> */}
-        {children}
+        <Tooltip label="Add to project" position="bottom">
+          {children}
+        </Tooltip>
       </Menu.Target>
 
       <Menu.Dropdown>
@@ -38,7 +36,7 @@ export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuP
           rightSection={<Kbd px={8}>P</Kbd>}
         ></TextInput>
         <Menu.Divider />
-        <Menu.Item icon={<LayoutGrid size={16} />} onClick={() => onSelect && onSelect(undefined)}>
+        <Menu.Item icon={<LayoutGrid size={16} />} onClick={() => onSelect && onSelect(null)}>
           No project
         </Menu.Item>
         {isLoadingProjects ? (
@@ -65,12 +63,11 @@ export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuP
 };
 
 type ProjectSelectorProps = {
-  initialProject?: Project;
+  project: Project | null;
+  setProject: (project: Project | null) => void;
 };
 
-export const ProjectSelector = ({ initialProject }: ProjectSelectorProps) => {
-  const [project, setProject] = useState<Project | undefined>(initialProject);
-
+export const ProjectSelector = ({ project, setProject }: ProjectSelectorProps) => {
   return (
     <GenericProjectsMenu onSelect={project => setProject(project)}>
       <Button compact variant="light" color={"gray"} leftIcon={ProjectIcon(project)}>

@@ -1,10 +1,9 @@
-import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton } from "@mantine/core";
+import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton, Tooltip } from "@mantine/core";
 import { Member } from "modules/app/datatypes";
-import { useState } from "react";
 
 import { useData } from "lib/useData";
 
-export const AssigneePhoto = (member: Member | undefined) => {
+export const AssigneePhoto = (member: Member | null) => {
   return member?.photoUrl ? (
     <Avatar src={member.photoUrl} size="sm" radius="xl" />
   ) : (
@@ -12,13 +11,13 @@ export const AssigneePhoto = (member: Member | undefined) => {
   );
 };
 
-export const AssigneeName = (member: Member | undefined) => {
+export const AssigneeName = (member: Member | null) => {
   return member ? member?.name : "Assignee";
 };
 
 type GenericMembersMenuProps = {
   children: React.ReactNode;
-  onSelect?: (member: Member | undefined) => void;
+  onSelect?: (member: Member | null) => void;
 };
 
 export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuProps) => {
@@ -27,12 +26,10 @@ export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuPr
   return (
     <Menu shadow="md" width={180}>
       <Menu.Target>
-        {/* <ActionIcon variant="light" radius={"sm"}>
-                {PriorityIcon(task.priority)}
-              </ActionIcon> */}
-        {children}
+        <Tooltip label="Assign to" position="bottom">
+          {children}
+        </Tooltip>
       </Menu.Target>
-
       <Menu.Dropdown>
         <TextInput
           placeholder="Assign to..."
@@ -42,7 +39,7 @@ export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuPr
         <Menu.Divider />
         <Menu.Item
           icon={<Avatar size="sm" radius="xl" />}
-          onClick={() => onSelect && onSelect(undefined)}
+          onClick={() => onSelect && onSelect(null)}
         >
           Unassigned
         </Menu.Item>
@@ -73,12 +70,11 @@ export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuPr
 };
 
 type AssigneeSelectorProps = {
-  initialAssignee?: Member;
+  assignee: Member | null;
+  setAssignee: (assignee: Member | null) => void;
 };
 
-export const AssigneeSelector = ({ initialAssignee }: AssigneeSelectorProps) => {
-  const [assignee, setAssignee] = useState<Member | undefined>(initialAssignee);
-
+export const AssigneeSelector = ({ assignee, setAssignee }: AssigneeSelectorProps) => {
   return (
     <GenericAssigneeMenu onSelect={member => setAssignee(member)}>
       {typeof assignee === "undefined" ? (

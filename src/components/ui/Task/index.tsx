@@ -63,13 +63,11 @@ export const TaskListElement = ({
   active = false,
   checked = false,
 }: TaskListElementProps) => {
+  const theme = useMantineTheme();
   const smallDate = new Date(task.createdAt).toDateString().split(" ").slice(1, 3).join(" ");
   const [controlledChecked, setChecked] = useState(checked);
-  // const theme = useMantineTheme();
-  const { classes, theme } = useStyles();
-  // theme.
+  const { classes } = useStyles();
 
-  // console.log(task.assigneeId);
   return (
     <Paper
       px={6}

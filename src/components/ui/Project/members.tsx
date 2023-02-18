@@ -1,4 +1,14 @@
-import { Button, Menu, Text, TextInput, Avatar, Skeleton, Checkbox, Group } from "@mantine/core";
+import {
+  Button,
+  Menu,
+  Text,
+  TextInput,
+  Avatar,
+  Skeleton,
+  Checkbox,
+  Group,
+  Tooltip,
+} from "@mantine/core";
 import { Users } from "tabler-icons-react";
 import { useState } from "react";
 
@@ -45,7 +55,11 @@ export const GenericMemberMenu = ({
 
   return (
     <Menu shadow="md" closeOnItemClick={false}>
-      <Menu.Target>{children}</Menu.Target>
+      <Menu.Target>
+        <Tooltip label="Project members" position="bottom">
+          {children}
+        </Tooltip>
+      </Menu.Target>
 
       <Menu.Dropdown>
         <TextInput placeholder="Change project members" variant="filled"></TextInput>
@@ -53,25 +67,23 @@ export const GenericMemberMenu = ({
         {isLoadingMembers ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
-          <Checkbox.Group value={selectedMembers} onChange={setSelectedMembers}>
+          <Checkbox.Group spacing={0} value={selectedMembers} onChange={setSelectedMembers}>
             {membersData?.members.map(m => {
               return (
                 <Menu.Item key={m.id}>
-                  <Group spacing={10}>
-                    <Checkbox
-                      size="xs"
-                      value={m.id}
-                      label={MemberPhoto(m)}
-                      styles={{
-                        body: {
-                          alignItems: "center",
-                        },
-                        label: {
-                          paddingLeft: 5,
-                        },
-                      }}
-                    />
-                  </Group>
+                  <Checkbox
+                    size="xs"
+                    value={m.id}
+                    label={MemberPhoto(m)}
+                    styles={{
+                      body: {
+                        alignItems: "center",
+                      },
+                      label: {
+                        paddingLeft: 5,
+                      },
+                    }}
+                  />
                 </Menu.Item>
               );
             })}
