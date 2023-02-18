@@ -55,9 +55,11 @@ export const GenericMemberMenu = ({
 
   return (
     <Menu shadow="md" closeOnItemClick={false}>
-      <Tooltip label="Project members" position="bottom">
-        {children}
-      </Tooltip>
+      <Menu.Target>
+        <Tooltip label="Project members" position="bottom">
+          {children}
+        </Tooltip>
+      </Menu.Target>
 
       <Menu.Dropdown>
         <TextInput placeholder="Change project members" variant="filled"></TextInput>

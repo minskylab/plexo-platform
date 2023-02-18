@@ -41,13 +41,12 @@ subscription TasksSubscription {
   }
 }
 
-mutation newTask(
+mutation NewTask(
   $title: String!
   $ownerId: UUID!
   $description: String
   $status: String
   $priority: String
-  $dueDate: DateTime
   $projectId: UUID
   $leadId: UUID
   $labels: [String!]
@@ -58,11 +57,12 @@ mutation newTask(
     description: $description
     status: $status
     priority: $priority
-    dueDate: $dueDate
     projectId: $projectId
     leadId: $leadId
     labels: $labels
   ) {
     id
+    title
+    status
   }
 }

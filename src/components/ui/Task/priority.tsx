@@ -26,7 +26,7 @@ export const PriorityIcon = (
   }
 };
 
-export const priorityName = (priority: TaskPriority | undefined) => {
+export const priorityLabel = (priority: TaskPriority | undefined) => {
   switch (priority) {
     case "NONE":
       return "No Priority";
@@ -43,16 +43,17 @@ export const priorityName = (priority: TaskPriority | undefined) => {
 
 type GenericPriorityMenuProps = {
   children: React.ReactNode;
-  onSelect?: (priority: TaskPriority | undefined) => void;
+  onSelect?: (priority: TaskPriority) => void;
 };
 
 export const GenericPriorityMenu = ({ children, onSelect }: GenericPriorityMenuProps) => {
   return (
     <Menu shadow="md" width={180}>
-      <Tooltip label="Set priority" position="bottom">
-        {children}
-      </Tooltip>
-
+      <Menu.Target>
+        <Tooltip label="Set priority" position="bottom">
+          {children}
+        </Tooltip>
+      </Menu.Target>
       <Menu.Dropdown>
         <TextInput
           placeholder="Change Priority..."
@@ -96,8 +97,8 @@ export const GenericPriorityMenu = ({ children, onSelect }: GenericPriorityMenuP
 };
 
 type PrioritySelectorProps = {
-  priority: TaskPriority | undefined;
-  setPriority: (priority: TaskPriority | undefined) => void;
+  priority: TaskPriority;
+  setPriority: (priority: TaskPriority) => void;
 };
 
 export const PrioritySelector = ({ priority, setPriority }: PrioritySelectorProps) => {
@@ -109,7 +110,7 @@ export const PrioritySelector = ({ priority, setPriority }: PrioritySelectorProp
         </Button>
       ) : (
         <Button compact variant="light" color={"gray"} leftIcon={PriorityIcon(priority, 18)}>
-          <Text size={"xs"}>{priorityName(priority)}</Text>
+          <Text size={"xs"}>{priorityLabel(priority)}</Text>
         </Button>
       )}
     </GenericPriorityMenu>

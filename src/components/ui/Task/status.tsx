@@ -1,4 +1,13 @@
-import { Button, Kbd, Menu, Text, TextInput, Tooltip, useMantineTheme } from "@mantine/core";
+import {
+  Button,
+  Kbd,
+  Menu,
+  Text,
+  TextInput,
+  Tooltip,
+  useMantineTheme,
+  MantineTheme,
+} from "@mantine/core";
 import { TaskStatus } from "integration/graphql";
 import {
   AntennaBars1,
@@ -10,9 +19,11 @@ import {
   ChartPie2,
 } from "tabler-icons-react";
 
-export const StatusIcon = (status?: TaskStatus, size: string | number | undefined = 18) => {
-  const theme = useMantineTheme();
-
+export const StatusIcon = (
+  theme: MantineTheme,
+  status?: TaskStatus,
+  size: string | number | undefined = 18
+) => {
   switch (status) {
     case "NONE":
       return <CircleDot size={size} color={theme.colors.gray[6]} />;
@@ -33,7 +44,7 @@ export const StatusIcon = (status?: TaskStatus, size: string | number | undefine
   return <AntennaBars1 />;
 };
 
-const statusName = (status?: TaskStatus) => {
+const statusLabel = (status?: TaskStatus) => {
   switch (status) {
     case "NONE":
       return "None";
@@ -56,7 +67,7 @@ const statusName = (status?: TaskStatus) => {
 
 type GenericStatusMenuProps = {
   children: React.ReactNode;
-  onSelect?: (priority: TaskStatus | undefined) => void;
+  onSelect?: (priority: TaskStatus) => void;
 };
 
 export const GenericStatusMenu = ({ children, onSelect }: GenericStatusMenuProps) => {
@@ -64,10 +75,11 @@ export const GenericStatusMenu = ({ children, onSelect }: GenericStatusMenuProps
 
   return (
     <Menu shadow="md" width={180}>
-      <Tooltip label="Change status" position="bottom">
-        {children}
-      </Tooltip>
-
+      <Menu.Target>
+        <Tooltip label="Change status" position="bottom">
+          {children}
+        </Tooltip>
+      </Menu.Target>
       <Menu.Dropdown>
         <TextInput
           placeholder="Change Status..."
@@ -128,18 +140,17 @@ export const GenericStatusMenu = ({ children, onSelect }: GenericStatusMenuProps
 };
 
 type StatusSelectorProps = {
-  status: TaskStatus | undefined;
-  setStatus: (status: TaskStatus | undefined) => void;
+  status: TaskStatus;
+  setStatus: (status: TaskStatus) => void;
 };
 
 export const StatusSelector = ({ status, setStatus }: StatusSelectorProps) => {
-  /* const [status, setStatus] = useState<TaskStatus | undefined>(initialStatus); */
   const theme = useMantineTheme();
 
   return (
     <GenericStatusMenu onSelect={priority => setStatus(priority)}>
-      <Button compact variant="light" color={"gray"} leftIcon={StatusIcon(status, 18)}>
-        <Text size={"xs"}>{statusName(status)}</Text>
+      <Button compact variant="light" color={"gray"} leftIcon={StatusIcon(theme, status, 18)}>
+        <Text size={"xs"}>{statusLabel(status)}</Text>
       </Button>
     </GenericStatusMenu>
   );

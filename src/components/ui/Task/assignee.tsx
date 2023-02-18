@@ -3,7 +3,7 @@ import { Member } from "modules/app/datatypes";
 
 import { useData } from "lib/useData";
 
-export const AssigneePhoto = (member: Member | undefined) => {
+export const AssigneePhoto = (member: Member | null) => {
   return member?.photoUrl ? (
     <Avatar src={member.photoUrl} size="sm" radius="xl" />
   ) : (
@@ -11,13 +11,13 @@ export const AssigneePhoto = (member: Member | undefined) => {
   );
 };
 
-export const AssigneeName = (member: Member | undefined) => {
+export const AssigneeName = (member: Member | null) => {
   return member ? member?.name : "Assignee";
 };
 
 type GenericMembersMenuProps = {
   children: React.ReactNode;
-  onSelect?: (member: Member | undefined) => void;
+  onSelect?: (member: Member | null) => void;
 };
 
 export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuProps) => {
@@ -25,10 +25,11 @@ export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuPr
 
   return (
     <Menu shadow="md" width={180}>
-      <Tooltip label="Assign to" position="bottom">
-        {children}
-      </Tooltip>
-
+      <Menu.Target>
+        <Tooltip label="Assign to" position="bottom">
+          {children}
+        </Tooltip>
+      </Menu.Target>
       <Menu.Dropdown>
         <TextInput
           placeholder="Assign to..."
@@ -38,7 +39,7 @@ export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuPr
         <Menu.Divider />
         <Menu.Item
           icon={<Avatar size="sm" radius="xl" />}
-          onClick={() => onSelect && onSelect(undefined)}
+          onClick={() => onSelect && onSelect(null)}
         >
           Unassigned
         </Menu.Item>
@@ -69,8 +70,8 @@ export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuPr
 };
 
 type AssigneeSelectorProps = {
-  assignee: Member | undefined;
-  setAssignee: (assignee: Member | undefined) => void;
+  assignee: Member | null;
+  setAssignee: (assignee: Member | null) => void;
 };
 
 export const AssigneeSelector = ({ assignee, setAssignee }: AssigneeSelectorProps) => {

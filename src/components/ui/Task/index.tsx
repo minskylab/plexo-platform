@@ -7,6 +7,7 @@ import {
   Group,
   Paper,
   Text,
+  useMantineTheme,
 } from "@mantine/core";
 import { Task } from "modules/app/datatypes";
 import { useState } from "react";
@@ -62,6 +63,7 @@ export const TaskListElement = ({
   active = false,
   checked = false,
 }: TaskListElementProps) => {
+  const theme = useMantineTheme();
   const smallDate = new Date(task.createdAt).toDateString().split(" ").slice(1, 3).join(" ");
   const [controlledChecked, setChecked] = useState(checked);
   const { classes } = useStyles();
@@ -99,7 +101,7 @@ export const TaskListElement = ({
           </GenericPriorityMenu>
           <GenericStatusMenu>
             <ActionIcon variant="light" radius={"sm"}>
-              {StatusIcon(task.status)}
+              {StatusIcon(theme, task.status)}
             </ActionIcon>
           </GenericStatusMenu>
           <Text lineClamp={1} className={classes.MIN} size={"sm"} color={"dimmed"}>

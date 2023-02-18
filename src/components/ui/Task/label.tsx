@@ -6,6 +6,7 @@ import {
   TextInput,
   ColorSwatch,
   useMantineTheme,
+  MantineTheme,
   Checkbox,
   Group,
   Tooltip,
@@ -14,27 +15,25 @@ import { Tag } from "tabler-icons-react";
 
 import { LabelType } from "./types";
 
-export const LabelColor = (labels: LabelType[] | LabelType | undefined) => {
-  const theme = useMantineTheme();
-
+export const LabelColor = (labels: LabelType[] | LabelType | undefined, theme: MantineTheme) => {
   if (labels) {
     if (Array.isArray(labels)) {
       if (labels.length == 1) {
         switch (labels[0]) {
-          case "BUG":
+          case "Bug":
             return <ColorSwatch color={theme.colors.red[7]} size={10} />;
-          case "FEATURE":
+          case "Feature":
             return <ColorSwatch color={theme.colors.violet[3]} size={10} />;
-          case "IMPROVEMENT":
+          case "Improvement":
             return <ColorSwatch color={theme.colors.blue[6]} size={10} />;
-          case "MIGRATED":
+          case "Migrated":
             return <ColorSwatch color={theme.colors.blue[4]} size={10} />;
         }
       } else if (labels.length > 1) {
         return (
           <Group spacing={0}>
             {labels.map(label => {
-              return LabelColor(label);
+              return LabelColor(label, theme);
             })}
           </Group>
         );
@@ -43,13 +42,13 @@ export const LabelColor = (labels: LabelType[] | LabelType | undefined) => {
       }
     } else {
       switch (labels) {
-        case "BUG":
+        case "Bug":
           return <ColorSwatch key={labels} color={theme.colors.red[7]} size={10} />;
-        case "FEATURE":
+        case "Feature":
           return <ColorSwatch key={labels} color={theme.colors.violet[3]} size={10} />;
-        case "IMPROVEMENT":
+        case "Improvement":
           return <ColorSwatch key={labels} color={theme.colors.blue[6]} size={10} />;
-        case "MIGRATED":
+        case "Migrated":
           return <ColorSwatch key={labels} color={theme.colors.blue[4]} size={10} />;
       }
     }
@@ -64,13 +63,13 @@ export const LabelName = (labels: LabelType[] | LabelType | undefined) => {
     if (Array.isArray(labels)) {
       if (labels.length == 1) {
         switch (labels[0]) {
-          case "BUG":
+          case "Bug":
             return "Bug";
-          case "FEATURE":
+          case "Feature":
             return "Feature";
-          case "IMPROVEMENT":
+          case "Improvement":
             return "Improvement";
-          case "MIGRATED":
+          case "Migrated":
             return "Migrated";
         }
       } else {
@@ -78,13 +77,13 @@ export const LabelName = (labels: LabelType[] | LabelType | undefined) => {
       }
     } else {
       switch (labels) {
-        case "BUG":
+        case "Bug":
           return "Bug";
-        case "FEATURE":
+        case "Feature":
           return "Feature";
-        case "IMPROVEMENT":
+        case "Improvement":
           return "Improvement";
-        case "MIGRATED":
+        case "Migrated":
           return "Migrated";
       }
     }
@@ -92,10 +91,10 @@ export const LabelName = (labels: LabelType[] | LabelType | undefined) => {
   return "";
 };
 
-const LabelData = (label: LabelType | undefined) => {
+const LabelData = (label: LabelType | undefined, theme: MantineTheme) => {
   return (
     <Group spacing={10} sx={{ width: "100%" }}>
-      {LabelColor(label)}
+      {LabelColor(label, theme)}
       {LabelName(label)}
     </Group>
   );
@@ -105,18 +104,22 @@ type GenericLabelsMenuProps = {
   children: React.ReactNode;
   selectedLabels: LabelType[];
   setSelectedLabels: (selectedLabels: LabelType[]) => void;
+  theme: MantineTheme;
 };
 
 export const GenericLabelMenu = ({
   children,
   selectedLabels,
   setSelectedLabels,
+  theme,
 }: GenericLabelsMenuProps) => {
   return (
     <Menu shadow="md" width={180} closeOnItemClick={false}>
-      <Tooltip label="Add labels" position="bottom">
-        {children}
-      </Tooltip>
+      <Menu.Target>
+        <Tooltip label="Add labels" position="bottom">
+          {children}
+        </Tooltip>
+      </Menu.Target>
 
       <Menu.Dropdown>
         <TextInput
@@ -131,7 +134,7 @@ export const GenericLabelMenu = ({
               <Checkbox
                 size="xs"
                 value={label}
-                label={LabelData(label)}
+                label={LabelData(label, theme)}
                 styles={{
                   body: {
                     width: "100%",
@@ -158,16 +161,19 @@ type LabelSelectorProps = {
 
 export const LabelSelector = ({ selectedLabels, setSelectedLabels }: LabelSelectorProps) => {
   const theme = useMantineTheme();
-
   return (
-    <GenericLabelMenu selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels}>
+    <GenericLabelMenu
+      selectedLabels={selectedLabels}
+      setSelectedLabels={setSelectedLabels}
+      theme={theme}
+    >
       {selectedLabels.length ? (
-        <Button compact variant="light" color={"gray"} leftIcon={LabelColor(selectedLabels)}>
+        <Button compact variant="light" color={"gray"} leftIcon={LabelColor(selectedLabels, theme)}>
           <Text size={"xs"}>{LabelName(selectedLabels)}</Text>
         </Button>
       ) : (
         <Button compact variant="light" color={"gray"}>
-          {LabelColor(selectedLabels)}
+          {LabelColor(selectedLabels, theme)}
         </Button>
       )}
     </GenericLabelMenu>

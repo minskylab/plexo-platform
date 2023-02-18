@@ -4,18 +4,18 @@ import { LayoutGrid } from "tabler-icons-react";
 import { Project } from "modules/app/datatypes";
 import { useData } from "lib/useData";
 
-export const ProjectIcon = (project: Project | undefined) => {
+export const ProjectIcon = (project: Project | null) => {
   //insert project icon
   return <LayoutGrid size={16} />;
 };
 
-export const ProjectName = (project: Project | undefined) => {
+export const ProjectName = (project: Project | null) => {
   return project ? project?.name : "Project";
 };
 
 type GenericProjectsMenuProps = {
   children: React.ReactNode;
-  onSelect?: (project: Project | undefined) => void;
+  onSelect?: (project: Project | null) => void;
 };
 
 export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuProps) => {
@@ -23,9 +23,11 @@ export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuP
 
   return (
     <Menu shadow="md" width={180}>
-      <Tooltip label="Add to project" position="bottom">
-        {children}
-      </Tooltip>
+      <Menu.Target>
+        <Tooltip label="Add to project" position="bottom">
+          {children}
+        </Tooltip>
+      </Menu.Target>
 
       <Menu.Dropdown>
         <TextInput
@@ -34,7 +36,7 @@ export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuP
           rightSection={<Kbd px={8}>P</Kbd>}
         ></TextInput>
         <Menu.Divider />
-        <Menu.Item icon={<LayoutGrid size={16} />} onClick={() => onSelect && onSelect(undefined)}>
+        <Menu.Item icon={<LayoutGrid size={16} />} onClick={() => onSelect && onSelect(null)}>
           No project
         </Menu.Item>
         {isLoadingProjects ? (
@@ -61,8 +63,8 @@ export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuP
 };
 
 type ProjectSelectorProps = {
-  project: Project | undefined;
-  setProject: (project: Project | undefined) => void;
+  project: Project | null;
+  setProject: (project: Project | null) => void;
 };
 
 export const ProjectSelector = ({ project, setProject }: ProjectSelectorProps) => {
