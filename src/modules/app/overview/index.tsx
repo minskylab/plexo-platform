@@ -25,6 +25,8 @@ import {
   Kbd,
   Avatar,
   Checkbox,
+  Divider,
+  Flex,
 } from "@mantine/core";
 import { useClickOutside } from '@mantine/hooks';
 import { ReactNode, useEffect, useState } from "react";
@@ -53,7 +55,8 @@ import {
   Plus,
   Tag,
   UserCheck,
-  UserCircle
+  UserCircle,
+  X
 } from "tabler-icons-react";
 import { useQuery, useSubscription } from "urql";
 
@@ -483,17 +486,20 @@ export const OverviewContent = () => {
     query: TasksDocument,
   });
 
-  type filterTypes =  TaskStatus[] | Member[] | TaskPriority[] | LabelType[] | Project[];
+  type filterTypes =  TaskStatus[] | Member[] | TaskPriority[] | LabelType[] | Project[] | Object;
 
-  const [filterList, setFilterList] = useState<filterTypes[]>([]);
+  const [filterList, setFilterList] = useState<Object[]>([]);
 
     const [openedMenu, setOpenedMenu] = useState(false);
+    
+
     const ref = useClickOutside(() => {
+      setOpenedMenu(false);
       switch (filter) {
         case "status":
-          setFilterList([...filterList, statusFilters]);
-          console.log(filterList);
-          addFilter("");
+          if (statusFilters.length > 0){
+            setFilterList([...filterList, {name: 'status', elements: statusFilters}]);
+          }
           setStatusFilters([]);
         case "assignee":
           return;
@@ -506,7 +512,6 @@ export const OverviewContent = () => {
         case "project":
           return;
       }
-      setOpenedMenu(false);
     });
 
 
@@ -529,15 +534,12 @@ export const OverviewContent = () => {
   const [priorityFilters, setPriorityFilters] = useState<TaskPriority[]>([]);
   const [labelsFilters, setLabelsFilters] = useState<LabelType[]>([]);
   const [projectFilters, setProjectFilters] = useState<Project[]>([]);
+  const { membersData, isLoadingMembers } = useData();
+  const { projectsData, isLoadingProjects } = useData();
 
   const FilterDropdown= (
     filter: String,
   ) : React.ReactNode => {
-
-    const { membersData, isLoadingMembers } = useData();
-    const { projectsData, isLoadingProjects } = useData();
-    const theme = useMantineTheme();
-
     
     switch (filter) {
       case "status":
@@ -806,6 +808,52 @@ export const OverviewContent = () => {
       </>;
   };
 
+  const FilterListView = (
+    filter:any,
+    index:number,
+  ) : ReactNode => {
+    if (filter.name == "status"){
+      if (filter.elements.length > 1){
+        return <Group key={index} spacing={6}>
+        <Button
+              styles={{root: {border:'1px solid'}}}
+              className={classes["text-header-buttons"]}
+              compact
+              variant="subtle"
+              color={"gray"}
+              leftIcon={<CircleDashed size={16}/>}
+            >
+              Status is any of 
+              <Group mr={10} ml={10} spacing={0}>
+              {(filter.elements).map(function (filter: TaskStatus, index: number) {
+                return <div key={index}>{StatusIcon(theme,filter)}</div>;
+              })}
+              </Group>
+              {filter.elements.length} states 
+        </Button>
+      </Group>
+      }
+      else{
+        return <Group key={index} spacing={6}>
+        <Button
+              styles={{root: {border:'1px solid'}}}
+              className={classes["text-header-buttons"]}
+              compact
+              variant="subtle"
+              color={"gray"}
+              leftIcon={<CircleDashed size={16}/>}
+            >
+              Status is
+              <Group mr={10} ml={10} spacing={0}>
+              <CircleDashed size={16}/>
+              </Group>
+              {statusName(filter.elements[0])} 
+        </Button>
+      </Group>
+      }
+    }
+  };
+
   const [opened, setOpened] = useState(false);
   // console.log(tasksData);
   // const [scrollPosition, onScrollPositionChange] = useState({ x: 0, y: 0 });
@@ -912,13 +960,13 @@ export const OverviewContent = () => {
         fixed
       >
         <Group
+          h={{base: 100, sm: 73.5}}
           position="apart"
           sx={{
             backgroundColor:
               theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0],
             marginBottom: theme.spacing.md,
             padding: theme.spacing.md,
-            height: 73.5,
             "&:not(:last-of-type)": {
               borderBottom: `1px solid ${
                 theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
@@ -926,7 +974,7 @@ export const OverviewContent = () => {
             },
           }}
         >
-          <Group spacing="xs">
+          <Group spacing="md">
             <MediaQuery largerThan="sm" styles={{ display: "none" }}>
               <Burger
                 opened={opened}
@@ -977,16 +1025,21 @@ export const OverviewContent = () => {
                 <Menu.Item icon={<Archive size={18} />}>Archive</Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <Menu shadow="md" width={250} opened={openedMenu}>
+            {filterList.length == 0 ? 
+              <Menu shadow="md" width={250} opened={openedMenu}>
               <Menu.Target>
                 <Button
                   styles={{root: {border:'1px dashed'}}}
                   className={classes["text-header-buttons"]}
                   compact
+                  p={5}
                   variant="subtle"
                   color={"gray"}
-                  leftIcon={<Plus size={16} color={theme.colors.red[4]} />}
-                  onClick={() => setOpenedMenu(true)}
+                  leftIcon={ <Plus size={16} color={theme.colors.red[4]} /> }
+                  onClick={ () => {
+                    addFilter("");
+                    setOpenedMenu(true)}
+                  }
                 >
                   Filter
                 </Button>
@@ -997,6 +1050,24 @@ export const OverviewContent = () => {
                 </Menu.Dropdown>
               </Box>
             </Menu>
+            :
+            <Button
+            styles={{root: {border:'1px dashed'}}}
+            className={classes["text-header-buttons"]}
+            compact
+            variant="subtle"
+            color={"gray"}
+            leftIcon={ <X size={16} color={theme.colors.red[4]} /> }
+            onClick={ 
+              () => {
+                addFilter("");
+                setFilterList([])}
+            }
+          >
+            Clear filters
+          </Button>
+            }
+
             {/* <Title order={5}>Active Tasks</Title> */}
           </Group>
           <Group>
@@ -1037,6 +1108,47 @@ export const OverviewContent = () => {
         </Group>
         {viewMode === "list" ? (
           <Container>
+            {filterList.length > 0 ? 
+          <>
+          <Flex 
+            mt={{base: 50, sm: 0}}
+            mih={50}
+            gap={{base : 'xl', sm: 'sm'}}
+            justify="flex-start"
+            align="center"
+            direction="row"
+            wrap="wrap"
+          >
+            {filterList.map(function (filter, index) {
+              return FilterListView(filter, index);
+            })}
+            <Menu shadow="md" width={250} opened={openedMenu}>
+              <Menu.Target>
+                <Button
+                  className={classes["text-header-buttons"]}
+                  compact
+                  variant="subtle"
+                  color={"gray"}
+                  leftIcon={<Plus size={16} color={theme.colors.red[4]} />}
+                  onClick={ () => {
+                    addFilter("");
+                    setOpenedMenu(true)}
+                  }
+                >
+                </Button>
+              </Menu.Target>
+              <Box ref={ref}>
+                <Menu.Dropdown>
+                  {FilterDropdown(filter)}
+                </Menu.Dropdown>
+              </Box>
+            </Menu>
+          </Flex>
+          <Divider my="sm" />
+
+          </>
+            :
+            null}
             <Group spacing={6} mt={16} mb={8}>
               <MoodNeutral size={18} color={theme.colors.indigo[6]} />
               <Title order={6}>None</Title>
