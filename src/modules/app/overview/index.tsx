@@ -502,16 +502,31 @@ export const OverviewContent = () => {
           }
           setStatusFilters([]);
         case "assignee":
-          return;
+          if (assigneeFilters.length > 0){
+            setFilterList([...filterList, {name: 'assignee', elements: assigneeFilters}]);
+          }
+          setAssigneeFilters([]);
         case "creator":
-          return;
+          if (creatorFilters.length > 0){
+            setFilterList([...filterList, {name: 'creator', elements: creatorFilters}]);
+          }
+          setCreatorFilters([]);
         case "priority":
-          return;
+          if (priorityFilters.length > 0){
+            setFilterList([...filterList, {name: 'priority', elements: priorityFilters}]);
+          }
+          setPriorityFilters([]);
         case "labels":
-          return;
+          if (labelsFilters.length > 0){
+            setFilterList([...filterList, {name: 'labels', elements: labelsFilters}]);
+          }
+          setLabelsFilters([]);        
         case "project":
-          return;
-      }
+          if (projectFilters.length > 0){
+            setFilterList([...filterList, {name: 'project', elements: projectFilters}]);
+          }
+          setProjectFilters([]);        
+        }
     });
 
 
@@ -529,11 +544,52 @@ export const OverviewContent = () => {
       setStatusFilters([...statusFilters, status]);
     }
   };
+
   const [assigneeFilters, setAssigneeFilters] = useState<Member[]>([]);
+  const handleChangeAssignee = (member: Member) => {
+    if (assigneeFilters.includes(member)) {
+      setAssigneeFilters(assigneeFilters.filter(filter => filter !== member));
+    } else {
+      setAssigneeFilters([...assigneeFilters, member]);
+    }
+  };
+
   const [creatorFilters, setCreatorFilters] = useState<Member[]>([]);
+  const handleChangeCreator = (member: Member) => {
+    if (creatorFilters.includes(member)) {
+      setCreatorFilters(creatorFilters.filter(filter => filter !== member));
+    } else {
+      setCreatorFilters([...creatorFilters, member]);
+    }
+  };
+
   const [priorityFilters, setPriorityFilters] = useState<TaskPriority[]>([]);
+  const handleChangePriority = (priority: TaskPriority) => {
+    if (priorityFilters.includes(priority)) {
+      setPriorityFilters(priorityFilters.filter(filter => filter !== priority));
+    } else {
+      setPriorityFilters([...priorityFilters, priority]);
+    }
+  };
+
   const [labelsFilters, setLabelsFilters] = useState<LabelType[]>([]);
+  const handleChangeLabel = (label: LabelType) => {
+    if (labelsFilters.includes(label)) {
+      setLabelsFilters(labelsFilters.filter(filter => filter !== label));
+    } else {
+      setLabelsFilters([...labelsFilters, label]);
+    }
+  };
+
   const [projectFilters, setProjectFilters] = useState<Project[]>([]);
+  const handleChangeProject = (project: Project) => {
+    if (projectFilters.includes(project)) {
+      setProjectFilters(projectFilters.filter(filter => filter !== project));
+    } else {
+      setProjectFilters([...projectFilters, project]);
+    }
+  };
+
   const { membersData, isLoadingMembers } = useData();
   const { projectsData, isLoadingProjects } = useData();
 
@@ -630,12 +686,12 @@ export const OverviewContent = () => {
         ) : (
           membersData?.members.map(m => {
             return (
-              <Menu.Item key={m.id} onClick={()=>{addFilter("")}}>
+              <Menu.Item key={m.id} onClick={() => handleChangeAssignee(m)}>
               <Group spacing={10}>
                   <Checkbox
                     size="xs"
-                    //checked={selectedLabels.includes(label)}
-                    //onChange={() => onChange(label)}
+                    checked={assigneeFilters.includes(m)}
+                    onChange={() => handleChangeAssignee(m)}
                   />
                   {AssigneePhoto(m)}
                   {AssigneeName(m)}
@@ -658,12 +714,12 @@ export const OverviewContent = () => {
         ) : (
           membersData?.members.map(m => {
             return (
-              <Menu.Item key={m.id} onClick={()=>{addFilter("")}}>
+              <Menu.Item key={m.id} onClick={() => handleChangeCreator(m)}>
               <Group spacing={10}>
                   <Checkbox
                     size="xs"
-                    //checked={selectedLabels.includes(label)}
-                    //onChange={() => onChange(label)}
+                    checked={creatorFilters.includes(m)}
+                    onChange={() => handleChangeCreator(m)}
                   />
                   {AssigneePhoto(m)}
                   {AssigneeName(m)}
@@ -681,56 +737,56 @@ export const OverviewContent = () => {
             rightSection={<Kbd px={8}>P</Kbd>}
           ></TextInput>
           <Menu.Divider />
-          <Menu.Item onClick={()=>{addFilter("")}}>
+          <Menu.Item onClick={() => handleChangePriority(TaskPriority.None)}>
           <Group spacing={10}>
               <Checkbox
                 size="xs"
-                //checked={selectedLabels.includes(label)}
-                //onChange={() => onChange(label)}
+                checked={priorityFilters.includes(TaskPriority.None)}
+                onChange={() => handleChangePriority(TaskPriority.None)}
               />
               {PriorityIcon(TaskPriority.None, 18)}
               {priorityName(TaskPriority.None)}
             </Group>
           </Menu.Item>
-          <Menu.Item onClick={()=>{addFilter("")}}>
+          <Menu.Item onClick={() => handleChangePriority(TaskPriority.Low)}>
           <Group spacing={10}>
               <Checkbox
                 size="xs"
-                //checked={selectedLabels.includes(label)}
-                //onChange={() => onChange(label)}
+                checked={priorityFilters.includes(TaskPriority.Low)}
+                onChange={() => handleChangePriority(TaskPriority.Low)}
               />
               {PriorityIcon(TaskPriority.Low, 18)}
               {priorityName(TaskPriority.Low)}
             </Group>
           </Menu.Item>
-          <Menu.Item onClick={()=>{addFilter("")}}>
+          <Menu.Item onClick={() => handleChangePriority(TaskPriority.Medium)}>
           <Group spacing={10}>
               <Checkbox
                 size="xs"
-                //checked={selectedLabels.includes(label)}
-                //onChange={() => onChange(label)}
+                checked={priorityFilters.includes(TaskPriority.Medium)}
+                onChange={() => handleChangePriority(TaskPriority.Medium)}
               />
               {PriorityIcon(TaskPriority.Medium, 18)}
               {priorityName(TaskPriority.Medium)}
             </Group>
           </Menu.Item>
-          <Menu.Item onClick={()=>{addFilter("")}}>
+          <Menu.Item onClick={() => handleChangePriority(TaskPriority.High)}>
           <Group spacing={10}>
               <Checkbox
                 size="xs"
-                //checked={selectedLabels.includes(label)}
-                //onChange={() => onChange(label)}
+                checked={priorityFilters.includes(TaskPriority.High)}
+                onChange={() => handleChangePriority(TaskPriority.High)}
               />
               {PriorityIcon(TaskPriority.High, 18)}
               {priorityName(TaskPriority.High)}
             </Group>
           </Menu.Item>
-          <Menu.Item onClick={()=>{addFilter("")}}>
+          <Menu.Item onClick={() => handleChangePriority(TaskPriority.Urgent)}>
           <Group spacing={10}>
               <Checkbox
                 size="xs"
-                //checked={selectedLabels.includes(label)}
-                //onChange={() => onChange(label)}
+                checked={priorityFilters.includes(TaskPriority.Urgent)}
+                onChange={() => handleChangePriority(TaskPriority.Urgent)}
               />
               {PriorityIcon(TaskPriority.Urgent, 18)}
               {priorityName(TaskPriority.Urgent)}
@@ -747,15 +803,15 @@ export const OverviewContent = () => {
           <Menu.Divider />
             {Object.values(LabelType).map(label => (
             <Menu.Item
-              onClick={()=>{addFilter("")}}
+            onClick={() => handleChangeLabel(label)}
               key={label}
             >
               <Group spacing={10}>
                 <Checkbox
                   size="xs"
                   id={label}
-                  //checked={selectedLabels.includes(label)}
-                  //onChange={() => onChange(label)}
+                  checked={labelsFilters.includes(label)}
+                  onChange={() => handleChangeLabel(label)}
                 />
                 {LabelColor(label, theme)}
                 {LabelName(label)}
@@ -776,12 +832,12 @@ export const OverviewContent = () => {
         ) : (
           projectsData?.projects.map(p => {
             return (
-              <Menu.Item key={p.id} onClick={()=>{addFilter("")}}>
+              <Menu.Item key={p.id} onClick={() => handleChangeProject(p)}>
               <Group spacing={10}>
                   <Checkbox
                     size="xs"
-                    //checked={selectedLabels.includes(label)}
-                    //onChange={() => onChange(label)}
+                    checked={projectFilters.includes(p)}
+                    onChange={() => handleChangeProject(p)}
                   />
                   {ProjectIcon(p)}
                   {ProjectName(p)}
@@ -845,9 +901,209 @@ export const OverviewContent = () => {
             >
               Status is
               <Group mr={10} ml={10} spacing={0}>
-              <CircleDashed size={16}/>
+              {StatusIcon(theme, filter.elements[0])} 
               </Group>
               {statusName(filter.elements[0])} 
+        </Button>
+      </Group>
+      }
+    }
+    if (filter.name == "assignee"){
+      if (filter.elements.length > 1){
+        return <Group key={index} spacing={6}>
+        <Button
+              styles={{root: {border:'1px solid'}}}
+              className={classes["text-header-buttons"]}
+              compact
+              variant="subtle"
+              color={"gray"}
+              leftIcon={<CircleDashed size={16}/>}
+            >
+              Assignee is any of 
+              <Group mr={10} ml={10} spacing={0}>
+              {(filter.elements).map(function (filter: Member, index: number) {
+                return <div key={index}>{AssigneePhoto(filter)}</div>;
+              })}
+              </Group>
+              {filter.elements.length} assignees 
+        </Button>
+      </Group>
+      }
+      else{
+        return <Group key={index} spacing={6}>
+        <Button
+              styles={{root: {border:'1px solid'}}}
+              className={classes["text-header-buttons"]}
+              compact
+              variant="subtle"
+              color={"gray"}
+              leftIcon={<CircleDashed size={16}/>}
+            >
+              Assignee is
+              <Group mr={10} ml={10} spacing={0}>
+              {AssigneePhoto(filter.elements[0])} 
+              </Group>
+              {AssigneeName(filter.elements[0])} 
+        </Button>
+      </Group>
+      }
+    }
+    if (filter.name == "creator"){
+      if (filter.elements.length > 1){
+        return <Group key={index} spacing={6}>
+        <Button
+              styles={{root: {border:'1px solid'}}}
+              className={classes["text-header-buttons"]}
+              compact
+              variant="subtle"
+              color={"gray"}
+              leftIcon={<CircleDashed size={16}/>}
+            >
+              Creator is any of 
+              <Group mr={10} ml={10} spacing={0}>
+              {(filter.elements).map(function (filter: Member, index: number) {
+                return <div key={index}>{AssigneePhoto(filter)}</div>;
+              })}
+              </Group>
+              {filter.elements.length} users 
+        </Button>
+      </Group>
+      }
+      else{
+        return <Group key={index} spacing={6}>
+        <Button
+              styles={{root: {border:'1px solid'}}}
+              className={classes["text-header-buttons"]}
+              compact
+              variant="subtle"
+              color={"gray"}
+              leftIcon={<CircleDashed size={16}/>}
+            >
+              Creator is
+              <Group mr={10} ml={10} spacing={0}>
+              {AssigneePhoto(filter.elements[0])} 
+              </Group>
+              {AssigneeName(filter.elements[0])} 
+        </Button>
+      </Group>
+      }
+    }
+    if (filter.name == "priority"){
+      if (filter.elements.length > 1){
+        return <Group key={index} spacing={6}>
+        <Button
+              styles={{root: {border:'1px solid'}}}
+              className={classes["text-header-buttons"]}
+              compact
+              variant="subtle"
+              color={"gray"}
+              leftIcon={<AntennaBars5 size={18} />}
+            >
+              Priority is any of 
+              <Group mr={10} ml={10} spacing={0}>
+              {(filter.elements).map(function (filter: TaskPriority, index: number) {
+                return <div key={index}>{PriorityIcon(filter, 18)}</div>;
+              })}
+              </Group>
+              {filter.elements.length} priorities 
+        </Button>
+      </Group>
+      }
+      else{
+        return <Group key={index} spacing={6}>
+        <Button
+              styles={{root: {border:'1px solid'}}}
+              className={classes["text-header-buttons"]}
+              compact
+              variant="subtle"
+              color={"gray"}
+              leftIcon={<AntennaBars5 size={18} />}
+            >
+              Priority is
+              <Group mr={10} ml={10} spacing={0}>
+              {PriorityIcon(filter.elements[0], 18)} 
+              </Group>
+              {priorityName(filter.elements[0])} 
+        </Button>
+      </Group>
+      }
+    }
+    if (filter.name == "labels"){
+      if (filter.elements.length > 1){
+        return <Group key={index} spacing={6}>
+        <Button
+              styles={{root: {border:'1px solid'}}}
+              className={classes["text-header-buttons"]}
+              compact
+              variant="subtle"
+              color={"gray"}
+              leftIcon={<Tag size={18} />}
+            >
+              Labels includes all of
+              <Group mr={10} ml={10} spacing={0}>
+              {(filter.elements).map(function (filter: LabelType, index: number) {
+                return <div key={index}>{LabelColor(filter, theme)}</div>;
+              })}
+              </Group>
+              {filter.elements.length} labels 
+        </Button>
+      </Group>
+      }
+      else{
+        return <Group key={index} spacing={6}>
+        <Button
+              styles={{root: {border:'1px solid'}}}
+              className={classes["text-header-buttons"]}
+              compact
+              variant="subtle"
+              color={"gray"}
+              leftIcon={<CircleDashed size={16}/>}
+            >
+              Labels includes 
+              <Group mr={10} ml={10} spacing={0}>
+              {LabelColor(filter.elements[0], theme)} 
+              </Group>
+              {LabelName(filter.elements[0])} 
+        </Button>
+      </Group>
+      }
+    }
+    if (filter.name == "project"){
+      if (filter.elements.length > 1){
+        return <Group key={index} spacing={6}>
+        <Button
+              styles={{root: {border:'1px solid'}}}
+              className={classes["text-header-buttons"]}
+              compact
+              variant="subtle"
+              color={"gray"}
+              leftIcon={<LayoutGrid size={18} />}
+            >
+              Project is any of 
+              <Group mr={10} ml={10} spacing={0}>
+              {(filter.elements).map(function (filter: Project, index: number) {
+                return <div key={index}>{ProjectIcon(filter)}</div>;
+              })}
+              </Group>
+              {filter.elements.length} projects 
+        </Button>
+      </Group>
+      }
+      else{
+        return <Group key={index} spacing={6}>
+        <Button
+              styles={{root: {border:'1px solid'}}}
+              className={classes["text-header-buttons"]}
+              compact
+              variant="subtle"
+              color={"gray"}
+              leftIcon={<LayoutGrid size={18} />}
+            >
+              Project is
+              <Group mr={10} ml={10} spacing={0}>
+              {ProjectIcon(filter.elements[0])} 
+              </Group>
+              {ProjectName(filter.elements[0])} 
         </Button>
       </Group>
       }
