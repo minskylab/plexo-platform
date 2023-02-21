@@ -8,6 +8,7 @@ import { getCookie, setCookie } from "cookies-next";
 import { GetServerSidePropsContext } from "next";
 import { colorBrandDark, colorBrandPrimary } from "theming";
 import { NotificationsProvider } from "@mantine/notifications";
+import { ModalsProvider } from "@mantine/modals";
 
 const client = URQLClient();
 
@@ -47,10 +48,12 @@ const PlexoApp = (props: AppProps & { colorScheme: ColorScheme }) => {
             },
           }}
         >
-          <NotificationsProvider>
-            <Fonts />
-            <Component {...pageProps} />
-          </NotificationsProvider>
+          <ModalsProvider>
+            <NotificationsProvider>
+              <Fonts />
+              <Component {...pageProps} />
+            </NotificationsProvider>
+          </ModalsProvider>
         </MantineProvider>
       </ColorSchemeProvider>
     </URQLProvider>

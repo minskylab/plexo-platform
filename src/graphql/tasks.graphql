@@ -66,3 +66,10 @@ mutation NewTask(
     status
   }
 }
+
+mutation DeleteTask($taskId: UUID!) {
+  deleteTask(id: $taskId) {
+    id
+    title
+  }
+}

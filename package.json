@@ -17,6 +17,7 @@
     "@mantine/core": "^5.10.0",
     "@mantine/dates": "^5.10.4",
     "@mantine/hooks": "^5.10.0",
+    "@mantine/modals": "^5.10.4",
     "@mantine/next": "^5.10.0",
     "@mantine/notifications": "^5.10.4",
     "@tabler/icons": "^1.119.0",
