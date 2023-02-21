@@ -90,7 +90,7 @@ export const TaskListElement = ({
               {PriorityIcon(task.priority)}
             </ActionIcon>
           </GenericPriorityMenu>
-          <GenericStatusMenu>
+          <GenericStatusMenu taskId={task.id}>
             <ActionIcon variant="light" radius={"sm"}>
               {StatusIcon(theme, task.status)}
             </ActionIcon>

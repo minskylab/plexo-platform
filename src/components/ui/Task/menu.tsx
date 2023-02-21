@@ -20,7 +20,7 @@ type TaskMenuProps = {
 };
 
 export const TaskMenu = ({ children, task }: TaskMenuProps) => {
-  const { deleteTask, fetchDeleteTask } = useTaskActions();
+  const { fetchDeleteTask } = useTaskActions();
 
   const onDeleteTask = async () => {
     const res = await fetchDeleteTask({

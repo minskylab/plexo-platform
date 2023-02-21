@@ -19,7 +19,7 @@ import { AssigneeSelector } from "./assignee";
 import { LabelSelector } from "./label";
 import { PrioritySelector } from "./priority";
 import { ProjectSelector } from "./project";
-import { StatusSelector } from "./status";
+import { statusName, StatusSelector } from "./status";
 import { LabelType } from "./types";
 import { useTaskActions } from "lib/useTaskActions";
 
@@ -28,25 +28,6 @@ type NewTaskProps = {
   setNewTaskOpened: (newTaskOpened: boolean) => void;
   createMore: boolean;
   setCreateMore: (createMore: boolean) => void;
-};
-
-const statusName = (status: TaskStatus) => {
-  switch (status) {
-    case "NONE":
-      return "None";
-    case "BACKLOG":
-      return "Backlog";
-    case "TO_DO":
-      return "ToDo";
-    case "IN_PROGRESS":
-      return "InProgress";
-    /* case "in-review":
-      return "In Review"; */
-    case "DONE":
-      return "Done";
-    case "CANCELED":
-      return "Canceled";
-  }
 };
 
 const priorityName = (priority: TaskPriority) => {

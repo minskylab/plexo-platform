@@ -73,3 +73,30 @@ mutation DeleteTask($taskId: UUID!) {
     title
   }
 }
+
+mutation UpdateTask(
+  $taskId: UUID!
+  $status: String
+  $priority: String
+  $title: String
+  $description: String
+  $dueDate: DateTime
+  $projectId: UUID
+  $leadId: UUID
+  $labels: [String!]
+) {
+  updateTask(
+    id: $taskId
+    status: $status
+    title: $title
+    priority: $priority
+    description: $description
+    dueDate: $dueDate
+    projectId: $projectId
+    leadId: $leadId
+    labels: $labels
+  ) {
+    id
+    title
+  }
+}
