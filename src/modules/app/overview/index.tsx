@@ -27,6 +27,7 @@ import {
   Checkbox,
   Divider,
   Flex,
+  ActionIcon,
 } from "@mantine/core";
 import { useClickOutside } from '@mantine/hooks';
 import { ReactNode, useEffect, useState } from "react";
@@ -171,7 +172,6 @@ const DndTaskBoard = ({ statusData }: { statusData: any }) => {
   );
 };
 
-
 const DndTaskList = ({ statusData }: { statusData: any }) => {
   const [state, handlers] = useListState([...statusData]);
   const [task, setTasks] = useState<{ id: string }[]>([]);
@@ -243,10 +243,16 @@ export const OverviewContent = () => {
     });
   }, [viewMode]);
 
+
   const [{ data: tasksData, fetching: isFetchingTasksData }] = useQuery({
     query: TasksDocument,
   });
 
+  //datos de members y projects para los filtros
+  const { membersData, isLoadingMembers } = useData();
+  const { projectsData, isLoadingProjects } = useData();
+
+  //copiando los datos de tasksData en filteredData para agregar o quitar filtros
   const [filteredData, setFilteredData] = useState<TasksQuery | undefined>(undefined);
   useEffect(() => {
     if (!isFetchingTasksData && tasksData){
@@ -254,6 +260,7 @@ export const OverviewContent = () => {
     }
   }, [isFetchingTasksData, tasksData]);
 
+  //tipos de filtros
   type filterTypes =  TaskStatus[] | Member[] | TaskPriority[] | LabelType[] | Project[];
 
   interface Filter {
@@ -261,55 +268,13 @@ export const OverviewContent = () => {
     elements: filterTypes;
   }
 
-
+  //lista de los filtros aplicados
   const [filterList, setFilterList] = useState<Filter[]>([]);
 
+  //se usa para gestionar el menu del filtro
   const [openedMenu, setOpenedMenu] = useState(false);
-    
 
-  const ref = useClickOutside(() => {
-    setOpenedMenu(false);
-    switch (filter) {
-      case "status":
-        if (statusFilters.length > 0){
-          setFilterList([...filterList, {name: 'status', elements: statusFilters}]);
-        }
-        setStatusFilters([]);
-      case "assignee":
-        if (assigneeFilters.length > 0){
-          setFilterList([...filterList, {name: 'assignee', elements: assigneeFilters}]);
-        }
-        setAssigneeFilters([]);
-      case "creator":
-        if (creatorFilters.length > 0){
-          setFilterList([...filterList, {name: 'creator', elements: creatorFilters}]);
-        }
-        setCreatorFilters([]);
-      case "priority":
-        if (priorityFilters.length > 0){
-          setFilterList([...filterList, {name: 'priority', elements: priorityFilters}]);
-        }
-        setPriorityFilters([]);
-      case "labels":
-        if (labelsFilters.length > 0){
-          setFilterList([...filterList, {name: 'labels', elements: labelsFilters}]);
-        }
-        setLabelsFilters([]);        
-      case "project":
-        if (projectFilters.length > 0){
-          setFilterList([...filterList, {name: 'project', elements: projectFilters}]);
-        }
-        setProjectFilters([]);        
-      }
-  });
-
-
-  const [filter, setFilter] = useState<String>("");
-
-  const addFilter = (newFilter : String) => {
-    setFilter(newFilter);
-  };
-
+  //gestion de la lista de filtros seleccionados de cada tipo 
   const [statusFilters, setStatusFilters] = useState<TaskStatus[]>([]);
   const handleChangeStatus = (status: TaskStatus) => {
     if (statusFilters.includes(status)) {
@@ -364,9 +329,52 @@ export const OverviewContent = () => {
     }
   };
 
-  const { membersData, isLoadingMembers } = useData();
-  const { projectsData, isLoadingProjects } = useData();
+  //gestion del filtro seleccionado para añadir los submenus de cada uno
+  const [filter, setFilter] = useState<String>("");
 
+  const addFilter = (newFilter : String) => {
+    setFilter(newFilter);
+  };
+
+  //funcion para añadir un filtro cuando termine de seleccionarse en el menu
+  //teniendo en cuenta la lista de filtros de cada tipo, y actulizandola
+  const ref = useClickOutside(() => {
+    setOpenedMenu(false);
+    switch (filter) {
+      case "status":
+        if (statusFilters.length > 0){
+          setFilterList([...filterList, {name: 'status', elements: statusFilters}]);
+        }
+        setStatusFilters([]);
+      case "assignee":
+        if (assigneeFilters.length > 0){
+          setFilterList([...filterList, {name: 'assignee', elements: assigneeFilters}]);
+        }
+        setAssigneeFilters([]);
+      case "creator":
+        if (creatorFilters.length > 0){
+          setFilterList([...filterList, {name: 'creator', elements: creatorFilters}]);
+        }
+        setCreatorFilters([]);
+      case "priority":
+        if (priorityFilters.length > 0){
+          setFilterList([...filterList, {name: 'priority', elements: priorityFilters}]);
+        }
+        setPriorityFilters([]);
+      case "labels":
+        if (labelsFilters.length > 0){
+          setFilterList([...filterList, {name: 'labels', elements: labelsFilters}]);
+        }
+        setLabelsFilters([]);        
+      case "project":
+        if (projectFilters.length > 0){
+          setFilterList([...filterList, {name: 'project', elements: projectFilters}]);
+        }
+        setProjectFilters([]);        
+      }
+  });
+
+  //funcion para añadir los submenus dependiendo del estado de "filter"
   const FilterDropdown= (
     filter: String,
   ) : React.ReactNode => {
@@ -638,55 +646,103 @@ export const OverviewContent = () => {
       </>;
   };
 
+  const handleDeleteFilter = (index: number) => {
+    setFilterList((prevFilterList) => {
+      const newFilterList = [...prevFilterList];
+      newFilterList.splice(index, 1);
+      return newFilterList;
+    });
+  };
+
+  //funcion para añadir vista de los filtros aplicados
   const FilterListView = (
     filter:any,
     index:number,
   ) : ReactNode => {
     if (filter.name == "status"){
       if (filter.elements.length > 1){
-        return <Group key={index} spacing={6}>
-        <Button
-              styles={{root: {border:'1px solid'}}}
-              className={classes["text-header-buttons"]}
-              compact
-              variant="subtle"
-              color={"gray"}
-              leftIcon={<CircleDashed size={16}/>}
-            >
-              Status is any of 
-              <Group mr={10} ml={10} spacing={0}>
-              {(filter.elements).map(function (filter: TaskStatus, index: number) {
-                return <div key={index}>{StatusIcon(theme,filter)}</div>;
-              })}
-              </Group>
-              {filter.elements.length} states 
-        </Button>
-      </Group>
-      }
+        return <Group 
+          sx={{
+            border:'3px solid',
+            borderRadius: '5px',
+            borderColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }}
+          key={index} 
+          spacing={1}>
+          <Button
+                className={classes["text-header-buttons"]}
+                compact
+                variant="subtle"
+                color={"gray"}
+                leftIcon={<CircleDashed size={16}/>}
+              >
+                Status is any of 
+                <Group mr={10} ml={10} spacing={0}>
+                {(filter.elements).map(function (filter: TaskStatus, index: number) {
+                  return <div key={index}>{StatusIcon(theme,filter)}</div>;
+                })}
+                </Group>
+                {filter.elements.length} states 
+          </Button>
+          <Button
+                className={classes["text-header-buttons"]}
+                compact
+                variant="subtle"
+                color={"gray"}
+                onClick={ () => handleDeleteFilter(index) }
+              >
+              {<X size={16}/>}
+          </Button>
+        </Group>
+        }
       else{
-        return <Group key={index} spacing={6}>
-        <Button
-              styles={{root: {border:'1px solid'}}}
-              className={classes["text-header-buttons"]}
-              compact
-              variant="subtle"
-              color={"gray"}
-              leftIcon={<CircleDashed size={16}/>}
-            >
-              Status is
-              <Group mr={10} ml={10} spacing={0}>
-              {StatusIcon(theme, filter.elements[0])} 
-              </Group>
-              {statusName(filter.elements[0])} 
-        </Button>
+          return <Group 
+          sx={{
+            border:'3px solid',
+            borderRadius: '5px',
+            borderColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }}
+          key={index} 
+          spacing={1}>
+          <Button
+                className={classes["text-header-buttons"]}
+                compact
+                variant="subtle"
+                color={"gray"}
+                leftIcon={<CircleDashed size={16}/>}
+              >
+                Status is
+                <Group mr={10} ml={10} spacing={0}>
+                {StatusIcon(theme, filter.elements[0])} 
+                </Group>
+                {statusName(filter.elements[0])} 
+          </Button>
+          <Button
+                className={classes["text-header-buttons"]}
+                compact
+                variant="subtle"
+                color={"gray"}
+                onClick={ () => handleDeleteFilter(index) }
+              >
+              {<X size={16}/>}
+          </Button>
       </Group>
       }
     }
     if (filter.name == "assignee"){
       if (filter.elements.length > 1){
-        return <Group key={index} spacing={6}>
+        return <Group 
+          sx={{
+            border:'3px solid',
+            borderRadius: '5px',
+            borderColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }}
+          key={index} 
+          spacing={1}>
         <Button
-              styles={{root: {border:'1px solid'}}}
               className={classes["text-header-buttons"]}
               compact
               variant="subtle"
@@ -701,12 +757,20 @@ export const OverviewContent = () => {
               </Group>
               {filter.elements.length} assignees 
         </Button>
+        <Button
+                className={classes["text-header-buttons"]}
+                compact
+                variant="subtle"
+                color={"gray"}
+                onClick={ () => handleDeleteFilter(index) }
+              >
+              {<X size={16}/>}
+        </Button>
       </Group>
       }
       else{
         return <Group key={index} spacing={6}>
         <Button
-              styles={{root: {border:'1px solid'}}}
               className={classes["text-header-buttons"]}
               compact
               variant="subtle"
@@ -719,14 +783,30 @@ export const OverviewContent = () => {
               </Group>
               {AssigneeName(filter.elements[0])} 
         </Button>
+        <Button
+                className={classes["text-header-buttons"]}
+                compact
+                variant="subtle"
+                color={"gray"}
+                onClick={ () => handleDeleteFilter(index) }
+              >
+              {<X size={16}/>}
+        </Button>
       </Group>
       }
     }
     if (filter.name == "creator"){
       if (filter.elements.length > 1){
-        return <Group key={index} spacing={6}>
+        return <Group
+          sx={{
+            border:'3px solid',
+            borderRadius: '5px',
+            borderColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }} 
+          key={index} 
+          spacing={1}>
         <Button
-              styles={{root: {border:'1px solid'}}}
               className={classes["text-header-buttons"]}
               compact
               variant="subtle"
@@ -741,12 +821,28 @@ export const OverviewContent = () => {
               </Group>
               {filter.elements.length} users 
         </Button>
+        <Button
+                className={classes["text-header-buttons"]}
+                compact
+                variant="subtle"
+                color={"gray"}
+                onClick={ () => handleDeleteFilter(index) }
+              >
+              {<X size={16}/>}
+        </Button>
       </Group>
       }
       else{
-        return <Group key={index} spacing={6}>
+        return <Group 
+          sx={{
+            border:'3px solid',
+            borderRadius: '5px',
+            borderColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }} 
+          key={index} 
+          spacing={1}>
         <Button
-              styles={{root: {border:'1px solid'}}}
               className={classes["text-header-buttons"]}
               compact
               variant="subtle"
@@ -759,14 +855,30 @@ export const OverviewContent = () => {
               </Group>
               {AssigneeName(filter.elements[0])} 
         </Button>
+        <Button
+                className={classes["text-header-buttons"]}
+                compact
+                variant="subtle"
+                color={"gray"}
+                onClick={ () => handleDeleteFilter(index) }
+              >
+              {<X size={16}/>}
+        </Button>
       </Group>
       }
     }
     if (filter.name == "priority"){
       if (filter.elements.length > 1){
-        return <Group key={index} spacing={6}>
+        return <Group 
+          sx={{
+            border:'3px solid',
+            borderRadius: '5px',
+            borderColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }} 
+          key={index} 
+          spacing={1}>
         <Button
-              styles={{root: {border:'1px solid'}}}
               className={classes["text-header-buttons"]}
               compact
               variant="subtle"
@@ -781,12 +893,28 @@ export const OverviewContent = () => {
               </Group>
               {filter.elements.length} priorities 
         </Button>
+        <Button
+                className={classes["text-header-buttons"]}
+                compact
+                variant="subtle"
+                color={"gray"}
+                onClick={ () => handleDeleteFilter(index) }
+              >
+              {<X size={16}/>}
+        </Button>
       </Group>
       }
       else{
-        return <Group key={index} spacing={6}>
+        return <Group 
+          sx={{
+            border:'3px solid',
+            borderRadius: '5px',
+            borderColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }} 
+          key={index} 
+          spacing={1}>
         <Button
-              styles={{root: {border:'1px solid'}}}
               className={classes["text-header-buttons"]}
               compact
               variant="subtle"
@@ -799,14 +927,30 @@ export const OverviewContent = () => {
               </Group>
               {priorityName(filter.elements[0])} 
         </Button>
+        <Button
+                className={classes["text-header-buttons"]}
+                compact
+                variant="subtle"
+                color={"gray"}
+                onClick={ () => handleDeleteFilter(index) }
+              >
+              {<X size={16}/>}
+        </Button>
       </Group>
       }
     }
     if (filter.name == "labels"){
       if (filter.elements.length > 1){
-        return <Group key={index} spacing={6}>
+        return <Group 
+          sx={{
+            border:'3px solid',
+            borderRadius: '5px',
+            borderColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }} 
+          key={index} 
+          spacing={1}>
         <Button
-              styles={{root: {border:'1px solid'}}}
               className={classes["text-header-buttons"]}
               compact
               variant="subtle"
@@ -821,103 +965,197 @@ export const OverviewContent = () => {
               </Group>
               {filter.elements.length} labels 
         </Button>
+        <Button
+                className={classes["text-header-buttons"]}
+                compact
+                variant="subtle"
+                color={"gray"}
+                onClick={ () => handleDeleteFilter(index) }
+              >
+              {<X size={16}/>}
+        </Button>
       </Group>
       }
       else{
-        return <Group key={index} spacing={6}>
-        <Button
-              styles={{root: {border:'1px solid'}}}
-              className={classes["text-header-buttons"]}
-              compact
-              variant="subtle"
-              color={"gray"}
-              leftIcon={<CircleDashed size={16}/>}
-            >
-              Labels includes 
-              <Group mr={10} ml={10} spacing={0}>
-              {LabelColor(filter.elements[0], theme)} 
-              </Group>
-              {LabelName(filter.elements[0])} 
-        </Button>
+        return <Group 
+          sx={{
+            border:'3px solid',
+            borderRadius: '5px',
+            borderColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }} 
+          key={index} 
+          spacing={1}>
+          <Button
+            className={classes["text-header-buttons"]}
+            compact
+            variant="subtle"
+            color={"gray"}
+            leftIcon={<CircleDashed size={16}/>}
+          >
+            Labels includes 
+            <Group mr={10} ml={10} spacing={0}>
+            {LabelColor(filter.elements[0], theme)} 
+            </Group>
+            {LabelName(filter.elements[0])} 
+          </Button>
+          <Button
+            className={classes["text-header-buttons"]}
+            compact
+            variant="subtle"
+            color={"gray"}
+            onClick={ () => handleDeleteFilter(index) }
+          >
+            {<X size={16}/>}
+          </Button>
       </Group>
       }
     }
     if (filter.name == "project"){
       if (filter.elements.length > 1){
-        return <Group key={index} spacing={6}>
-        <Button
-              styles={{root: {border:'1px solid'}}}
-              className={classes["text-header-buttons"]}
-              compact
-              variant="subtle"
-              color={"gray"}
-              leftIcon={<LayoutGrid size={18} />}
-            >
-              Project is any of 
-              <Group mr={10} ml={10} spacing={0}>
+        return <Group 
+          sx={{
+            border:'3px solid',
+            borderRadius: '5px',
+            borderColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }} 
+          key={index} 
+          spacing={1}>
+          <Button
+            className={classes["text-header-buttons"]}
+            compact
+            variant="subtle"
+            color={"gray"}
+            leftIcon={<LayoutGrid size={18} />}
+          >
+            Project is any of 
+            <Group mr={10} ml={10} spacing={0}>
               {(filter.elements).map(function (filter: Project, index: number) {
                 return <div key={index}>{ProjectIcon(filter)}</div>;
               })}
-              </Group>
-              {filter.elements.length} projects 
-        </Button>
+            </Group>
+            {filter.elements.length} projects 
+          </Button>
+          <Button
+            className={classes["text-header-buttons"]}
+            compact
+            variant="subtle"
+            color={"gray"}
+            onClick={ () => handleDeleteFilter(index) }
+          >
+            {<X size={16}/>}
+          </Button>
       </Group>
       }
       else{
-        return <Group key={index} spacing={6}>
+        return <Group 
+          sx={{
+            border:'3px solid',
+            borderRadius: '5px',
+            borderColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }} 
+          key={index} 
+          spacing={1}>
         <Button
-              styles={{root: {border:'1px solid'}}}
-              className={classes["text-header-buttons"]}
-              compact
-              variant="subtle"
-              color={"gray"}
-              leftIcon={<LayoutGrid size={18} />}
-            >
-              Project is
-              <Group mr={10} ml={10} spacing={0}>
-              {ProjectIcon(filter.elements[0])} 
-              </Group>
-              {ProjectName(filter.elements[0])} 
+          className={classes["text-header-buttons"]}
+          compact
+          variant="subtle"
+          color={"gray"}
+          leftIcon={<LayoutGrid size={18} />}
+        >
+          Project is
+          <Group mr={10} ml={10} spacing={0}>
+          {ProjectIcon(filter.elements[0])} 
+          </Group>
+          {ProjectName(filter.elements[0])} 
+        </Button>
+        <Button
+          className={classes["text-header-buttons"]}
+          compact
+          variant="subtle"
+          color={"gray"}
+          onClick={ () => handleDeleteFilter(index) }
+        >
+          {<X size={16}/>}
         </Button>
       </Group>
       }
     }
   };
 
-  const DatabyFilter = (data: undefined | any) : TasksQuery => {
-    console.log(filterList.length);
+  //logica para aplicar los filtros
+  const DatabyFilter = () : TasksQuery => {
     let updatedData = {...tasksData!};
+    const addedElements = new Map();
     if (filterList.length > 0) {
       let finalData: any[]= [];
       for (let i = 0; i < filterList.length; i++){
         if (filterList[i].name === "status"){
           for (let j = 0 ; j < filterList[i].elements.length; j++) {
-            finalData.push(...updatedData.tasks.filter((t: { status: string }) => t.status === filterList[i].elements[j].toString()));
+            finalData.push(...updatedData.tasks.filter((t: { id: any | null, status: string }) => {
+              if (!addedElements.has(t.id) && t.status === filterList[i].elements[j].toString()){
+                addedElements.set(t.id, true);
+                return true;
+              }
+              return false;
+            }));
           }
         }
         if (filterList[i].name === "assignee"){
           for (let j = 0 ; j < filterList[i].elements.length; j++) {
-            finalData.push(...updatedData.tasks.filter((t: { leadId?: any|null }) => t.leadId?.toString() === filterList[i].elements[j].toString()));
+            finalData.push(...updatedData.tasks.filter((t: { id: any | null, leadId?: any|null }) => {
+              if (!addedElements.has(t.id) && t.leadId?.toString() === filterList[i].elements[j].toString()){
+                addedElements.set(t.id, true);
+                return true;
+              }
+              return false;
+            }));
           }
         }
         if (filterList[i].name === "creator"){
           for (let j = 0 ; j < filterList[i].elements.length; j++) {
-            finalData.push(...updatedData.tasks.filter((t: { ownerId?: any|null }) => t.ownerId?.toString() === filterList[i].elements[j].toString()));
+            finalData.push(...updatedData.tasks.filter((t: { id: any | null, ownerId?: any|null }) => {
+              if (!addedElements.has(t.id) && t.ownerId?.toString() === filterList[i].elements[j].toString()){
+                addedElements.set(t.id, true);
+                return true;
+              }
+              return false;
+            }));
           }
         }
         if (filterList[i].name === "priority"){
           for (let j = 0 ; j < filterList[i].elements.length; j++) {
-            finalData.push(...updatedData.tasks.filter((t: { priority: string }) => t.priority === filterList[i].elements[j].toString()));
+            finalData.push(...updatedData.tasks.filter((t: {id: any | null, priority: string }) => {
+              if (!addedElements.has(t.id) && t.priority === filterList[i].elements[j].toString()){
+                addedElements.set(t.id, true);
+                return true;
+              }
+              return false;
+            }));
           }
         }
         if (filterList[i].name === "labels"){
           for (let j = 0 ; j < filterList[i].elements.length; j++) {
-            finalData.push(...updatedData.tasks.filter((t: { labels: Array<string> }) => t.labels.includes(filterList[i].elements[j].toString())));
+            finalData.push(...updatedData.tasks.filter((t: { id: any | null, labels: Array<string> }) => {
+              if (!addedElements.has(t.id) && t.labels.includes(filterList[i].elements[j].toString())){
+                addedElements.set(t.id, true);
+                return true;
+              }
+              return false;
+            }));
           }
         }
         if (filterList[i].name === "project"){
           for (let j = 0 ; j < filterList[i].elements.length; j++) {
-            finalData.push(...updatedData.tasks.filter((t: { projectId?: any|null }) => t.projectId?.toString() === filterList[i].elements[j].toString()));
+            finalData.push(...updatedData.tasks.filter((t: { id: any | null,projectId?: any|null }) => {
+              if (!addedElements.has(t.id) && t.projectId?.toString() === filterList[i].elements[j].toString()){
+                addedElements.set(t.id, true);
+                return true;
+              }
+              return false;
+            }));
           }
         }
       }
@@ -928,73 +1166,73 @@ export const OverviewContent = () => {
   };
 
   const NoneDndTaskList = ({ data }: { data: any }) => {
-    const noneData = DatabyFilter(filteredData)?.tasks.filter((t: { status: string }) => t.status == "NONE");
+    const noneData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "NONE");
   
     return <DndTaskList statusData={noneData} />;
   };
 
   const InProgressDndTaskList = ({ data }: { data: any }) => {
-    const inProgressData = DatabyFilter(filteredData)?.tasks.filter((t: { status: string }) => t.status == "IN_PROGRESS");
+    const inProgressData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "IN_PROGRESS");
   
     return <DndTaskList statusData={inProgressData} />;
   };
   
   const ToDoDndTaskList = ({ data }: { data: any }) => {
-    const toDoData = DatabyFilter(filteredData)?.tasks.filter((t: { status: string }) => t.status == "TO_DO");
+    const toDoData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "TO_DO");
   
     return <DndTaskList statusData={toDoData} />;
   };
   
   const BacklogDndTaskList = ({ data }: { data: any }) => {
-    const backlogData = DatabyFilter(filteredData)?.tasks.filter((t: { status: string }) => t.status == "BACKLOG");
+    const backlogData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "BACKLOG");
   
     return <DndTaskList statusData={backlogData} />;
   };
   
   const DoneDndTaskList = ({ data }: { data: any }) => {
-    const doneData = DatabyFilter(filteredData)?.tasks.filter((t: { status: string }) => t.status == "DONE");
+    const doneData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "DONE");
   
     return <DndTaskList statusData={doneData} />;
   };
   
   const CancelDndTaskList = ({ data }: { data: any }) => {
-    const cancelData = DatabyFilter(filteredData)?.tasks.filter((t: { status: string }) => t.status == "CANCELED");
+    const cancelData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "CANCELED");
   
     return <DndTaskList statusData={cancelData} />;
   };
 
   const InProgressDndTaskBoard = ({ data }: { data: any }) => {
-    const inProgressData = DatabyFilter(filteredData)?.tasks.filter((t: { status: string }) => t.status == "IN_PROGRESS");
+    const inProgressData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "IN_PROGRESS");
   
     return <DndTaskBoard statusData={inProgressData} />;
   };
   
   const ToDoDndTaskBoard = ({ data }: { data: any }) => {
-    const toDoData = DatabyFilter(filteredData)?.tasks.filter((t: { status: string }) => t.status == "TO_DO");
+    const toDoData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "TO_DO");
   
     return <DndTaskBoard statusData={toDoData} />;
   };
   
   const BacklogDndTaskBoard = ({ data }: { data: any }) => {
-    const backlogData = DatabyFilter(filteredData)?.tasks.filter((t: { status: string }) => t.status == "BACKLOG");
+    const backlogData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "BACKLOG");
   
     return <DndTaskBoard statusData={backlogData} />;
   };
   
   const DoneDndTaskBoard = ({ data }: { data: any }) => {
-    const doneData = DatabyFilter(filteredData)?.tasks.filter((t: { status: string }) => t.status == "DONE");
+    const doneData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "DONE");
   
     return <DndTaskBoard statusData={doneData} />;
   };
   
   const NoneDndTaskBoard = ({ data }: { data: any }) => {
-    const noneData = DatabyFilter(filteredData)?.tasks.filter((t: { status: string }) => t.status == "NONE");
+    const noneData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "NONE");
   
     return <DndTaskBoard statusData={noneData} />;
   };
   
   const CancelDndTaskBoard = ({ data }: { data: any }) => {
-    const cancelData = DatabyFilter(filteredData)?.tasks.filter((t: { status: string }) => t.status == "CANCELED");
+    const cancelData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "CANCELED");
   
     return <DndTaskBoard statusData={cancelData} />;
   };
@@ -1421,9 +1659,8 @@ export const OverviewContent = () => {
             />
           </Group>
         </Group>
-        {viewMode === "list" ? (
-          <Container>
-            {filterList.length > 0 ? 
+        <Container>
+        {filterList.length > 0 ? 
           <>
           <Flex 
             mt={{base: 50, sm: 0}}
@@ -1464,14 +1701,21 @@ export const OverviewContent = () => {
           </>
             :
             null}
-            <Group spacing={6} mt={16} mb={8}>
+        </Container>
+        {viewMode === "list" ? (
+          <Container>
+            {!isFetchingTasksData && DatabyFilter().tasks.filter(task => task.status == "NONE").length == 0 ? (
+            null
+            ): 
+              <Group spacing={6} mt={16} mb={8}>
               <MoodNeutral size={18} color={theme.colors.indigo[6]} />
               <Title order={6}>None</Title>
               <Text color="dimmed" size="xs">
                 {tasksData?.tasks.filter(task => task.status == "NONE").length}
               </Text>
             </Group>
-            {isFetchingTasksData || filteredData == undefined ? (
+            }
+            {isFetchingTasksData ? (
               <Skeleton
                 height={36}
                 radius="sm"
@@ -1489,9 +1733,12 @@ export const OverviewContent = () => {
                   return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
                 })}
                <Divider></Divider>  */}
-              <NoneDndTaskList data={DatabyFilter(filteredData)} />
+              <NoneDndTaskList data={DatabyFilter()} />
               </>
             )}
+            {!isFetchingTasksData && DatabyFilter().tasks.filter(task => task.status == "IN_PROGRESS").length == 0 ? (
+            null
+            ): 
             <Group spacing={6} mt={16} mb={8}>
               <ChartPie2 size={18} color={theme.colors.yellow[6]} />
               <Title order={6}>In Progress</Title>
@@ -1499,6 +1746,7 @@ export const OverviewContent = () => {
                 {tasksData?.tasks.filter(task => task.status == "IN_PROGRESS").length}
               </Text>
             </Group>
+            }
             {isFetchingTasksData ? (
               <Skeleton
                 height={36}
@@ -1515,8 +1763,11 @@ export const OverviewContent = () => {
               //   .map(t => {
               //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
               //   })
-              <InProgressDndTaskList data={DatabyFilter(filteredData)} />
+              <InProgressDndTaskList data={DatabyFilter()} />
             )}
+            {!isFetchingTasksData && DatabyFilter().tasks.filter(task => task.status == "TO_DO").length == 0 ? (
+            null
+            ): 
             <Group spacing={6} mt={16} mb={8}>
               <Circle size={18} />
               <Title order={6}>Todo</Title>
@@ -1524,6 +1775,7 @@ export const OverviewContent = () => {
                 {tasksData?.tasks.filter(task => task.status == "TO_DO").length}
               </Text>
             </Group>
+            }
             {/* <TaskListElement task={{ ...task, status: "todo" }} /> */}
             {isFetchingTasksData ? (
               <Skeleton
@@ -1541,8 +1793,11 @@ export const OverviewContent = () => {
               //   .map(t => {
               //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
               //   })
-              <ToDoDndTaskList data={DatabyFilter(filteredData)} />
+              <ToDoDndTaskList data={DatabyFilter()} />
             )}
+            {!isFetchingTasksData && DatabyFilter().tasks.filter(task => task.status == "BACKLOG").length == 0 ? (
+            null
+            ): 
             <Group spacing={6} mt={16} mb={8}>
               <CircleDotted size={18} />
               <Title order={6}>Backlog</Title>
@@ -1550,6 +1805,7 @@ export const OverviewContent = () => {
                 {tasksData?.tasks.filter(task => task.status == "BACKLOG").length}
               </Text>
             </Group>
+            }
             {isFetchingTasksData ? (
               <Skeleton
                 height={36}
@@ -1566,8 +1822,11 @@ export const OverviewContent = () => {
               //   .map(t => {
               //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
               //   })
-              <BacklogDndTaskList data={DatabyFilter(filteredData)} />
+              <BacklogDndTaskList data={DatabyFilter()} />
             )}
+            {!isFetchingTasksData && DatabyFilter().tasks.filter(task => task.status == "DONE").length == 0 ? (
+            null
+            ): 
             <Group spacing={6} mt={16} mb={8}>
               <CircleCheck size={18} color={theme.colors.green[6]} />
               <Title order={6}>Done</Title>
@@ -1575,6 +1834,7 @@ export const OverviewContent = () => {
                 {tasksData?.tasks.filter(task => task.status == "DONE").length}
               </Text>
             </Group>
+            }
             {isFetchingTasksData ? (
               <Skeleton
                 height={36}
@@ -1591,8 +1851,11 @@ export const OverviewContent = () => {
               //   .map(t => {
               //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
               //   })
-              <DoneDndTaskList data={DatabyFilter(filteredData)} />
+              <DoneDndTaskList data={DatabyFilter()} />
             )}
+            {!isFetchingTasksData && DatabyFilter().tasks.filter(task => task.status == "CANCELED").length == 0 ? (
+            null
+            ): 
             <Group spacing={6} mt={16} mb={8}>
               <CircleX size={18} color={theme.colors.red[6]} />
               <Title order={6}>Canceled</Title>
@@ -1600,6 +1863,7 @@ export const OverviewContent = () => {
                 {tasksData?.tasks.filter(task => task.status == "CANCELED").length}
               </Text>
             </Group>
+            }
             {isFetchingTasksData ? (
               <Skeleton
                 height={36}
@@ -1616,11 +1880,11 @@ export const OverviewContent = () => {
               //   .map(t => {
               //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
               //   })
-              <CancelDndTaskList data={DatabyFilter(filteredData)} />
+              <CancelDndTaskList data={DatabyFilter()} />
             )}
           </Container>
         ) : (
-          <OverviewContentBoard data={tasksData} fetching={isFetchingTasksData} />
+          <OverviewContentBoard data={DatabyFilter()} fetching={isFetchingTasksData} />
         )}
       </AppShell>
     </>
