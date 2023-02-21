@@ -895,6 +895,31 @@ export const OverviewContent = () => {
             finalData.push(...updatedData.tasks.filter((t: { status: string }) => t.status === filterList[i].elements[j].toString()));
           }
         }
+        if (filterList[i].name === "assignee"){
+          for (let j = 0 ; j < filterList[i].elements.length; j++) {
+            finalData.push(...updatedData.tasks.filter((t: { leadId?: any|null }) => t.leadId?.toString() === filterList[i].elements[j].toString()));
+          }
+        }
+        if (filterList[i].name === "creator"){
+          for (let j = 0 ; j < filterList[i].elements.length; j++) {
+            finalData.push(...updatedData.tasks.filter((t: { ownerId?: any|null }) => t.ownerId?.toString() === filterList[i].elements[j].toString()));
+          }
+        }
+        if (filterList[i].name === "priority"){
+          for (let j = 0 ; j < filterList[i].elements.length; j++) {
+            finalData.push(...updatedData.tasks.filter((t: { priority: string }) => t.priority === filterList[i].elements[j].toString()));
+          }
+        }
+        if (filterList[i].name === "labels"){
+          for (let j = 0 ; j < filterList[i].elements.length; j++) {
+            finalData.push(...updatedData.tasks.filter((t: { labels: Array<string> }) => t.labels.includes(filterList[i].elements[j].toString())));
+          }
+        }
+        if (filterList[i].name === "project"){
+          for (let j = 0 ; j < filterList[i].elements.length; j++) {
+            finalData.push(...updatedData.tasks.filter((t: { projectId?: any|null }) => t.projectId?.toString() === filterList[i].elements[j].toString()));
+          }
+        }
       }
       updatedData.tasks = finalData;
     }
@@ -903,7 +928,7 @@ export const OverviewContent = () => {
   };
 
   const NoneDndTaskList = ({ data }: { data: any }) => {
-    const noneData = DatabyFilter(filteredData).tasks.filter((t: { status: string }) => t.status == "NONE");
+    const noneData = DatabyFilter(filteredData)?.tasks.filter((t: { status: string }) => t.status == "NONE");
   
     return <DndTaskList statusData={noneData} />;
   };
