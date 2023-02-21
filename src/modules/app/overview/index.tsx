@@ -200,19 +200,7 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
             </Text>
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
-            ) : (
-              <NoneDndTaskBoard data={data} />
-            )}
+            {fetching ? <Skeleton height={36} radius="sm" /> : <NoneDndTaskBoard data={data} />}
           </ScrollArea>
         </Stack>
         <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
@@ -228,15 +216,7 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
+              <Skeleton height={36} radius="sm" />
             ) : (
               <InProgressDndTaskBoard data={data} />
             )}
@@ -251,19 +231,7 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
             </Text>
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
-            ) : (
-              <ToDoDndTaskBoard data={data} />
-            )}
+            {fetching ? <Skeleton height={36} radius="sm" /> : <ToDoDndTaskBoard data={data} />}
           </ScrollArea>
         </Stack>
         <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
@@ -275,19 +243,7 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
             </Text>
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
-            ) : (
-              <BacklogDndTaskBoard data={data} />
-            )}
+            {fetching ? <Skeleton height={36} radius="sm" /> : <BacklogDndTaskBoard data={data} />}
           </ScrollArea>
         </Stack>
         <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
@@ -299,19 +255,7 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
             </Text>
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
-            ) : (
-              <DoneDndTaskBoard data={data} />
-            )}
+            {fetching ? <Skeleton height={36} radius="sm" /> : <DoneDndTaskBoard data={data} />}
           </ScrollArea>
         </Stack>
         <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
@@ -323,19 +267,7 @@ const OverviewContentBoard = (props: { data: any; fetching: any }) => {
             </Text>
           </Group>
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
-            ) : (
-              <CancelDndTaskBoard data={data} />
-            )}
+            {fetching ? <Skeleton height={36} radius="sm" /> : <CancelDndTaskBoard data={data} />}
           </ScrollArea>
         </Stack>
       </SimpleGrid>
@@ -621,21 +553,8 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
+              <Skeleton height={36} radius="sm" />
             ) : (
-              // tasksData?.tasks
-              //   .filter(t => t.status == "NONE")
-              //   .map(t => {
-              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              //   })
               <NoneDndTaskList data={tasksData} />
             )}
             <Group spacing={6} mt={16} mb={8}>
@@ -646,21 +565,8 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
+              <Skeleton height={36} radius="sm" />
             ) : (
-              // tasksData?.tasks
-              //   .filter(t => t.status == "IN_PROGRESS")
-              //   .map(t => {
-              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              //   })
               <InProgressDndTaskList data={tasksData} />
             )}
             <Group spacing={6} mt={16} mb={8}>
@@ -672,21 +578,8 @@ export const OverviewContent = () => {
             </Group>
             {/* <TaskListElement task={{ ...task, status: "todo" }} /> */}
             {isFetchingTasksData ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
+              <Skeleton height={36} radius="sm" />
             ) : (
-              // tasksData?.tasks
-              //   .filter(t => t.status == "TO_DO")
-              //   .map(t => {
-              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              //   })
               <ToDoDndTaskList data={tasksData} />
             )}
             <Group spacing={6} mt={16} mb={8}>
@@ -697,21 +590,8 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
+              <Skeleton height={36} radius="sm" />
             ) : (
-              // tasksData?.tasks
-              //   .filter(t => t.status == "BACKLOG")
-              //   .map(t => {
-              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              //   })
               <BacklogDndTaskList data={tasksData} />
             )}
             <Group spacing={6} mt={16} mb={8}>
@@ -722,21 +602,8 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
+              <Skeleton height={36} radius="sm" />
             ) : (
-              // tasksData?.tasks
-              //   .filter(t => t.status == "DONE")
-              //   .map(t => {
-              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              //   })
               <DoneDndTaskList data={tasksData} />
             )}
             <Group spacing={6} mt={16} mb={8}>
@@ -747,21 +614,8 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             {isFetchingTasksData ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
+              <Skeleton height={36} radius="sm" />
             ) : (
-              // tasksData?.tasks
-              //   .filter(t => t.status == "CANCELED")
-              //   .map(t => {
-              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              //   })
               <CancelDndTaskList data={tasksData} />
             )}
           </Container>

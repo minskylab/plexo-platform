@@ -9,11 +9,13 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
-import { Task } from "modules/app/datatypes";
-import { useState } from "react";
+import React, { useState } from "react";
 
+import { Task } from "modules/app/datatypes";
 import { GenericPriorityMenu, PriorityIcon } from "./priority";
 import { GenericStatusMenu, StatusIcon } from "./status";
+import { DotsVertical } from "tabler-icons-react";
+import { TaskMenu } from "./menu";
 
 type TaskListElementProps = {
   task: Task;
@@ -69,18 +71,7 @@ export const TaskListElement = ({
   const { classes } = useStyles();
 
   return (
-    <Paper
-      px={6}
-      py={4}
-      mt={1}
-      withBorder={active}
-      sx={theme => ({
-        //   backgroundColor: controlledChecked ? theme.colors.orange[5] + "10" : theme.colors.dark[7],
-        // ":hover": {
-        //   backgroundColor: controlledChecked ? theme.colors.orange[5] + "10" : ,
-        // },
-      })}
-    >
+    <Paper px={6} py={4} mt={1} withBorder={active}>
       <Group position="apart">
         <Group position="left" spacing={8}>
           <Checkbox
@@ -120,6 +111,11 @@ export const TaskListElement = ({
           <Avatar size="sm" radius="xl">
             {/* {task.assigneeId} */}
           </Avatar>
+          <TaskMenu task={task}>
+            <ActionIcon radius={"sm"} size={"xs"}>
+              <DotsVertical size={18} />
+            </ActionIcon>
+          </TaskMenu>
         </Group>
       </Group>
     </Paper>

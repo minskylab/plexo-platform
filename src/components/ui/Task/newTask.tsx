@@ -12,9 +12,8 @@ import {
 import { showNotification } from "@mantine/notifications";
 import { AlertCircle, Check, X } from "tabler-icons-react";
 import { useState } from "react";
-import { useMutation } from "urql";
 
-import { TaskStatus, TaskPriority, NewTaskDocument } from "integration/graphql";
+import { TaskStatus, TaskPriority } from "integration/graphql";
 import { Member, Project } from "modules/app/datatypes";
 import { AssigneeSelector } from "./assignee";
 import { LabelSelector } from "./label";
@@ -22,6 +21,7 @@ import { PrioritySelector } from "./priority";
 import { ProjectSelector } from "./project";
 import { StatusSelector } from "./status";
 import { LabelType } from "./types";
+import { useTaskActions } from "lib/useTaskActions";
 
 type NewTaskProps = {
   newTaskOpened: boolean;
@@ -75,7 +75,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
   const [selectedLabels, setSelectedLabels] = useState<LabelType[]>([]);
   const [project, setProject] = useState<Project | null>(null);
 
-  const [createTask, fetchCreateTask] = useMutation(NewTaskDocument);
+  const { createTask, fetchCreateTask } = useTaskActions();
 
   const onCreateTask = async () => {
     if (!title.length) {
