@@ -29,17 +29,20 @@ export enum DataDiffEventKind {
 
 export type Member = {
   __typename?: "Member";
-  assignedTasks: Array<Task>;
   createdAt: Scalars["DateTime"];
   email: Scalars["String"];
   githubId?: Maybe<Scalars["String"]>;
   googleId?: Maybe<Scalars["String"]>;
   id: Scalars["UUID"];
+  leadingTasks: Array<Task>;
   name: Scalars["String"];
   ownedProjects: Array<Project>;
   ownedTasks: Array<Task>;
   photoUrl?: Maybe<Scalars["String"]>;
+  projects: Array<Project>;
   role: MemberRole;
+  tasks: Array<Task>;
+  teams: Array<Team>;
   updatedAt: Scalars["DateTime"];
 };
 
@@ -58,14 +61,45 @@ export enum MemberRole {
 
 export type MutationRoot = {
   __typename?: "MutationRoot";
+  addAssigneeToTask: Task;
+  addMemberToProject: Project;
+  addMemberToTeam: Team;
+  addTeamToProject: Project;
   createProject: Project;
   createTask: Task;
+  createTeam: Team;
+  deleteAssigneeFromTask: Task;
   deleteMember: Member;
+  deleteMemberFromProject: Project;
+  deleteMemberFromTeam: Team;
   deleteProject: Project;
   deleteTask: Task;
+  deleteTeam: Team;
+  deleteTeamFromProject: Project;
   updateMember: Member;
   updateProject: Project;
   updateTask: Task;
+  updateTeam: Team;
+};
+
+export type MutationRootAddAssigneeToTaskArgs = {
+  memberId: Scalars["UUID"];
+  taskId: Scalars["UUID"];
+};
+
+export type MutationRootAddMemberToProjectArgs = {
+  memberId: Scalars["UUID"];
+  projectId: Scalars["UUID"];
+};
+
+export type MutationRootAddMemberToTeamArgs = {
+  memberId: Scalars["UUID"];
+  teamId: Scalars["UUID"];
+};
+
+export type MutationRootAddTeamToProjectArgs = {
+  projectId: Scalars["UUID"];
+  teamId: Scalars["UUID"];
 };
 
 export type MutationRootCreateProjectArgs = {
@@ -90,8 +124,30 @@ export type MutationRootCreateTaskArgs = {
   title: Scalars["String"];
 };
 
+export type MutationRootCreateTeamArgs = {
+  name: Scalars["String"];
+  ownerId: Scalars["UUID"];
+  prefix?: InputMaybe<Scalars["String"]>;
+  visibility?: InputMaybe<Scalars["String"]>;
+};
+
+export type MutationRootDeleteAssigneeFromTaskArgs = {
+  memberId: Scalars["UUID"];
+  taskId: Scalars["UUID"];
+};
+
 export type MutationRootDeleteMemberArgs = {
   id: Scalars["UUID"];
+};
+
+export type MutationRootDeleteMemberFromProjectArgs = {
+  memberId: Scalars["UUID"];
+  projectId: Scalars["UUID"];
+};
+
+export type MutationRootDeleteMemberFromTeamArgs = {
+  memberId: Scalars["UUID"];
+  teamId: Scalars["UUID"];
 };
 
 export type MutationRootDeleteProjectArgs = {
@@ -102,6 +158,15 @@ export type MutationRootDeleteTaskArgs = {
   id: Scalars["UUID"];
 };
 
+export type MutationRootDeleteTeamArgs = {
+  id: Scalars["UUID"];
+};
+
+export type MutationRootDeleteTeamFromProjectArgs = {
+  projectId: Scalars["UUID"];
+  teamId: Scalars["UUID"];
+};
+
 export type MutationRootUpdateMemberArgs = {
   email?: InputMaybe<Scalars["String"]>;
   id: Scalars["UUID"];
@@ -110,10 +175,13 @@ export type MutationRootUpdateMemberArgs = {
 
 export type MutationRootUpdateProjectArgs = {
   description?: InputMaybe<Scalars["String"]>;
+  dueDate?: InputMaybe<Scalars["DateTime"]>;
   id: Scalars["UUID"];
-  labels?: InputMaybe<Array<Scalars["String"]>>;
+  leadId?: InputMaybe<Scalars["UUID"]>;
   name?: InputMaybe<Scalars["String"]>;
+  ownerId?: InputMaybe<Scalars["UUID"]>;
   prefix?: InputMaybe<Scalars["String"]>;
+  startDate?: InputMaybe<Scalars["DateTime"]>;
 };
 
 export type MutationRootUpdateTaskArgs = {
@@ -126,6 +194,14 @@ export type MutationRootUpdateTaskArgs = {
   projectId?: InputMaybe<Scalars["UUID"]>;
   status?: InputMaybe<Scalars["String"]>;
   title?: InputMaybe<Scalars["String"]>;
+};
+
+export type MutationRootUpdateTeamArgs = {
+  id: Scalars["UUID"];
+  name?: InputMaybe<Scalars["String"]>;
+  ownerId?: InputMaybe<Scalars["UUID"]>;
+  prefix?: InputMaybe<Scalars["String"]>;
+  visibility?: InputMaybe<Scalars["String"]>;
 };
 
 export type Project = {
@@ -219,7 +295,7 @@ export type SubscriptionRootTaskByIdArgs = {
 
 export type Task = {
   __typename?: "Task";
-  assignee?: Maybe<Member>;
+  assignees: Array<Member>;
   count: Scalars["Int"];
   createdAt: Scalars["DateTime"];
   description?: Maybe<Scalars["String"]>;
@@ -227,6 +303,7 @@ export type Task = {
   id: Scalars["UUID"];
   labels: Array<Scalars["String"]>;
   leadId?: Maybe<Scalars["UUID"]>;
+  leader?: Maybe<Member>;
   owner: Member;
   ownerId: Scalars["UUID"];
   priority: TaskPriority;
@@ -271,7 +348,7 @@ export type Team = {
   name: Scalars["String"];
   owner: Member;
   ownerId: Scalars["UUID"];
-  prefix: Scalars["String"];
+  prefix?: Maybe<Scalars["String"]>;
   updatedAt: Scalars["DateTime"];
   visibility: TeamVisibility;
 };
@@ -304,7 +381,7 @@ export type MembersQuery = {
     photoUrl?: string | null;
     role: MemberRole;
     ownedTasks: Array<{ __typename?: "Task"; id: any }>;
-    assignedTasks: Array<{ __typename?: "Task"; id: any }>;
+    leadingTasks: Array<{ __typename?: "Task"; id: any }>;
     ownedProjects: Array<{ __typename?: "Project"; id: any }>;
   }>;
 };
@@ -355,7 +432,7 @@ export type TasksQuery = {
     projectId?: any | null;
     dueDate?: any | null;
     owner: { __typename?: "Member"; id: any };
-    assignee?: { __typename?: "Member"; id: any } | null;
+    assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
     project?: { __typename?: "Project"; id: any; name: string } | null;
   }>;
 };
@@ -474,7 +551,7 @@ export const MembersDocument = {
                 },
                 {
                   kind: "Field",
-                  name: { kind: "Name", value: "assignedTasks" },
+                  name: { kind: "Name", value: "leadingTasks" },
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
@@ -624,10 +701,13 @@ export const TasksDocument = {
                 },
                 {
                   kind: "Field",
-                  name: { kind: "Name", value: "assignee" },
+                  name: { kind: "Name", value: "assignees" },
                   selectionSet: {
                     kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
                   },
                 },
                 {
