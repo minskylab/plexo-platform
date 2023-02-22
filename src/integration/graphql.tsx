@@ -70,10 +70,12 @@ export type MutationRoot = {
 
 export type MutationRootCreateProjectArgs = {
   description?: InputMaybe<Scalars["String"]>;
-  labels?: InputMaybe<Array<Scalars["String"]>>;
+  dueDate?: InputMaybe<Scalars["DateTime"]>;
+  leadId?: InputMaybe<Scalars["UUID"]>;
   name: Scalars["String"];
   ownerId: Scalars["UUID"];
   prefix: Scalars["String"];
+  startDate?: InputMaybe<Scalars["DateTime"]>;
 };
 
 export type MutationRootCreateTaskArgs = {
@@ -130,12 +132,15 @@ export type Project = {
   __typename?: "Project";
   createdAt: Scalars["DateTime"];
   description?: Maybe<Scalars["String"]>;
+  dueDate?: Maybe<Scalars["DateTime"]>;
   id: Scalars["UUID"];
+  leadId?: Maybe<Scalars["UUID"]>;
   members: Array<Member>;
   name: Scalars["String"];
   owner?: Maybe<Member>;
   ownerId: Scalars["UUID"];
   prefix: Scalars["String"];
+  startDate?: Maybe<Scalars["DateTime"]>;
   tasks: Array<Task>;
   updatedAt: Scalars["DateTime"];
 };
@@ -215,6 +220,7 @@ export type SubscriptionRootTaskByIdArgs = {
 export type Task = {
   __typename?: "Task";
   assignee?: Maybe<Member>;
+  count: Scalars["Int"];
   createdAt: Scalars["DateTime"];
   description?: Maybe<Scalars["String"]>;
   dueDate?: Maybe<Scalars["DateTime"]>;
@@ -265,6 +271,7 @@ export type Team = {
   name: Scalars["String"];
   owner: Member;
   ownerId: Scalars["UUID"];
+  prefix: Scalars["String"];
   updatedAt: Scalars["DateTime"];
   visibility: TeamVisibility;
 };
@@ -300,6 +307,15 @@ export type MembersQuery = {
     assignedTasks: Array<{ __typename?: "Task"; id: any }>;
     ownedProjects: Array<{ __typename?: "Project"; id: any }>;
   }>;
+};
+
+export type MemberByIdQueryVariables = Exact<{
+  memberId: Scalars["UUID"];
+}>;
+
+export type MemberByIdQuery = {
+  __typename?: "QueryRoot";
+  memberById: { __typename?: "Member"; id: any; name: string };
 };
 
 export type ProjectsQueryVariables = Exact<{ [key: string]: never }>;
@@ -340,7 +356,7 @@ export type TasksQuery = {
     dueDate?: any | null;
     owner: { __typename?: "Member"; id: any };
     assignee?: { __typename?: "Member"; id: any } | null;
-    project?: { __typename?: "Project"; id: any } | null;
+    project?: { __typename?: "Project"; id: any; name: string } | null;
   }>;
 };
 
@@ -387,6 +403,23 @@ export type DeleteTaskMutationVariables = Exact<{
 export type DeleteTaskMutation = {
   __typename?: "MutationRoot";
   deleteTask: { __typename?: "Task"; id: any; title: string };
+};
+
+export type UpdateTaskMutationVariables = Exact<{
+  taskId: Scalars["UUID"];
+  status?: InputMaybe<Scalars["String"]>;
+  priority?: InputMaybe<Scalars["String"]>;
+  title?: InputMaybe<Scalars["String"]>;
+  description?: InputMaybe<Scalars["String"]>;
+  dueDate?: InputMaybe<Scalars["DateTime"]>;
+  projectId?: InputMaybe<Scalars["UUID"]>;
+  leadId?: InputMaybe<Scalars["UUID"]>;
+  labels?: InputMaybe<Array<Scalars["String"]> | Scalars["String"]>;
+}>;
+
+export type UpdateTaskMutation = {
+  __typename?: "MutationRoot";
+  updateTask: { __typename?: "Task"; id: any; title: string };
 };
 
 export type TeamsQueryVariables = Exact<{ [key: string]: never }>;
@@ -463,6 +496,49 @@ export const MembersDocument = {
     },
   ],
 } as unknown as DocumentNode<MembersQuery, MembersQueryVariables>;
+export const MemberByIdDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "MemberById" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "memberId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "memberById" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "memberId" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<MemberByIdQuery, MemberByIdQueryVariables>;
 export const ProjectsDocument = {
   kind: "Document",
   definitions: [
@@ -559,7 +635,10 @@ export const TasksDocument = {
                   name: { kind: "Name", value: "project" },
                   selectionSet: {
                     kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
                   },
                 },
               ],
@@ -771,6 +850,135 @@ export const DeleteTaskDocument = {
     },
   ],
 } as unknown as DocumentNode<DeleteTaskMutation, DeleteTaskMutationVariables>;
+export const UpdateTaskDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateTask" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "taskId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "status" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "priority" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "title" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "DateTime" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "projectId" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "leadId" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "labels" } },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateTask" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "taskId" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "status" },
+                value: { kind: "Variable", name: { kind: "Name", value: "status" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "title" },
+                value: { kind: "Variable", name: { kind: "Name", value: "title" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "priority" },
+                value: { kind: "Variable", name: { kind: "Name", value: "priority" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "description" },
+                value: { kind: "Variable", name: { kind: "Name", value: "description" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "dueDate" },
+                value: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "projectId" },
+                value: { kind: "Variable", name: { kind: "Name", value: "projectId" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "leadId" },
+                value: { kind: "Variable", name: { kind: "Name", value: "leadId" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "labels" },
+                value: { kind: "Variable", name: { kind: "Name", value: "labels" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UpdateTaskMutation, UpdateTaskMutationVariables>;
 export const TeamsDocument = {
   kind: "Document",
   definitions: [

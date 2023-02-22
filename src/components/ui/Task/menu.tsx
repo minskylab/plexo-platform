@@ -20,7 +20,7 @@ type TaskMenuProps = {
 };
 
 export const TaskMenu = ({ children, task }: TaskMenuProps) => {
-  const { deleteTask, fetchDeleteTask } = useTaskActions();
+  const { fetchDeleteTask } = useTaskActions();
 
   const onDeleteTask = async () => {
     const res = await fetchDeleteTask({
@@ -63,7 +63,7 @@ export const TaskMenu = ({ children, task }: TaskMenuProps) => {
       <Menu.Dropdown>
         <Menu.Item icon={<ChartPie2 size={18} />}>Status</Menu.Item>
         <Menu.Item icon={<AntennaBars5 size={18} />}>Priority</Menu.Item>
-        <Menu.Item icon={<UserCircle size={18} />}>Assigne</Menu.Item>
+        <Menu.Item icon={<UserCircle size={18} />}>Lead</Menu.Item>
         <Menu.Item icon={<Tag size={18} />}>Labels</Menu.Item>
         <Menu.Item icon={<LayoutGrid size={18} />}>Project</Menu.Item>
         <Menu.Divider />

@@ -15,7 +15,10 @@ import { Tag } from "tabler-icons-react";
 
 import { LabelType } from "./types";
 
-export const LabelColor = (labels: LabelType[] | LabelType | undefined, theme: MantineTheme) => {
+export const LabelColor = (
+  labels: LabelType[] | LabelType | string | undefined,
+  theme: MantineTheme
+) => {
   if (labels) {
     if (Array.isArray(labels)) {
       if (labels.length == 1) {

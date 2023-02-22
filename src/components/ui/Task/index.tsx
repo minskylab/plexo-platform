@@ -10,12 +10,14 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import React, { useState } from "react";
+import { DotsVertical } from "tabler-icons-react";
 
 import { Task } from "modules/app/datatypes";
 import { GenericPriorityMenu, PriorityIcon } from "./priority";
 import { GenericStatusMenu, StatusIcon } from "./status";
-import { DotsVertical } from "tabler-icons-react";
 import { TaskMenu } from "./menu";
+import { GenericLeadTaskMenu } from "./lead";
+import { LabelColor } from "./label";
 
 type TaskListElementProps = {
   task: Task;
@@ -85,13 +87,13 @@ export const TaskListElement = ({
               },
             }}
           />
-          <GenericPriorityMenu>
-            <ActionIcon variant="light" radius={"sm"}>
+          <GenericPriorityMenu taskId={task.id}>
+            <ActionIcon variant="transparent" radius={"sm"}>
               {PriorityIcon(task.priority)}
             </ActionIcon>
           </GenericPriorityMenu>
-          <GenericStatusMenu>
-            <ActionIcon variant="light" radius={"sm"}>
+          <GenericStatusMenu taskId={task.id}>
+            <ActionIcon variant="transparent" radius={"sm"}>
               {StatusIcon(theme, task.status)}
             </ActionIcon>
           </GenericStatusMenu>
@@ -102,15 +104,45 @@ export const TaskListElement = ({
             {task.title}
           </Text>
         </Group>
-        {/* <Group position="left"></Group> */}
-        <Group position="right">
-          <Badge className={classes.badge}>MINSKY{/* {task.projectId} */}</Badge>
+
+        <Group position="right" spacing={8}>
+          {task.labels.length &&
+            task.labels.sort().map((l, index) => {
+              return (
+                <Badge
+                  key={index}
+                  variant={"dot"}
+                  leftSection={LabelColor(l, theme)}
+                  className={classes.badge}
+                  styles={{
+                    root: {
+                      "&:before": {
+                        display: "none",
+                      },
+                    },
+                    inner: {
+                      fontWeight: 500,
+                      color:
+                        theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.colors.gray[7],
+                    },
+                  }}
+                >
+                  {l}
+                </Badge>
+              );
+            })}
+          {task.project && <Badge className={classes.badge}>{task.project?.name}</Badge>}
           <Text lineClamp={1} className={classes.date} size={"sm"} color={"dimmed"}>
             {smallDate}
           </Text>
-          <Avatar size="sm" radius="xl">
-            {/* {task.assigneeId} */}
-          </Avatar>
+          <GenericLeadTaskMenu task={task}>
+            <ActionIcon variant="transparent">
+              <Avatar size="sm" radius="xl">
+                {/* {task.leadId} */}
+              </Avatar>
+            </ActionIcon>
+          </GenericLeadTaskMenu>
+
           <TaskMenu task={task}>
             <ActionIcon radius={"sm"} size={"xs"}>
               <DotsVertical size={18} />
