@@ -9,15 +9,22 @@ query Members {
     googleId
     photoUrl
     role
-    
-    ownedTasks{
+
+    ownedTasks {
       id
     }
-    assignedTasks{
+    leadingTasks {
       id
     }
-    ownedProjects{
+    ownedProjects {
       id
     }
+  }
+}
+
+query MemberById($memberId: UUID!) {
+  memberById(id: $memberId) {
+    id
+    name
   }
 }

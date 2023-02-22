@@ -16,7 +16,7 @@ query Tasks {
     owner {
       id
     }
-    assignee {
+    assignees {
       id
     }
     project {
