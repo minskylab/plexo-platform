@@ -80,6 +80,7 @@ import { Member, Project } from "../datatypes";
 import { FilterDropdown } from "components/ui/Filters/filterDropdown";
 import { Filter } from "components/ui/Filters/types";
 import { FilterListView } from "components/ui/Filters/filterListView";
+import { DatabyFilter } from "components/ui/Filters/filtersDataLogic";
 
 const useStyles = createStyles(theme => ({
   burger: {
@@ -268,163 +269,74 @@ export const OverviewContent = () => {
   //gestion del filtro seleccionado para añadir los submenus de cada uno
   const [filter, setFilter] = useState<String>("");
 
-
-  const handleDeleteFilter = (index: number) => {
-    setFilterList((prevFilterList) => {
-      const newFilterList = [...prevFilterList];
-      newFilterList.splice(index, 1);
-      return newFilterList;
-    });
-  };
-
-  //logica para aplicar los filtros
-  const DatabyFilter = () : TasksQuery => {
-    let updatedData = {...tasksData!};
-    const addedElements = new Map();
-    if (filterList.length > 0) {
-      let finalData: any[]= [];
-      for (let i = 0; i < filterList.length; i++){
-        if (filterList[i].name === "status"){
-          for (let j = 0 ; j < filterList[i].elements.length; j++) {
-            finalData.push(...updatedData.tasks.filter((t: { id: any | null, status: string }) => {
-              if (!addedElements.has(t.id) && t.status === filterList[i].elements[j].toString()){
-                addedElements.set(t.id, true);
-                return true;
-              }
-              return false;
-            }));
-          }
-        }
-        if (filterList[i].name === "assignee"){
-          for (let j = 0 ; j < filterList[i].elements.length; j++) {
-            finalData.push(...updatedData.tasks.filter((t: { id: any | null, leadId?: any|null }) => {
-              if (!addedElements.has(t.id) && t.leadId?.toString() === filterList[i].elements[j].toString()){
-                addedElements.set(t.id, true);
-                return true;
-              }
-              return false;
-            }));
-          }
-        }
-        if (filterList[i].name === "creator"){
-          for (let j = 0 ; j < filterList[i].elements.length; j++) {
-            finalData.push(...updatedData.tasks.filter((t: { id: any | null, ownerId?: any|null }) => {
-              if (!addedElements.has(t.id) && t.ownerId?.toString() === filterList[i].elements[j].toString()){
-                addedElements.set(t.id, true);
-                return true;
-              }
-              return false;
-            }));
-          }
-        }
-        if (filterList[i].name === "priority"){
-          for (let j = 0 ; j < filterList[i].elements.length; j++) {
-            finalData.push(...updatedData.tasks.filter((t: {id: any | null, priority: string }) => {
-              if (!addedElements.has(t.id) && t.priority === filterList[i].elements[j].toString()){
-                addedElements.set(t.id, true);
-                return true;
-              }
-              return false;
-            }));
-          }
-        }
-        if (filterList[i].name === "labels"){
-          for (let j = 0 ; j < filterList[i].elements.length; j++) {
-            finalData.push(...updatedData.tasks.filter((t: { id: any | null, labels: Array<string> }) => {
-              if (!addedElements.has(t.id) && t.labels.includes(filterList[i].elements[j].toString())){
-                addedElements.set(t.id, true);
-                return true;
-              }
-              return false;
-            }));
-          }
-        }
-        if (filterList[i].name === "project"){
-          for (let j = 0 ; j < filterList[i].elements.length; j++) {
-            finalData.push(...updatedData.tasks.filter((t: { id: any | null,projectId?: any|null }) => {
-              if (!addedElements.has(t.id) && t.projectId?.toString() === filterList[i].elements[j].toString()){
-                addedElements.set(t.id, true);
-                return true;
-              }
-              return false;
-            }));
-          }
-        }
-      }
-      updatedData.tasks = finalData;
-    }
-
-    return updatedData;
-  };
-
   const NoneDndTaskList = ({ data }: { data: any }) => {
-    const noneData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "NONE");
+    const noneData = data?.tasks.filter((t: { status: string }) => t.status == "NONE");
   
     return <DndTaskList statusData={noneData} />;
   };
 
   const InProgressDndTaskList = ({ data }: { data: any }) => {
-    const inProgressData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "IN_PROGRESS");
+    const inProgressData = data?.tasks.filter((t: { status: string }) => t.status == "IN_PROGRESS");
   
     return <DndTaskList statusData={inProgressData} />;
   };
   
   const ToDoDndTaskList = ({ data }: { data: any }) => {
-    const toDoData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "TO_DO");
+    const toDoData = data?.tasks.filter((t: { status: string }) => t.status == "TO_DO");
   
     return <DndTaskList statusData={toDoData} />;
   };
   
   const BacklogDndTaskList = ({ data }: { data: any }) => {
-    const backlogData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "BACKLOG");
+    const backlogData = data?.tasks.filter((t: { status: string }) => t.status == "BACKLOG");
   
     return <DndTaskList statusData={backlogData} />;
   };
   
   const DoneDndTaskList = ({ data }: { data: any }) => {
-    const doneData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "DONE");
+    const doneData = data?.tasks.filter((t: { status: string }) => t.status == "DONE");
   
     return <DndTaskList statusData={doneData} />;
   };
   
   const CancelDndTaskList = ({ data }: { data: any }) => {
-    const cancelData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "CANCELED");
+    const cancelData = data?.tasks.filter((t: { status: string }) => t.status == "CANCELED");
   
     return <DndTaskList statusData={cancelData} />;
   };
 
   const InProgressDndTaskBoard = ({ data }: { data: any }) => {
-    const inProgressData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "IN_PROGRESS");
+    const inProgressData = data?.tasks.filter((t: { status: string }) => t.status == "IN_PROGRESS");
   
     return <DndTaskBoard statusData={inProgressData} />;
   };
   
   const ToDoDndTaskBoard = ({ data }: { data: any }) => {
-    const toDoData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "TO_DO");
+    const toDoData = data?.tasks.filter((t: { status: string }) => t.status == "TO_DO");
   
     return <DndTaskBoard statusData={toDoData} />;
   };
   
   const BacklogDndTaskBoard = ({ data }: { data: any }) => {
-    const backlogData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "BACKLOG");
+    const backlogData = data?.tasks.filter((t: { status: string }) => t.status == "BACKLOG");
   
     return <DndTaskBoard statusData={backlogData} />;
   };
   
   const DoneDndTaskBoard = ({ data }: { data: any }) => {
-    const doneData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "DONE");
+    const doneData = data?.tasks.filter((t: { status: string }) => t.status == "DONE");
   
     return <DndTaskBoard statusData={doneData} />;
   };
   
   const NoneDndTaskBoard = ({ data }: { data: any }) => {
-    const noneData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "NONE");
+    const noneData = data?.tasks.filter((t: { status: string }) => t.status == "NONE");
   
     return <DndTaskBoard statusData={noneData} />;
   };
   
   const CancelDndTaskBoard = ({ data }: { data: any }) => {
-    const cancelData = DatabyFilter()?.tasks.filter((t: { status: string }) => t.status == "CANCELED");
+    const cancelData =  data?.tasks.filter((t: { status: string }) => t.status == "CANCELED");
   
     return <DndTaskBoard statusData={cancelData} />;
   };
@@ -596,7 +508,6 @@ export const OverviewContent = () => {
       </ScrollArea>
     );
   };
-
 
   const [opened, setOpened] = useState(false);
   // console.log(tasksData);
@@ -935,7 +846,7 @@ export const OverviewContent = () => {
         </Container>
         {viewMode === "list" ? (
           <Container>
-            {!isFetchingTasksData && DatabyFilter().tasks.filter(task => task.status == "NONE").length == 0 ? (
+            {!isFetchingTasksData && DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == "NONE").length == 0 ? (
             null
             ): 
               <Group spacing={6} mt={16} mb={8}>
@@ -964,10 +875,10 @@ export const OverviewContent = () => {
                   return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
                 })}
                <Divider></Divider>  */}
-              <NoneDndTaskList data={DatabyFilter()} />
+              <NoneDndTaskList data={DatabyFilter(filterList, tasksData!)} />
               </>
             )}
-            {!isFetchingTasksData && DatabyFilter().tasks.filter(task => task.status == "IN_PROGRESS").length == 0 ? (
+            {!isFetchingTasksData && DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == "IN_PROGRESS").length == 0 ? (
             null
             ): 
             <Group spacing={6} mt={16} mb={8}>
@@ -994,9 +905,9 @@ export const OverviewContent = () => {
               //   .map(t => {
               //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
               //   })
-              <InProgressDndTaskList data={DatabyFilter()} />
+              <InProgressDndTaskList data={DatabyFilter(filterList, tasksData!)} />
             )}
-            {!isFetchingTasksData && DatabyFilter().tasks.filter(task => task.status == "TO_DO").length == 0 ? (
+            {!isFetchingTasksData && DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == "TO_DO").length == 0 ? (
             null
             ): 
             <Group spacing={6} mt={16} mb={8}>
@@ -1024,9 +935,9 @@ export const OverviewContent = () => {
               //   .map(t => {
               //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
               //   })
-              <ToDoDndTaskList data={DatabyFilter()} />
+              <ToDoDndTaskList data={DatabyFilter(filterList, tasksData!)} />
             )}
-            {!isFetchingTasksData && DatabyFilter().tasks.filter(task => task.status == "BACKLOG").length == 0 ? (
+            {!isFetchingTasksData && DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == "BACKLOG").length == 0 ? (
             null
             ): 
             <Group spacing={6} mt={16} mb={8}>
@@ -1053,9 +964,9 @@ export const OverviewContent = () => {
               //   .map(t => {
               //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
               //   })
-              <BacklogDndTaskList data={DatabyFilter()} />
+              <BacklogDndTaskList data={DatabyFilter(filterList, tasksData!)} />
             )}
-            {!isFetchingTasksData && DatabyFilter().tasks.filter(task => task.status == "DONE").length == 0 ? (
+            {!isFetchingTasksData && DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == "DONE").length == 0 ? (
             null
             ): 
             <Group spacing={6} mt={16} mb={8}>
@@ -1082,9 +993,9 @@ export const OverviewContent = () => {
               //   .map(t => {
               //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
               //   })
-              <DoneDndTaskList data={DatabyFilter()} />
+              <DoneDndTaskList data={DatabyFilter(filterList, tasksData!)} />
             )}
-            {!isFetchingTasksData && DatabyFilter().tasks.filter(task => task.status == "CANCELED").length == 0 ? (
+            {!isFetchingTasksData && DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == "CANCELED").length == 0 ? (
             null
             ): 
             <Group spacing={6} mt={16} mb={8}>
@@ -1111,11 +1022,11 @@ export const OverviewContent = () => {
               //   .map(t => {
               //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
               //   })
-              <CancelDndTaskList data={DatabyFilter()} />
+              <CancelDndTaskList data={DatabyFilter(filterList, tasksData!)} />
             )}
           </Container>
         ) : (
-          <OverviewContentBoard data={DatabyFilter()} fetching={isFetchingTasksData} />
+          <OverviewContentBoard data={DatabyFilter(filterList, tasksData!)} fetching={isFetchingTasksData} />
         )}
       </AppShell>
     </>
