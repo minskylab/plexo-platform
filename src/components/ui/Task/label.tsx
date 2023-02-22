@@ -20,13 +20,13 @@ export const LabelColor = (labels: LabelType[] | LabelType | undefined, theme: M
     if (Array.isArray(labels)) {
       if (labels.length == 1) {
         switch (labels[0]) {
-          case "BUG":
+          case "Bug":
             return <ColorSwatch color={theme.colors.red[7]} size={10} />;
-          case "FEATURE":
+          case "Feature":
             return <ColorSwatch color={theme.colors.violet[3]} size={10} />;
-          case "IMPROVEMENT":
+          case "Improvement":
             return <ColorSwatch color={theme.colors.blue[6]} size={10} />;
-          case "MIGRATED":
+          case "Migrated":
             return <ColorSwatch color={theme.colors.blue[4]} size={10} />;
         }
       } else if (labels.length > 1) {
@@ -42,13 +42,13 @@ export const LabelColor = (labels: LabelType[] | LabelType | undefined, theme: M
       }
     } else {
       switch (labels) {
-        case "BUG":
+        case "Bug":
           return <ColorSwatch key={labels} color={theme.colors.red[7]} size={10} />;
-        case "FEATURE":
+        case "Feature":
           return <ColorSwatch key={labels} color={theme.colors.violet[3]} size={10} />;
-        case "IMPROVEMENT":
+        case "Improvement":
           return <ColorSwatch key={labels} color={theme.colors.blue[6]} size={10} />;
-        case "MIGRATED":
+        case "Migrated":
           return <ColorSwatch key={labels} color={theme.colors.blue[4]} size={10} />;
       }
     }
@@ -63,13 +63,13 @@ export const LabelName = (labels: LabelType[] | LabelType | undefined) => {
     if (Array.isArray(labels)) {
       if (labels.length == 1) {
         switch (labels[0]) {
-          case "BUG":
+          case "Bug":
             return "Bug";
-          case "FEATURE":
+          case "Feature":
             return "Feature";
-          case "IMPROVEMENT":
+          case "Improvement":
             return "Improvement";
-          case "MIGRATED":
+          case "Migrated":
             return "Migrated";
         }
       } else {
@@ -77,13 +77,13 @@ export const LabelName = (labels: LabelType[] | LabelType | undefined) => {
       }
     } else {
       switch (labels) {
-        case "BUG":
+        case "Bug":
           return "Bug";
-        case "FEATURE":
+        case "Feature":
           return "Feature";
-        case "IMPROVEMENT":
+        case "Improvement":
           return "Improvement";
-        case "MIGRATED":
+        case "Migrated":
           return "Migrated";
       }
     }

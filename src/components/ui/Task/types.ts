@@ -1,8 +1,8 @@
 import { MembersQuery, ProjectsQuery, TeamsQuery } from "integration/graphql";
 
 export enum LabelType {
-  Bug = "BUG",
-  Feature = "FEATURE",
-  Improvement = "IMPROVEMENT",
-  Migrated = "MIGRATED",
+  Bug = "Bug",
+  Feature = "Feature",
+  Improvement = "Improvement",
+  Migrated = "Migrated",
 }

@@ -1,5 +1,6 @@
 import { Button, Group, MantineTheme } from "@mantine/core";
 import { Member, Project, TaskPriority, TaskStatus } from "integration/graphql";
+import { useData } from "lib/useData";
 import { ReactNode } from "react";
 import { AntennaBars5, CircleDashed, LayoutGrid, Tag, X } from "tabler-icons-react";
 import { AssigneeName, AssigneePhoto } from "../Task/assignee";
@@ -8,7 +9,7 @@ import { PriorityIcon, priorityName } from "../Task/priority";
 import { ProjectIcon, ProjectName } from "../Task/project";
 import { StatusIcon, statusName } from "../Task/status";
 import { LabelType } from "../Task/types";
-import { Filter } from "./types";
+import { Filter, MemberType, ProjectsType } from "./types";
 
 type FilterListViewProps = {
     filter: Filter;
@@ -18,6 +19,16 @@ type FilterListViewProps = {
     filterList: Filter[];
     setFilterList: (filterList: Filter[]) => void;
 }
+
+const ProjectData = (id : string) => {
+  const { projectsData } = useData();
+  return projectsData?.projects.filter((project: ProjectsType) => project.id == id)[0];
+};
+
+const MemberData = (id : string) => {
+  const { membersData } = useData();
+  return membersData?.members.filter((member: MemberType) => member.id == id)[0];
+};
 
 export const FilterListView = ({
     filter,
@@ -154,9 +165,9 @@ export const FilterListView = ({
             >
               Assignee is
               <Group mr={10} ml={10} spacing={0}>
-              {AssigneePhoto(filter.elements[0] as Member)} 
+              {AssigneePhoto(MemberData(filter.elements[0] as string) as Member)} 
               </Group>
-              {AssigneeName(filter.elements[0] as Member)} 
+              {AssigneeName(MemberData(filter.elements[0] as string) as Member)} 
         </Button>
         <Button
                 className={classes["text-header-buttons"]}
@@ -226,9 +237,9 @@ export const FilterListView = ({
             >
               Creator is
               <Group mr={10} ml={10} spacing={0}>
-              {AssigneePhoto(filter.elements[0] as Member)} 
+              {AssigneePhoto(MemberData(filter.elements[0] as string) as Member)} 
               </Group>
-              {AssigneeName(filter.elements[0] as Member)} 
+              {AssigneeName(MemberData(filter.elements[0] as string) as Member)} 
         </Button>
         <Button
                 className={classes["text-header-buttons"]}
@@ -442,9 +453,9 @@ export const FilterListView = ({
         >
           Project is
           <Group mr={10} ml={10} spacing={0}>
-          {ProjectIcon(filter.elements[0] as Project)} 
+          {ProjectIcon(ProjectData(filter.elements[0] as string) as Project)} 
           </Group>
-          {ProjectName(filter.elements[0] as Project)} 
+          {ProjectName(ProjectData(filter.elements[0] as string) as Project)} 
         </Button>
         <Button
           className={classes["text-header-buttons"]}

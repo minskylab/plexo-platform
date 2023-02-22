@@ -10,7 +10,7 @@ import { PriorityIcon, priorityName } from "../Task/priority";
 import { ProjectIcon, ProjectName } from "../Task/project";
 import { StatusIcon, statusName } from "../Task/status";
 import { LabelType } from "../Task/types";
-import { Filter } from "./types";
+import { Filter, MemberType, ProjectsType } from "./types";
 
 
 type FilterDropdownProps = {
@@ -44,7 +44,7 @@ const StatusData = (status: TaskStatus | undefined, theme: MantineTheme) => {
     );
 };
 
-const memberData = (member: Member) => {
+const memberData = (member: MemberType) => {
     return (
         <Group spacing={10} sx={{ width: "100%" }}>
             {AssigneePhoto(member)}
@@ -71,7 +71,7 @@ const LabelData = (label: LabelType | undefined, theme: MantineTheme) => {
     );
 };
 
-const ProjectData = (project: Project | undefined) => {
+const ProjectData = (project: ProjectsType | undefined) => {
     return (
         <Group spacing={10} sx={{ width: "100%" }}>
             {ProjectIcon(project)}

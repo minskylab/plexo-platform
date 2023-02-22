@@ -22,8 +22,9 @@ export const DatabyFilter = (filterList: Filter[], tasksData: TasksQuery) : Task
         }
         if (filterList[i].name === "assignee"){
             for (let j = 0 ; j < filterList[i].elements.length; j++) {
-            finalData.push(...updatedData.tasks.filter((t: { id: any | null, leadId?: any|null }) => {
-                if (!addedElements.has(t.id) && t.leadId?.toString() === filterList[i].elements[j].toString()){
+            finalData.push(...updatedData.tasks.filter((t: { id: any | null, assignees?: any|null }) => {
+                console.log(filterList[i].elements[j].toString());
+                if (!addedElements.has(t.id) && t.assignees?.filter((a: { id: any | null; }) => a.id === filterList[i].elements[j].toString()).length > 0){
                 addedElements.set(t.id, true);
                 return true;
                 }
@@ -56,6 +57,7 @@ export const DatabyFilter = (filterList: Filter[], tasksData: TasksQuery) : Task
         if (filterList[i].name === "labels"){
             for (let j = 0 ; j < filterList[i].elements.length; j++) {
             finalData.push(...updatedData.tasks.filter((t: { id: any | null, labels: Array<string> }) => {
+                console.log(filterList[i].elements[j].toString());
                 if (!addedElements.has(t.id) && t.labels.includes(filterList[i].elements[j].toString())){
                 addedElements.set(t.id, true);
                 return true;
