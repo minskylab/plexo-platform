@@ -29,15 +29,15 @@ export enum DataDiffEventKind {
 
 export type Member = {
   __typename?: "Member";
-  assignedTasks: Array<Task>;
+  // assignedTasks: Array<Task>;
   createdAt: Scalars["DateTime"];
   email: Scalars["String"];
   githubId?: Maybe<Scalars["String"]>;
   googleId?: Maybe<Scalars["String"]>;
   id: Scalars["UUID"];
   name: Scalars["String"];
-  ownedProjects: Array<Project>;
-  ownedTasks: Array<Task>;
+  // ownedProjects: Array<Project>;
+  // ownedTasks: Array<Task>;
   photoUrl?: Maybe<Scalars["String"]>;
   role: MemberRole;
   updatedAt: Scalars["DateTime"];
@@ -70,10 +70,12 @@ export type MutationRoot = {
 
 export type MutationRootCreateProjectArgs = {
   description?: InputMaybe<Scalars["String"]>;
-  labels?: InputMaybe<Array<Scalars["String"]>>;
+  dueDate?: InputMaybe<Scalars["DateTime"]>;
+  leadId?: InputMaybe<Scalars["UUID"]>;
   name: Scalars["String"];
   ownerId: Scalars["UUID"];
   prefix: Scalars["String"];
+  startDate?: InputMaybe<Scalars["DateTime"]>;
 };
 
 export type MutationRootCreateTaskArgs = {
@@ -130,13 +132,16 @@ export type Project = {
   __typename?: "Project";
   createdAt: Scalars["DateTime"];
   description?: Maybe<Scalars["String"]>;
+  dueDate?: Maybe<Scalars["DateTime"]>;
   id: Scalars["UUID"];
-  members: Array<Member>;
+  leadId?: Maybe<Scalars["UUID"]>;
+  //members: Array<Member>;
   name: Scalars["String"];
-  owner?: Maybe<Member>;
+  // owner?: Maybe<Member>;
   ownerId: Scalars["UUID"];
   prefix: Scalars["String"];
-  tasks: Array<Task>;
+  startDate?: Maybe<Scalars["DateTime"]>;
+  // tasks: Array<Task>;
   updatedAt: Scalars["DateTime"];
 };
 
@@ -215,6 +220,7 @@ export type SubscriptionRootTaskByIdArgs = {
 export type Task = {
   __typename?: "Task";
   assignee?: Maybe<Member>;
+  count: Scalars["Int"];
   createdAt: Scalars["DateTime"];
   description?: Maybe<Scalars["String"]>;
   dueDate?: Maybe<Scalars["DateTime"]>;
@@ -265,6 +271,7 @@ export type Team = {
   name: Scalars["String"];
   owner: Member;
   ownerId: Scalars["UUID"];
+  prefix: Scalars["String"];
   updatedAt: Scalars["DateTime"];
   visibility: TeamVisibility;
 };
@@ -296,9 +303,9 @@ export type MembersQuery = {
     googleId?: string | null;
     photoUrl?: string | null;
     role: MemberRole;
-    ownedTasks: Array<{ __typename?: "Task"; id: any }>;
-    assignedTasks: Array<{ __typename?: "Task"; id: any }>;
-    ownedProjects: Array<{ __typename?: "Project"; id: any }>;
+    // ownedTasks: Array<{ __typename?: "Task"; id: any }>;
+    // assignedTasks: Array<{ __typename?: "Task"; id: any }>;
+    // ownedProjects: Array<{ __typename?: "Project"; id: any }>;
   }>;
 };
 
@@ -316,7 +323,7 @@ export type ProjectsQuery = {
     prefix: string;
     ownerId: any;
     owner?: { __typename?: "Member"; id: any } | null;
-    tasks: Array<{ __typename?: "Task"; id: any }>;
+    // tasks: Array<{ __typename?: "Task"; id: any }>;
   }>;
 };
 

@@ -77,6 +77,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useListState } from "@mantine/hooks";
 import { useData } from "lib/useData";
 import { Member, Project } from "../datatypes";
+import { FilterDropdown } from "components/ui/Filters/filterDropdown";
 
 const useStyles = createStyles(theme => ({
   burger: {
@@ -252,14 +253,6 @@ export const OverviewContent = () => {
   const { membersData, isLoadingMembers } = useData();
   const { projectsData, isLoadingProjects } = useData();
 
-  //copiando los datos de tasksData en filteredData para agregar o quitar filtros
-  const [filteredData, setFilteredData] = useState<TasksQuery | undefined>(undefined);
-  useEffect(() => {
-    if (!isFetchingTasksData && tasksData){
-      setFilteredData(tasksData);
-    }
-  }, [isFetchingTasksData, tasksData]);
-
   //tipos de filtros
   type filterTypes =  TaskStatus[] | Member[] | TaskPriority[] | LabelType[] | Project[];
 
@@ -276,65 +269,16 @@ export const OverviewContent = () => {
 
   //gestion de la lista de filtros seleccionados de cada tipo 
   const [statusFilters, setStatusFilters] = useState<TaskStatus[]>([]);
-  const handleChangeStatus = (status: TaskStatus) => {
-    if (statusFilters.includes(status)) {
-      setStatusFilters(statusFilters.filter(filter => filter !== status));
-    } else {
-      setStatusFilters([...statusFilters, status]);
-    }
-  };
-
-  const [assigneeFilters, setAssigneeFilters] = useState<Member[]>([]);
-  const handleChangeAssignee = (member: Member) => {
-    if (assigneeFilters.includes(member)) {
-      setAssigneeFilters(assigneeFilters.filter(filter => filter !== member));
-    } else {
-      setAssigneeFilters([...assigneeFilters, member]);
-    }
-  };
-
-  const [creatorFilters, setCreatorFilters] = useState<Member[]>([]);
-  const handleChangeCreator = (member: Member) => {
-    if (creatorFilters.includes(member)) {
-      setCreatorFilters(creatorFilters.filter(filter => filter !== member));
-    } else {
-      setCreatorFilters([...creatorFilters, member]);
-    }
-  };
-
+  const [assigneeFilters, setAssigneeFilters] = useState< Member["id"][]>([]);
+  const [creatorFilters, setCreatorFilters] = useState< Member["id"][]>([]);
   const [priorityFilters, setPriorityFilters] = useState<TaskPriority[]>([]);
-  const handleChangePriority = (priority: TaskPriority) => {
-    if (priorityFilters.includes(priority)) {
-      setPriorityFilters(priorityFilters.filter(filter => filter !== priority));
-    } else {
-      setPriorityFilters([...priorityFilters, priority]);
-    }
-  };
-
   const [labelsFilters, setLabelsFilters] = useState<LabelType[]>([]);
-  const handleChangeLabel = (label: LabelType) => {
-    if (labelsFilters.includes(label)) {
-      setLabelsFilters(labelsFilters.filter(filter => filter !== label));
-    } else {
-      setLabelsFilters([...labelsFilters, label]);
-    }
-  };
+  const [projectFilters, setProjectFilters] = useState<Project["id"]>([]);
 
-  const [projectFilters, setProjectFilters] = useState<Project[]>([]);
-  const handleChangeProject = (project: Project) => {
-    if (projectFilters.includes(project)) {
-      setProjectFilters(projectFilters.filter(filter => filter !== project));
-    } else {
-      setProjectFilters([...projectFilters, project]);
-    }
-  };
 
   //gestion del filtro seleccionado para añadir los submenus de cada uno
   const [filter, setFilter] = useState<String>("");
 
-  const addFilter = (newFilter : String) => {
-    setFilter(newFilter);
-  };
 
   //funcion para añadir un filtro cuando termine de seleccionarse en el menu
   //teniendo en cuenta la lista de filtros de cada tipo, y actulizandola
@@ -373,278 +317,6 @@ export const OverviewContent = () => {
         setProjectFilters([]);        
       }
   });
-
-  //funcion para añadir los submenus dependiendo del estado de "filter"
-  const FilterDropdown= (
-    filter: String,
-  ) : React.ReactNode => {
-    
-    switch (filter) {
-      case "status":
-        return <>
-          <TextInput
-            placeholder="Status"
-            variant="filled"
-            rightSection={<Kbd px={8}>P</Kbd>}
-          ></TextInput>
-          <Menu.Divider />
-          <Menu.Item onClick={() => handleChangeStatus(TaskStatus.None)}>
-          <Group spacing={10}>
-              <Checkbox
-                size="xs"
-                checked={statusFilters.includes(TaskStatus.None)}
-                onChange={() => handleChangeStatus(TaskStatus.None)}
-              />
-              {StatusIcon(theme, TaskStatus.None, 18)}
-              {statusName(TaskStatus.None)}
-            </Group>
-          </Menu.Item>
-          <Menu.Item onClick={() => handleChangeStatus(TaskStatus.Backlog)}>
-          <Group spacing={10}>
-              <Checkbox
-                size="xs"
-                checked={statusFilters.includes(TaskStatus.Backlog)}
-                onChange={() => handleChangeStatus(TaskStatus.Backlog)}
-              />
-              {StatusIcon(theme, TaskStatus.Backlog, 18)}
-              {statusName(TaskStatus.Backlog)}
-            </Group>
-          </Menu.Item>
-          <Menu.Item onClick={() => handleChangeStatus(TaskStatus.ToDo)}>
-          <Group spacing={10}>
-              <Checkbox
-                size="xs"
-                checked={statusFilters.includes(TaskStatus.ToDo)}
-                onChange={() => handleChangeStatus(TaskStatus.ToDo)}
-              />
-              {StatusIcon(theme, TaskStatus.ToDo, 18)}
-              {statusName(TaskStatus.ToDo)}
-            </Group>
-          </Menu.Item>
-          <Menu.Item onClick={() => handleChangeStatus(TaskStatus.InProgress)}>
-          <Group spacing={10}>
-              <Checkbox
-                size="xs"
-                checked={statusFilters.includes(TaskStatus.InProgress)}
-                onChange={() => handleChangeStatus(TaskStatus.InProgress)}
-              />
-              {StatusIcon(theme, TaskStatus.InProgress, 18)}
-              {statusName(TaskStatus.InProgress)}
-            </Group>
-          </Menu.Item>
-          <Menu.Item onClick={() => handleChangeStatus(TaskStatus.Done)}>
-          <Group spacing={10}>
-              <Checkbox
-                size="xs"
-                checked={statusFilters.includes(TaskStatus.Done)}
-                onChange={() => handleChangeStatus(TaskStatus.Done)}
-              />
-              {StatusIcon(theme, TaskStatus.Done, 18)}
-              {statusName(TaskStatus.Done)}
-            </Group>
-          </Menu.Item>
-          <Menu.Item onClick={() => handleChangeStatus(TaskStatus.Canceled)}>
-          <Group spacing={10}>
-              <Checkbox
-                size="xs"
-                checked={statusFilters.includes(TaskStatus.Canceled)}
-                onChange={() => handleChangeStatus(TaskStatus.Canceled)}
-              />
-              {StatusIcon(theme, TaskStatus.Canceled, 18)}
-              {statusName(TaskStatus.Canceled)}
-            </Group>
-          </Menu.Item>
-        </>;
-      case "assignee":
-        return <>
-          <TextInput
-            placeholder="Assignee"
-            variant="filled"
-            rightSection={<Kbd px={8}>P</Kbd>}
-          ></TextInput>
-          <Menu.Divider />
-          {isLoadingMembers ? (
-          <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
-        ) : (
-          membersData?.members.map(m => {
-            return (
-              <Menu.Item key={m.id} onClick={() => handleChangeAssignee(m)}>
-              <Group spacing={10}>
-                  <Checkbox
-                    size="xs"
-                    checked={assigneeFilters.includes(m)}
-                    onChange={() => handleChangeAssignee(m)}
-                  />
-                  {AssigneePhoto(m)}
-                  {AssigneeName(m)}
-                </Group>
-              </Menu.Item>
-            );
-          })
-        )}
-        </>;
-      case "creator":
-        return <>
-          <TextInput
-            placeholder="Creator"
-            variant="filled"
-            rightSection={<Kbd px={8}>P</Kbd>}
-          ></TextInput>
-          <Menu.Divider />
-          {isLoadingMembers ? (
-          <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
-        ) : (
-          membersData?.members.map(m => {
-            return (
-              <Menu.Item key={m.id} onClick={() => handleChangeCreator(m)}>
-              <Group spacing={10}>
-                  <Checkbox
-                    size="xs"
-                    checked={creatorFilters.includes(m)}
-                    onChange={() => handleChangeCreator(m)}
-                  />
-                  {AssigneePhoto(m)}
-                  {AssigneeName(m)}
-                </Group>
-              </Menu.Item>
-            );
-          })
-        )}
-        </>;
-      case "priority":
-        return <>
-          <TextInput
-            placeholder="Status"
-            variant="filled"
-            rightSection={<Kbd px={8}>P</Kbd>}
-          ></TextInput>
-          <Menu.Divider />
-          <Menu.Item onClick={() => handleChangePriority(TaskPriority.None)}>
-          <Group spacing={10}>
-              <Checkbox
-                size="xs"
-                checked={priorityFilters.includes(TaskPriority.None)}
-                onChange={() => handleChangePriority(TaskPriority.None)}
-              />
-              {PriorityIcon(TaskPriority.None, 18)}
-              {priorityName(TaskPriority.None)}
-            </Group>
-          </Menu.Item>
-          <Menu.Item onClick={() => handleChangePriority(TaskPriority.Low)}>
-          <Group spacing={10}>
-              <Checkbox
-                size="xs"
-                checked={priorityFilters.includes(TaskPriority.Low)}
-                onChange={() => handleChangePriority(TaskPriority.Low)}
-              />
-              {PriorityIcon(TaskPriority.Low, 18)}
-              {priorityName(TaskPriority.Low)}
-            </Group>
-          </Menu.Item>
-          <Menu.Item onClick={() => handleChangePriority(TaskPriority.Medium)}>
-          <Group spacing={10}>
-              <Checkbox
-                size="xs"
-                checked={priorityFilters.includes(TaskPriority.Medium)}
-                onChange={() => handleChangePriority(TaskPriority.Medium)}
-              />
-              {PriorityIcon(TaskPriority.Medium, 18)}
-              {priorityName(TaskPriority.Medium)}
-            </Group>
-          </Menu.Item>
-          <Menu.Item onClick={() => handleChangePriority(TaskPriority.High)}>
-          <Group spacing={10}>
-              <Checkbox
-                size="xs"
-                checked={priorityFilters.includes(TaskPriority.High)}
-                onChange={() => handleChangePriority(TaskPriority.High)}
-              />
-              {PriorityIcon(TaskPriority.High, 18)}
-              {priorityName(TaskPriority.High)}
-            </Group>
-          </Menu.Item>
-          <Menu.Item onClick={() => handleChangePriority(TaskPriority.Urgent)}>
-          <Group spacing={10}>
-              <Checkbox
-                size="xs"
-                checked={priorityFilters.includes(TaskPriority.Urgent)}
-                onChange={() => handleChangePriority(TaskPriority.Urgent)}
-              />
-              {PriorityIcon(TaskPriority.Urgent, 18)}
-              {priorityName(TaskPriority.Urgent)}
-            </Group>
-          </Menu.Item>
-        </>;
-      case "labels":
-        return <>
-          <TextInput
-            placeholder="Status"
-            variant="filled"
-            rightSection={<Kbd px={8}>P</Kbd>}
-          ></TextInput>
-          <Menu.Divider />
-            {Object.values(LabelType).map(label => (
-            <Menu.Item
-            onClick={() => handleChangeLabel(label)}
-              key={label}
-            >
-              <Group spacing={10}>
-                <Checkbox
-                  size="xs"
-                  id={label}
-                  checked={labelsFilters.includes(label)}
-                  onChange={() => handleChangeLabel(label)}
-                />
-                {LabelColor(label, theme)}
-                {LabelName(label)}
-              </Group>
-            </Menu.Item>
-          ))}
-        </>;
-      case "project":
-        return <>
-          <TextInput
-            placeholder="Status"
-            variant="filled"
-            rightSection={<Kbd px={8}>P</Kbd>}
-          ></TextInput>
-          <Menu.Divider />
-          {isLoadingProjects ? (
-          <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
-        ) : (
-          projectsData?.projects.map(p => {
-            return (
-              <Menu.Item key={p.id} onClick={() => handleChangeProject(p)}>
-              <Group spacing={10}>
-                  <Checkbox
-                    size="xs"
-                    checked={projectFilters.includes(p)}
-                    onChange={() => handleChangeProject(p)}
-                  />
-                  {ProjectIcon(p)}
-                  {ProjectName(p)}
-                </Group>
-              </Menu.Item>
-            );
-          })
-        )}
-        </>;
-    }
-      return <>
-        <TextInput
-          placeholder="Filter..."
-          variant="filled"
-          rightSection={<Kbd px={8}>P</Kbd>}
-        ></TextInput>
-        <Menu.Divider />
-        <Menu.Item onClick={()=>{addFilter("status")}} icon={<CircleDashed size={18} />}>Status</Menu.Item>
-        <Menu.Item onClick={()=>{addFilter("assignee")}} icon={<UserCircle size={18} />}>Assignee</Menu.Item>
-        <Menu.Item onClick={()=>{addFilter("creator")}} icon={<UserCheck size={18} />}>Creator</Menu.Item>
-        <Menu.Item onClick={()=>{addFilter("priority")}} icon={<AntennaBars5 size={18} />}>Priority</Menu.Item>
-        <Menu.Item onClick={()=>{addFilter("labels")}} icon={<Tag size={18} />}>Labels</Menu.Item>
-        <Menu.Item onClick={()=>{addFilter("project")}} icon={<LayoutGrid size={18} />}>Project</Menu.Item>
-      </>;
-  };
 
   const handleDeleteFilter = (index: number) => {
     setFilterList((prevFilterList) => {
@@ -1589,7 +1261,7 @@ export const OverviewContent = () => {
                   color={"gray"}
                   leftIcon={ <Plus size={16} color={theme.colors.red[4]} /> }
                   onClick={ () => {
-                    addFilter("");
+                    setFilter("");
                     setOpenedMenu(true)}
                   }
                 >
@@ -1598,7 +1270,23 @@ export const OverviewContent = () => {
               </Menu.Target>
               <Box ref={ref}>
                 <Menu.Dropdown>
-                  {FilterDropdown(filter)}
+                  <FilterDropdown
+                    filter={filter}
+                    onFilterSelect={f => setFilter(f)}
+                    statusFilters = {statusFilters}
+                    setStatusFilters = {setStatusFilters}
+                    assigneeFilters = {assigneeFilters}
+                    setAssigneeFilters = {setAssigneeFilters}
+                    creatorFilters = {creatorFilters}
+                    setCreatorFilters = {setCreatorFilters}
+                    priorityFilters = {priorityFilters}
+                    setPriorityFilters = {setPriorityFilters}
+                    labelsFilters = {labelsFilters}
+                    setLabelsFilters = {setLabelsFilters}
+                    projectsFilters = {projectFilters}
+                    setProjectsFilters = {setProjectFilters}
+                    theme={theme}
+                  />
                 </Menu.Dropdown>
               </Box>
             </Menu>
@@ -1612,7 +1300,7 @@ export const OverviewContent = () => {
             leftIcon={ <X size={16} color={theme.colors.red[4]} /> }
             onClick={ 
               () => {
-                addFilter("");
+                setFilter("");
                 setFilterList([]);
               }
             }
@@ -1683,7 +1371,7 @@ export const OverviewContent = () => {
                   color={"gray"}
                   leftIcon={<Plus size={16} color={theme.colors.red[4]} />}
                   onClick={ () => {
-                    addFilter("");
+                    setFilter("");
                     setOpenedMenu(true)}
                   }
                 >
@@ -1691,7 +1379,23 @@ export const OverviewContent = () => {
               </Menu.Target>
               <Box ref={ref}>
                 <Menu.Dropdown>
-                  {FilterDropdown(filter)}
+                  <FilterDropdown
+                      filter={filter}
+                      onFilterSelect={f => setFilter(f)}
+                      statusFilters = {statusFilters}
+                      setStatusFilters = {setStatusFilters}
+                      assigneeFilters = {assigneeFilters}
+                      setAssigneeFilters = {setAssigneeFilters}
+                      creatorFilters = {creatorFilters}
+                      setCreatorFilters = {setCreatorFilters}
+                      priorityFilters = {priorityFilters}
+                      setPriorityFilters = {setPriorityFilters}
+                      labelsFilters = {labelsFilters}
+                      setLabelsFilters = {setLabelsFilters}
+                      projectsFilters = {projectFilters}
+                      setProjectsFilters = {setProjectFilters}
+                      theme={theme}
+                    />
                 </Menu.Dropdown>
               </Box>
             </Menu>
