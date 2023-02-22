@@ -42,12 +42,12 @@ export const DndTaskListElement = ({
         </Group>
         <Text size={"sm"}>{task.title}</Text>
         <Group spacing={8}>
-          <GenericPriorityMenu>
+          <GenericPriorityMenu taskId={task.id}>
             <ActionIcon variant="light" radius={"sm"}>
               {PriorityIcon(task.priority)}
             </ActionIcon>
           </GenericPriorityMenu>
-          <GenericStatusMenu>
+          <GenericStatusMenu taskId={task.id}>
             <ActionIcon variant="light" radius={"sm"}>
               {StatusIcon(theme, task.status)}
             </ActionIcon>

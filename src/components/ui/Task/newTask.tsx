@@ -15,9 +15,9 @@ import { useState } from "react";
 
 import { TaskStatus, TaskPriority } from "integration/graphql";
 import { Member, Project } from "modules/app/datatypes";
-import { AssigneeSelector } from "./assignee";
+import { LeadTaskSelector } from "./lead";
 import { LabelSelector } from "./label";
-import { PrioritySelector } from "./priority";
+import { priorityName, PrioritySelector } from "./priority";
 import { ProjectSelector } from "./project";
 import { statusName, StatusSelector } from "./status";
 import { LabelType } from "./types";
@@ -30,21 +30,6 @@ type NewTaskProps = {
   setCreateMore: (createMore: boolean) => void;
 };
 
-const priorityName = (priority: TaskPriority) => {
-  switch (priority) {
-    case "NONE":
-      return "None";
-    case "LOW":
-      return "Low";
-    case "MEDIUM":
-      return "Medium";
-    case "HIGH":
-      return "High";
-    case "URGENT":
-      return "Urgent";
-  }
-};
-
 const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }: NewTaskProps) => {
   const theme = useMantineTheme();
 
@@ -52,7 +37,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<TaskStatus>(TaskStatus.Backlog);
   const [priority, setPriority] = useState<TaskPriority>(TaskPriority.None);
-  const [assignee, setAssignee] = useState<Member | null>(null);
+  const [lead, setLead] = useState<Member | null>(null);
   const [selectedLabels, setSelectedLabels] = useState<LabelType[]>([]);
   const [project, setProject] = useState<Project | null>(null);
 
@@ -75,7 +60,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
         description: description.length ? description : null,
         status: statusName(status),
         priority: priorityName(priority),
-        leadId: assignee?.id, //revisar
+        leadId: lead?.id, //revisar
         labels: selectedLabels,
         projectId: project?.id,
       });
@@ -108,7 +93,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
     setDescription("");
     setStatus(TaskStatus.Backlog);
     setPriority(TaskPriority.None);
-    setAssignee(null);
+    setLead(null);
     setSelectedLabels([]);
     setProject(null);
   };
@@ -152,7 +137,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       <Group spacing={6} mb={"md"}>
         <StatusSelector status={status} setStatus={setStatus} />
         <PrioritySelector priority={priority} setPriority={setPriority} />
-        <AssigneeSelector assignee={assignee} setAssignee={setAssignee} />
+        <LeadTaskSelector lead={lead} setLead={setLead} />
         <LabelSelector selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels} />
         <ProjectSelector project={project} setProject={setProject} />
       </Group>

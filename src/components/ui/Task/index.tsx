@@ -16,6 +16,7 @@ import { GenericPriorityMenu, PriorityIcon } from "./priority";
 import { GenericStatusMenu, StatusIcon } from "./status";
 import { DotsVertical } from "tabler-icons-react";
 import { TaskMenu } from "./menu";
+import { GenericLeadTaskMenu } from "./lead";
 
 type TaskListElementProps = {
   task: Task;
@@ -85,13 +86,13 @@ export const TaskListElement = ({
               },
             }}
           />
-          <GenericPriorityMenu>
-            <ActionIcon variant="light" radius={"sm"}>
+          <GenericPriorityMenu taskId={task.id}>
+            <ActionIcon variant="transparent" radius={"sm"}>
               {PriorityIcon(task.priority)}
             </ActionIcon>
           </GenericPriorityMenu>
           <GenericStatusMenu taskId={task.id}>
-            <ActionIcon variant="light" radius={"sm"}>
+            <ActionIcon variant="transparent" radius={"sm"}>
               {StatusIcon(theme, task.status)}
             </ActionIcon>
           </GenericStatusMenu>
@@ -102,15 +103,20 @@ export const TaskListElement = ({
             {task.title}
           </Text>
         </Group>
-        {/* <Group position="left"></Group> */}
-        <Group position="right">
-          <Badge className={classes.badge}>MINSKY{/* {task.projectId} */}</Badge>
+
+        <Group position="right" spacing={8}>
+          {task.project && <Badge className={classes.badge}>{task.project?.name}</Badge>}
           <Text lineClamp={1} className={classes.date} size={"sm"} color={"dimmed"}>
             {smallDate}
           </Text>
-          <Avatar size="sm" radius="xl">
-            {/* {task.assigneeId} */}
-          </Avatar>
+          <GenericLeadTaskMenu task={task}>
+            <ActionIcon variant="transparent">
+              <Avatar size="sm" radius="xl">
+                {/* {task.leadId} */}
+              </Avatar>
+            </ActionIcon>
+          </GenericLeadTaskMenu>
+
           <TaskMenu task={task}>
             <ActionIcon radius={"sm"} size={"xs"}>
               <DotsVertical size={18} />
