@@ -78,6 +78,7 @@ import { useListState } from "@mantine/hooks";
 import { useData } from "lib/useData";
 import { Member, Project } from "../datatypes";
 import { FilterDropdown } from "components/ui/Filters/filterDropdown";
+import { Filter } from "components/ui/Filters/types";
 
 const useStyles = createStyles(theme => ({
   burger: {
@@ -249,18 +250,6 @@ export const OverviewContent = () => {
     query: TasksDocument,
   });
 
-  //datos de members y projects para los filtros
-  const { membersData, isLoadingMembers } = useData();
-  const { projectsData, isLoadingProjects } = useData();
-
-  //tipos de filtros
-  type filterTypes =  TaskStatus[] | Member[] | TaskPriority[] | LabelType[] | Project[];
-
-  interface Filter {
-    name: string;
-    elements: filterTypes;
-  }
-
   //lista de los filtros aplicados
   const [filterList, setFilterList] = useState<Filter[]>([]);
 
@@ -275,48 +264,9 @@ export const OverviewContent = () => {
   const [labelsFilters, setLabelsFilters] = useState<LabelType[]>([]);
   const [projectFilters, setProjectFilters] = useState<Project["id"]>([]);
 
-
   //gestion del filtro seleccionado para añadir los submenus de cada uno
   const [filter, setFilter] = useState<String>("");
 
-
-  //funcion para añadir un filtro cuando termine de seleccionarse en el menu
-  //teniendo en cuenta la lista de filtros de cada tipo, y actulizandola
-  const ref = useClickOutside(() => {
-    setOpenedMenu(false);
-    switch (filter) {
-      case "status":
-        if (statusFilters.length > 0){
-          setFilterList([...filterList, {name: 'status', elements: statusFilters}]);
-        }
-        setStatusFilters([]);
-      case "assignee":
-        if (assigneeFilters.length > 0){
-          setFilterList([...filterList, {name: 'assignee', elements: assigneeFilters}]);
-        }
-        setAssigneeFilters([]);
-      case "creator":
-        if (creatorFilters.length > 0){
-          setFilterList([...filterList, {name: 'creator', elements: creatorFilters}]);
-        }
-        setCreatorFilters([]);
-      case "priority":
-        if (priorityFilters.length > 0){
-          setFilterList([...filterList, {name: 'priority', elements: priorityFilters}]);
-        }
-        setPriorityFilters([]);
-      case "labels":
-        if (labelsFilters.length > 0){
-          setFilterList([...filterList, {name: 'labels', elements: labelsFilters}]);
-        }
-        setLabelsFilters([]);        
-      case "project":
-        if (projectFilters.length > 0){
-          setFilterList([...filterList, {name: 'project', elements: projectFilters}]);
-        }
-        setProjectFilters([]);        
-      }
-  });
 
   const handleDeleteFilter = (index: number) => {
     setFilterList((prevFilterList) => {
@@ -1268,27 +1218,27 @@ export const OverviewContent = () => {
                   Filter
                 </Button>
               </Menu.Target>
-              <Box ref={ref}>
-                <Menu.Dropdown>
-                  <FilterDropdown
-                    filter={filter}
-                    onFilterSelect={f => setFilter(f)}
-                    statusFilters = {statusFilters}
-                    setStatusFilters = {setStatusFilters}
-                    assigneeFilters = {assigneeFilters}
-                    setAssigneeFilters = {setAssigneeFilters}
-                    creatorFilters = {creatorFilters}
-                    setCreatorFilters = {setCreatorFilters}
-                    priorityFilters = {priorityFilters}
-                    setPriorityFilters = {setPriorityFilters}
-                    labelsFilters = {labelsFilters}
-                    setLabelsFilters = {setLabelsFilters}
-                    projectsFilters = {projectFilters}
-                    setProjectsFilters = {setProjectFilters}
-                    theme={theme}
-                  />
-                </Menu.Dropdown>
-              </Box>
+              <FilterDropdown
+                openedMenu={openedMenu}
+                setOpenedMenu={setOpenedMenu}
+                filter={filter}
+                onFilterSelect={f => setFilter(f)}
+                filterList={filterList}
+                setFilterList={setFilterList}
+                statusFilters = {statusFilters}
+                setStatusFilters = {setStatusFilters}
+                assigneeFilters = {assigneeFilters}
+                setAssigneeFilters = {setAssigneeFilters}
+                creatorFilters = {creatorFilters}
+                setCreatorFilters = {setCreatorFilters}
+                priorityFilters = {priorityFilters}
+                setPriorityFilters = {setPriorityFilters}
+                labelsFilters = {labelsFilters}
+                setLabelsFilters = {setLabelsFilters}
+                projectFilters = {projectFilters}
+                setProjectFilters = {setProjectFilters}
+                theme={theme}
+              />
             </Menu>
             :
             <Button
@@ -1377,27 +1327,27 @@ export const OverviewContent = () => {
                 >
                 </Button>
               </Menu.Target>
-              <Box ref={ref}>
-                <Menu.Dropdown>
-                  <FilterDropdown
-                      filter={filter}
-                      onFilterSelect={f => setFilter(f)}
-                      statusFilters = {statusFilters}
-                      setStatusFilters = {setStatusFilters}
-                      assigneeFilters = {assigneeFilters}
-                      setAssigneeFilters = {setAssigneeFilters}
-                      creatorFilters = {creatorFilters}
-                      setCreatorFilters = {setCreatorFilters}
-                      priorityFilters = {priorityFilters}
-                      setPriorityFilters = {setPriorityFilters}
-                      labelsFilters = {labelsFilters}
-                      setLabelsFilters = {setLabelsFilters}
-                      projectsFilters = {projectFilters}
-                      setProjectsFilters = {setProjectFilters}
-                      theme={theme}
-                    />
-                </Menu.Dropdown>
-              </Box>
+              <FilterDropdown
+                  openedMenu={openedMenu}
+                  setOpenedMenu={setOpenedMenu}
+                  filter={filter}
+                  onFilterSelect={f => setFilter(f)}
+                  filterList={filterList}
+                  setFilterList={setFilterList}
+                  statusFilters = {statusFilters}
+                  setStatusFilters = {setStatusFilters}
+                  assigneeFilters = {assigneeFilters}
+                  setAssigneeFilters = {setAssigneeFilters}
+                  creatorFilters = {creatorFilters}
+                  setCreatorFilters = {setCreatorFilters}
+                  priorityFilters = {priorityFilters}
+                  setPriorityFilters = {setPriorityFilters}
+                  labelsFilters = {labelsFilters}
+                  setLabelsFilters = {setLabelsFilters}
+                  projectFilters = {projectFilters}
+                  setProjectFilters = {setProjectFilters}
+                  theme={theme}
+                />
             </Menu>
           </Flex>
           <Divider my="sm" />

@@ -1,6 +1,8 @@
-import { Checkbox, createStyles, Group, Kbd, MantineTheme, Menu, Skeleton, TextInput } from "@mantine/core";
+import { Checkbox, createStyles, Group, Kbd, MantineTheme, Menu, Skeleton, TextInput, Box } from "@mantine/core";
+import { useClickOutside } from "@mantine/hooks";
 import { Member, Project, TaskPriority, TaskStatus } from "integration/graphql";
 import { useData } from "lib/useData";
+import { useState } from "react";
 import { AntennaBars5, CircleDashed, LayoutGrid, Tag, UserCheck, UserCircle } from "tabler-icons-react";
 import { AssigneeName, AssigneePhoto } from "../Task/assignee";
 import { LabelColor, LabelName } from "../Task/label";
@@ -8,11 +10,16 @@ import { PriorityIcon, priorityName } from "../Task/priority";
 import { ProjectIcon, ProjectName } from "../Task/project";
 import { StatusIcon, statusName } from "../Task/status";
 import { LabelType } from "../Task/types";
+import { Filter } from "./types";
 
 
 type FilterDropdownProps = {
+    openedMenu: boolean;
+    setOpenedMenu: (openedMenu: boolean) => void;
     filter: String;
     onFilterSelect?: (filter: String) => void;
+    filterList: Filter[];
+    setFilterList: (filterList: Filter[]) => void;
     statusFilters: TaskStatus[];
     setStatusFilters: (statusFilters: TaskStatus[]) => void;
     assigneeFilters: Member["id"][];
@@ -23,8 +30,8 @@ type FilterDropdownProps = {
     setPriorityFilters: (priorityFilters: TaskPriority[]) => void;
     labelsFilters: LabelType[];
     setLabelsFilters: (labelsFilters: LabelType[]) => void;
-    projectsFilters: Project["id"][];
-    setProjectsFilters: (projectsFilters: Project["id"][]) => void;
+    projectFilters: Project["id"][];
+    setProjectFilters: (projectsFilters: Project["id"][]) => void;
     theme: MantineTheme;
 };
 
@@ -74,8 +81,12 @@ const ProjectData = (project: Project | undefined) => {
 };
 
 export const FilterDropdown = ({
+    openedMenu,
+    setOpenedMenu,
     filter,
     onFilterSelect,
+    filterList,
+    setFilterList,
     statusFilters,
     setStatusFilters,
     assigneeFilters,
@@ -86,15 +97,52 @@ export const FilterDropdown = ({
     setPriorityFilters,
     labelsFilters,
     setLabelsFilters,
-    projectsFilters,
-    setProjectsFilters,
+    projectFilters,
+    setProjectFilters,
     theme,
 }: FilterDropdownProps)  => {
 
     const { membersData, isLoadingMembers } = useData();
     const { projectsData, isLoadingProjects } = useData();
     
-    switch (filter) {
+    const ref = useClickOutside(() => {
+      setOpenedMenu(false);
+      switch (filter) {
+        case "status":
+          if (statusFilters.length > 0){
+            setFilterList([...filterList, {name: 'status', elements: statusFilters}]);
+          }
+          setStatusFilters([]);
+        case "assignee":
+          if (assigneeFilters.length > 0){
+            setFilterList([...filterList, {name: 'assignee', elements: assigneeFilters}]);
+          }
+          setAssigneeFilters([]);
+        case "creator":
+          if (creatorFilters.length > 0){
+            setFilterList([...filterList, {name: 'creator', elements: creatorFilters}]);
+          }
+          setCreatorFilters([]);
+        case "priority":
+          if (priorityFilters.length > 0){
+            setFilterList([...filterList, {name: 'priority', elements: priorityFilters}]);
+          }
+          setPriorityFilters([]);
+        case "labels":
+          if (labelsFilters.length > 0){
+            setFilterList([...filterList, {name: 'labels', elements: labelsFilters}]);
+          }
+          setLabelsFilters([]);        
+        case "project":
+          if (projectFilters.length > 0){
+            setFilterList([...filterList, {name: 'project', elements: projectFilters}]);
+          }
+          setProjectFilters([]);        
+        }
+    });
+
+    const typeFilterDropdown =() =>{
+      switch (filter) {
         case "status":
           return <>
             <TextInput
@@ -421,7 +469,7 @@ export const FilterDropdown = ({
             {isLoadingProjects ? (
                 <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
             ) : (
-                <Checkbox.Group spacing={0} value={projectsFilters} onChange={setProjectsFilters}>
+                <Checkbox.Group spacing={0} value={projectFilters} onChange={setProjectFilters}>
                     {
                         projectsData?.projects.map(p => {
                             return (
@@ -449,18 +497,25 @@ export const FilterDropdown = ({
             )}
           </>;
       }
-        return <>
-          <TextInput
-            placeholder="Filter..."
-            variant="filled"
-            rightSection={<Kbd px={8}>P</Kbd>}
-          ></TextInput>
-          <Menu.Divider />
-          <Menu.Item onClick={() => onFilterSelect && onFilterSelect("status")} icon={<CircleDashed size={18} />}>Status</Menu.Item>
-          <Menu.Item onClick={() => onFilterSelect && onFilterSelect("assignee")} icon={<UserCircle size={18} />}>Assignee</Menu.Item>
-          <Menu.Item onClick={() => onFilterSelect && onFilterSelect("creator")} icon={<UserCheck size={18} />}>Creator</Menu.Item>
-          <Menu.Item onClick={() => onFilterSelect && onFilterSelect("priority")} icon={<AntennaBars5 size={18} />}>Priority</Menu.Item>
-          <Menu.Item onClick={() => onFilterSelect && onFilterSelect("labels")} icon={<Tag size={18} />}>Labels</Menu.Item>
-          <Menu.Item onClick={() => onFilterSelect && onFilterSelect("project")} icon={<LayoutGrid size={18} />}>Project</Menu.Item>
-        </>;
+      return <>
+        <TextInput
+          placeholder="Filter..."
+          variant="filled"
+          rightSection={<Kbd px={8}>P</Kbd>}
+        ></TextInput>
+        <Menu.Divider />
+        <Menu.Item onClick={() => onFilterSelect && onFilterSelect("status")} icon={<CircleDashed size={18} />}>Status</Menu.Item>
+        <Menu.Item onClick={() => onFilterSelect && onFilterSelect("assignee")} icon={<UserCircle size={18} />}>Assignee</Menu.Item>
+        <Menu.Item onClick={() => onFilterSelect && onFilterSelect("creator")} icon={<UserCheck size={18} />}>Creator</Menu.Item>
+        <Menu.Item onClick={() => onFilterSelect && onFilterSelect("priority")} icon={<AntennaBars5 size={18} />}>Priority</Menu.Item>
+        <Menu.Item onClick={() => onFilterSelect && onFilterSelect("labels")} icon={<Tag size={18} />}>Labels</Menu.Item>
+        <Menu.Item onClick={() => onFilterSelect && onFilterSelect("project")} icon={<LayoutGrid size={18} />}>Project</Menu.Item>
+      </>;
+    }
+
+    return <Box ref={ref}>
+      <Menu.Dropdown>
+        {typeFilterDropdown()}
+      </Menu.Dropdown>
+    </Box>
 }
