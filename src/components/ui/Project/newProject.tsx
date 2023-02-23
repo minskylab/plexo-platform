@@ -11,9 +11,12 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
+import { showNotification } from "@mantine/notifications";
 import dayjs from "dayjs";
+import { useProjectActions } from "lib/useProjectActions";
+import { Member } from "modules/app/datatypes";
 import { useState } from "react";
-import { CalendarTime } from "tabler-icons-react";
+import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
 
 import { TeamSelector } from "../Task/team";
 import { LeadSelector } from "./lead";
@@ -30,8 +33,65 @@ const DateLabel = (date: Date | null, label: string) => {
 
 const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) => {
   const theme = useMantineTheme();
+
+  const [name, setName] = useState("");
+  const [prefix, setPrefix] = useState("");
+  const [description, setDescription] = useState("");
   const [targetDate, setTargetDate] = useState<Date | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
+
+  const { createProject, fetchCreateProject } = useProjectActions();
+
+  const onCreateProject = async () => {
+    if (!name.length) {
+      showNotification({
+        id: "nameRequired",
+        autoClose: 5000,
+        title: "Name required",
+        message: "Please enter a name before submitting",
+        color: "yellow",
+        icon: <AlertCircle size={18} />,
+      });
+    } else {
+      const res = await fetchCreateProject({
+        name: name,
+        prefix: prefix,
+        ownerId: "52fbe576-843d-47a5-a84c-79ce00d18265", //Bregy
+        description: description.length ? description : null,
+        startDate: startDate,
+        dueDate: targetDate,
+      });
+
+      if (res.data) {
+        setNewProjectOpened(false);
+        resetInitialValues();
+        showNotification({
+          autoClose: 5000,
+          title: "Project created",
+          message: res.data.createProject.name,
+          color: "blue",
+          icon: <Check size={18} />,
+        });
+      }
+      if (res.error) {
+        showNotification({
+          autoClose: 5000,
+          title: "Error!",
+          message: "Try again",
+          color: "red",
+          icon: <X size={18} />,
+        });
+      }
+    }
+  };
+
+  const resetInitialValues = () => {
+    setName("");
+    setPrefix("");
+    setDescription("");
+    setTargetDate(null);
+    setStartDate(null);
+  };
 
   return (
     <Modal
@@ -40,7 +100,10 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
       transition={"slide-up"}
       size={"lg"}
       opened={newProjectOpened}
-      onClose={() => setNewProjectOpened(false)}
+      onClose={() => {
+        setNewProjectOpened(false);
+        resetInitialValues();
+      }}
       shadow="md"
       title={
         <Group spacing={8}>
@@ -50,8 +113,21 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
       }
     >
       <Box>
-        <TextInput placeholder="Project name" variant="unstyled" size="md" autoFocus />
-        <Textarea placeholder="Description (optional)" variant="unstyled" size="sm" />
+        <TextInput
+          placeholder="Project name"
+          variant="unstyled"
+          size="md"
+          autoFocus
+          value={name}
+          onChange={e => setName(e.target.value)}
+        />
+        <Textarea
+          placeholder="Description (optional)"
+          variant="unstyled"
+          size="sm"
+          value={description}
+          onChange={e => setDescription(e.target.value)}
+        />
       </Box>
       <Group spacing={6} mb={"md"}>
         <LeadSelector initialLead={undefined} />
@@ -96,7 +172,14 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
         <Button compact variant="default" onClick={() => setNewProjectOpened(false)}>
           Cancel
         </Button>
-        <Button compact variant="filled">
+        <Button
+          compact
+          variant="filled"
+          loading={createProject.fetching}
+          onClick={() => {
+            onCreateProject();
+          }}
+        >
           Create project
         </Button>
       </Group>
