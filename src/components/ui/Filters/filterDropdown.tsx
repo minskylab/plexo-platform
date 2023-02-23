@@ -1,8 +1,7 @@
-import { Checkbox, createStyles, Group, Kbd, MantineTheme, Menu, Skeleton, TextInput, Box } from "@mantine/core";
+import { Checkbox, Group, Kbd, MantineTheme, Menu, Skeleton, TextInput, Box } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { Member, Project, TaskPriority, TaskStatus } from "integration/graphql";
 import { useData } from "lib/useData";
-import { useState } from "react";
 import { AntennaBars5, CircleDashed, LayoutGrid, Tag, UserCheck, UserCircle } from "tabler-icons-react";
 import { AssigneeName, AssigneePhoto } from "../Task/assignee";
 import { LabelColor, LabelName } from "../Task/label";
@@ -10,11 +9,11 @@ import { PriorityIcon, priorityName } from "../Task/priority";
 import { ProjectIcon, ProjectName } from "../Task/project";
 import { StatusIcon, statusName } from "../Task/status";
 import { LabelType } from "../Task/types";
-import { Filter, MemberType, ProjectsType } from "./types";
+import { Filter } from "./types";
+import { Member as MemberType, Project as ProjectType} from "../../../modules/app/datatypes";
 
 
 type FilterDropdownProps = {
-    openedMenu: boolean;
     setOpenedMenu: (openedMenu: boolean) => void;
     filter: String;
     onFilterSelect?: (filter: String) => void;
@@ -71,7 +70,7 @@ const LabelData = (label: LabelType | undefined, theme: MantineTheme) => {
     );
 };
 
-const ProjectData = (project: ProjectsType | undefined) => {
+const ProjectData = (project: ProjectType | undefined) => {
     return (
         <Group spacing={10} sx={{ width: "100%" }}>
             {ProjectIcon(project)}
@@ -81,7 +80,6 @@ const ProjectData = (project: ProjectsType | undefined) => {
 };
 
 export const FilterDropdown = ({
-    openedMenu,
     setOpenedMenu,
     filter,
     onFilterSelect,

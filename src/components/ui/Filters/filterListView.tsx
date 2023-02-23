@@ -1,7 +1,6 @@
 import { Button, Group, MantineTheme } from "@mantine/core";
 import { Member, Project, TaskPriority, TaskStatus } from "integration/graphql";
 import { useData } from "lib/useData";
-import { ReactNode } from "react";
 import { AntennaBars5, CircleDashed, LayoutGrid, Tag, X } from "tabler-icons-react";
 import { AssigneeName, AssigneePhoto } from "../Task/assignee";
 import { LabelColor, LabelName } from "../Task/label";
@@ -9,7 +8,9 @@ import { PriorityIcon, priorityName } from "../Task/priority";
 import { ProjectIcon, ProjectName } from "../Task/project";
 import { StatusIcon, statusName } from "../Task/status";
 import { LabelType } from "../Task/types";
-import { Filter, MemberType, ProjectsType } from "./types";
+import { Filter } from "./types";
+import { Member as MemberType, Project as ProjectType} from "../../../modules/app/datatypes";
+
 
 type FilterListViewProps = {
     filter: Filter;
@@ -22,7 +23,7 @@ type FilterListViewProps = {
 
 const ProjectData = (id : string) => {
   const { projectsData } = useData();
-  return projectsData?.projects.filter((project: ProjectsType) => project.id == id)[0];
+  return projectsData?.projects.filter((project: ProjectType) => project.id == id)[0];
 };
 
 const MemberData = (id : string) => {

@@ -1,5 +1,4 @@
-import { TasksDocument, TasksQuery } from "integration/graphql";
-import { useQuery } from "urql";
+import { TasksQuery } from "integration/graphql";
 import { Filter } from "./types";
 
 

@@ -22,21 +22,11 @@ import {
   Burger,
   Drawer,
   MediaQuery,
-  Kbd,
-  Avatar,
-  Checkbox,
   Divider,
   Flex,
-  ActionIcon,
 } from "@mantine/core";
-import { useClickOutside } from "@mantine/hooks";
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  AntennaBars1,
-  AntennaBars2,
-  AntennaBars3,
-  AntennaBars4,
-  AntennaBars5,
   Archive,
   BoxModel,
   BoxMultiple,
@@ -44,38 +34,31 @@ import {
   Circle,
   CircleCheck,
   CircleDashed,
-  CircleDot,
   CircleDotted,
-  CircleHalf,
   CircleX,
   Dna,
   LayoutColumns,
-  LayoutGrid,
   LayoutRows,
   MoodNeutral,
   Plus,
-  Tag,
-  UserCheck,
-  UserCircle,
   X,
 } from "tabler-icons-react";
-import { useQuery, useSubscription } from "urql";
+import { useQuery } from "urql";
 
-import { TaskPriority, TasksDocument, TasksQuery, TaskStatus } from "../../../integration/graphql";
+import { TaskPriority, TasksDocument, TaskStatus } from "../../../integration/graphql";
 import { NavbarSearch } from "components/ui/NavBarWithSearch";
 import { TaskListElement } from "components/ui/Task";
-import { PriorityIcon, priorityName, PrioritySelector } from "components/ui/Task/priority";
-import { StatusIcon, StatusSelector, statusName } from "components/ui/Task/status";
+import { PrioritySelector } from "components/ui/Task/priority";
+import { StatusSelector } from "components/ui/Task/status";
 import { getCookie, setCookie } from "cookies-next";
 import { DndTaskListElement } from "components/ui/CardTask";
-import { AssigneeName, AssigneePhoto, AssigneeSelector } from "components/ui/Task/assignee";
-import { ProjectIcon, ProjectName, ProjectSelector } from "components/ui/Task/project";
+import { AssigneeSelector } from "components/ui/Task/assignee";
+import { ProjectSelector } from "components/ui/Task/project";
 import { TeamSelector } from "components/ui/Task/team";
-import { LabelColor, LabelName, LabelSelector } from "components/ui/Task/label";
+import { LabelSelector } from "components/ui/Task/label";
 import { LabelType } from "components/ui/Task/types";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useListState } from "@mantine/hooks";
-import { useData } from "lib/useData";
 import { Member, Project } from "../datatypes";
 import { FilterDropdown } from "components/ui/Filters/filterDropdown";
 import { Filter } from "components/ui/Filters/types";
@@ -699,7 +682,6 @@ export const OverviewContent = () => {
                   </Button>
                 </Menu.Target>
                 <FilterDropdown
-                  openedMenu={openedMenu}
                   setOpenedMenu={setOpenedMenu}
                   filter={filter}
                   onFilterSelect={f => setFilter(f)}
@@ -815,7 +797,6 @@ export const OverviewContent = () => {
                     ></Button>
                   </Menu.Target>
                   <FilterDropdown
-                    openedMenu={openedMenu}
                     setOpenedMenu={setOpenedMenu}
                     filter={filter}
                     onFilterSelect={f => setFilter(f)}

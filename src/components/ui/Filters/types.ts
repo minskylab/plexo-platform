@@ -1,4 +1,4 @@
-import { Member, MembersQuery, Project, ProjectsQuery, TaskPriority, TaskStatus } from "integration/graphql";
+import { Member, Project, TaskPriority, TaskStatus } from "integration/graphql";
 import { LabelType } from "../Task/types";
 
 //tipos de filtros
@@ -8,6 +8,3 @@ export interface Filter {
 name: string;
 elements: filterTypes;
 }
-
-export type MemberType = MembersQuery["members"][number];
-export type ProjectsType = ProjectsQuery["projects"][number];
