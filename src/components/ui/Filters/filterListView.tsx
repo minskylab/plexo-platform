@@ -156,7 +156,15 @@ export const FilterListView = ({
       </Group>
       }
       else{
-        return <Group key={index} spacing={6}>
+        return <Group 
+          sx={{
+            border:'3px solid',
+            borderRadius: '5px',
+            borderColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }}
+          key={index} 
+          spacing={1}>
         <Button
               className={classes["text-header-buttons"]}
               compact
@@ -165,6 +173,78 @@ export const FilterListView = ({
               leftIcon={<CircleDashed size={16}/>}
             >
               Assignee is
+              <Group mr={10} ml={10} spacing={0}>
+              {AssigneePhoto(MemberData(filter.elements[0] as string) as Member)} 
+              </Group>
+              {AssigneeName(MemberData(filter.elements[0] as string) as Member)} 
+        </Button>
+        <Button
+                className={classes["text-header-buttons"]}
+                compact
+                variant="subtle"
+                color={"gray"}
+                onClick={ () => handleDeleteFilter(index) }
+              >
+              {<X size={16}/>}
+        </Button>
+      </Group>
+      }
+    }
+    if (filter.name == "leader"){
+      if (filter.elements.length > 1){
+        return <Group
+          sx={{
+            border:'3px solid',
+            borderRadius: '5px',
+            borderColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }} 
+          key={index} 
+          spacing={1}>
+        <Button
+              className={classes["text-header-buttons"]}
+              compact
+              variant="subtle"
+              color={"gray"}
+              leftIcon={<CircleDashed size={16}/>}
+            >
+              Leader is any of 
+              <Group mr={10} ml={10} spacing={0}>
+              {(filter.elements as Member[]).map(function (filter: Member, index: number) {
+                return <div key={index}>{AssigneePhoto(filter)}</div>;
+              })}
+              </Group>
+              {filter.elements.length} users 
+        </Button>
+        <Button
+                className={classes["text-header-buttons"]}
+                compact
+                variant="subtle"
+                color={"gray"}
+                onClick={ () => handleDeleteFilter(index) }
+              >
+              {<X size={16}/>}
+        </Button>
+      </Group>
+      }
+      else{
+        return <Group 
+          sx={{
+            border:'3px solid',
+            borderRadius: '5px',
+            borderColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+          }} 
+          key={index} 
+          spacing={1}>
+        <Button
+              className={classes["text-header-buttons"]}
+              compact
+              variant="subtle"
+              color={"gray"}
+              leftIcon={<CircleDashed size={16}/>}
+            >
+              Leader is
               <Group mr={10} ml={10} spacing={0}>
               {AssigneePhoto(MemberData(filter.elements[0] as string) as Member)} 
               </Group>

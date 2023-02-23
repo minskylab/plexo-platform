@@ -23,6 +23,8 @@ type FilterDropdownProps = {
     setStatusFilters: (statusFilters: TaskStatus[]) => void;
     assigneeFilters: Member["id"][];
     setAssigneeFilters: (assigneeFilters: Member["id"][]) => void;
+    leaderFilters: Member["id"][];
+    setLeaderFilters: (leaderFilters: Member["id"][]) => void;
     creatorFilters: Member["id"][];
     setCreatorFilters: (creatorFilters: Member["id"][]) => void;
     priorityFilters: TaskPriority[];
@@ -89,6 +91,8 @@ export const FilterDropdown = ({
     setStatusFilters,
     assigneeFilters,
     setAssigneeFilters,
+    leaderFilters,
+    setLeaderFilters,
     creatorFilters,
     setCreatorFilters,
     priorityFilters,
@@ -116,6 +120,11 @@ export const FilterDropdown = ({
             setFilterList([...filterList, {name: 'assignee', elements: assigneeFilters}]);
           }
           setAssigneeFilters([]);
+        case "leader":
+          if (leaderFilters.length > 0){
+            setFilterList([...filterList, {name: 'leader', elements: leaderFilters}]);
+          }
+          setLeaderFilters([]);
         case "creator":
           if (creatorFilters.length > 0){
             setFilterList([...filterList, {name: 'creator', elements: creatorFilters}]);
@@ -266,6 +275,44 @@ export const FilterDropdown = ({
                 <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
             ) : (
                 <Checkbox.Group spacing={0} value={assigneeFilters} onChange={setAssigneeFilters}>
+                    {
+                        membersData?.members.map(m => {
+                            return (
+                            <Menu.Item key={m.id} p={0}>
+                                <Checkbox
+                                    size="xs"
+                                    value={m.id}
+                                    label={memberData(m)}
+                                    styles={{
+                                        body: {
+                                          width: "100%",
+                                          padding: 10,
+                                          alignItems: "center",
+                                        },
+                                        labelWrapper: {
+                                          width: "100%",
+                                        },
+                                    }}
+                                />
+                            </Menu.Item>
+                            );
+                        })
+                    }
+                </Checkbox.Group>
+            )}
+          </>;
+        case "leader":
+          return <>
+            <TextInput
+              placeholder="Leader"
+              variant="filled"
+              rightSection={<Kbd px={8}>P</Kbd>}
+            ></TextInput>
+            <Menu.Divider />
+            {isLoadingMembers ? (
+                <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+            ) : (
+                <Checkbox.Group spacing={0} value={leaderFilters} onChange={setLeaderFilters}>
                     {
                         membersData?.members.map(m => {
                             return (
@@ -504,6 +551,7 @@ export const FilterDropdown = ({
         <Menu.Divider />
         <Menu.Item onClick={() => onFilterSelect && onFilterSelect("status")} icon={<CircleDashed size={18} />}>Status</Menu.Item>
         <Menu.Item onClick={() => onFilterSelect && onFilterSelect("assignee")} icon={<UserCircle size={18} />}>Assignee</Menu.Item>
+        <Menu.Item onClick={() => onFilterSelect && onFilterSelect("leader")} icon={<UserCheck size={18} />}>Leader</Menu.Item>
         <Menu.Item onClick={() => onFilterSelect && onFilterSelect("creator")} icon={<UserCheck size={18} />}>Creator</Menu.Item>
         <Menu.Item onClick={() => onFilterSelect && onFilterSelect("priority")} icon={<AntennaBars5 size={18} />}>Priority</Menu.Item>
         <Menu.Item onClick={() => onFilterSelect && onFilterSelect("labels")} icon={<Tag size={18} />}>Labels</Menu.Item>

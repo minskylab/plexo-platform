@@ -49,7 +49,7 @@ import { TaskPriority, TasksDocument, TaskStatus } from "../../../integration/gr
 import { NavbarSearch } from "components/ui/NavBarWithSearch";
 import { TaskListElement } from "components/ui/Task";
 import { PrioritySelector } from "components/ui/Task/priority";
-import { StatusSelector } from "components/ui/Task/status";
+import { StatusIcon, statusName, StatusSelector } from "components/ui/Task/status";
 import { getCookie, setCookie } from "cookies-next";
 import { DndTaskListElement } from "components/ui/CardTask";
 import { AssigneeSelector } from "components/ui/Task/assignee";
@@ -243,6 +243,7 @@ export const OverviewContent = () => {
   //gestion de la lista de filtros seleccionados de cada tipo
   const [statusFilters, setStatusFilters] = useState<TaskStatus[]>([]);
   const [assigneeFilters, setAssigneeFilters] = useState<Member["id"][]>([]);
+  const [leaderFilters, setLeaderFilters] = useState<Member["id"][]>([]);
   const [creatorFilters, setCreatorFilters] = useState<Member["id"][]>([]);
   const [priorityFilters, setPriorityFilters] = useState<TaskPriority[]>([]);
   const [labelsFilters, setLabelsFilters] = useState<LabelType[]>([]);
@@ -491,6 +492,33 @@ export const OverviewContent = () => {
     );
   };
 
+  const StatusCounter = ({ status } : { status: TaskStatus }) => {
+    if (!isFetchingTasksData)
+    {
+      if (DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == status)
+      .length != 0)
+      {
+        return <Group spacing={6} mt={16} mb={8}>
+          {StatusIcon(theme, status)}
+          <Title order={6}>{statusName(status)}</Title>
+          <Text color="dimmed" size="xs">
+            {DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == status).length}
+          </Text>
+        </Group>
+      }
+    } 
+    else {
+      return <Group spacing={6} mt={16} mb={8}>
+        {StatusIcon(theme, status)}
+        <Title order={6}>{statusName(status)}</Title>
+        <Text color="dimmed" size="xs">
+          {tasksData?.tasks.filter(task => task.status == status).length}
+        </Text>
+      </Group>
+    }
+    return null;
+  }
+
   const [opened, setOpened] = useState(false);
   // console.log(tasksData);
   // const [scrollPosition, onScrollPositionChange] = useState({ x: 0, y: 0 });
@@ -691,6 +719,8 @@ export const OverviewContent = () => {
                   setStatusFilters={setStatusFilters}
                   assigneeFilters={assigneeFilters}
                   setAssigneeFilters={setAssigneeFilters}
+                  leaderFilters={leaderFilters}
+                  setLeaderFilters={setLeaderFilters}
                   creatorFilters={creatorFilters}
                   setCreatorFilters={setCreatorFilters}
                   priorityFilters={priorityFilters}
@@ -806,6 +836,8 @@ export const OverviewContent = () => {
                     setStatusFilters={setStatusFilters}
                     assigneeFilters={assigneeFilters}
                     setAssigneeFilters={setAssigneeFilters}
+                    leaderFilters={leaderFilters}
+                    setLeaderFilters={setLeaderFilters}
                     creatorFilters={creatorFilters}
                     setCreatorFilters={setCreatorFilters}
                     priorityFilters={priorityFilters}
@@ -824,17 +856,34 @@ export const OverviewContent = () => {
         </Container>
         {viewMode === "list" ? (
           <Container>
-            {!isFetchingTasksData &&
-            DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == "NONE")
-              .length == 0 ? null : (
-              <Group spacing={6} mt={16} mb={8}>
-                <MoodNeutral size={18} color={theme.colors.indigo[6]} />
-                <Title order={6}>None</Title>
-                <Text color="dimmed" size="xs">
-                  {tasksData?.tasks.filter(task => task.status == "NONE").length}
-                </Text>
-              </Group>
-            )}
+            {!isFetchingTasksData && DatabyFilter(filterList, tasksData!).tasks.length == 0 ?
+              <Center>
+                  <Flex
+                  mih={50}
+                  mt={{ base: 150, sm: 300 }}
+                  gap="md"
+                  justify="center"
+                  align="center"
+                  direction="column"
+                  wrap="wrap"
+                  >
+                    <Text>No issues matching {filterList.length} filters</Text>
+                    <Button
+                      className={classes["text-header-buttons"]}
+                      compact
+                      variant="subtle"
+                      color={"gray"}
+                      onClick={() => {
+                        setFilter("");
+                        setFilterList([]);
+                      }}
+                    >
+                      Clear filters
+                    </Button>
+                  </Flex>
+              </Center>
+            : null}
+            <StatusCounter status={TaskStatus.None} />
             {isFetchingTasksData ? (
               <Skeleton
                 height={36}
@@ -856,17 +905,7 @@ export const OverviewContent = () => {
                 <NoneDndTaskList data={DatabyFilter(filterList, tasksData!)} />
               </>
             )}
-            {!isFetchingTasksData &&
-            DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == "IN_PROGRESS")
-              .length == 0 ? null : (
-              <Group spacing={6} mt={16} mb={8}>
-                <ChartPie2 size={18} color={theme.colors.yellow[6]} />
-                <Title order={6}>In Progress</Title>
-                <Text color="dimmed" size="xs">
-                  {tasksData?.tasks.filter(task => task.status == "IN_PROGRESS").length}
-                </Text>
-              </Group>
-            )}
+            <StatusCounter status={TaskStatus.InProgress} />
             {isFetchingTasksData ? (
               <Skeleton
                 height={36}
@@ -885,17 +924,7 @@ export const OverviewContent = () => {
               //   })
               <InProgressDndTaskList data={DatabyFilter(filterList, tasksData!)} />
             )}
-            {!isFetchingTasksData &&
-            DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == "TO_DO")
-              .length == 0 ? null : (
-              <Group spacing={6} mt={16} mb={8}>
-                <Circle size={18} />
-                <Title order={6}>Todo</Title>
-                <Text color="dimmed" size="xs">
-                  {tasksData?.tasks.filter(task => task.status == "TO_DO").length}
-                </Text>
-              </Group>
-            )}
+            <StatusCounter status={TaskStatus.ToDo} />
             {/* <TaskListElement task={{ ...task, status: "todo" }} /> */}
             {isFetchingTasksData ? (
               <Skeleton
@@ -915,17 +944,7 @@ export const OverviewContent = () => {
               //   })
               <ToDoDndTaskList data={DatabyFilter(filterList, tasksData!)} />
             )}
-            {!isFetchingTasksData &&
-            DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == "BACKLOG")
-              .length == 0 ? null : (
-              <Group spacing={6} mt={16} mb={8}>
-                <CircleDotted size={18} />
-                <Title order={6}>Backlog</Title>
-                <Text color="dimmed" size="xs">
-                  {tasksData?.tasks.filter(task => task.status == "BACKLOG").length}
-                </Text>
-              </Group>
-            )}
+            <StatusCounter status={TaskStatus.Backlog} />
             {isFetchingTasksData ? (
               <Skeleton
                 height={36}
@@ -944,17 +963,7 @@ export const OverviewContent = () => {
               //   })
               <BacklogDndTaskList data={DatabyFilter(filterList, tasksData!)} />
             )}
-            {!isFetchingTasksData &&
-            DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == "DONE")
-              .length == 0 ? null : (
-              <Group spacing={6} mt={16} mb={8}>
-                <CircleCheck size={18} color={theme.colors.green[6]} />
-                <Title order={6}>Done</Title>
-                <Text color="dimmed" size="xs">
-                  {tasksData?.tasks.filter(task => task.status == "DONE").length}
-                </Text>
-              </Group>
-            )}
+            <StatusCounter status={TaskStatus.Done} />
             {isFetchingTasksData ? (
               <Skeleton
                 height={36}
@@ -973,17 +982,7 @@ export const OverviewContent = () => {
               //   })
               <DoneDndTaskList data={DatabyFilter(filterList, tasksData!)} />
             )}
-            {!isFetchingTasksData &&
-            DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == "CANCELED")
-              .length == 0 ? null : (
-              <Group spacing={6} mt={16} mb={8}>
-                <CircleX size={18} color={theme.colors.red[6]} />
-                <Title order={6}>Canceled</Title>
-                <Text color="dimmed" size="xs">
-                  {tasksData?.tasks.filter(task => task.status == "CANCELED").length}
-                </Text>
-              </Group>
-            )}
+            <StatusCounter status={TaskStatus.Canceled} />
             {isFetchingTasksData ? (
               <Skeleton
                 height={36}
