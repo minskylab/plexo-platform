@@ -45,7 +45,7 @@ export const StatusIcon = (
       return <CircleX size={size} color={theme.colors.red[6]} />;
   }
 
-  return <AntennaBars1 />;
+  /* return <AntennaBars1 />; */
 };
 
 const statusLabel = (status?: TaskStatus) => {

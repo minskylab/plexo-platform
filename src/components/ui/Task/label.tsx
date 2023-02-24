@@ -65,30 +65,12 @@ export const LabelName = (labels: LabelType[] | LabelType | undefined) => {
   if (labels) {
     if (Array.isArray(labels)) {
       if (labels.length == 1) {
-        switch (labels[0]) {
-          case "Bug":
-            return "Bug";
-          case "Feature":
-            return "Feature";
-          case "Improvement":
-            return "Improvement";
-          case "Migrated":
-            return "Migrated";
-        }
+        return labels[0];
       } else {
         return labels.length + " labels";
       }
     } else {
-      switch (labels) {
-        case "Bug":
-          return "Bug";
-        case "Feature":
-          return "Feature";
-        case "Improvement":
-          return "Improvement";
-        case "Migrated":
-          return "Migrated";
-      }
+      return labels;
     }
   }
   return "";
