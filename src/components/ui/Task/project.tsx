@@ -44,11 +44,7 @@ export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuP
         ) : (
           projectsData?.projects.map(p => {
             return (
-              <Menu.Item
-                key={p.id}
-                icon={ProjectIcon(p)}
-                onClick={() => onSelect && onSelect(p)}
-              >
+              <Menu.Item key={p.id} icon={ProjectIcon(p)} onClick={() => onSelect && onSelect(p)}>
                 {ProjectName(p)}
               </Menu.Item>
             );

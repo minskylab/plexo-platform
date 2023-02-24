@@ -45,10 +45,10 @@ export const StatusIcon = (
       return <CircleX size={size} color={theme.colors.red[6]} />;
   }
 
-  return <AntennaBars1 />;
+  /* return <AntennaBars1 />; */
 };
 
-export const statusName = (status?: TaskStatus) => {
+const statusLabel = (status?: TaskStatus) => {
   switch (status) {
     case "NONE":
       return "None";
@@ -67,6 +67,25 @@ export const statusName = (status?: TaskStatus) => {
   }
 
   return "No Status";
+};
+
+export const statusName = (status: TaskStatus) => {
+  switch (status) {
+    case "NONE":
+      return "None";
+    case "BACKLOG":
+      return "Backlog";
+    case "TO_DO":
+      return "ToDo";
+    case "IN_PROGRESS":
+      return "InProgress";
+    /* case "in-review":
+      return "In Review"; */
+    case "DONE":
+      return "Done";
+    case "CANCELED":
+      return "Canceled";
+  }
 };
 
 type GenericStatusMenuProps = {
@@ -200,7 +219,7 @@ export const StatusSelector = ({ status, setStatus }: StatusSelectorProps) => {
   return (
     <GenericStatusMenu onSelect={priority => setStatus(priority)}>
       <Button compact variant="light" color={"gray"} leftIcon={StatusIcon(theme, status, 18)}>
-        <Text size={"xs"}>{statusName(status)}</Text>
+        <Text size={"xs"}>{statusLabel(status)}</Text>
       </Button>
     </GenericStatusMenu>
   );

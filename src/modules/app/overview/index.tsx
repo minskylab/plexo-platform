@@ -182,7 +182,7 @@ const DndTaskList = ({ statusData }: { statusData: any }) => {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                   >
-                    <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />
+                    <TaskListElement key={t.id} task={{ ...t, status: t.status }} />
                   </div>
                 )}
               </Draggable>
