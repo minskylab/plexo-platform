@@ -8,6 +8,7 @@ import {
   Textarea,
   Button,
   Popover,
+  Tooltip,
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import dayjs from "dayjs";
@@ -55,21 +56,27 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
       <Group spacing={6} mb={"md"}>
         <LeadSelector initialLead={undefined} />
         <MemberSelector />
+
         <Popover position="bottom" shadow="md">
           <Popover.Target>
-            <Button compact variant="light" color={"gray"} leftIcon={<CalendarTime size={16} />}>
-              <Text size={"xs"}>{DateLabel(startDate, "Start date")}</Text>
-            </Button>
+            <Tooltip label="Change start date" position="bottom">
+              <Button compact variant="light" color={"gray"} leftIcon={<CalendarTime size={16} />}>
+                <Text size={"xs"}>{DateLabel(startDate, "Start date")}</Text>
+              </Button>
+            </Tooltip>
           </Popover.Target>
           <Popover.Dropdown>
             <Calendar value={startDate} onChange={setStartDate} />
           </Popover.Dropdown>
         </Popover>
+
         <Popover position="bottom" shadow="md">
           <Popover.Target>
-            <Button compact variant="light" color={"gray"} leftIcon={<CalendarTime size={16} />}>
-              <Text size={"xs"}>{DateLabel(targetDate, "Target date")}</Text>
-            </Button>
+            <Tooltip label="Change target date" position="bottom">
+              <Button compact variant="light" color={"gray"} leftIcon={<CalendarTime size={16} />}>
+                <Text size={"xs"}>{DateLabel(targetDate, "Target date")}</Text>
+              </Button>
+            </Tooltip>
           </Popover.Target>
           <Popover.Dropdown>
             <Calendar value={targetDate} onChange={setTargetDate} />

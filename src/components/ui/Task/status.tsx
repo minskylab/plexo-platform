@@ -1,16 +1,26 @@
-import { Button, Kbd, MantineTheme, Menu, Text, TextInput, useMantineTheme } from "@mantine/core";
+import {
+  Button,
+  Kbd,
+  Menu,
+  Text,
+  TextInput,
+  Tooltip,
+  useMantineTheme,
+  MantineTheme,
+} from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import { TaskStatus } from "integration/graphql";
-/* import { TaskStatus } from "modules/app/datatypes"; */
-import { useState } from "react";
+import { useTaskActions } from "lib/useTaskActions";
 import {
   AntennaBars1,
   Circle,
   CircleCheck,
-  CircleDashed,
-  CircleHalf,
-  DotsCircleHorizontal,
   CircleDot,
   CircleX,
+  CircleDotted,
+  ChartPie2,
+  X,
+  Check,
 } from "tabler-icons-react";
 
 export const StatusIcon = (
@@ -22,11 +32,11 @@ export const StatusIcon = (
     case "NONE":
       return <CircleDot size={size} color={theme.colors.gray[6]} />;
     case "BACKLOG":
-      return <CircleDashed size={size} color={theme.colors.gray[6]} />;
+      return <CircleDotted size={size} color={theme.colors.gray[6]} />;
     case "TO_DO":
       return <Circle size={size} />;
     case "IN_PROGRESS":
-      return <CircleHalf size={size} color={theme.colors.yellow[6]} />;
+      return <ChartPie2 size={size} color={theme.colors.yellow[6]} />;
     /* case "in-review":
       return <DotsCircleHorizontal size={size} color={theme.colors.green[6]} />; */
     case "DONE":
@@ -61,16 +71,47 @@ export const statusName = (status?: TaskStatus) => {
 
 type GenericStatusMenuProps = {
   children: React.ReactNode;
-  onSelect?: (priority: TaskStatus | undefined) => void;
+  onSelect?: (priority: TaskStatus) => void;
+  taskId?: string;
 };
 
-export const GenericStatusMenu = ({ children, onSelect }: GenericStatusMenuProps) => {
+export const GenericStatusMenu = ({ children, onSelect, taskId }: GenericStatusMenuProps) => {
   const theme = useMantineTheme();
+  const { fetchUpdateTask } = useTaskActions();
+
+  const onUpdateTaskStatus = async (status: TaskStatus) => {
+    const res = await fetchUpdateTask({
+      taskId: taskId,
+      status: statusName(status),
+    });
+
+    if (res.data) {
+      showNotification({
+        autoClose: 5000,
+        title: "Status updated",
+        message: res.data.updateTask.title,
+        color: "blue",
+        icon: <Check size={18} />,
+      });
+    }
+    if (res.error) {
+      showNotification({
+        autoClose: 5000,
+        title: "Error!",
+        message: "Try again",
+        color: "red",
+        icon: <X size={18} />,
+      });
+    }
+  };
 
   return (
     <Menu shadow="md" width={180}>
-      <Menu.Target>{children}</Menu.Target>
-
+      <Menu.Target>
+        <Tooltip label="Change status" position="bottom">
+          {children}
+        </Tooltip>
+      </Menu.Target>
       <Menu.Dropdown>
         <TextInput
           placeholder="Change Status..."
@@ -80,25 +121,37 @@ export const GenericStatusMenu = ({ children, onSelect }: GenericStatusMenuProps
         <Menu.Divider />
         <Menu.Item
           icon={<CircleDot size={18} color={theme.colors.gray[6]} />}
-          onClick={() => onSelect && onSelect(TaskStatus.None)}
+          onClick={() => {
+            onSelect && onSelect(TaskStatus.None);
+            taskId && onUpdateTaskStatus(TaskStatus.None);
+          }}
         >
           None
         </Menu.Item>
         <Menu.Item
-          icon={<CircleDashed size={18} color={theme.colors.gray[6]} />}
-          onClick={() => onSelect && onSelect(TaskStatus.Backlog)}
+          icon={<CircleDotted size={18} color={theme.colors.gray[6]} />}
+          onClick={() => {
+            onSelect && onSelect(TaskStatus.Backlog);
+            taskId && onUpdateTaskStatus(TaskStatus.Backlog);
+          }}
         >
           Backlog
         </Menu.Item>
         <Menu.Item
           icon={<Circle size={18} />}
-          onClick={() => onSelect && onSelect(TaskStatus.ToDo)}
+          onClick={() => {
+            onSelect && onSelect(TaskStatus.ToDo);
+            taskId && onUpdateTaskStatus(TaskStatus.ToDo);
+          }}
         >
           Todo
         </Menu.Item>
         <Menu.Item
-          icon={<CircleHalf size={18} color={theme.colors.yellow[6]} />}
-          onClick={() => onSelect && onSelect(TaskStatus.InProgress)}
+          icon={<ChartPie2 size={18} color={theme.colors.yellow[6]} />}
+          onClick={() => {
+            onSelect && onSelect(TaskStatus.InProgress);
+            taskId && onUpdateTaskStatus(TaskStatus.InProgress);
+          }}
         >
           In Progress
         </Menu.Item>
@@ -115,13 +168,19 @@ export const GenericStatusMenu = ({ children, onSelect }: GenericStatusMenuProps
         </Menu.Item> */}
         <Menu.Item
           icon={<CircleCheck size={18} color={theme.colors.indigo[6]} />}
-          onClick={() => onSelect && onSelect(TaskStatus.Done)}
+          onClick={() => {
+            onSelect && onSelect(TaskStatus.Done);
+            taskId && onUpdateTaskStatus(TaskStatus.Done);
+          }}
         >
           Done
         </Menu.Item>
         <Menu.Item
           icon={<CircleX size={18} color={theme.colors.red[6]} />}
-          onClick={() => onSelect && onSelect(TaskStatus.Canceled)}
+          onClick={() => {
+            onSelect && onSelect(TaskStatus.Canceled);
+            taskId && onUpdateTaskStatus(TaskStatus.Canceled);
+          }}
         >
           Canceled
         </Menu.Item>
@@ -131,11 +190,11 @@ export const GenericStatusMenu = ({ children, onSelect }: GenericStatusMenuProps
 };
 
 type StatusSelectorProps = {
-  initialStatus?: TaskStatus;
+  status: TaskStatus;
+  setStatus: (status: TaskStatus) => void;
 };
 
-export const StatusSelector = ({ initialStatus }: StatusSelectorProps) => {
-  const [status, setStatus] = useState<TaskStatus | undefined>(initialStatus);
+export const StatusSelector = ({ status, setStatus }: StatusSelectorProps) => {
   const theme = useMantineTheme();
 
   return (

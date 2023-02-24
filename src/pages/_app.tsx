@@ -1,12 +1,14 @@
 import type { AppProps } from "next/app";
 import { Provider as URQLProvider } from "urql";
 import { URQLClient } from "lib/client";
-import { ColorScheme, ColorSchemeProvider, MantineProvider } from "@mantine/core";
+import { ColorScheme, ColorSchemeProvider, MantineProvider, Tooltip } from "@mantine/core";
 import Fonts from "theming/fonts";
 import { useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
 import { GetServerSidePropsContext } from "next";
 import { colorBrandDark, colorBrandPrimary } from "theming";
+import { NotificationsProvider } from "@mantine/notifications";
+import { ModalsProvider } from "@mantine/modals";
 
 const client = URQLClient();
 
@@ -34,10 +36,24 @@ const PlexoApp = (props: AppProps & { colorScheme: ColorScheme }) => {
               dark: colorBrandDark,
             },
             primaryColor: "brand",
+            components: {
+              Tooltip: {
+                styles: {
+                  tooltip: {
+                    marginTop: 5,
+                    fontSize: 12,
+                  },
+                },
+              },
+            },
           }}
         >
-          <Fonts />
-          <Component {...pageProps} />
+          <ModalsProvider>
+            <NotificationsProvider>
+              <Fonts />
+              <Component {...pageProps} />
+            </NotificationsProvider>
+          </ModalsProvider>
         </MantineProvider>
       </ColorSchemeProvider>
     </URQLProvider>

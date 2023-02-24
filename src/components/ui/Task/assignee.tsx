@@ -51,11 +51,7 @@ export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuPr
         ) : (
           membersData?.members.map(m => {
             return (
-              <Menu.Item
-                key={m.id}
-                icon={ AssigneePhoto(m)}
-                onClick={() => onSelect && onSelect(m)}
-              >
+              <Menu.Item key={m.id} icon={AssigneePhoto(m)} onClick={() => onSelect && onSelect(m)}>
                 {AssigneeName(m)}
               </Menu.Item>
             );

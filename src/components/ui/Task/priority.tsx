@@ -1,13 +1,15 @@
-import { Button, Kbd, Menu, Text, TextInput } from "@mantine/core";
+import { Button, Kbd, Menu, Text, TextInput, Tooltip } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import { TaskPriority } from "integration/graphql";
-/* import { TaskPriority } from "modules/app/datatypes"; */
-import { useState } from "react";
+import { useTaskActions } from "lib/useTaskActions";
 import {
   AntennaBars1,
   AntennaBars2,
   AntennaBars3,
   AntennaBars4,
   AntennaBars5,
+  Check,
+  X,
 } from "tabler-icons-react";
 
 export const PriorityIcon = (
@@ -26,11 +28,24 @@ export const PriorityIcon = (
     case "URGENT":
       return <AntennaBars5 size={size} />;
   }
-
-  return <AntennaBars1 size={size} />;
 };
 
-export const priorityName = (priority: TaskPriority | undefined) => {
+export const priorityLabel = (priority: TaskPriority | undefined) => {
+  switch (priority) {
+    case "NONE":
+      return "No Priority";
+    case "LOW":
+      return "Low";
+    case "MEDIUM":
+      return "Medium";
+    case "HIGH":
+      return "High";
+    case "URGENT":
+      return "Urgent";
+  }
+};
+
+export const priorityName = (priority: TaskPriority) => {
   switch (priority) {
     case "NONE":
       return "None";
@@ -43,25 +58,49 @@ export const priorityName = (priority: TaskPriority | undefined) => {
     case "URGENT":
       return "Urgent";
   }
-
-  return "No Priority";
 };
 
 type GenericPriorityMenuProps = {
   children: React.ReactNode;
-  onSelect?: (priority: TaskPriority | undefined) => void;
+  onSelect?: (priority: TaskPriority) => void;
+  taskId?: string;
 };
 
-export const GenericPriorityMenu = ({ children, onSelect }: GenericPriorityMenuProps) => {
+export const GenericPriorityMenu = ({ children, onSelect, taskId }: GenericPriorityMenuProps) => {
+  const { fetchUpdateTask } = useTaskActions();
+
+  const onUpdateTaskPriority = async (priority: TaskPriority) => {
+    const res = await fetchUpdateTask({
+      taskId: taskId,
+      priority: priorityName(priority),
+    });
+
+    if (res.data) {
+      showNotification({
+        autoClose: 5000,
+        title: "Priority updated",
+        message: res.data.updateTask.title,
+        color: "blue",
+        icon: <Check size={18} />,
+      });
+    }
+    if (res.error) {
+      showNotification({
+        autoClose: 5000,
+        title: "Error!",
+        message: "Try again",
+        color: "red",
+        icon: <X size={18} />,
+      });
+    }
+  };
   return (
     <Menu shadow="md" width={180}>
       <Menu.Target>
-        {/* <ActionIcon variant="light" radius={"sm"}>
-                {PriorityIcon(task.priority)}
-              </ActionIcon> */}
-        {children}
+        <Tooltip label="Set priority" position="bottom">
+          {children}
+        </Tooltip>
       </Menu.Target>
-
       <Menu.Dropdown>
         <TextInput
           placeholder="Change Priority..."
@@ -71,31 +110,46 @@ export const GenericPriorityMenu = ({ children, onSelect }: GenericPriorityMenuP
         <Menu.Divider />
         <Menu.Item
           icon={<AntennaBars1 size={18} />}
-          onClick={() => onSelect && onSelect(TaskPriority.None)}
+          onClick={() => {
+            onSelect && onSelect(TaskPriority.None);
+            taskId && onUpdateTaskPriority(TaskPriority.None);
+          }}
         >
           No Priority
         </Menu.Item>
         <Menu.Item
           icon={<AntennaBars2 size={18} />}
-          onClick={() => onSelect && onSelect(TaskPriority.Low)}
+          onClick={() => {
+            onSelect && onSelect(TaskPriority.Low);
+            taskId && onUpdateTaskPriority(TaskPriority.Low);
+          }}
         >
           Low
         </Menu.Item>
         <Menu.Item
           icon={<AntennaBars3 size={18} />}
-          onClick={() => onSelect && onSelect(TaskPriority.Medium)}
+          onClick={() => {
+            onSelect && onSelect(TaskPriority.Medium);
+            taskId && onUpdateTaskPriority(TaskPriority.Medium);
+          }}
         >
           Medium
         </Menu.Item>
         <Menu.Item
           icon={<AntennaBars4 size={18} />}
-          onClick={() => onSelect && onSelect(TaskPriority.High)}
+          onClick={() => {
+            onSelect && onSelect(TaskPriority.High);
+            taskId && onUpdateTaskPriority(TaskPriority.High);
+          }}
         >
           High
         </Menu.Item>
         <Menu.Item
           icon={<AntennaBars5 size={18} />}
-          onClick={() => onSelect && onSelect(TaskPriority.Urgent)}
+          onClick={() => {
+            onSelect && onSelect(TaskPriority.Urgent);
+            taskId && onUpdateTaskPriority(TaskPriority.Urgent);
+          }}
         >
           Urgent
         </Menu.Item>
@@ -105,22 +159,22 @@ export const GenericPriorityMenu = ({ children, onSelect }: GenericPriorityMenuP
 };
 
 type PrioritySelectorProps = {
-  initialPriority?: TaskPriority;
+  priority: TaskPriority;
+  setPriority: (priority: TaskPriority) => void;
 };
 
-export const PrioritySelector = ({ initialPriority }: PrioritySelectorProps) => {
-  const [priority, setPriority] = useState<TaskPriority | undefined>(initialPriority);
-
+export const PrioritySelector = ({ priority, setPriority }: PrioritySelectorProps) => {
   return (
     <GenericPriorityMenu onSelect={priority => setPriority(priority)}>
-      {priority == TaskPriority.None ?
-      <Button compact variant="light" color={"gray"}>{PriorityIcon(priority, 18)}</Button>
-      :
-      <Button compact variant="light" color={"gray"} leftIcon={PriorityIcon(priority, 18)}>
-        <Text size={"xs"}>{priorityName(priority)}</Text>
-      </Button>
-      }
-
+      {priority == TaskPriority.None ? (
+        <Button compact variant="light" color={"gray"}>
+          {PriorityIcon(priority, 18)}
+        </Button>
+      ) : (
+        <Button compact variant="light" color={"gray"} leftIcon={PriorityIcon(priority, 18)}>
+          <Text size={"xs"}>{priorityLabel(priority)}</Text>
+        </Button>
+      )}
     </GenericPriorityMenu>
   );
 };

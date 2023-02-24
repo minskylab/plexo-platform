@@ -6,14 +6,9 @@ import {
   useMantineTheme,
   Container,
   SegmentedControl,
-  Box,
   Center,
   Button,
   Menu,
-  TextInput,
-  Modal,
-  Textarea,
-  Switch,
   Skeleton,
   SimpleGrid,
   ScrollArea,
@@ -34,6 +29,7 @@ import {
   Circle,
   CircleCheck,
   CircleDashed,
+  CircleDot,
   CircleDotted,
   CircleX,
   Dna,
@@ -59,6 +55,7 @@ import { LabelSelector } from "components/ui/Task/label";
 import { LabelType } from "components/ui/Task/types";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useListState } from "@mantine/hooks";
+import NewTask from "components/ui/Task/newTask";
 import { Member, Project } from "../datatypes";
 import { FilterDropdown } from "components/ui/Filters/filterDropdown";
 import { Filter } from "components/ui/Filters/types";
@@ -146,7 +143,7 @@ const DndTaskBoard = ({ statusData }: { statusData: any }) => {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                   >
-                    <DndTaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />
+                    <DndTaskListElement key={t.id} task={{ ...t, status: t.status }} />
                   </div>
                 )}
               </Draggable>
@@ -342,26 +339,14 @@ export const OverviewContent = () => {
         <SimpleGrid cols={6} spacing={325}>
           <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
             <Group>
-              <MoodNeutral size={18} color={theme.colors.indigo[6]} />
+              <CircleDot size={18} color={theme.colors.gray[6]} />
               <Title order={6}>None</Title>
               <Text color="dimmed" size="xs">
                 {data?.tasks.filter((task: { status: string }) => task.status == "NONE").length}
               </Text>
             </Group>
             <ScrollArea style={{ height: 812 }} offsetScrollbars>
-              {fetching ? (
-                <Skeleton
-                  height={36}
-                  radius="sm"
-                  sx={{
-                    "&::after": {
-                      background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                    },
-                  }}
-                />
-              ) : (
-                <NoneDndTaskBoard data={data} />
-              )}
+              {fetching ? <Skeleton height={36} radius="sm" /> : <NoneDndTaskBoard data={data} />}
             </ScrollArea>
           </Stack>
           <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
@@ -377,15 +362,7 @@ export const OverviewContent = () => {
             </Group>
             <ScrollArea style={{ height: 812 }} offsetScrollbars>
               {fetching ? (
-                <Skeleton
-                  height={36}
-                  radius="sm"
-                  sx={{
-                    "&::after": {
-                      background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                    },
-                  }}
-                />
+                <Skeleton height={36} radius="sm" />
               ) : (
                 <InProgressDndTaskBoard data={data} />
               )}
@@ -400,19 +377,7 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             <ScrollArea style={{ height: 812 }} offsetScrollbars>
-              {fetching ? (
-                <Skeleton
-                  height={36}
-                  radius="sm"
-                  sx={{
-                    "&::after": {
-                      background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                    },
-                  }}
-                />
-              ) : (
-                <ToDoDndTaskBoard data={data} />
-              )}
+              {fetching ? <Skeleton height={36} radius="sm" /> : <ToDoDndTaskBoard data={data} />}
             </ScrollArea>
           </Stack>
           <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
@@ -425,15 +390,7 @@ export const OverviewContent = () => {
             </Group>
             <ScrollArea style={{ height: 812 }} offsetScrollbars>
               {fetching ? (
-                <Skeleton
-                  height={36}
-                  radius="sm"
-                  sx={{
-                    "&::after": {
-                      background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                    },
-                  }}
-                />
+                <Skeleton height={36} radius="sm" />
               ) : (
                 <BacklogDndTaskBoard data={data} />
               )}
@@ -441,26 +398,14 @@ export const OverviewContent = () => {
           </Stack>
           <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
             <Group>
-              <CircleCheck size={18} color={theme.colors.green[6]} />
+              <CircleCheck size={18} color={theme.colors.indigo[6]} />
               <Title order={6}>Done</Title>
               <Text color="dimmed" size="xs">
                 {data?.tasks.filter((task: { status: string }) => task.status == "DONE").length}
               </Text>
             </Group>
             <ScrollArea style={{ height: 812 }} offsetScrollbars>
-              {fetching ? (
-                <Skeleton
-                  height={36}
-                  radius="sm"
-                  sx={{
-                    "&::after": {
-                      background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                    },
-                  }}
-                />
-              ) : (
-                <DoneDndTaskBoard data={data} />
-              )}
+              {fetching ? <Skeleton height={36} radius="sm" /> : <DoneDndTaskBoard data={data} />}
             </ScrollArea>
           </Stack>
           <Stack sx={{ minWidth: 312, marginLeft: 20 }}>
@@ -472,19 +417,7 @@ export const OverviewContent = () => {
               </Text>
             </Group>
             <ScrollArea style={{ height: 812 }} offsetScrollbars>
-              {fetching ? (
-                <Skeleton
-                  height={36}
-                  radius="sm"
-                  sx={{
-                    "&::after": {
-                      background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                    },
-                  }}
-                />
-              ) : (
-                <CancelDndTaskBoard data={data} />
-              )}
+              {fetching ? <Skeleton height={36} radius="sm" /> : <CancelDndTaskBoard data={data} />}
             </ScrollArea>
           </Stack>
         </SimpleGrid>
@@ -492,96 +425,49 @@ export const OverviewContent = () => {
     );
   };
 
-  const StatusCounter = ({ status } : { status: TaskStatus }) => {
-    if (!isFetchingTasksData)
-    {
-      if (DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == status)
-      .length != 0)
-      {
-        return <Group spacing={6} mt={16} mb={8}>
+  const StatusCounter = ({ status }: { status: TaskStatus }) => {
+    if (!isFetchingTasksData) {
+      if (
+        DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == status).length != 0
+      ) {
+        return (
+          <Group spacing={6} mt={16} mb={8}>
+            {StatusIcon(theme, status)}
+            <Title order={6}>{statusName(status)}</Title>
+            <Text color="dimmed" size="xs">
+              {
+                DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == status)
+                  .length
+              }
+            </Text>
+          </Group>
+        );
+      }
+    } else {
+      return (
+        <Group spacing={6} mt={16} mb={8}>
           {StatusIcon(theme, status)}
           <Title order={6}>{statusName(status)}</Title>
           <Text color="dimmed" size="xs">
-            {DatabyFilter(filterList, tasksData!).tasks.filter(task => task.status == status).length}
+            {tasksData?.tasks.filter(task => task.status == status).length}
           </Text>
         </Group>
-      }
-    } 
-    else {
-      return <Group spacing={6} mt={16} mb={8}>
-        {StatusIcon(theme, status)}
-        <Title order={6}>{statusName(status)}</Title>
-        <Text color="dimmed" size="xs">
-          {tasksData?.tasks.filter(task => task.status == status).length}
-        </Text>
-      </Group>
+      );
     }
     return null;
-  }
+  };
 
   const [opened, setOpened] = useState(false);
   // console.log(tasksData);
   // const [scrollPosition, onScrollPositionChange] = useState({ x: 0, y: 0 });
   return (
     <>
-      <Modal
-        centered
-        overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
-        overlayOpacity={0.5}
-        // overlayBlur={3}
-        transition={"slide-up"}
-        size={"lg"}
-        opened={newTaskOpened}
-        onClose={() => setNewTaskOpened(false)}
-        shadow="md"
-        title={
-          <Group spacing={8}>
-            {/* <Button
-              compact
-              variant="light"
-              color={"gray"}
-              leftIcon={<Dna size={16} color={theme.colors.red[4]} />}
-            >
-              MIN
-            </Button> */}
-            <TeamSelector initialTeam={undefined} /> {/* change to current team*/}
-            <Text size={"sm"}>New Task</Text>
-          </Group>
-        }
-      >
-        <Box>
-          <TextInput placeholder="Task Title" variant="unstyled" size="lg" autoFocus />
-          <Textarea placeholder="Add description..." variant="unstyled" size="sm" />
-        </Box>
-        <Group spacing={6} mb={"md"}>
-          <StatusSelector initialStatus={TaskStatus.Backlog} />
-          <PrioritySelector initialPriority={TaskPriority.None} />
-          <AssigneeSelector initialAssignee={undefined} />
-          <LabelSelector initialLabel={[]} />
-          <ProjectSelector initialProject={undefined} />
-        </Group>
-        <Group
-          pt={"md"}
-          position="right"
-          sx={{
-            borderTopWidth: 1,
-            borderTopStyle: "solid",
-            borderTopColor:
-              theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
-          }}
-        >
-          <Switch
-            label="Create more"
-            size="xs"
-            checked={createMore}
-            onChange={e => setCreateMore(e.currentTarget.checked)}
-          />
-          {/* {!createMore && "s"} */}
-          <Button compact variant="filled">
-            Create Task
-          </Button>
-        </Group>
-      </Modal>
+      <NewTask
+        newTaskOpened={newTaskOpened}
+        setNewTaskOpened={setNewTaskOpened}
+        createMore={createMore}
+        setCreateMore={setCreateMore}
+      />
       <Drawer
         className={classes.drawer}
         size="100%"
@@ -856,9 +742,9 @@ export const OverviewContent = () => {
         </Container>
         {viewMode === "list" ? (
           <Container>
-            {!isFetchingTasksData && DatabyFilter(filterList, tasksData!).tasks.length == 0 ?
+            {!isFetchingTasksData && DatabyFilter(filterList, tasksData!).tasks.length == 0 ? (
               <Center>
-                  <Flex
+                <Flex
                   mih={50}
                   mt={{ base: 150, sm: 300 }}
                   gap="md"
@@ -866,139 +752,60 @@ export const OverviewContent = () => {
                   align="center"
                   direction="column"
                   wrap="wrap"
+                >
+                  <Text>No issues matching {filterList.length} filters</Text>
+                  <Button
+                    className={classes["text-header-buttons"]}
+                    compact
+                    variant="subtle"
+                    color={"gray"}
+                    onClick={() => {
+                      setFilter("");
+                      setFilterList([]);
+                    }}
                   >
-                    <Text>No issues matching {filterList.length} filters</Text>
-                    <Button
-                      className={classes["text-header-buttons"]}
-                      compact
-                      variant="subtle"
-                      color={"gray"}
-                      onClick={() => {
-                        setFilter("");
-                        setFilterList([]);
-                      }}
-                    >
-                      Clear filters
-                    </Button>
-                  </Flex>
+                    Clear filters
+                  </Button>
+                </Flex>
               </Center>
-            : null}
+            ) : null}
             <StatusCounter status={TaskStatus.None} />
             {isFetchingTasksData ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
+              <Skeleton height={36} radius="sm" />
             ) : (
               <>
-                {/* {DatabyFilter(filteredData).tasks
-                .filter(t => t.status == "NONE")
-                .map(t => {
-                  return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-                })}
-               <Divider></Divider>  */}
                 <NoneDndTaskList data={DatabyFilter(filterList, tasksData!)} />
               </>
             )}
             <StatusCounter status={TaskStatus.InProgress} />
             {isFetchingTasksData ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
+              <Skeleton height={36} radius="sm" />
             ) : (
-              // DatabyFilter(filteredData).tasks
-              //   .filter(t => t.status == "IN_PROGRESS")
-              //   .map(t => {
-              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              //   })
               <InProgressDndTaskList data={DatabyFilter(filterList, tasksData!)} />
             )}
             <StatusCounter status={TaskStatus.ToDo} />
             {/* <TaskListElement task={{ ...task, status: "todo" }} /> */}
             {isFetchingTasksData ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
+              <Skeleton height={36} radius="sm" />
             ) : (
-              // DatabyFilter(filteredData).tasks
-              //   .filter(t => t.status == "TO_DO")
-              //   .map(t => {
-              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              //   })
               <ToDoDndTaskList data={DatabyFilter(filterList, tasksData!)} />
             )}
             <StatusCounter status={TaskStatus.Backlog} />
             {isFetchingTasksData ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
+              <Skeleton height={36} radius="sm" />
             ) : (
-              // DatabyFilter(filteredData).tasks
-              //   .filter(t => t.status == "BACKLOG")
-              //   .map(t => {
-              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              //   })
               <BacklogDndTaskList data={DatabyFilter(filterList, tasksData!)} />
             )}
             <StatusCounter status={TaskStatus.Done} />
             {isFetchingTasksData ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
+              <Skeleton height={36} radius="sm" />
             ) : (
-              // DatabyFilter(filteredData).tasks
-              //   .filter(t => t.status == "DONE")
-              //   .map(t => {
-              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              //   })
               <DoneDndTaskList data={DatabyFilter(filterList, tasksData!)} />
             )}
             <StatusCounter status={TaskStatus.Canceled} />
             {isFetchingTasksData ? (
-              <Skeleton
-                height={36}
-                radius="sm"
-                sx={{
-                  "&::after": {
-                    background: theme.colorScheme === "dark" ? "#343A4033" : "#e8ebed",
-                  },
-                }}
-              />
+              <Skeleton height={36} radius="sm" />
             ) : (
-              // DatabyFilter(filteredData).tasks
-              //   .filter(t => t.status == "CANCELED")
-              //   .map(t => {
-              //     return <TaskListElement key={t.id} task={{ ...t, status: TaskStatus.None }} />;
-              //   })
               <CancelDndTaskList data={DatabyFilter(filterList, tasksData!)} />
             )}
           </Container>
