@@ -72,7 +72,7 @@ mutation DeleteProject($projectId: UUID!) {
 
 mutation UpdateProject(
   $projectId: UUID!
-  $name: String!
+  $name: String
   $description: String
   $dueDate: DateTime
   $leadId: UUID

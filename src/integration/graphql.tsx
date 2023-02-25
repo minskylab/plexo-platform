@@ -108,7 +108,7 @@ export type MutationRootCreateProjectArgs = {
   leadId?: InputMaybe<Scalars["UUID"]>;
   name: Scalars["String"];
   ownerId: Scalars["UUID"];
-  prefix: Scalars["String"];
+  prefix?: InputMaybe<Scalars["String"]>;
   startDate?: InputMaybe<Scalars["DateTime"]>;
 };
 
@@ -215,7 +215,7 @@ export type Project = {
   name: Scalars["String"];
   owner?: Maybe<Member>;
   ownerId: Scalars["UUID"];
-  prefix: Scalars["String"];
+  prefix?: Maybe<Scalars["String"]>;
   startDate?: Maybe<Scalars["DateTime"]>;
   tasks: Array<Task>;
   updatedAt: Scalars["DateTime"];
@@ -405,7 +405,7 @@ export type ProjectsQuery = {
     createdAt: any;
     updatedAt: any;
     name: string;
-    prefix: string;
+    prefix?: string | null;
     ownerId: any;
     description?: string | null;
     leadId?: any | null;
@@ -425,7 +425,7 @@ export type ProjectsSubscriptionSubscription = {
     __typename?: "Project";
     id: any;
     name: string;
-    prefix: string;
+    prefix?: string | null;
     description?: string | null;
     createdAt: any;
     updatedAt: any;
@@ -462,7 +462,7 @@ export type DeleteProjectMutation = {
 
 export type UpdateProjectMutationVariables = Exact<{
   projectId: Scalars["UUID"];
-  name: Scalars["String"];
+  name?: InputMaybe<Scalars["String"]>;
   description?: InputMaybe<Scalars["String"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   leadId?: InputMaybe<Scalars["UUID"]>;
@@ -948,10 +948,7 @@ export const UpdateProjectDocument = {
         {
           kind: "VariableDefinition",
           variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
         {
           kind: "VariableDefinition",

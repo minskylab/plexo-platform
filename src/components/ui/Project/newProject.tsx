@@ -19,7 +19,7 @@ import { useState } from "react";
 import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
 
 import { TeamSelector } from "../Task/team";
-import { LeadSelector } from "./lead";
+import { LeadProjectSelector } from "./lead";
 import { MemberSelector } from "./members";
 
 type NewProjectProps = {
@@ -37,6 +37,7 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
   const [name, setName] = useState("");
   const [prefix, setPrefix] = useState("");
   const [description, setDescription] = useState("");
+  const [lead, setLead] = useState<Member | null>(null);
   const [targetDate, setTargetDate] = useState<Date | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
 
@@ -130,8 +131,8 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
         />
       </Box>
       <Group spacing={6} mb={"md"}>
-        <LeadSelector initialLead={undefined} />
-        <MemberSelector />
+        <LeadProjectSelector lead={lead} setLead={setLead} />
+        {/* <MemberSelector /> */}
 
         <Popover position="bottom" shadow="md">
           <Popover.Target>
