@@ -20,26 +20,23 @@ import {
   Divider,
   Flex,
 } from "@mantine/core";
+import { useListState } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import {
-  Archive,
-  BoxModel,
-  BoxMultiple,
   ChartPie2,
   Circle,
   CircleCheck,
-  CircleDashed,
   CircleDot,
   CircleDotted,
   CircleX,
-  Dna,
   LayoutColumns,
   LayoutRows,
-  MoodNeutral,
   Plus,
   X,
+  Filter as FilterIcon,
 } from "tabler-icons-react";
 import { useQuery } from "urql";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 import { TaskPriority, TasksDocument, TaskStatus } from "../../../integration/graphql";
 import { NavbarSearch } from "components/ui/NavBarWithSearch";
@@ -53,8 +50,6 @@ import { ProjectSelector } from "components/ui/Task/project";
 import { TeamSelector } from "components/ui/Task/team";
 import { LabelSelector } from "components/ui/Task/label";
 import { LabelType } from "components/ui/Task/types";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { useListState } from "@mantine/hooks";
 import NewTask from "components/ui/Task/newTask";
 import { Member, Project } from "../datatypes";
 import { FilterDropdown } from "components/ui/Filters/filterDropdown";
@@ -534,65 +529,29 @@ export const OverviewContent = () => {
                 size="sm"
               />
             </MediaQuery>
-            <Button
-              className={classes["text-header-buttons"]}
-              compact
-              variant="light"
-              color={"gray"}
-              leftIcon={
-                <Dna
-                  className={classes["icon-header-buttons"]}
-                  size={16}
-                  color={theme.colors.red[4]}
-                />
-              }
-            >
-              Minsky Phi
-            </Button>
-            <Menu shadow="md" width={120}>
-              <Menu.Target>
-                <Button
-                  className={classes["text-header-buttons"]}
-                  compact
-                  variant="subtle"
-                  color={"gray"}
-                  // leftIcon={<Dna size={16} color={theme.colors.red[4]} />}
-                >
-                  Active Tasks
-                </Button>
-              </Menu.Target>
 
-              <Menu.Dropdown>
-                {/* <Menu.Label>Set Priority</Menu.Label> */}
-                {/* <TextInput
-                  placeholder="Change Priority..."
-                  variant="filled"
-                  rightSection={<Kbd px={8}>P</Kbd>}
-                ></TextInput>
-                <Menu.Divider /> */}
-                <Menu.Item icon={<BoxMultiple size={18} />}>Active</Menu.Item>
-                <Menu.Item icon={<CircleDashed size={18} />}>Backlog</Menu.Item>
-                <Menu.Item icon={<BoxModel size={18} />}>All</Menu.Item>
-                <Menu.Item icon={<Archive size={18} />}>Archive</Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
             {filterList.length == 0 ? (
-              <Menu shadow="md" width={250} opened={openedMenu}>
+              <Menu shadow="md" position="bottom-start" width={250} opened={openedMenu}>
                 <Menu.Target>
                   <Button
-                    styles={{ root: { border: "1px dashed" } }}
                     className={classes["text-header-buttons"]}
                     compact
-                    p={5}
-                    variant="subtle"
+                    variant="light"
+                    /* p={5} */
                     color={"gray"}
-                    leftIcon={<Plus size={16} color={theme.colors.red[4]} />}
+                    leftIcon={
+                      <FilterIcon
+                        className={classes["icon-header-buttons"]}
+                        size={16}
+                        color={theme.colors.red[4]}
+                      />
+                    }
                     onClick={() => {
                       setFilter("");
                       setOpenedMenu(true);
                     }}
                   >
-                    Filter
+                    Filters
                   </Button>
                 </Menu.Target>
                 <FilterDropdown
