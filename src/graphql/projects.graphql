@@ -1,20 +1,90 @@
 query Projects {
   projects {
     id
-    #title
     createdAt
     updatedAt
     name
-    description
     prefix
     ownerId
-    #labels
-    
-    owner{
+    description
+    leadId
+    startDate
+    dueDate
+
+    owner {
       id
     }
-    tasks{
+    tasks {
       id
+      title
     }
+    members {
+      id
+      name
+    }
+  }
+}
+
+subscription ProjectsSubscription {
+  projects {
+    id
+    name
+    prefix
+    description
+    createdAt
+    updatedAt
+    startDate
+    dueDate
+    ownerId
+    leadId
+  }
+}
+
+mutation NewProject(
+  $name: String!
+  $prefix: String!
+  $ownerId: UUID!
+  $description: String
+  $leadId: UUID
+  $startDate: DateTime
+  $dueDate: DateTime
+) {
+  createProject(
+    name: $name
+    prefix: $prefix
+    ownerId: $ownerId
+    description: $description
+    leadId: $leadId
+    startDate: $startDate
+    dueDate: $dueDate
+  ) {
+    id
+    name
+  }
+}
+
+mutation DeleteProject($projectId: UUID!) {
+  deleteProject(id: $projectId) {
+    id
+    name
+  }
+}
+
+mutation UpdateProject(
+  $projectId: UUID!
+  $name: String
+  $description: String
+  $dueDate: DateTime
+  $leadId: UUID
+) {
+  updateProject(
+    id: $projectId
+    name: $name
+    description: $description
+    dueDate: $dueDate
+    leadId: $leadId
+  ) {
+    id
+    name
   }
 }
