@@ -1,3 +1,5 @@
-import { OverviewContent } from "modules/app/overview";
+const Plexo = () => {
+  return <div>Plexo</div>;
+};
 
-export default OverviewContent;
+export default Plexo;

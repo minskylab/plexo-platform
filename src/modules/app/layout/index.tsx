@@ -1,0 +1,88 @@
+import { AppShell, createStyles, Drawer } from "@mantine/core";
+import { NavbarSearch } from "components/ui/NavBarWithSearch";
+import NewTask from "components/ui/Task/newTask";
+import { ReactNode, useState } from "react";
+import { usePlexoContext } from "../../../context/PlexoContext";
+
+interface LayoutProps {
+  children: ReactNode;
+}
+
+const useStyles = createStyles(theme => ({
+  drawer: {
+    [theme.fn.largerThan("sm")]: {
+      display: "none",
+    },
+  },
+}));
+
+const Layout = ({ children }: LayoutProps) => {
+  const { classes } = useStyles();
+  const {
+    navBarOpened,
+    setNavBarOpened,
+    newTaskOpened,
+    setNewTaskOpened,
+    createMoreTasks,
+    setCreateMoreTasks,
+  } = usePlexoContext();
+
+  return (
+    <>
+      <NewTask
+        newTaskOpened={newTaskOpened}
+        setNewTaskOpened={setNewTaskOpened}
+        createMore={createMoreTasks}
+        setCreateMore={setCreateMoreTasks}
+      />
+      <Drawer
+        className={classes.drawer}
+        size="md"
+        opened={navBarOpened}
+        onClose={() => setNavBarOpened(false)}
+        withCloseButton={false}
+        // size={theme.fn.largerThan(300)}
+        sx={theme => ({
+          main: {
+            backgroundColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
+          },
+        })}
+      >
+        <NavbarSearch
+          onNewTask={() => {
+            setNewTaskOpened(true);
+            setNavBarOpened(false);
+          }}
+          openedNav={navBarOpened}
+          setOpenedNav={setNavBarOpened}
+        />
+      </Drawer>
+      <AppShell
+        padding={0}
+        navbar={
+          <NavbarSearch
+            onNewTask={() => {
+              setNewTaskOpened(true);
+              setNavBarOpened(false);
+            }}
+            openedNav={false}
+            setOpenedNav={() => true}
+          />
+        }
+        styles={theme => ({
+          main: {
+            backgroundColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
+          },
+        })}
+        navbarOffsetBreakpoint="sm"
+        fixed
+      >
+        {children}
+      </AppShell>
+    </>
+  );
+};
+
+export default Layout;

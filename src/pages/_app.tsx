@@ -9,6 +9,8 @@ import { GetServerSidePropsContext } from "next";
 import { colorBrandDark, colorBrandPrimary } from "theming";
 import { NotificationsProvider } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
+import Layout from "modules/app/layout";
+import PlexoProvider from "../context/PlexoContext";
 
 const client = URQLClient();
 
@@ -24,38 +26,42 @@ const PlexoApp = (props: AppProps & { colorScheme: ColorScheme }) => {
 
   return (
     <URQLProvider value={client}>
-      <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-        <MantineProvider
-          withGlobalStyles
-          withNormalizeCSS
-          theme={{
-            colorScheme: colorScheme,
-            fontFamily: "Open Sans",
-            colors: {
-              brand: colorBrandPrimary,
-              dark: colorBrandDark,
-            },
-            primaryColor: "brand",
-            components: {
-              Tooltip: {
-                styles: {
-                  tooltip: {
-                    marginTop: 5,
-                    fontSize: 12,
+      <PlexoProvider>
+        <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+          <MantineProvider
+            withGlobalStyles
+            withNormalizeCSS
+            theme={{
+              colorScheme: colorScheme,
+              fontFamily: "Open Sans",
+              colors: {
+                brand: colorBrandPrimary,
+                dark: colorBrandDark,
+              },
+              primaryColor: "brand",
+              components: {
+                Tooltip: {
+                  styles: {
+                    tooltip: {
+                      marginTop: 5,
+                      fontSize: 12,
+                    },
                   },
                 },
               },
-            },
-          }}
-        >
-          <ModalsProvider>
-            <NotificationsProvider>
-              <Fonts />
-              <Component {...pageProps} />
-            </NotificationsProvider>
-          </ModalsProvider>
-        </MantineProvider>
-      </ColorSchemeProvider>
+            }}
+          >
+            <ModalsProvider>
+              <NotificationsProvider>
+                <Fonts />
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </NotificationsProvider>
+            </ModalsProvider>
+          </MantineProvider>
+        </ColorSchemeProvider>
+      </PlexoProvider>
     </URQLProvider>
   );
 };

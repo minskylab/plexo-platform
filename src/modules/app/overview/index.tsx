@@ -1,5 +1,4 @@
 import {
-  AppShell,
   Group,
   Text,
   Title,
@@ -15,10 +14,10 @@ import {
   Stack,
   createStyles,
   Burger,
-  Drawer,
   MediaQuery,
   Divider,
   Flex,
+  Box,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { useEffect, useState } from "react";
@@ -39,23 +38,17 @@ import { useQuery } from "urql";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 import { TaskPriority, TasksDocument, TaskStatus } from "../../../integration/graphql";
-import { NavbarSearch } from "components/ui/NavBarWithSearch";
 import { TaskListElement } from "components/ui/Task";
-import { PrioritySelector } from "components/ui/Task/priority";
-import { StatusIcon, statusName, StatusSelector } from "components/ui/Task/status";
+import { StatusIcon, statusName } from "components/ui/Task/status";
 import { getCookie, setCookie } from "cookies-next";
 import { DndTaskListElement } from "components/ui/CardTask";
-import { AssigneeSelector } from "components/ui/Task/assignee";
-import { ProjectSelector } from "components/ui/Task/project";
-import { TeamSelector } from "components/ui/Task/team";
-import { LabelSelector } from "components/ui/Task/label";
 import { LabelType } from "components/ui/Task/types";
-import NewTask from "components/ui/Task/newTask";
 import { Member, Project } from "../datatypes";
 import { FilterDropdown } from "components/ui/Filters/filterDropdown";
 import { Filter } from "components/ui/Filters/types";
 import { FilterListView } from "components/ui/Filters/filterListView";
 import { DatabyFilter } from "components/ui/Filters/filtersDataLogic";
+import { usePlexoContext } from "context/PlexoContext";
 
 const useStyles = createStyles(theme => ({
   burger: {
@@ -64,11 +57,6 @@ const useStyles = createStyles(theme => ({
     },
     [theme.fn.smallerThan("xs")]: {
       marginRight: -10,
-    },
-  },
-  drawer: {
-    [theme.fn.largerThan("sm")]: {
-      display: "none",
     },
   },
   "text-view-buttons": {
@@ -205,12 +193,8 @@ export const OverviewContent = () => {
     },
   }; */
   const { classes, theme } = useStyles();
-
-  // const theme = useMantineTheme();
-  const [newTaskOpened, setNewTaskOpened] = useState(false);
-  const [createMore, setCreateMore] = useState(false);
-
   const [viewMode, setViewMode] = useState<"list" | "columns">("list");
+  const { navBarOpened, setNavBarOpened } = usePlexoContext();
 
   useEffect(() => {
     setViewMode(getCookie("viewMode") === "columns" ? "columns" : "list");
@@ -451,187 +435,136 @@ export const OverviewContent = () => {
     }
     return null;
   };
-
-  const [opened, setOpened] = useState(false);
   // console.log(tasksData);
   // const [scrollPosition, onScrollPositionChange] = useState({ x: 0, y: 0 });
   return (
-    <>
-      <NewTask
-        newTaskOpened={newTaskOpened}
-        setNewTaskOpened={setNewTaskOpened}
-        createMore={createMore}
-        setCreateMore={setCreateMore}
-      />
-      <Drawer
-        className={classes.drawer}
-        size="100%"
-        opened={opened}
-        onClose={() => setOpened(false)}
-        // size={theme.fn.largerThan(300)}
-        sx={theme => ({
-          main: {
-            backgroundColor:
-              theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
+    <Stack>
+      <Group
+        h={73}
+        position="apart"
+        sx={{
+          padding: theme.spacing.md,
+          backgroundColor:
+            theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
+          "&:not(:last-of-type)": {
+            borderBottom: `1px solid ${
+              theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
+            }`,
           },
-        })}
+        }}
       >
-        <NavbarSearch
-          onNewTask={() => {
-            setNewTaskOpened(true);
-            setOpened(false);
-          }}
-          openedNav={opened}
-          setOpenedNav={setOpened}
-        />
-      </Drawer>
-      <AppShell
-        padding={0}
-        navbar={
-          <NavbarSearch
-            onNewTask={() => {
-              setNewTaskOpened(true);
-            }}
-            openedNav={false}
-            setOpenedNav={() => true}
-          />
-        }
-        styles={theme => ({
-          main: {
-            backgroundColor:
-              theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
-          },
-        })}
-        navbarOffsetBreakpoint="sm"
-        fixed
-      >
-        <Group
-          h={{ base: 100, sm: 73.5 }}
-          position="apart"
-          sx={{
-            backgroundColor:
-              theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0],
-            marginBottom: theme.spacing.md,
-            padding: theme.spacing.md,
-            "&:not(:last-of-type)": {
-              borderBottom: `1px solid ${
-                theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
-              }`,
-            },
-          }}
-        >
-          <Group spacing="md">
-            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-              <Burger
-                opened={opened}
-                onClick={() => setOpened(true)}
-                className={classes.burger}
-                size="sm"
-              />
-            </MediaQuery>
-
-            {filterList.length == 0 ? (
-              <Menu shadow="md" position="bottom-start" width={250} opened={openedMenu}>
-                <Menu.Target>
-                  <Button
-                    className={classes["text-header-buttons"]}
-                    compact
-                    variant="light"
-                    /* p={5} */
-                    color={"gray"}
-                    leftIcon={
-                      <FilterIcon
-                        className={classes["icon-header-buttons"]}
-                        size={16}
-                        color={theme.colors.red[4]}
-                      />
-                    }
-                    onClick={() => {
-                      setFilter("");
-                      setOpenedMenu(true);
-                    }}
-                  >
-                    Filters
-                  </Button>
-                </Menu.Target>
-                <FilterDropdown
-                  setOpenedMenu={setOpenedMenu}
-                  filter={filter}
-                  onFilterSelect={f => setFilter(f)}
-                  filterList={filterList}
-                  setFilterList={setFilterList}
-                  statusFilters={statusFilters}
-                  setStatusFilters={setStatusFilters}
-                  assigneeFilters={assigneeFilters}
-                  setAssigneeFilters={setAssigneeFilters}
-                  leaderFilters={leaderFilters}
-                  setLeaderFilters={setLeaderFilters}
-                  creatorFilters={creatorFilters}
-                  setCreatorFilters={setCreatorFilters}
-                  priorityFilters={priorityFilters}
-                  setPriorityFilters={setPriorityFilters}
-                  labelsFilters={labelsFilters}
-                  setLabelsFilters={setLabelsFilters}
-                  projectFilters={projectFilters}
-                  setProjectFilters={setProjectFilters}
-                  theme={theme}
-                />
-              </Menu>
-            ) : (
-              <Button
-                styles={{ root: { border: "1px dashed" } }}
-                className={classes["text-header-buttons"]}
-                compact
-                variant="subtle"
-                color={"gray"}
-                leftIcon={<X size={16} color={theme.colors.red[4]} />}
-                onClick={() => {
-                  setFilter("");
-                  setFilterList([]);
-                }}
-              >
-                Clear filters
-              </Button>
-            )}
-
-            {/* <Title order={5}>Active Tasks</Title> */}
-          </Group>
-          <Group>
-            <SegmentedControl
-              className={classes["segmented-control"]}
-              size={"xs"}
-              value={viewMode}
-              onChange={value => setViewMode(value as "list" | "columns")}
-              transitionTimingFunction="ease"
-              data={[
-                {
-                  label: (
-                    <Center>
-                      <LayoutRows className={classes["icon-view-buttons"]} size={16} />
-                      <Text className={classes["text-view-buttons"]} ml={6} size={"xs"}>
-                        List
-                      </Text>
-                    </Center>
-                  ),
-                  value: "list",
-                },
-                {
-                  label: (
-                    <Center>
-                      <LayoutColumns className={classes["icon-view-buttons"]} size={16} />
-                      <Text className={classes["text-view-buttons"]} size={"xs"} ml={6}>
-                        Board
-                      </Text>
-                    </Center>
-                  ),
-                  value: "columns",
-                },
-                // { label: 'Vue', value: 'vue' },
-                // { label: 'Svelte', value: 'svelte' },
-              ]}
+        <Group spacing="md">
+          <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+            <Burger
+              opened={navBarOpened}
+              onClick={() => setNavBarOpened(true)}
+              className={classes.burger}
+              size="sm"
             />
-          </Group>
+          </MediaQuery>
+
+          {filterList.length == 0 ? (
+            <Menu shadow="md" position="bottom-start" width={250} opened={openedMenu}>
+              <Menu.Target>
+                <Button
+                  className={classes["text-header-buttons"]}
+                  compact
+                  variant="light"
+                  /* p={5} */
+                  color={"gray"}
+                  leftIcon={
+                    <FilterIcon
+                      className={classes["icon-header-buttons"]}
+                      size={16}
+                      color={theme.colors.red[4]}
+                    />
+                  }
+                  onClick={() => {
+                    setFilter("");
+                    setOpenedMenu(true);
+                  }}
+                >
+                  Filters
+                </Button>
+              </Menu.Target>
+              <FilterDropdown
+                setOpenedMenu={setOpenedMenu}
+                filter={filter}
+                onFilterSelect={f => setFilter(f)}
+                filterList={filterList}
+                setFilterList={setFilterList}
+                statusFilters={statusFilters}
+                setStatusFilters={setStatusFilters}
+                assigneeFilters={assigneeFilters}
+                setAssigneeFilters={setAssigneeFilters}
+                leaderFilters={leaderFilters}
+                setLeaderFilters={setLeaderFilters}
+                creatorFilters={creatorFilters}
+                setCreatorFilters={setCreatorFilters}
+                priorityFilters={priorityFilters}
+                setPriorityFilters={setPriorityFilters}
+                labelsFilters={labelsFilters}
+                setLabelsFilters={setLabelsFilters}
+                projectFilters={projectFilters}
+                setProjectFilters={setProjectFilters}
+                theme={theme}
+              />
+            </Menu>
+          ) : (
+            <Button
+              className={classes["text-header-buttons"]}
+              compact
+              variant="light"
+              color={"gray"}
+              leftIcon={<X size={16} color={theme.colors.red[4]} />}
+              onClick={() => {
+                setFilter("");
+                setFilterList([]);
+              }}
+            >
+              Clear filters
+            </Button>
+          )}
+
+          {/* <Title order={5}>Active Tasks</Title> */}
         </Group>
+        <Group>
+          <SegmentedControl
+            className={classes["segmented-control"]}
+            size={"xs"}
+            value={viewMode}
+            onChange={value => setViewMode(value as "list" | "columns")}
+            transitionTimingFunction="ease"
+            data={[
+              {
+                label: (
+                  <Center>
+                    <LayoutRows className={classes["icon-view-buttons"]} size={16} />
+                    <Text className={classes["text-view-buttons"]} ml={6} size={"xs"}>
+                      List
+                    </Text>
+                  </Center>
+                ),
+                value: "list",
+              },
+              {
+                label: (
+                  <Center>
+                    <LayoutColumns className={classes["icon-view-buttons"]} size={16} />
+                    <Text className={classes["text-view-buttons"]} size={"xs"} ml={6}>
+                      Board
+                    </Text>
+                  </Center>
+                ),
+                value: "columns",
+              },
+              // { label: 'Vue', value: 'vue' },
+              // { label: 'Svelte', value: 'svelte' },
+            ]}
+          />
+        </Group>
+      </Group>
+      <Box>
         <Container>
           {filterList.length > 0 ? (
             <>
@@ -774,7 +707,7 @@ export const OverviewContent = () => {
             fetching={isFetchingTasksData}
           />
         )}
-      </AppShell>
-    </>
+      </Box>
+    </Stack>
   );
 };
