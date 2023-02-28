@@ -18,6 +18,8 @@ import { GenericStatusMenu, StatusIcon } from "./status";
 import { TaskMenu } from "./menu";
 import { GenericLeadTaskMenu } from "./lead";
 import { LabelColor } from "./label";
+import Link from "next/link";
+import router from "next/router";
 
 type TaskListElementProps = {
   task: Task;
@@ -100,7 +102,12 @@ export const TaskListElement = ({
           <Text lineClamp={1} className={classes.MIN} size={"sm"} color={"dimmed"}>
             MIN-169
           </Text>
-          <Text className={classes.task} lineClamp={1} size={"sm"}>
+          <Text
+            className={classes.task}
+            lineClamp={1}
+            onClick={() => router.push(`/tasks/${task.id}`)}
+            size={"sm"}
+          >
             {task.title}
           </Text>
         </Group>

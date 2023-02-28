@@ -1,7 +1,7 @@
 import { Menu, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
 import { showNotification } from "@mantine/notifications";
-import { useTaskActions } from "lib/useTaskActions";
+import { useActions } from "lib/useActions";
 import { Task } from "modules/app/datatypes";
 import {
   AntennaBars5,
@@ -20,7 +20,7 @@ type TaskMenuProps = {
 };
 
 export const TaskMenu = ({ children, task }: TaskMenuProps) => {
-  const { fetchDeleteTask } = useTaskActions();
+  const { fetchDeleteTask } = useActions();
 
   const onDeleteTask = async () => {
     const res = await fetchDeleteTask({

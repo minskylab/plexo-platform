@@ -5,7 +5,7 @@ import { useData } from "lib/useData";
 
 const ProjectsList = () => {
   const theme = useMantineTheme();
-  const { projectsData, isLoadingProjects } = useData();
+  const { projectsData, isLoadingProjects } = useData({});
 
   const projects = projectsData?.projects.map((p, index) => {
     return (

@@ -4,7 +4,7 @@ import { Check, X } from "tabler-icons-react";
 
 import { Member, Task } from "modules/app/datatypes";
 import { useData } from "lib/useData";
-import { useTaskActions } from "lib/useTaskActions";
+import { useActions } from "lib/useActions";
 
 export const LeadTaskPhoto = (member: Member | null) => {
   return member?.photoUrl ? (
@@ -25,8 +25,8 @@ type GenericLeadMenuProps = {
 };
 
 export const GenericLeadTaskMenu = ({ children, onSelect, task }: GenericLeadMenuProps) => {
-  const { membersData, isLoadingMembers, memberData } = useData(task?.leadId);
-  const { fetchUpdateTask } = useTaskActions();
+  const { membersData, isLoadingMembers, memberData } = useData({ memberId: task?.leadId });
+  const { fetchUpdateTask } = useActions();
   const memberName = memberData?.memberById.name;
 
   const onUpdateTaskLead = async (leadId: string | null) => {

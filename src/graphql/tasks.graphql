@@ -27,6 +27,25 @@ query Tasks {
   }
 }
 
+query TaskById($taskId: UUID!) {
+  taskById(id: $taskId) {
+    id
+    title
+    description
+    ownerId
+    status
+    priority
+    dueDate
+    labels
+    leader {
+      name
+    }
+    project {
+      name
+    }
+  }
+}
+
 subscription TasksSubscription {
   tasks {
     id

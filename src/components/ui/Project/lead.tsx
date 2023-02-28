@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { useData } from "lib/useData";
 import { Member, Project } from "modules/app/datatypes";
-import { useProjectActions } from "lib/useProjectActions";
+import { useActions } from "lib/useActions";
 import { showNotification } from "@mantine/notifications";
 import { Check, X } from "tabler-icons-react";
 
@@ -26,8 +26,8 @@ type GenericLeadsMenuProps = {
 };
 
 export const GenericLeadMenu = ({ children, onSelect, project }: GenericLeadsMenuProps) => {
-  const { membersData, isLoadingMembers, memberData } = useData(project?.leadId);
-  const { fetchUpdateProject } = useProjectActions();
+  const { membersData, isLoadingMembers, memberData } = useData({ memberId: project?.leadId });
+  const { fetchUpdateProject } = useActions();
   const memberName = memberData?.memberById.name;
 
   const onUpdateProjectLead = async (leadId: string | null) => {

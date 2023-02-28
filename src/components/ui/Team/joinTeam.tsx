@@ -10,7 +10,7 @@ type JoinTeamProps = {
 
 const JoinTeam = ({ joinTeamOpened, setJoinTeamOpened }: JoinTeamProps) => {
   const theme = useMantineTheme();
-  const { teamsData, isLoadingTeams } = useData();
+  const { teamsData, isLoadingTeams } = useData({});
 
   const teams = teamsData?.teams.map(t => {
     return (

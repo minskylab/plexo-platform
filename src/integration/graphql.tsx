@@ -497,6 +497,27 @@ export type TasksQuery = {
   }>;
 };
 
+export type TaskByIdQueryVariables = Exact<{
+  taskId: Scalars["UUID"];
+}>;
+
+export type TaskByIdQuery = {
+  __typename?: "QueryRoot";
+  taskById: {
+    __typename?: "Task";
+    id: any;
+    title: string;
+    description?: string | null;
+    ownerId: any;
+    status: TaskStatus;
+    priority: TaskPriority;
+    dueDate?: any | null;
+    labels: Array<string>;
+    leader?: { __typename?: "Member"; name: string } | null;
+    project?: { __typename?: "Project"; name: string } | null;
+  };
+};
+
 export type TasksSubscriptionSubscriptionVariables = Exact<{ [key: string]: never }>;
 
 export type TasksSubscriptionSubscription = {
@@ -1078,6 +1099,71 @@ export const TasksDocument = {
     },
   ],
 } as unknown as DocumentNode<TasksQuery, TasksQueryVariables>;
+export const TaskByIdDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "TaskById" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "taskId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "taskById" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "taskId" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "ownerId" } },
+                { kind: "Field", name: { kind: "Name", value: "status" } },
+                { kind: "Field", name: { kind: "Name", value: "priority" } },
+                { kind: "Field", name: { kind: "Name", value: "dueDate" } },
+                { kind: "Field", name: { kind: "Name", value: "labels" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "leader" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "name" } }],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "project" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "name" } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TaskByIdQuery, TaskByIdQueryVariables>;
 export const TasksSubscriptionDocument = {
   kind: "Document",
   definitions: [

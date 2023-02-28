@@ -109,8 +109,8 @@ export const FilterDropdown = ({
   setProjectFilters,
   theme,
 }: FilterDropdownProps) => {
-  const { membersData, isLoadingMembers } = useData();
-  const { projectsData, isLoadingProjects } = useData();
+  const { membersData, isLoadingMembers } = useData({});
+  const { projectsData, isLoadingProjects } = useData({});
 
   const ref = useClickOutside(() => {
     setOpenedMenu(false);

@@ -22,7 +22,7 @@ type GenericMembersMenuProps = {
 };
 
 export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuProps) => {
-  const { membersData, isLoadingMembers } = useData();
+  const { membersData, isLoadingMembers } = useData({});
 
   return (
     <Menu shadow="md" width={180}>

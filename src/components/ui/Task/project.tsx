@@ -19,7 +19,7 @@ type GenericProjectsMenuProps = {
 };
 
 export const GenericProjectsMenu = ({ children, onSelect }: GenericProjectsMenuProps) => {
-  const { projectsData, isLoadingProjects } = useData();
+  const { projectsData, isLoadingProjects } = useData({});
 
   return (
     <Menu shadow="md" width={180}>
