@@ -456,7 +456,7 @@ export const OverviewContent = () => {
         }}
       >
         <Group spacing="md">
-          <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+          <MediaQuery largerThan="md" styles={{ display: "none" }}>
             <ActionIcon onClick={() => setNavBarOpened(true)}>
               <LayoutSidebar size={16} />
             </ActionIcon>
@@ -465,14 +465,14 @@ export const OverviewContent = () => {
             <Menu shadow="md" position="bottom-start" width={250} opened={openedMenu}>
               <Menu.Target>
                 <Button
-                  className={classes["text-header-buttons"]}
+                  /* className={classes["text-header-buttons"]} */
                   compact
                   variant="light"
                   /* p={5} */
                   color={"gray"}
                   leftIcon={
                     <FilterIcon
-                      className={classes["icon-header-buttons"]}
+                      /* className={classes["icon-header-buttons"]} */
                       size={16}
                       color={theme.colors.red[4]}
                     />
@@ -510,7 +510,7 @@ export const OverviewContent = () => {
             </Menu>
           ) : (
             <Button
-              className={classes["text-header-buttons"]}
+              /* className={classes["text-header-buttons"]} */
               compact
               variant="light"
               color={"gray"}
@@ -537,7 +537,7 @@ export const OverviewContent = () => {
               {
                 label: (
                   <Center>
-                    <LayoutRows className={classes["icon-view-buttons"]} size={16} />
+                    <LayoutRows /* className={classes["icon-view-buttons"]} */ size={16} />
                     <Text className={classes["text-view-buttons"]} ml={6} size={"xs"}>
                       List
                     </Text>
@@ -548,7 +548,7 @@ export const OverviewContent = () => {
               {
                 label: (
                   <Center>
-                    <LayoutColumns className={classes["icon-view-buttons"]} size={16} />
+                    <LayoutColumns /* className={classes["icon-view-buttons"]} */ size={16} />
                     <Text className={classes["text-view-buttons"]} size={"xs"} ml={6}>
                       Board
                     </Text>
@@ -567,7 +567,6 @@ export const OverviewContent = () => {
           {filterList.length > 0 ? (
             <>
               <Flex
-                mt={{ base: 50, sm: 0 }}
                 mih={50}
                 gap={{ base: "xl", sm: "sm" }}
                 justify="flex-start"
