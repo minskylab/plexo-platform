@@ -1,29 +1,33 @@
 import {
   ActionIcon,
-  Container,
   Group,
   Stack,
   Text,
-  createStyles,
-  Input,
   TextInput,
   Textarea,
   Divider,
   CopyButton,
   Tooltip,
   Box,
-  Flex,
   Paper,
   Avatar,
-  Badge,
+  Button,
+  useMantineTheme,
 } from "@mantine/core";
+import { useClickOutside } from "@mantine/hooks";
+import { showNotification } from "@mantine/notifications";
+import { AlertCircle, Check, Copy, Dots, X } from "tabler-icons-react";
 import { IconChevronLeft } from "@tabler/icons";
-import { LabelColor } from "components/ui/Task/label";
-import { GenericLeadTaskMenu } from "components/ui/Task/lead";
-import { GenericPriorityMenu, PriorityIcon } from "components/ui/Task/priority";
-import { GenericStatusMenu, StatusIcon } from "components/ui/Task/status";
 import Link from "next/link";
-import { Copy } from "tabler-icons-react";
+import { useState, useEffect } from "react";
+
+import { GenericLabelMenu, LabelColor, LabelName } from "components/ui/Task/label";
+import { GenericLeadTaskMenu, LeadTaskName } from "components/ui/Task/lead";
+import { GenericPriorityMenu, PriorityIcon, priorityLabel } from "components/ui/Task/priority";
+import { GenericProjectsMenu, ProjectIcon, ProjectName } from "components/ui/Task/project";
+import { GenericStatusMenu, StatusIcon, statusLabel } from "components/ui/Task/status";
+import { TaskMenu } from "components/ui/Task/menu";
+import { useActions } from "lib/useActions";
 import { TaskById } from "../datatypes";
 
 type TaskDetailProps = {
@@ -31,19 +35,107 @@ type TaskDetailProps = {
   isLoading: boolean;
 };
 
-const useStyles = createStyles(theme => ({
-  MIN: {
-    [theme.fn.smallerThan("xs")]: {
-      display: "none",
-    },
-  },
-}));
-
 const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
-  const { classes, theme } = useStyles();
-  console.log(task);
+  const theme = useMantineTheme();
+
+  const { fetchUpdateTask } = useActions();
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+
+  const onUpdateTaskTitle = async (title: string) => {
+    if (title == task?.title) {
+      //No hay cambios
+      return;
+    } else {
+      if (!title.length) {
+        showNotification({
+          id: "titleUpdateFailed",
+          autoClose: 5000,
+          title: "Update Failed",
+          message: "Please enter a title before submitting",
+          color: "yellow",
+          icon: <AlertCircle size={18} />,
+        });
+        task?.title && setTitle(task.title);
+      } else {
+        const res = await fetchUpdateTask({
+          taskId: task?.id,
+          title: title,
+        });
+
+        if (res.data) {
+          showNotification({
+            autoClose: 5000,
+            title: "Title updated",
+            message: res.data.updateTask.title,
+            color: "blue",
+            icon: <Check size={18} />,
+          });
+        }
+        if (res.error) {
+          showNotification({
+            autoClose: 5000,
+            title: "Error!",
+            message: "Try again",
+            color: "red",
+            icon: <X size={18} />,
+          });
+        }
+      }
+    }
+  };
+
+  const onUpdateTaskDescription = async (description: string) => {
+    const desc = description == "" ? null : description;
+    const taskDesc = task?.description == "" ? null : task?.description; //no seria necesario si se pudiera guardar nulos en la BD
+
+    if (desc == taskDesc) {
+      //No hay cambios
+      return;
+    } else {
+      const res = await fetchUpdateTask({
+        taskId: task?.id,
+        description: description,
+      });
+
+      if (res.data) {
+        showNotification({
+          autoClose: 5000,
+          title: "Description updated",
+          message: res.data.updateTask.title,
+          color: "blue",
+          icon: <Check size={18} />,
+        });
+      }
+      if (res.error) {
+        showNotification({
+          autoClose: 5000,
+          title: "Error!",
+          message: "Try again",
+          color: "red",
+          icon: <X size={18} />,
+        });
+      }
+    }
+  };
+
+  const refTitle = useClickOutside(() => onUpdateTaskTitle(title));
+  const refDescription = useClickOutside(() => onUpdateTaskDescription(description));
+
+  useEffect(() => {
+    if (task?.title) {
+      setTitle(task?.title);
+    }
+  }, [task?.title]);
+
+  useEffect(() => {
+    if (task?.description) {
+      setDescription(task?.description);
+    }
+  }, [task?.description]);
+
   return (
-    <Stack h={"100%"} sx={{ flexGrow: 1 }}>
+    <Stack h={"100vh"}>
       <Group
         h={73}
         px={20}
@@ -60,18 +152,26 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
         </Link>
       </Group>
       <Group px={20} sx={{ alignItems: "baseline" }}>
-        <Box sx={{ flexGrow: 2 }}>
+        <Box sx={{ flex: 1 }}>
           <Stack maw={860} m="auto">
-            <Text lineClamp={1} className={classes.MIN} size={"sm"} color={"dimmed"}>
-              MIN-169
-            </Text>
+            <Group position="apart">
+              <Text lineClamp={1} size={"sm"} color={"dimmed"}>
+                MIN-169
+              </Text>
+              <TaskMenu task={task}>
+                <ActionIcon radius={"sm"} size={"xs"}>
+                  <Dots size={18} />
+                </ActionIcon>
+              </TaskMenu>
+            </Group>
             <Divider />
+
             <TextInput
-              defaultValue={task?.title}
+              ref={refTitle}
+              value={title}
+              onChange={e => setTitle(e.target.value)}
               placeholder="Task Title"
               size="lg"
-              /* value={title}
-              onChange={e => setTitle(e.target.value)} */
               styles={theme => ({
                 input: {
                   fontSize: 22,
@@ -83,11 +183,15 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
                 },
               })}
             />
+
             <Textarea
+              ref={refDescription}
+              value={description}
+              onChange={e => setDescription(e.target.value)}
               placeholder="Add description..."
               size="sm"
-              /* value={description}
-              onChange={e => setDescription(e.target.value)} */
+              autosize
+              minRows={2}
               styles={theme => ({
                 input: {
                   backgroundColor: "transparent",
@@ -98,6 +202,7 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
                 },
               })}
             />
+            <Divider />
             <Paper shadow="xs" p="md">
               <Text fw={500} c="dimmed">
                 Suggestion:
@@ -110,10 +215,10 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
           </Stack>
         </Box>
         <Divider orientation="vertical" />
-        <Stack miw={320} maw={400} sx={{ flexGrow: 1 }}>
-          <CopyButton value="https://mantine.dev" timeout={2000}>
+        <Stack miw={320} maw={400}>
+          <CopyButton value={task?.id} timeout={2000}>
             {({ copied, copy }) => (
-              <Tooltip label={copied ? "Copied" : "Copy"} position="top">
+              <Tooltip label={copied ? "Copied" : "Copy task ID"} position="top">
                 <ActionIcon onClick={copy}>
                   <Copy size={16} />
                 </ActionIcon>
@@ -122,84 +227,87 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
           </CopyButton>
           <Divider />
           <Group>
-            <Text w={90} lineClamp={1} className={classes.MIN} size={"sm"} color={"dimmed"}>
+            <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Status
             </Text>
             <GenericStatusMenu taskId={task?.id}>
-              <ActionIcon variant="transparent" radius={"sm"}>
-                {StatusIcon(theme, task?.status)}
-              </ActionIcon>
+              <Button
+                compact
+                variant="light"
+                color={"gray"}
+                leftIcon={StatusIcon(theme, task?.status)}
+              >
+                <Text size={"xs"}>{statusLabel(task?.status)}</Text>
+              </Button>
             </GenericStatusMenu>
           </Group>
           <Group>
-            <Text w={90} lineClamp={1} className={classes.MIN} size={"sm"} color={"dimmed"}>
+            <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Priority
             </Text>
             <GenericPriorityMenu taskId={task?.id}>
-              <ActionIcon variant="transparent" radius={"sm"}>
-                {PriorityIcon(task?.priority)}
-              </ActionIcon>
+              <Button
+                compact
+                variant="light"
+                color={"gray"}
+                leftIcon={PriorityIcon(task?.priority, 18)}
+              >
+                <Text size={"xs"}>{priorityLabel(task?.priority)}</Text>
+              </Button>
             </GenericPriorityMenu>
           </Group>
           <Group>
-            <Text w={90} lineClamp={1} className={classes.MIN} size={"sm"} color={"dimmed"}>
+            <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Lead
             </Text>
-            {/* <GenericLeadTaskMenu task={task}>
-              <ActionIcon variant="transparent">
-                <Avatar size="sm" radius="xl"></Avatar>
-              </ActionIcon>
-            </GenericLeadTaskMenu> */}
+            <GenericLeadTaskMenu task={task}>
+              <Button
+                compact
+                variant="light"
+                color={"gray"}
+                leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
+              >
+                <Text size={"xs"}>{LeadTaskName(task?.leader?.name)}</Text>
+              </Button>
+            </GenericLeadTaskMenu>
           </Group>
           <Group>
-            <Text w={90} lineClamp={1} className={classes.MIN} size={"sm"} color={"dimmed"}>
+            <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Assignee
             </Text>
-            <GenericStatusMenu taskId={task?.id}>
+            {/* <GenericStatusMenu taskId={task?.id}>
               <ActionIcon variant="transparent" radius={"sm"}>
                 {StatusIcon(theme, task?.status)}
               </ActionIcon>
-            </GenericStatusMenu>
+            </GenericStatusMenu> */}
           </Group>
           <Group>
-            <Text w={90} lineClamp={1} className={classes.MIN} size={"sm"} color={"dimmed"}>
+            <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Labels
             </Text>
-            {task?.labels.length &&
-              task?.labels.sort().map((l, index) => {
-                return (
-                  <Badge
-                    key={index}
-                    variant={"dot"}
-                    leftSection={LabelColor(l, theme)}
-                    styles={{
-                      root: {
-                        "&:before": {
-                          display: "none",
-                        },
-                      },
-                      inner: {
-                        fontWeight: 500,
-                        color:
-                          theme.colorScheme === "dark"
-                            ? theme.colors.dark[0]
-                            : theme.colors.gray[7],
-                      },
-                    }}
-                  >
-                    {l}
-                  </Badge>
-                );
-              })}
+            <GenericLabelMenu task={task}>
+              <Button
+                compact
+                variant="light"
+                color={"gray"}
+                leftIcon={LabelColor(task?.labels, theme)}
+              >
+                <Text size={"xs"}>{LabelName(task?.labels)}</Text>
+              </Button>
+            </GenericLabelMenu>
           </Group>
           <Group>
-            <Text w={90} lineClamp={1} className={classes.MIN} size={"sm"} color={"dimmed"}>
+            <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Project
             </Text>
-            <Badge /* className={classes.badge} */>{task?.project?.name}</Badge>
+            <GenericProjectsMenu taskId={task?.id}>
+              <Button compact variant="light" color={"gray"} leftIcon={ProjectIcon()}>
+                <Text size={"xs"}>{ProjectName(task?.project?.name)}</Text>
+              </Button>
+            </GenericProjectsMenu>
           </Group>
           <Group>
-            <Text w={90} lineClamp={1} className={classes.MIN} size={"sm"} color={"dimmed"}>
+            <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Due Date
             </Text>
             {/* <GenericStatusMenu taskId={task?.id}>

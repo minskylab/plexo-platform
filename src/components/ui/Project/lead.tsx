@@ -23,12 +23,18 @@ type GenericLeadsMenuProps = {
   children: React.ReactNode;
   onSelect?: (member: Member | null) => void;
   project?: Project;
+  selectedLead?: Member | null;
 };
 
-export const GenericLeadMenu = ({ children, onSelect, project }: GenericLeadsMenuProps) => {
+export const GenericLeadMenu = ({
+  children,
+  onSelect,
+  project,
+  selectedLead,
+}: GenericLeadsMenuProps) => {
   const { membersData, isLoadingMembers, memberData } = useData({ memberId: project?.leadId });
   const { fetchUpdateProject } = useActions();
-  const memberName = memberData?.memberById.name;
+  const memberName = memberData?.memberById.name ? memberData?.memberById.name : selectedLead?.name;
 
   const onUpdateProjectLead = async (leadId: string | null) => {
     const res = await fetchUpdateProject({
@@ -115,7 +121,7 @@ type LeadProjectSelectorProps = {
 
 export const LeadProjectSelector = ({ lead, setLead }: LeadProjectSelectorProps) => {
   return (
-    <GenericLeadMenu onSelect={member => setLead(member)}>
+    <GenericLeadMenu onSelect={member => setLead(member)} selectedLead={lead}>
       {typeof lead === "undefined" ? (
         <Button compact variant="light" color={"gray"}>
           {LeadProjectPhoto(lead)}

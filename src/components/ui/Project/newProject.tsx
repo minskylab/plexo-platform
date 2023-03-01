@@ -128,6 +128,8 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
           size="sm"
           value={description}
           onChange={e => setDescription(e.target.value)}
+          autosize
+          minRows={2}
         />
       </Box>
       <Group spacing={6} mb={"md"}>

@@ -557,7 +557,7 @@ export const FilterListView = ({
             <Group mr={10} ml={10} spacing={0}>
               {ProjectIcon(ProjectData(filter.elements[0] as string) as Project)}
             </Group>
-            {ProjectName(ProjectData(filter.elements[0] as string) as Project)}
+            {ProjectName(ProjectData(filter.elements[0] as string)?.name)}
           </Button>
           <Button
             className={classes["text-header-buttons"]}

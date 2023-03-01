@@ -82,7 +82,7 @@ const ProjectData = (project: ProjectType | null) => {
   return (
     <Group spacing={10} sx={{ width: "100%" }}>
       {ProjectIcon(project)}
-      {ProjectName(project)}
+      {ProjectName(project?.name)}
     </Group>
   );
 };
