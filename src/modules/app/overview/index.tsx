@@ -18,6 +18,7 @@ import {
   Divider,
   Flex,
   Box,
+  ActionIcon,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { useEffect, useState } from "react";
@@ -33,6 +34,7 @@ import {
   Plus,
   X,
   Filter as FilterIcon,
+  LayoutSidebar,
 } from "tabler-icons-react";
 import { useQuery } from "urql";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
@@ -194,7 +196,7 @@ export const OverviewContent = () => {
   }; */
   const { classes, theme } = useStyles();
   const [viewMode, setViewMode] = useState<"list" | "columns">("list");
-  const { navBarOpened, setNavBarOpened } = usePlexoContext();
+  const { setNavBarOpened } = usePlexoContext();
 
   useEffect(() => {
     setViewMode(getCookie("viewMode") === "columns" ? "columns" : "list");
@@ -455,14 +457,10 @@ export const OverviewContent = () => {
       >
         <Group spacing="md">
           <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-            <Burger
-              opened={navBarOpened}
-              onClick={() => setNavBarOpened(true)}
-              className={classes.burger}
-              size="sm"
-            />
+            <ActionIcon onClick={() => setNavBarOpened(true)}>
+              <LayoutSidebar size={16} />
+            </ActionIcon>
           </MediaQuery>
-
           {filterList.length == 0 ? (
             <Menu shadow="md" position="bottom-start" width={250} opened={openedMenu}>
               <Menu.Target>

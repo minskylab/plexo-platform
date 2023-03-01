@@ -61,13 +61,13 @@ export const TaskMenu = ({ children, task }: TaskMenuProps) => {
       <Menu.Target>{children}</Menu.Target>
 
       <Menu.Dropdown>
-        {/* <Menu.Item icon={<ChartPie2 size={18} />}>Status</Menu.Item>
-        <Menu.Item icon={<AntennaBars5 size={18} />}>Priority</Menu.Item>
-        <Menu.Item icon={<UserCircle size={18} />}>Lead</Menu.Item>
-        <Menu.Item icon={<Tag size={18} />}>Labels</Menu.Item>
-        <Menu.Item icon={<LayoutGrid size={18} />}>Project</Menu.Item>
+        {/* <Menu.Item py={7}  icon={<ChartPie2 size={18} />}>Status</Menu.Item>
+        <Menu.Item py={7}  icon={<AntennaBars5 size={18} />}>Priority</Menu.Item>
+        <Menu.Item py={7}  icon={<UserCircle size={18} />}>Lead</Menu.Item>
+        <Menu.Item py={7}  icon={<Tag size={18} />}>Labels</Menu.Item>
+        <Menu.Item py={7}  icon={<LayoutGrid size={18} />}>Project</Menu.Item>
         <Menu.Divider /> */}
-        <Menu.Item icon={<Trash size={18} />} onClick={openDeleteModal}>
+        <Menu.Item py={7} icon={<Trash size={16} />} onClick={openDeleteModal}>
           Delete
         </Menu.Item>
       </Menu.Dropdown>

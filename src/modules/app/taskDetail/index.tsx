@@ -13,10 +13,12 @@ import {
   Avatar,
   Button,
   useMantineTheme,
+  createStyles,
+  MediaQuery,
 } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
-import { AlertCircle, Check, Copy, Dots, X } from "tabler-icons-react";
+import { AlertCircle, Check, Copy, Dots, LayoutSidebar, X } from "tabler-icons-react";
 import { IconChevronLeft } from "@tabler/icons";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -29,15 +31,30 @@ import { GenericStatusMenu, StatusIcon, statusLabel } from "components/ui/Task/s
 import { TaskMenu } from "components/ui/Task/menu";
 import { useActions } from "lib/useActions";
 import { TaskById } from "../datatypes";
+import { usePlexoContext } from "context/PlexoContext";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
   isLoading: boolean;
 };
 
-const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
-  const theme = useMantineTheme();
+const useStyles = createStyles(theme => ({
+  propsSection: {
+    [theme.fn.smallerThan("lg")]: {
+      display: "none",
+    },
+  },
+  propsBar: {
+    display: "none",
+    [theme.fn.smallerThan("lg")]: {
+      display: "flex",
+    },
+  },
+}));
 
+const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
+  const { classes, theme } = useStyles();
+  const { setNavBarOpened } = usePlexoContext();
   const { fetchUpdateTask } = useActions();
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -145,6 +162,11 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
           }`,
         }}
       >
+        <MediaQuery largerThan="md" styles={{ display: "none" }}>
+          <ActionIcon onClick={() => setNavBarOpened(true)}>
+            <LayoutSidebar size={16} />
+          </ActionIcon>
+        </MediaQuery>
         <Link href="/tasks" passHref>
           <ActionIcon variant="subtle">
             <IconChevronLeft size={20} />
@@ -154,18 +176,66 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
       <Group px={20} sx={{ alignItems: "baseline" }}>
         <Box sx={{ flex: 1 }}>
           <Stack maw={860} m="auto">
-            <Group position="apart">
-              <Text lineClamp={1} size={"sm"} color={"dimmed"}>
-                MIN-169
-              </Text>
-              <TaskMenu task={task}>
-                <ActionIcon radius={"sm"} size={"xs"}>
-                  <Dots size={18} />
-                </ActionIcon>
-              </TaskMenu>
-            </Group>
+            <Stack spacing={10}>
+              <Group position="apart">
+                <Text lineClamp={1} size={"sm"} color={"dimmed"}>
+                  MIN-169
+                </Text>
+                <TaskMenu task={task}>
+                  <ActionIcon radius={"sm"} size={"xs"}>
+                    <Dots size={18} />
+                  </ActionIcon>
+                </TaskMenu>
+              </Group>
+              <Group spacing={5} className={classes.propsBar}>
+                <GenericStatusMenu taskId={task?.id}>
+                  <Button
+                    compact
+                    variant="light"
+                    color={"gray"}
+                    leftIcon={StatusIcon(theme, task?.status)}
+                  >
+                    <Text size={"xs"}>{statusLabel(task?.status)}</Text>
+                  </Button>
+                </GenericStatusMenu>
+                <GenericPriorityMenu taskId={task?.id}>
+                  <Button
+                    compact
+                    variant="light"
+                    color={"gray"}
+                    leftIcon={PriorityIcon(task?.priority, 18)}
+                  >
+                    <Text size={"xs"}>{priorityLabel(task?.priority)}</Text>
+                  </Button>
+                </GenericPriorityMenu>
+                <GenericLeadTaskMenu task={task}>
+                  <Button
+                    compact
+                    variant="light"
+                    color={"gray"}
+                    leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
+                  >
+                    <Text size={"xs"}>{LeadTaskName(task?.leader?.name)}</Text>
+                  </Button>
+                </GenericLeadTaskMenu>
+                {/* <GenericLabelMenu task={task}>
+                  <Button
+                    compact
+                    variant="light"
+                    color={"gray"}
+                    leftIcon={LabelColor(task?.labels, theme)}
+                  >
+                    <Text size={"xs"}>{LabelName(task?.labels)}</Text>
+                  </Button>
+                </GenericLabelMenu> */}
+                <GenericProjectsMenu taskId={task?.id}>
+                  <Button compact variant="light" color={"gray"} leftIcon={ProjectIcon()}>
+                    <Text size={"xs"}>{ProjectName(task?.project?.name)}</Text>
+                  </Button>
+                </GenericProjectsMenu>
+              </Group>
+            </Stack>
             <Divider />
-
             <TextInput
               ref={refTitle}
               value={title}
@@ -214,8 +284,8 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
             </Paper>
           </Stack>
         </Box>
-        <Divider orientation="vertical" />
-        <Stack miw={320} maw={400}>
+        <Divider orientation="vertical" className={classes.propsSection} />
+        <Stack miw={320} maw={400} className={classes.propsSection}>
           <CopyButton value={task?.id} timeout={2000}>
             {({ copied, copy }) => (
               <Tooltip label={copied ? "Copied" : "Copy task ID"} position="top">
