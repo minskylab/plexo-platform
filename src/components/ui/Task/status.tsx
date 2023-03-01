@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { TaskStatus } from "integration/graphql";
-import { useTaskActions } from "lib/useTaskActions";
+import { useActions } from "lib/useActions";
 import {
   AntennaBars1,
   Circle,
@@ -48,7 +48,7 @@ export const StatusIcon = (
   /* return <AntennaBars1 />; */
 };
 
-const statusLabel = (status?: TaskStatus) => {
+export const statusLabel = (status?: TaskStatus) => {
   switch (status) {
     case "NONE":
       return "None";
@@ -96,7 +96,7 @@ type GenericStatusMenuProps = {
 
 export const GenericStatusMenu = ({ children, onSelect, taskId }: GenericStatusMenuProps) => {
   const theme = useMantineTheme();
-  const { fetchUpdateTask } = useTaskActions();
+  const { fetchUpdateTask } = useActions();
 
   const onUpdateTaskStatus = async (status: TaskStatus) => {
     const res = await fetchUpdateTask({

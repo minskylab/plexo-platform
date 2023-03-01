@@ -21,7 +21,7 @@ import { priorityName, PrioritySelector } from "./priority";
 import { ProjectSelector } from "./project";
 import { statusName, StatusSelector } from "./status";
 import { LabelType } from "./types";
-import { useTaskActions } from "lib/useTaskActions";
+import { useActions } from "lib/useActions";
 
 type NewTaskProps = {
   newTaskOpened: boolean;
@@ -41,7 +41,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
   const [selectedLabels, setSelectedLabels] = useState<LabelType[]>([]);
   const [project, setProject] = useState<Project | null>(null);
 
-  const { createTask, fetchCreateTask } = useTaskActions();
+  const { createTask, fetchCreateTask } = useActions();
 
   const onCreateTask = async () => {
     if (!title.length) {
@@ -132,6 +132,8 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
           size="sm"
           value={description}
           onChange={e => setDescription(e.target.value)}
+          autosize
+          minRows={2}
         />
       </Box>
       <Group spacing={6} mb={"md"}>

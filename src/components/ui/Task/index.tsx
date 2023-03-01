@@ -18,6 +18,8 @@ import { GenericStatusMenu, StatusIcon } from "./status";
 import { TaskMenu } from "./menu";
 import { GenericLeadTaskMenu } from "./lead";
 import { LabelColor } from "./label";
+import Link from "next/link";
+import router from "next/router";
 
 type TaskListElementProps = {
   task: Task;
@@ -74,8 +76,8 @@ export const TaskListElement = ({
 
   return (
     <Paper px={6} py={4} mt={1} withBorder={active}>
-      <Group position="apart">
-        <Group position="left" spacing={8}>
+      <Group spacing={0}>
+        <Group position="left" spacing={8} sx={{ flexGrow: 1 }}>
           <Checkbox
             checked={controlledChecked}
             onChange={event => setChecked(event.currentTarget.checked)}
@@ -100,7 +102,13 @@ export const TaskListElement = ({
           <Text lineClamp={1} className={classes.MIN} size={"sm"} color={"dimmed"}>
             MIN-169
           </Text>
-          <Text className={classes.task} lineClamp={1} size={"sm"}>
+          <Text
+            onClick={() => router.push(`/tasks/${task.id}`)}
+            lineClamp={1}
+            size={"sm"}
+            className={classes.task}
+            sx={{ flexGrow: 1 }}
+          >
             {task.title}
           </Text>
         </Group>

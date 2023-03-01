@@ -1,8 +1,8 @@
 import { Menu, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
 import { showNotification } from "@mantine/notifications";
-import { useTaskActions } from "lib/useTaskActions";
-import { Task } from "modules/app/datatypes";
+import { useActions } from "lib/useActions";
+import { Task, TaskById } from "modules/app/datatypes";
 import {
   AntennaBars5,
   ChartPie2,
@@ -16,15 +16,15 @@ import {
 
 type TaskMenuProps = {
   children: React.ReactNode;
-  task: Task;
+  task: Task | TaskById | undefined;
 };
 
 export const TaskMenu = ({ children, task }: TaskMenuProps) => {
-  const { fetchDeleteTask } = useTaskActions();
+  const { fetchDeleteTask } = useActions();
 
   const onDeleteTask = async () => {
     const res = await fetchDeleteTask({
-      taskId: task.id,
+      taskId: task?.id,
     });
 
     if (res.data) {
@@ -61,13 +61,13 @@ export const TaskMenu = ({ children, task }: TaskMenuProps) => {
       <Menu.Target>{children}</Menu.Target>
 
       <Menu.Dropdown>
-        <Menu.Item icon={<ChartPie2 size={18} />}>Status</Menu.Item>
-        <Menu.Item icon={<AntennaBars5 size={18} />}>Priority</Menu.Item>
-        <Menu.Item icon={<UserCircle size={18} />}>Lead</Menu.Item>
-        <Menu.Item icon={<Tag size={18} />}>Labels</Menu.Item>
-        <Menu.Item icon={<LayoutGrid size={18} />}>Project</Menu.Item>
-        <Menu.Divider />
-        <Menu.Item icon={<Trash size={18} />} onClick={openDeleteModal}>
+        {/* <Menu.Item py={7}  icon={<ChartPie2 size={18} />}>Status</Menu.Item>
+        <Menu.Item py={7}  icon={<AntennaBars5 size={18} />}>Priority</Menu.Item>
+        <Menu.Item py={7}  icon={<UserCircle size={18} />}>Lead</Menu.Item>
+        <Menu.Item py={7}  icon={<Tag size={18} />}>Labels</Menu.Item>
+        <Menu.Item py={7}  icon={<LayoutGrid size={18} />}>Project</Menu.Item>
+        <Menu.Divider /> */}
+        <Menu.Item py={7} icon={<Trash size={16} />} onClick={openDeleteModal}>
           Delete
         </Menu.Item>
       </Menu.Dropdown>

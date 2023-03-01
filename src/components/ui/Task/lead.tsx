@@ -2,9 +2,9 @@ import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton, Tooltip } from "@
 import { showNotification } from "@mantine/notifications";
 import { Check, X } from "tabler-icons-react";
 
-import { Member, Task } from "modules/app/datatypes";
+import { Member, Task, TaskById } from "modules/app/datatypes";
 import { useData } from "lib/useData";
-import { useTaskActions } from "lib/useTaskActions";
+import { useActions } from "lib/useActions";
 
 export const LeadTaskPhoto = (member: Member | null) => {
   return member?.photoUrl ? (
@@ -14,21 +14,26 @@ export const LeadTaskPhoto = (member: Member | null) => {
   );
 };
 
-export const LeadTaskName = (member: Member | null) => {
-  return member ? member?.name : "Lead";
+export const LeadTaskName = (name: string | undefined) => {
+  return name ? name : "Lead";
 };
 
 type GenericLeadMenuProps = {
   children: React.ReactNode;
   onSelect?: (member: Member | null) => void;
-  task?: Task;
+  task?: Task | TaskById;
+  selectedLead?: Member | null;
 };
 
-export const GenericLeadTaskMenu = ({ children, onSelect, task }: GenericLeadMenuProps) => {
-  const { membersData, isLoadingMembers, memberData } = useData(task?.leadId);
-  const { fetchUpdateTask } = useTaskActions();
-  const memberName = memberData?.memberById.name;
-
+export const GenericLeadTaskMenu = ({
+  children,
+  onSelect,
+  task,
+  selectedLead,
+}: GenericLeadMenuProps) => {
+  const { membersData, isLoadingMembers } = useData({});
+  const { fetchUpdateTask } = useActions();
+  const leadName = task?.leader?.name ? task?.leader?.name : selectedLead?.name;
   const onUpdateTaskLead = async (leadId: string | null) => {
     const res = await fetchUpdateTask({
       taskId: task?.id,
@@ -56,9 +61,9 @@ export const GenericLeadTaskMenu = ({ children, onSelect, task }: GenericLeadMen
   };
 
   return (
-    <Menu shadow="md" width={180}>
+    <Menu shadow="md">
       <Menu.Target>
-        <Tooltip label={memberName ? `Lead by ${memberName}` : "Lead by"} position="bottom">
+        <Tooltip label={leadName ? `Lead by ${leadName}` : "Lead by"} position="bottom">
           {children}
         </Tooltip>
       </Menu.Target>
@@ -114,14 +119,14 @@ type LeadTaskSelectorProps = {
 
 export const LeadTaskSelector = ({ lead, setLead }: LeadTaskSelectorProps) => {
   return (
-    <GenericLeadTaskMenu onSelect={member => setLead(member)}>
+    <GenericLeadTaskMenu onSelect={member => setLead(member)} selectedLead={lead}>
       {typeof lead === "undefined" ? (
         <Button compact variant="light" color={"gray"}>
           {LeadTaskPhoto(lead)}
         </Button>
       ) : (
         <Button compact variant="light" color={"gray"} leftIcon={LeadTaskPhoto(lead)}>
-          <Text size={"xs"}>{LeadTaskName(lead)}</Text>
+          <Text size={"xs"}>{LeadTaskName(lead?.name)}</Text>
         </Button>
       )}
     </GenericLeadTaskMenu>

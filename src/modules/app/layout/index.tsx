@@ -76,7 +76,7 @@ const Layout = ({ children }: LayoutProps) => {
               theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
           },
         })}
-        navbarOffsetBreakpoint="sm"
+        navbarOffsetBreakpoint="md"
         fixed
       >
         {children}

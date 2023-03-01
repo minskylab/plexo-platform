@@ -61,48 +61,71 @@ export enum MemberRole {
 
 export type MutationRoot = {
   __typename?: "MutationRoot";
-  addAssigneeToTask: Task;
-  addMemberToProject: Project;
-  addMemberToTeam: Team;
-  addTeamToProject: Project;
+  addAssigneesToTask: Task;
+  addMembersToProject: Project;
+  addMembersToTeam: Team;
+  addProjectsToMember: Member;
+  addProjectsToTeam: Team;
+  addTeamsToMember: Member;
+  addTeamsToProject: Project;
   createProject: Project;
   createTask: Task;
   createTeam: Team;
-  deleteAssigneeFromTask: Task;
+  deleteAssigneesFromTask: Task;
   deleteMember: Member;
-  deleteMemberFromProject: Project;
-  deleteMemberFromTeam: Team;
+  deleteMembersFromProject: Project;
+  deleteMembersFromTeam: Team;
   deleteProject: Project;
+  deleteProjectsFromMember: Member;
+  deleteProjectsFromTeam: Team;
   deleteTask: Task;
   deleteTeam: Team;
-  deleteTeamFromProject: Project;
+  deleteTeamsFromMember: Member;
+  deleteTeamsFromProject: Project;
   updateMember: Member;
   updateProject: Project;
   updateTask: Task;
   updateTeam: Team;
 };
 
-export type MutationRootAddAssigneeToTaskArgs = {
-  memberId: Scalars["UUID"];
+export type MutationRootAddAssigneesToTaskArgs = {
+  membersId: Array<Scalars["UUID"]>;
   taskId: Scalars["UUID"];
 };
 
-export type MutationRootAddMemberToProjectArgs = {
-  memberId: Scalars["UUID"];
+export type MutationRootAddMembersToProjectArgs = {
+  membersId: Array<Scalars["UUID"]>;
   projectId: Scalars["UUID"];
 };
 
-export type MutationRootAddMemberToTeamArgs = {
-  memberId: Scalars["UUID"];
+export type MutationRootAddMembersToTeamArgs = {
+  membersId: Array<Scalars["UUID"]>;
   teamId: Scalars["UUID"];
 };
 
-export type MutationRootAddTeamToProjectArgs = {
-  projectId: Scalars["UUID"];
+export type MutationRootAddProjectsToMemberArgs = {
+  memberId: Scalars["UUID"];
+  projectsId: Array<Scalars["UUID"]>;
+};
+
+export type MutationRootAddProjectsToTeamArgs = {
+  projectsId: Array<Scalars["UUID"]>;
   teamId: Scalars["UUID"];
+};
+
+export type MutationRootAddTeamsToMemberArgs = {
+  memberId: Scalars["UUID"];
+  teamsId: Array<Scalars["UUID"]>;
+};
+
+export type MutationRootAddTeamsToProjectArgs = {
+  projectId: Scalars["UUID"];
+  teamsId: Array<Scalars["UUID"]>;
 };
 
 export type MutationRootCreateProjectArgs = {
+  addMembersId?: InputMaybe<Array<Scalars["UUID"]>>;
+  addTeamsId?: InputMaybe<Array<Scalars["UUID"]>>;
   description?: InputMaybe<Scalars["String"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   leadId?: InputMaybe<Scalars["UUID"]>;
@@ -113,6 +136,7 @@ export type MutationRootCreateProjectArgs = {
 };
 
 export type MutationRootCreateTaskArgs = {
+  addAssigneesId?: InputMaybe<Array<Scalars["UUID"]>>;
   description?: InputMaybe<Scalars["String"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   labels?: InputMaybe<Array<Scalars["String"]>>;
@@ -125,14 +149,16 @@ export type MutationRootCreateTaskArgs = {
 };
 
 export type MutationRootCreateTeamArgs = {
+  addMembersId?: InputMaybe<Array<Scalars["UUID"]>>;
+  addProjectsId?: InputMaybe<Array<Scalars["UUID"]>>;
   name: Scalars["String"];
   ownerId: Scalars["UUID"];
   prefix?: InputMaybe<Scalars["String"]>;
   visibility?: InputMaybe<Scalars["String"]>;
 };
 
-export type MutationRootDeleteAssigneeFromTaskArgs = {
-  memberId: Scalars["UUID"];
+export type MutationRootDeleteAssigneesFromTaskArgs = {
+  membersId: Array<Scalars["UUID"]>;
   taskId: Scalars["UUID"];
 };
 
@@ -140,18 +166,28 @@ export type MutationRootDeleteMemberArgs = {
   id: Scalars["UUID"];
 };
 
-export type MutationRootDeleteMemberFromProjectArgs = {
-  memberId: Scalars["UUID"];
+export type MutationRootDeleteMembersFromProjectArgs = {
+  membersId: Array<Scalars["UUID"]>;
   projectId: Scalars["UUID"];
 };
 
-export type MutationRootDeleteMemberFromTeamArgs = {
-  memberId: Scalars["UUID"];
+export type MutationRootDeleteMembersFromTeamArgs = {
+  membersId: Array<Scalars["UUID"]>;
   teamId: Scalars["UUID"];
 };
 
 export type MutationRootDeleteProjectArgs = {
   id: Scalars["UUID"];
+};
+
+export type MutationRootDeleteProjectsFromMemberArgs = {
+  memberId: Scalars["UUID"];
+  projectsId: Array<Scalars["UUID"]>;
+};
+
+export type MutationRootDeleteProjectsFromTeamArgs = {
+  projectsId: Array<Scalars["UUID"]>;
+  teamId: Scalars["UUID"];
 };
 
 export type MutationRootDeleteTaskArgs = {
@@ -162,18 +198,31 @@ export type MutationRootDeleteTeamArgs = {
   id: Scalars["UUID"];
 };
 
-export type MutationRootDeleteTeamFromProjectArgs = {
+export type MutationRootDeleteTeamsFromMemberArgs = {
+  memberId: Scalars["UUID"];
+  teamsId: Array<Scalars["UUID"]>;
+};
+
+export type MutationRootDeleteTeamsFromProjectArgs = {
   projectId: Scalars["UUID"];
-  teamId: Scalars["UUID"];
+  teamsId: Array<Scalars["UUID"]>;
 };
 
 export type MutationRootUpdateMemberArgs = {
+  addProjectsId?: InputMaybe<Array<Scalars["UUID"]>>;
+  addTeamsId?: InputMaybe<Array<Scalars["UUID"]>>;
+  deleteProjectsId?: InputMaybe<Array<Scalars["UUID"]>>;
+  deleteTeamsId?: InputMaybe<Array<Scalars["UUID"]>>;
   email?: InputMaybe<Scalars["String"]>;
   id: Scalars["UUID"];
   name?: InputMaybe<Scalars["String"]>;
 };
 
 export type MutationRootUpdateProjectArgs = {
+  addMembersId?: InputMaybe<Array<Scalars["UUID"]>>;
+  addTeamsId?: InputMaybe<Array<Scalars["UUID"]>>;
+  deleteMembersId?: InputMaybe<Array<Scalars["UUID"]>>;
+  deleteTeamsId?: InputMaybe<Array<Scalars["UUID"]>>;
   description?: InputMaybe<Scalars["String"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   id: Scalars["UUID"];
@@ -185,6 +234,8 @@ export type MutationRootUpdateProjectArgs = {
 };
 
 export type MutationRootUpdateTaskArgs = {
+  addAssigneesId?: InputMaybe<Array<Scalars["UUID"]>>;
+  deleteAssigneesId?: InputMaybe<Array<Scalars["UUID"]>>;
   description?: InputMaybe<Scalars["String"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   id: Scalars["UUID"];
@@ -197,6 +248,10 @@ export type MutationRootUpdateTaskArgs = {
 };
 
 export type MutationRootUpdateTeamArgs = {
+  addMembersId?: InputMaybe<Array<Scalars["UUID"]>>;
+  addProjectsId?: InputMaybe<Array<Scalars["UUID"]>>;
+  deleteMembersId?: InputMaybe<Array<Scalars["UUID"]>>;
+  deleteProjectsId?: InputMaybe<Array<Scalars["UUID"]>>;
   id: Scalars["UUID"];
   name?: InputMaybe<Scalars["String"]>;
   ownerId?: InputMaybe<Scalars["UUID"]>;
@@ -218,6 +273,7 @@ export type Project = {
   prefix?: Maybe<Scalars["String"]>;
   startDate?: Maybe<Scalars["DateTime"]>;
   tasks: Array<Task>;
+  teams: Array<Team>;
   updatedAt: Scalars["DateTime"];
 };
 
@@ -349,6 +405,7 @@ export type Team = {
   owner: Member;
   ownerId: Scalars["UUID"];
   prefix?: Maybe<Scalars["String"]>;
+  projects: Array<Project>;
   updatedAt: Scalars["DateTime"];
   visibility: TeamVisibility;
 };
@@ -494,7 +551,29 @@ export type TasksQuery = {
     owner: { __typename?: "Member"; id: any };
     assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
     project?: { __typename?: "Project"; id: any; name: string } | null;
+    leader?: { __typename?: "Member"; id: any; name: string } | null;
   }>;
+};
+
+export type TaskByIdQueryVariables = Exact<{
+  taskId: Scalars["UUID"];
+}>;
+
+export type TaskByIdQuery = {
+  __typename?: "QueryRoot";
+  taskById: {
+    __typename?: "Task";
+    id: any;
+    title: string;
+    description?: string | null;
+    ownerId: any;
+    status: TaskStatus;
+    priority: TaskPriority;
+    dueDate?: any | null;
+    labels: Array<string>;
+    leader?: { __typename?: "Member"; name: string } | null;
+    project?: { __typename?: "Project"; name: string } | null;
+  };
 };
 
 export type TasksSubscriptionSubscriptionVariables = Exact<{ [key: string]: never }>;
@@ -1070,6 +1149,17 @@ export const TasksDocument = {
                     ],
                   },
                 },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "leader" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -1078,6 +1168,71 @@ export const TasksDocument = {
     },
   ],
 } as unknown as DocumentNode<TasksQuery, TasksQueryVariables>;
+export const TaskByIdDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "TaskById" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "taskId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "taskById" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "taskId" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "ownerId" } },
+                { kind: "Field", name: { kind: "Name", value: "status" } },
+                { kind: "Field", name: { kind: "Name", value: "priority" } },
+                { kind: "Field", name: { kind: "Name", value: "dueDate" } },
+                { kind: "Field", name: { kind: "Name", value: "labels" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "leader" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "name" } }],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "project" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "name" } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TaskByIdQuery, TaskByIdQueryVariables>;
 export const TasksSubscriptionDocument = {
   kind: "Document",
   definitions: [

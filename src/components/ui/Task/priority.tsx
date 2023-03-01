@@ -1,7 +1,7 @@
 import { Button, Kbd, Menu, Text, TextInput, Tooltip } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { TaskPriority } from "integration/graphql";
-import { useTaskActions } from "lib/useTaskActions";
+import { useActions } from "lib/useActions";
 import {
   AntennaBars1,
   AntennaBars2,
@@ -67,7 +67,7 @@ type GenericPriorityMenuProps = {
 };
 
 export const GenericPriorityMenu = ({ children, onSelect, taskId }: GenericPriorityMenuProps) => {
-  const { fetchUpdateTask } = useTaskActions();
+  const { fetchUpdateTask } = useActions();
 
   const onUpdateTaskPriority = async (priority: TaskPriority) => {
     const res = await fetchUpdateTask({

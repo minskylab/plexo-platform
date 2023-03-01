@@ -82,7 +82,7 @@ const ProjectData = (project: ProjectType | null) => {
   return (
     <Group spacing={10} sx={{ width: "100%" }}>
       {ProjectIcon(project)}
-      {ProjectName(project)}
+      {ProjectName(project?.name)}
     </Group>
   );
 };
@@ -109,8 +109,8 @@ export const FilterDropdown = ({
   setProjectFilters,
   theme,
 }: FilterDropdownProps) => {
-  const { membersData, isLoadingMembers } = useData();
-  const { projectsData, isLoadingProjects } = useData();
+  const { membersData, isLoadingMembers } = useData({});
+  const { projectsData, isLoadingProjects } = useData({});
 
   const ref = useClickOutside(() => {
     setOpenedMenu(false);

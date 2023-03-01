@@ -13,7 +13,7 @@ import {
 import { Calendar } from "@mantine/dates";
 import { showNotification } from "@mantine/notifications";
 import dayjs from "dayjs";
-import { useProjectActions } from "lib/useProjectActions";
+import { useActions } from "lib/useActions";
 import { Member } from "modules/app/datatypes";
 import { useState } from "react";
 import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
@@ -41,7 +41,7 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
   const [targetDate, setTargetDate] = useState<Date | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
 
-  const { createProject, fetchCreateProject } = useProjectActions();
+  const { createProject, fetchCreateProject } = useActions();
 
   const onCreateProject = async () => {
     if (!name.length) {
@@ -128,6 +128,8 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
           size="sm"
           value={description}
           onChange={e => setDescription(e.target.value)}
+          autosize
+          minRows={2}
         />
       </Box>
       <Group spacing={6} mb={"md"}>

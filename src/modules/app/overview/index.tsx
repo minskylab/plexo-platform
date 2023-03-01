@@ -18,6 +18,7 @@ import {
   Divider,
   Flex,
   Box,
+  ActionIcon,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { useEffect, useState } from "react";
@@ -33,6 +34,7 @@ import {
   Plus,
   X,
   Filter as FilterIcon,
+  LayoutSidebar,
 } from "tabler-icons-react";
 import { useQuery } from "urql";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
@@ -194,7 +196,7 @@ export const OverviewContent = () => {
   }; */
   const { classes, theme } = useStyles();
   const [viewMode, setViewMode] = useState<"list" | "columns">("list");
-  const { navBarOpened, setNavBarOpened } = usePlexoContext();
+  const { setNavBarOpened } = usePlexoContext();
 
   useEffect(() => {
     setViewMode(getCookie("viewMode") === "columns" ? "columns" : "list");
@@ -454,27 +456,23 @@ export const OverviewContent = () => {
         }}
       >
         <Group spacing="md">
-          <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-            <Burger
-              opened={navBarOpened}
-              onClick={() => setNavBarOpened(true)}
-              className={classes.burger}
-              size="sm"
-            />
+          <MediaQuery largerThan="md" styles={{ display: "none" }}>
+            <ActionIcon onClick={() => setNavBarOpened(true)}>
+              <LayoutSidebar size={16} />
+            </ActionIcon>
           </MediaQuery>
-
           {filterList.length == 0 ? (
             <Menu shadow="md" position="bottom-start" width={250} opened={openedMenu}>
               <Menu.Target>
                 <Button
-                  className={classes["text-header-buttons"]}
+                  /* className={classes["text-header-buttons"]} */
                   compact
                   variant="light"
                   /* p={5} */
                   color={"gray"}
                   leftIcon={
                     <FilterIcon
-                      className={classes["icon-header-buttons"]}
+                      /* className={classes["icon-header-buttons"]} */
                       size={16}
                       color={theme.colors.red[4]}
                     />
@@ -512,7 +510,7 @@ export const OverviewContent = () => {
             </Menu>
           ) : (
             <Button
-              className={classes["text-header-buttons"]}
+              /* className={classes["text-header-buttons"]} */
               compact
               variant="light"
               color={"gray"}
@@ -539,7 +537,7 @@ export const OverviewContent = () => {
               {
                 label: (
                   <Center>
-                    <LayoutRows className={classes["icon-view-buttons"]} size={16} />
+                    <LayoutRows /* className={classes["icon-view-buttons"]} */ size={16} />
                     <Text className={classes["text-view-buttons"]} ml={6} size={"xs"}>
                       List
                     </Text>
@@ -550,7 +548,7 @@ export const OverviewContent = () => {
               {
                 label: (
                   <Center>
-                    <LayoutColumns className={classes["icon-view-buttons"]} size={16} />
+                    <LayoutColumns /* className={classes["icon-view-buttons"]} */ size={16} />
                     <Text className={classes["text-view-buttons"]} size={"xs"} ml={6}>
                       Board
                     </Text>
@@ -569,7 +567,6 @@ export const OverviewContent = () => {
           {filterList.length > 0 ? (
             <>
               <Flex
-                mt={{ base: 50, sm: 0 }}
                 mih={50}
                 gap={{ base: "xl", sm: "sm" }}
                 justify="flex-start"

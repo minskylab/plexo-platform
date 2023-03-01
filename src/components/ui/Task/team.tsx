@@ -22,7 +22,7 @@ type GenericTeamsMenuProps = {
 };
 
 export const GenericTeamMenu = ({ children, onSelect }: GenericTeamsMenuProps) => {
-  const { teamsData, isLoadingTeams } = useData();
+  const { teamsData, isLoadingTeams } = useData({});
 
   const theme = useMantineTheme();
 

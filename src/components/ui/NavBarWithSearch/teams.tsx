@@ -4,7 +4,7 @@ import { Book, Dice, Dna, Dna2, Rocket } from "tabler-icons-react";
 
 const TeamsList = () => {
   const theme = useMantineTheme();
-  const { teamsData, isLoadingTeams } = useData();
+  const { teamsData, isLoadingTeams } = useData({});
 
   const teams = teamsData?.teams.map((p, index) => {
     return (

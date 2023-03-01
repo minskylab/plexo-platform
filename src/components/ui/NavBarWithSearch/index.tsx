@@ -156,7 +156,7 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
       <Navbar
         width={{ sm: 300 }}
         className={classes.navbar}
-        hiddenBreakpoint="sm"
+        hiddenBreakpoint="md"
         hidden={!openedNav}
       >
         <Navbar.Section className={classes.section} mb="sm">

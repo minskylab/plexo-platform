@@ -51,7 +51,7 @@ export const GenericMemberMenu = ({
   selectedMembers,
   setSelectedMembers,
 }: GenericMembersMenuProps) => {
-  const { membersData, isLoadingMembers } = useData();
+  const { membersData, isLoadingMembers } = useData({});
 
   return (
     <Menu shadow="md" closeOnItemClick={false}>
