@@ -8,9 +8,11 @@ import {
   Box,
   useMantineTheme,
   Text,
+  Popover,
+  Tooltip,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { AlertCircle, Check, X } from "tabler-icons-react";
+import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
 import { useState } from "react";
 
 import { TaskStatus, TaskPriority } from "integration/graphql";
@@ -22,6 +24,9 @@ import { ProjectSelector } from "./project";
 import { statusName, StatusSelector } from "./status";
 import { LabelType } from "./types";
 import { useActions } from "lib/useActions";
+import { AssigneesSelector } from "./assignees";
+import { Calendar } from "@mantine/dates";
+import { DateLabel } from "lib/utils";
 
 type NewTaskProps = {
   newTaskOpened: boolean;
@@ -38,8 +43,10 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
   const [status, setStatus] = useState<TaskStatus>(TaskStatus.Backlog);
   const [priority, setPriority] = useState<TaskPriority>(TaskPriority.None);
   const [lead, setLead] = useState<Member | null>(null);
+  const [selectedAssignees, setSelectedAssignees] = useState<string[]>([]);
   const [selectedLabels, setSelectedLabels] = useState<LabelType[]>([]);
   const [project, setProject] = useState<Project | null>(null);
+  const [dueDate, setDueDate] = useState<Date | null>(null);
 
   const { createTask, fetchCreateTask } = useActions();
 
@@ -60,9 +67,11 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
         description: description.length ? description : null,
         status: statusName(status),
         priority: priorityName(priority),
+        dueDate: dueDate,
+        projectId: project?.id,
         leadId: lead?.id, //revisar
         labels: selectedLabels,
-        projectId: project?.id,
+        assigness: selectedAssignees,
       });
 
       if (res.data) {
@@ -96,15 +105,16 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
     setLead(null);
     setSelectedLabels([]);
     setProject(null);
+    setSelectedAssignees([]);
+    setDueDate(null);
   };
 
   return (
     <Modal
-      centered
       overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
       overlayOpacity={0.5}
       transition={"slide-up"}
-      size={"lg"}
+      size={"xl"}
       opened={newTaskOpened}
       onClose={() => {
         setNewTaskOpened(false);
@@ -140,8 +150,24 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
         <StatusSelector status={status} setStatus={setStatus} />
         <PrioritySelector priority={priority} setPriority={setPriority} />
         <LeadTaskSelector lead={lead} setLead={setLead} />
+        <AssigneesSelector
+          selectedAssignees={selectedAssignees}
+          setSelectedAssignees={setSelectedAssignees}
+        />
         <LabelSelector selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels} />
         <ProjectSelector project={project} setProject={setProject} />
+        <Popover position="bottom" shadow="md">
+          <Popover.Target>
+            <Tooltip label="Set due date" position="bottom">
+              <Button compact variant="light" color={"gray"} leftIcon={<CalendarTime size={16} />}>
+                <Text size={"xs"}>{DateLabel(dueDate, "Due date")}</Text>
+              </Button>
+            </Tooltip>
+          </Popover.Target>
+          <Popover.Dropdown>
+            <Calendar value={dueDate} onChange={setDueDate} />
+          </Popover.Dropdown>
+        </Popover>
       </Group>
       <Group
         pt={"md"}

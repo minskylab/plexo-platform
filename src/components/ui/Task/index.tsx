@@ -20,6 +20,7 @@ import { GenericLeadTaskMenu } from "./lead";
 import { LabelColor } from "./label";
 import Link from "next/link";
 import router from "next/router";
+import { DateLabel } from "lib/utils";
 
 type TaskListElementProps = {
   task: Task;
@@ -70,7 +71,6 @@ export const TaskListElement = ({
   checked = false,
 }: TaskListElementProps) => {
   const theme = useMantineTheme();
-  const smallDate = new Date(task.createdAt).toDateString().split(" ").slice(1, 3).join(" ");
   const [controlledChecked, setChecked] = useState(checked);
   const { classes } = useStyles();
 
@@ -141,7 +141,7 @@ export const TaskListElement = ({
             })}
           {task.project && <Badge className={classes.badge}>{task.project?.name}</Badge>}
           <Text lineClamp={1} className={classes.date} size={"sm"} color={"dimmed"}>
-            {smallDate}
+            {DateLabel(task.createdAt)}
           </Text>
           <GenericLeadTaskMenu task={task}>
             <ActionIcon variant="transparent">

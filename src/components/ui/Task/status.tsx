@@ -51,7 +51,7 @@ export const StatusIcon = (
 export const statusLabel = (status?: TaskStatus) => {
   switch (status) {
     case "NONE":
-      return "None";
+      return "Status";
     case "BACKLOG":
       return "Backlog";
     case "TO_DO":
@@ -125,7 +125,7 @@ export const GenericStatusMenu = ({ children, onSelect, taskId }: GenericStatusM
   };
 
   return (
-    <Menu shadow="md" width={180}>
+    <Menu shadow="md" width={180} position="bottom-start">
       <Menu.Target>
         <Tooltip label="Change status" position="bottom">
           {children}

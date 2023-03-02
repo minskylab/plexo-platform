@@ -52,7 +52,7 @@ export const GenericProjectsMenu = ({ children, onSelect, taskId }: GenericProje
   };
 
   return (
-    <Menu shadow="md" width={180}>
+    <Menu shadow="md" width={180} position="bottom-start">
       <Menu.Target>
         <Tooltip label="Add to project" position="bottom">
           {children}

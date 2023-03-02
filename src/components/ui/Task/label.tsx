@@ -141,7 +141,7 @@ export const GenericLabelMenu = ({
   const onChangeLabel = selectedLabels ? setSelectedLabels : setLabels;
 
   return (
-    <Menu shadow="md" width={180} closeOnItemClick={false}>
+    <Menu shadow="md" width={180} closeOnItemClick={false} position="bottom-start">
       <Menu.Target>
         <Tooltip label="Add labels" position="bottom">
           {children}

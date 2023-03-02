@@ -136,7 +136,7 @@ export type MutationRootCreateProjectArgs = {
 };
 
 export type MutationRootCreateTaskArgs = {
-  addAssigneesId?: InputMaybe<Array<Scalars["UUID"]>>;
+  assignees?: InputMaybe<Array<Scalars["UUID"]>>;
   description?: InputMaybe<Scalars["String"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   labels?: InputMaybe<Array<Scalars["String"]>>;
@@ -234,8 +234,7 @@ export type MutationRootUpdateProjectArgs = {
 };
 
 export type MutationRootUpdateTaskArgs = {
-  addAssigneesId?: InputMaybe<Array<Scalars["UUID"]>>;
-  deleteAssigneesId?: InputMaybe<Array<Scalars["UUID"]>>;
+  assignees?: InputMaybe<Array<Scalars["UUID"]>>;
   description?: InputMaybe<Scalars["String"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   id: Scalars["UUID"];
@@ -605,6 +604,8 @@ export type NewTaskMutationVariables = Exact<{
   projectId?: InputMaybe<Scalars["UUID"]>;
   leadId?: InputMaybe<Scalars["UUID"]>;
   labels?: InputMaybe<Array<Scalars["String"]> | Scalars["String"]>;
+  assigness?: InputMaybe<Array<Scalars["UUID"]> | Scalars["UUID"]>;
+  dueDate?: InputMaybe<Scalars["DateTime"]>;
 }>;
 
 export type NewTaskMutation = {
@@ -1328,6 +1329,22 @@ export const NewTaskDocument = {
             },
           },
         },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "assigness" } },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "DateTime" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1375,6 +1392,16 @@ export const NewTaskDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "labels" },
                 value: { kind: "Variable", name: { kind: "Name", value: "labels" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "assignees" },
+                value: { kind: "Variable", name: { kind: "Name", value: "assigness" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "dueDate" },
+                value: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
               },
             ],
             selectionSet: {

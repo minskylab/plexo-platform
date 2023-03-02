@@ -33,7 +33,7 @@ export const PriorityIcon = (
 export const priorityLabel = (priority: TaskPriority | undefined) => {
   switch (priority) {
     case "NONE":
-      return "No Priority";
+      return "Priority";
     case "LOW":
       return "Low";
     case "MEDIUM":
@@ -95,7 +95,7 @@ export const GenericPriorityMenu = ({ children, onSelect, taskId }: GenericPrior
     }
   };
   return (
-    <Menu shadow="md" width={180}>
+    <Menu shadow="md" width={180} position="bottom-start">
       <Menu.Target>
         <Tooltip label="Set priority" position="bottom">
           {children}
@@ -166,15 +166,9 @@ type PrioritySelectorProps = {
 export const PrioritySelector = ({ priority, setPriority }: PrioritySelectorProps) => {
   return (
     <GenericPriorityMenu onSelect={priority => setPriority(priority)}>
-      {priority == TaskPriority.None ? (
-        <Button compact variant="light" color={"gray"}>
-          {PriorityIcon(priority, 18)}
-        </Button>
-      ) : (
-        <Button compact variant="light" color={"gray"} leftIcon={PriorityIcon(priority, 18)}>
-          <Text size={"xs"}>{priorityLabel(priority)}</Text>
-        </Button>
-      )}
+      <Button compact variant="light" color={"gray"} leftIcon={PriorityIcon(priority, 18)}>
+        <Text size={"xs"}>{priorityLabel(priority)}</Text>
+      </Button>
     </GenericPriorityMenu>
   );
 };

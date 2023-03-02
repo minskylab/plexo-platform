@@ -12,8 +12,8 @@ import {
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { showNotification } from "@mantine/notifications";
-import dayjs from "dayjs";
 import { useActions } from "lib/useActions";
+import { DateLabel } from "lib/utils";
 import { Member } from "modules/app/datatypes";
 import { useState } from "react";
 import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
@@ -25,10 +25,6 @@ import { MemberSelector } from "./members";
 type NewProjectProps = {
   newProjectOpened: boolean;
   setNewProjectOpened: (newProjectOpened: boolean) => void;
-};
-
-const DateLabel = (date: Date | null, label: string) => {
-  return date ? dayjs(date).format("DD MMM") : label;
 };
 
 const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) => {
