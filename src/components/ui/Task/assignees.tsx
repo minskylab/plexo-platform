@@ -10,10 +10,14 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { Users } from "tabler-icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useData } from "lib/useData";
 import { Member, TaskById } from "modules/app/datatypes";
+import { useActions } from "lib/useActions";
+import { priorityName } from "./priority";
+import { statusName } from "./status";
+import { ErrorNotification, SuccessNotification } from "lib/notifications";
 
 export const AssigneesIcon = (member: Member | undefined) => {
   return member?.photoUrl ? (
@@ -46,16 +50,55 @@ export const assigneesId = (task: TaskById | undefined) => {
 
 type GenericAssigneesMenuProps = {
   children: React.ReactNode;
-  selectedAssignees: string[];
-  setSelectedAssignees: (selectedAssignees: string[]) => void;
+  selectedAssignees?: string[];
+  setSelectedAssignees?: (selectedAssignees: string[]) => void;
+  task?: TaskById;
 };
 
 export const GenericAssigneesMenu = ({
   children,
   selectedAssignees,
   setSelectedAssignees,
+  task,
 }: GenericAssigneesMenuProps) => {
   const { membersData, isLoadingMembers } = useData({});
+  const { fetchUpdateTask } = useActions();
+  const [assignees, setAssignees] = useState<string[] | null>(null);
+
+  const labelValue = selectedAssignees
+    ? selectedAssignees
+    : assignees
+    ? assignees
+    : assigneesId(task);
+  const onChangeLabel = selectedAssignees ? setSelectedAssignees : setAssignees;
+
+  const onUpdateTaskAssignees = async (assignees: string[]) => {
+    const res = await fetchUpdateTask({
+      taskId: task?.id,
+      assignees: assignees,
+      labels: task?.labels,
+      leadId: task?.leader?.id,
+      priority: priorityName(task?.priority),
+      status: statusName(task?.status),
+      title: task?.title,
+      description: task?.description,
+      dueDate: task?.dueDate,
+      projectId: task?.project?.id,
+    });
+
+    if (res.data) {
+      SuccessNotification("Assigness updated", res.data.updateTask.title);
+    }
+    if (res.error) {
+      ErrorNotification();
+    }
+  };
+
+  useEffect(() => {
+    if (assignees) {
+      onUpdateTaskAssignees(assignees);
+    }
+  }, [assignees]);
 
   return (
     <Menu shadow="md" width={250} closeOnItemClick={false} position="bottom-start">
@@ -71,7 +114,7 @@ export const GenericAssigneesMenu = ({
         {isLoadingMembers ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
-          <Checkbox.Group spacing={0} value={selectedAssignees} onChange={setSelectedAssignees}>
+          <Checkbox.Group spacing={0} value={labelValue} onChange={onChangeLabel}>
             {membersData?.members.map(m => {
               return (
                 <Menu.Item key={m.id}>

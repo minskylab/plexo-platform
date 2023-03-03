@@ -18,7 +18,7 @@ import {
 import { useClickOutside } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { DatePicker } from "@mantine/dates";
-import { AlertCircle, Check, Copy, Dots, LayoutSidebar, X } from "tabler-icons-react";
+import { AlertCircle, Check, Copy, Dots, LayoutSidebar, Users, X } from "tabler-icons-react";
 import { IconChevronLeft } from "@tabler/icons";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -37,7 +37,7 @@ import { TaskMenu } from "components/ui/Task/menu";
 import { useActions } from "lib/useActions";
 import { TaskById } from "../datatypes";
 import { usePlexoContext } from "context/PlexoContext";
-import { assigneesId } from "components/ui/Task/assignees";
+import { assigneesId, GenericAssigneesMenu } from "components/ui/Task/assignees";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 
 type TaskDetailProps = {
@@ -372,11 +372,15 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Assignee
             </Text>
-            {/* <GenericStatusMenu taskId={task?.id}>
-              <ActionIcon variant="transparent" radius={"sm"}>
-                {StatusIcon(theme, task?.status)}
-              </ActionIcon>
-            </GenericStatusMenu> */}
+            <GenericAssigneesMenu task={task}>
+              <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
+                {task?.assignees.length ? (
+                  <Text size={"xs"}>{task?.assignees.length} Assignees</Text>
+                ) : (
+                  <Text size={"xs"}>Assignees</Text>
+                )}
+              </Button>
+            </GenericAssigneesMenu>
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
