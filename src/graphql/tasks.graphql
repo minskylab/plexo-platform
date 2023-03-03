@@ -42,10 +42,16 @@ query TaskById($taskId: UUID!) {
     priority
     dueDate
     labels
+    assignees {
+      id
+      name
+    }
     leader {
+      id
       name
     }
     project {
+      id
       name
     }
   }
@@ -114,6 +120,7 @@ mutation UpdateTask(
   $projectId: UUID
   $leadId: UUID
   $labels: [String!]
+  $assignees: [UUID!]
 ) {
   updateTask(
     id: $taskId
@@ -125,6 +132,7 @@ mutation UpdateTask(
     projectId: $projectId
     leadId: $leadId
     labels: $labels
+    assignees: $assignees
   ) {
     id
     title

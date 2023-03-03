@@ -1,10 +1,14 @@
 import { Button, Kbd, Menu, Text, TextInput, Skeleton, Tooltip } from "@mantine/core";
 import { Check, LayoutGrid, X } from "tabler-icons-react";
 
-import { Project } from "modules/app/datatypes";
+import { Project, TaskById } from "modules/app/datatypes";
 import { useData } from "lib/useData";
 import { useActions } from "lib/useActions";
 import { showNotification } from "@mantine/notifications";
+import { statusName } from "./status";
+import { priorityName } from "./priority";
+import { assigneesId } from "./assignees";
+import { ErrorNotification, SuccessNotification } from "lib/notifications";
 
 export const ProjectIcon = (project?: Project | null) => {
   //insert project icon
@@ -18,36 +22,32 @@ export const ProjectName = (name: string | undefined) => {
 type GenericProjectsMenuProps = {
   children: React.ReactNode;
   onSelect?: (project: Project | null) => void;
-  taskId?: string;
+  task?: TaskById | undefined;
 };
 
-export const GenericProjectsMenu = ({ children, onSelect, taskId }: GenericProjectsMenuProps) => {
+export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProjectsMenuProps) => {
   const { projectsData, isLoadingProjects } = useData({});
   const { fetchUpdateTask } = useActions();
 
   const onUpdateTaskProject = async (projectId: string | null) => {
     const res = await fetchUpdateTask({
-      taskId: taskId,
+      taskId: task?.id,
       projectId: projectId,
+      priority: priorityName(task?.priority),
+      status: statusName(task?.status),
+      title: task?.title,
+      description: task?.description,
+      dueDate: task?.dueDate,
+      leadId: task?.leader?.id,
+      labels: task?.labels,
+      assignees: assigneesId(task),
     });
 
     if (res.data) {
-      showNotification({
-        autoClose: 5000,
-        title: "Status updated",
-        message: res.data.updateTask.title,
-        color: "blue",
-        icon: <Check size={18} />,
-      });
+      SuccessNotification("Project updated", res.data.updateTask.title);
     }
     if (res.error) {
-      showNotification({
-        autoClose: 5000,
-        title: "Error!",
-        message: "Try again",
-        color: "red",
-        icon: <X size={18} />,
-      });
+      ErrorNotification();
     }
   };
 
@@ -70,7 +70,7 @@ export const GenericProjectsMenu = ({ children, onSelect, taskId }: GenericProje
           icon={<LayoutGrid size={16} />}
           onClick={() => {
             onSelect && onSelect(null);
-            taskId && onUpdateTaskProject(null);
+            task && onUpdateTaskProject(null);
           }}
         >
           No project
@@ -85,7 +85,7 @@ export const GenericProjectsMenu = ({ children, onSelect, taskId }: GenericProje
                 icon={ProjectIcon(p)}
                 onClick={() => {
                   onSelect && onSelect(p);
-                  taskId && onUpdateTaskProject(p.id);
+                  task && onUpdateTaskProject(p.id);
                 }}
               >
                 {ProjectName(p.name)}

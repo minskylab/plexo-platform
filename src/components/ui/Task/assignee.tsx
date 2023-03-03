@@ -1,8 +1,5 @@
-import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton } from "@mantine/core";
+import { Avatar } from "@mantine/core";
 import { Member } from "modules/app/datatypes";
-import { useState } from "react";
-
-import { useData } from "lib/useData";
 
 export const AssigneePhoto = (member: Member | undefined) => {
   return member?.photoUrl ? (
@@ -16,22 +13,17 @@ export const AssigneeName = (member: Member | undefined) => {
   return member ? member?.name : "Assignee";
 };
 
-type GenericMembersMenuProps = {
+/* type GenericMembersMenuProps = {
   children: React.ReactNode;
   onSelect?: (member: Member | undefined) => void;
-};
+}; */
 
-export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuProps) => {
+/* export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuProps) => {
   const { membersData, isLoadingMembers } = useData({});
 
   return (
     <Menu shadow="md" width={180}>
-      <Menu.Target>
-        {/* <ActionIcon variant="light" radius={"sm"}>
-                {PriorityIcon(task.priority)}
-              </ActionIcon> */}
-        {children}
-      </Menu.Target>
+      <Menu.Target>{children}</Menu.Target>
 
       <Menu.Dropdown>
         <TextInput
@@ -60,13 +52,13 @@ export const GenericAssigneeMenu = ({ children, onSelect }: GenericMembersMenuPr
       </Menu.Dropdown>
     </Menu>
   );
-};
+}; */
 
-type AssigneeSelectorProps = {
+/* type AssigneeSelectorProps = {
   initialAssignee?: Member;
-};
+}; */
 
-export const AssigneeSelector = ({ initialAssignee }: AssigneeSelectorProps) => {
+/* export const AssigneeSelector = ({ initialAssignee }: AssigneeSelectorProps) => {
   const [assignee, setAssignee] = useState<Member | undefined>(initialAssignee);
 
   return (
@@ -82,4 +74,4 @@ export const AssigneeSelector = ({ initialAssignee }: AssigneeSelectorProps) => 
       )}
     </GenericAssigneeMenu>
   );
-};
+}; */

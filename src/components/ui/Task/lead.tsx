@@ -5,6 +5,10 @@ import { Check, X } from "tabler-icons-react";
 import { Member, Task, TaskById } from "modules/app/datatypes";
 import { useData } from "lib/useData";
 import { useActions } from "lib/useActions";
+import { priorityName } from "./priority";
+import { statusName } from "./status";
+import { assigneesId } from "components/ui/Task/assignees";
+import { ErrorNotification, SuccessNotification } from "lib/notifications";
 
 export const LeadTaskPhoto = (member: Member | null) => {
   return member?.photoUrl ? (
@@ -34,29 +38,25 @@ export const GenericLeadTaskMenu = ({
   const { membersData, isLoadingMembers } = useData({});
   const { fetchUpdateTask } = useActions();
   const leadName = task?.leader?.name ? task?.leader?.name : selectedLead?.name;
+
   const onUpdateTaskLead = async (leadId: string | null) => {
     const res = await fetchUpdateTask({
       taskId: task?.id,
       leadId: leadId,
+      priority: priorityName(task?.priority),
+      status: statusName(task?.status),
+      title: task?.title,
+      description: task?.description,
+      dueDate: task?.dueDate,
+      projectId: task?.project?.id,
+      labels: task?.labels,
+      assignees: assigneesId(task),
     });
-
     if (res.data) {
-      showNotification({
-        autoClose: 5000,
-        title: "Lead updated",
-        message: res.data.updateTask.title,
-        color: "blue",
-        icon: <Check size={18} />,
-      });
+      SuccessNotification("Lead updated", res.data.updateTask.title);
     }
     if (res.error) {
-      showNotification({
-        autoClose: 5000,
-        title: "Error!",
-        message: "Try again",
-        color: "red",
-        icon: <X size={18} />,
-      });
+      ErrorNotification();
     }
   };
 

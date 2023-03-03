@@ -12,12 +12,12 @@ import {
   Paper,
   Avatar,
   Button,
-  useMantineTheme,
   createStyles,
   MediaQuery,
 } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
+import { DatePicker } from "@mantine/dates";
 import { AlertCircle, Check, Copy, Dots, LayoutSidebar, X } from "tabler-icons-react";
 import { IconChevronLeft } from "@tabler/icons";
 import Link from "next/link";
@@ -25,13 +25,20 @@ import { useState, useEffect } from "react";
 
 import { GenericLabelMenu, LabelColor, LabelName } from "components/ui/Task/label";
 import { GenericLeadTaskMenu, LeadTaskName } from "components/ui/Task/lead";
-import { GenericPriorityMenu, PriorityIcon, priorityLabel } from "components/ui/Task/priority";
+import {
+  GenericPriorityMenu,
+  PriorityIcon,
+  priorityLabel,
+  priorityName,
+} from "components/ui/Task/priority";
 import { GenericProjectsMenu, ProjectIcon, ProjectName } from "components/ui/Task/project";
-import { GenericStatusMenu, StatusIcon, statusLabel } from "components/ui/Task/status";
+import { GenericStatusMenu, StatusIcon, statusLabel, statusName } from "components/ui/Task/status";
 import { TaskMenu } from "components/ui/Task/menu";
 import { useActions } from "lib/useActions";
 import { TaskById } from "../datatypes";
 import { usePlexoContext } from "context/PlexoContext";
+import { assigneesId } from "components/ui/Task/assignees";
+import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -58,86 +65,95 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
   const { fetchUpdateTask } = useActions();
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [dueDate, setDueDate] = useState<Date | null>(null);
 
   const onUpdateTaskTitle = async (title: string) => {
-    if (title == task?.title) {
-      //No hay cambios
-      return;
-    } else {
-      if (!title.length) {
-        showNotification({
-          id: "titleUpdateFailed",
-          autoClose: 5000,
-          title: "Update Failed",
-          message: "Please enter a title before submitting",
-          color: "yellow",
-          icon: <AlertCircle size={18} />,
-        });
-        task?.title && setTitle(task.title);
-      } else {
-        const res = await fetchUpdateTask({
-          taskId: task?.id,
-          title: title,
-        });
-
-        if (res.data) {
-          showNotification({
-            autoClose: 5000,
-            title: "Title updated",
-            message: res.data.updateTask.title,
-            color: "blue",
-            icon: <Check size={18} />,
-          });
-        }
-        if (res.error) {
-          showNotification({
-            autoClose: 5000,
-            title: "Error!",
-            message: "Try again",
-            color: "red",
-            icon: <X size={18} />,
-          });
-        }
-      }
-    }
-  };
-
-  const onUpdateTaskDescription = async (description: string) => {
-    const desc = description == "" ? null : description;
-    const taskDesc = task?.description == "" ? null : task?.description; //no seria necesario si se pudiera guardar nulos en la BD
-
-    if (desc == taskDesc) {
-      //No hay cambios
-      return;
+    if (!title.length) {
+      AlertNotification(
+        "titleUpdateFailed",
+        "Update Failed",
+        "Please enter a title before submitting"
+      );
+      task?.title && setTitle(task.title);
     } else {
       const res = await fetchUpdateTask({
         taskId: task?.id,
-        description: description,
+        title: title,
+        description: task?.description,
+        status: statusName(task?.status),
+        priority: priorityName(task?.priority),
+        dueDate: task?.dueDate,
+        projectId: task?.project?.id,
+        leadId: task?.leader?.id,
+        labels: task?.labels,
+        assignees: assigneesId(task),
       });
 
       if (res.data) {
-        showNotification({
-          autoClose: 5000,
-          title: "Description updated",
-          message: res.data.updateTask.title,
-          color: "blue",
-          icon: <Check size={18} />,
-        });
+        SuccessNotification("Title updated", res.data.updateTask.title);
       }
       if (res.error) {
-        showNotification({
-          autoClose: 5000,
-          title: "Error!",
-          message: "Try again",
-          color: "red",
-          icon: <X size={18} />,
-        });
+        ErrorNotification();
       }
     }
   };
 
-  const refTitle = useClickOutside(() => onUpdateTaskTitle(title));
-  const refDescription = useClickOutside(() => onUpdateTaskDescription(description));
+  const onUpdateTaskDescription = async (desc: string | null) => {
+    const res = await fetchUpdateTask({
+      taskId: task?.id,
+      description: desc,
+      status: statusName(task?.status),
+      priority: priorityName(task?.priority),
+      title: task?.title,
+      dueDate: task?.dueDate,
+      projectId: task?.project?.id,
+      leadId: task?.leader?.id,
+      labels: task?.labels,
+      assignees: assigneesId(task),
+    });
+
+    if (res.data) {
+      SuccessNotification("Description updated", res.data.updateTask.title);
+    }
+    if (res.error) {
+      ErrorNotification();
+    }
+  };
+
+  const onUpdateTaskDueDate = async (dueDate: Date | null) => {
+    const res = await fetchUpdateTask({
+      taskId: task?.id,
+      status: statusName(task?.status),
+      priority: priorityName(task?.priority),
+      title: task?.title,
+      description: task?.description,
+      dueDate: dueDate,
+      projectId: task?.project?.id,
+      leadId: task?.leader?.id,
+      labels: task?.labels,
+      assignees: assigneesId(task),
+    });
+
+    if (res.data) {
+      SuccessNotification("Due date updated", res.data.updateTask.title);
+    }
+    if (res.error) {
+      ErrorNotification();
+    }
+  };
+
+  const refTitle = useClickOutside(() => {
+    if (title !== task?.title) {
+      onUpdateTaskTitle(title);
+    }
+  });
+  const refDescription = useClickOutside(() => {
+    const desc = description == "" ? null : description;
+
+    if (desc !== task?.description) {
+      onUpdateTaskDescription(desc);
+    }
+  });
 
   useEffect(() => {
     if (task?.title) {
@@ -150,6 +166,17 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
       setDescription(task?.description);
     }
   }, [task?.description]);
+
+  useEffect(() => {
+    if (task?.dueDate) {
+      setDueDate(new Date(task?.dueDate));
+    }
+  }, [task?.dueDate]);
+
+  const handleDateChange = (date: Date | null) => {
+    setDueDate(date);
+    onUpdateTaskDueDate(date);
+  };
 
   return (
     <Stack h={"100vh"}>
@@ -188,7 +215,7 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
                 </TaskMenu>
               </Group>
               <Group spacing={5} className={classes.propsBar}>
-                <GenericStatusMenu taskId={task?.id}>
+                <GenericStatusMenu task={task}>
                   <Button
                     compact
                     variant="light"
@@ -198,7 +225,7 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
                     <Text size={"xs"}>{statusLabel(task?.status)}</Text>
                   </Button>
                 </GenericStatusMenu>
-                <GenericPriorityMenu taskId={task?.id}>
+                <GenericPriorityMenu task={task}>
                   <Button
                     compact
                     variant="light"
@@ -228,7 +255,7 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
                     <Text size={"xs"}>{LabelName(task?.labels)}</Text>
                   </Button>
                 </GenericLabelMenu> */}
-                <GenericProjectsMenu taskId={task?.id}>
+                <GenericProjectsMenu task={task}>
                   <Button compact variant="light" color={"gray"} leftIcon={ProjectIcon()}>
                     <Text size={"xs"}>{ProjectName(task?.project?.name)}</Text>
                   </Button>
@@ -300,7 +327,7 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Status
             </Text>
-            <GenericStatusMenu taskId={task?.id}>
+            <GenericStatusMenu task={task}>
               <Button
                 compact
                 variant="light"
@@ -315,7 +342,7 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Priority
             </Text>
-            <GenericPriorityMenu taskId={task?.id}>
+            <GenericPriorityMenu task={task}>
               <Button
                 compact
                 variant="light"
@@ -370,7 +397,7 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Project
             </Text>
-            <GenericProjectsMenu taskId={task?.id}>
+            <GenericProjectsMenu task={task}>
               <Button compact variant="light" color={"gray"} leftIcon={ProjectIcon()}>
                 <Text size={"xs"}>{ProjectName(task?.project?.name)}</Text>
               </Button>
@@ -380,11 +407,19 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Due Date
             </Text>
-            {/* <GenericStatusMenu taskId={task?.id}>
-              <ActionIcon variant="transparent" radius={"sm"}>
-                {StatusIcon(theme, task?.status)}
-              </ActionIcon>
-            </GenericStatusMenu> */}
+            <DatePicker
+              size="xs"
+              placeholder="Set due date"
+              value={dueDate}
+              onChange={handleDateChange}
+              styles={{
+                input: {
+                  padding: "0px 8px",
+                  borderRadius: 4,
+                  backgroundColor: "transparent",
+                },
+              }}
+            />
           </Group>
         </Stack>
       </Group>

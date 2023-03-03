@@ -13,7 +13,7 @@ import { Users } from "tabler-icons-react";
 import { useState } from "react";
 
 import { useData } from "lib/useData";
-import { Member } from "modules/app/datatypes";
+import { Member, TaskById } from "modules/app/datatypes";
 
 export const AssigneesIcon = (member: Member | undefined) => {
   return member?.photoUrl ? (
@@ -38,6 +38,10 @@ export const AssigneesPhoto = (member: Member | undefined) => {
 
 export const AssigneesName = (member: Member | undefined) => {
   return member ? member?.name : "Member";
+};
+
+export const assigneesId = (task: TaskById | undefined) => {
+  return task?.assignees.map(a => a.id);
 };
 
 type GenericAssigneesMenuProps = {

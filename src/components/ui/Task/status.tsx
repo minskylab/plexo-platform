@@ -11,6 +11,7 @@ import {
 import { showNotification } from "@mantine/notifications";
 import { TaskStatus } from "integration/graphql";
 import { useActions } from "lib/useActions";
+import { TaskById } from "modules/app/datatypes";
 import {
   AntennaBars1,
   Circle,
@@ -22,6 +23,9 @@ import {
   X,
   Check,
 } from "tabler-icons-react";
+import { priorityName } from "./priority";
+import { assigneesId } from "components/ui/Task/assignees";
+import { ErrorNotification, SuccessNotification } from "lib/notifications";
 
 export const StatusIcon = (
   theme: MantineTheme,
@@ -69,7 +73,7 @@ export const statusLabel = (status?: TaskStatus) => {
   return "No Status";
 };
 
-export const statusName = (status: TaskStatus) => {
+export const statusName = (status: TaskStatus | undefined) => {
   switch (status) {
     case "NONE":
       return "None";
@@ -91,36 +95,32 @@ export const statusName = (status: TaskStatus) => {
 type GenericStatusMenuProps = {
   children: React.ReactNode;
   onSelect?: (priority: TaskStatus) => void;
-  taskId?: string;
+  task?: TaskById | undefined;
 };
 
-export const GenericStatusMenu = ({ children, onSelect, taskId }: GenericStatusMenuProps) => {
+export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMenuProps) => {
   const theme = useMantineTheme();
   const { fetchUpdateTask } = useActions();
 
   const onUpdateTaskStatus = async (status: TaskStatus) => {
     const res = await fetchUpdateTask({
-      taskId: taskId,
+      taskId: task?.id,
       status: statusName(status),
+      title: task?.title,
+      description: task?.description,
+      priority: priorityName(task?.priority),
+      dueDate: task?.dueDate,
+      projectId: task?.project?.id,
+      leadId: task?.leader?.id,
+      labels: task?.labels,
+      assignees: assigneesId(task),
     });
 
     if (res.data) {
-      showNotification({
-        autoClose: 5000,
-        title: "Status updated",
-        message: res.data.updateTask.title,
-        color: "blue",
-        icon: <Check size={18} />,
-      });
+      SuccessNotification("Status updated", res.data.updateTask.title);
     }
     if (res.error) {
-      showNotification({
-        autoClose: 5000,
-        title: "Error!",
-        message: "Try again",
-        color: "red",
-        icon: <X size={18} />,
-      });
+      ErrorNotification();
     }
   };
 
@@ -142,7 +142,7 @@ export const GenericStatusMenu = ({ children, onSelect, taskId }: GenericStatusM
           icon={<CircleDot size={18} color={theme.colors.gray[6]} />}
           onClick={() => {
             onSelect && onSelect(TaskStatus.None);
-            taskId && onUpdateTaskStatus(TaskStatus.None);
+            task && onUpdateTaskStatus(TaskStatus.None);
           }}
         >
           None
@@ -151,7 +151,7 @@ export const GenericStatusMenu = ({ children, onSelect, taskId }: GenericStatusM
           icon={<CircleDotted size={18} color={theme.colors.gray[6]} />}
           onClick={() => {
             onSelect && onSelect(TaskStatus.Backlog);
-            taskId && onUpdateTaskStatus(TaskStatus.Backlog);
+            task && onUpdateTaskStatus(TaskStatus.Backlog);
           }}
         >
           Backlog
@@ -160,7 +160,7 @@ export const GenericStatusMenu = ({ children, onSelect, taskId }: GenericStatusM
           icon={<Circle size={18} />}
           onClick={() => {
             onSelect && onSelect(TaskStatus.ToDo);
-            taskId && onUpdateTaskStatus(TaskStatus.ToDo);
+            task && onUpdateTaskStatus(TaskStatus.ToDo);
           }}
         >
           Todo
@@ -169,7 +169,7 @@ export const GenericStatusMenu = ({ children, onSelect, taskId }: GenericStatusM
           icon={<ChartPie2 size={18} color={theme.colors.yellow[6]} />}
           onClick={() => {
             onSelect && onSelect(TaskStatus.InProgress);
-            taskId && onUpdateTaskStatus(TaskStatus.InProgress);
+            task && onUpdateTaskStatus(TaskStatus.InProgress);
           }}
         >
           In Progress
@@ -189,7 +189,7 @@ export const GenericStatusMenu = ({ children, onSelect, taskId }: GenericStatusM
           icon={<CircleCheck size={18} color={theme.colors.indigo[6]} />}
           onClick={() => {
             onSelect && onSelect(TaskStatus.Done);
-            taskId && onUpdateTaskStatus(TaskStatus.Done);
+            task && onUpdateTaskStatus(TaskStatus.Done);
           }}
         >
           Done
@@ -198,7 +198,7 @@ export const GenericStatusMenu = ({ children, onSelect, taskId }: GenericStatusM
           icon={<CircleX size={18} color={theme.colors.red[6]} />}
           onClick={() => {
             onSelect && onSelect(TaskStatus.Canceled);
-            taskId && onUpdateTaskStatus(TaskStatus.Canceled);
+            task && onUpdateTaskStatus(TaskStatus.Canceled);
           }}
         >
           Canceled

@@ -18,6 +18,10 @@ import { Check, Tag, X } from "tabler-icons-react";
 
 import { LabelType } from "./types";
 import { useState, useEffect } from "react";
+import { priorityName } from "./priority";
+import { statusName } from "./status";
+import { assigneesId } from "components/ui/Task/assignees";
+import { ErrorNotification, SuccessNotification } from "lib/notifications";
 
 export const LabelColor = (labels: string[] | string | undefined, theme: MantineTheme) => {
   if (labels) {
@@ -109,25 +113,21 @@ export const GenericLabelMenu = ({
     const res = await fetchUpdateTask({
       taskId: task?.id,
       labels: labels,
+      leadId: task?.leader?.id,
+      priority: priorityName(task?.priority),
+      status: statusName(task?.status),
+      title: task?.title,
+      description: task?.description,
+      dueDate: task?.dueDate,
+      projectId: task?.project?.id,
+      assignees: assigneesId(task),
     });
 
     if (res.data) {
-      showNotification({
-        autoClose: 5000,
-        title: "Labels updated",
-        message: res.data.updateTask.title,
-        color: "blue",
-        icon: <Check size={18} />,
-      });
+      SuccessNotification("Labels updated", res.data.updateTask.title);
     }
     if (res.error) {
-      showNotification({
-        autoClose: 5000,
-        title: "Error!",
-        message: "Try again",
-        color: "red",
-        icon: <X size={18} />,
-      });
+      ErrorNotification();
     }
   };
 

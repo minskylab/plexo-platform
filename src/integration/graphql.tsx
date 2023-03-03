@@ -570,8 +570,9 @@ export type TaskByIdQuery = {
     priority: TaskPriority;
     dueDate?: any | null;
     labels: Array<string>;
-    leader?: { __typename?: "Member"; name: string } | null;
-    project?: { __typename?: "Project"; name: string } | null;
+    assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
+    leader?: { __typename?: "Member"; id: any; name: string } | null;
+    project?: { __typename?: "Project"; id: any; name: string } | null;
   };
 };
 
@@ -632,6 +633,7 @@ export type UpdateTaskMutationVariables = Exact<{
   projectId?: InputMaybe<Scalars["UUID"]>;
   leadId?: InputMaybe<Scalars["UUID"]>;
   labels?: InputMaybe<Array<Scalars["String"]> | Scalars["String"]>;
+  assignees?: InputMaybe<Array<Scalars["UUID"]> | Scalars["UUID"]>;
 }>;
 
 export type UpdateTaskMutation = {
@@ -1212,10 +1214,24 @@ export const TaskByIdDocument = {
                 { kind: "Field", name: { kind: "Name", value: "labels" } },
                 {
                   kind: "Field",
+                  name: { kind: "Name", value: "assignees" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
                   name: { kind: "Name", value: "leader" },
                   selectionSet: {
                     kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "name" } }],
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
                   },
                 },
                 {
@@ -1223,7 +1239,10 @@ export const TaskByIdDocument = {
                   name: { kind: "Name", value: "project" },
                   selectionSet: {
                     kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "name" } }],
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
                   },
                 },
               ],
@@ -1523,6 +1542,17 @@ export const UpdateTaskDocument = {
             },
           },
         },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "assignees" } },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1575,6 +1605,11 @@ export const UpdateTaskDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "labels" },
                 value: { kind: "Variable", name: { kind: "Name", value: "labels" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "assignees" },
+                value: { kind: "Variable", name: { kind: "Name", value: "assignees" } },
               },
             ],
             selectionSet: {
