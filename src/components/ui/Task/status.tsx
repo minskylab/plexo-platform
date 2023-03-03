@@ -8,21 +8,18 @@ import {
   useMantineTheme,
   MantineTheme,
 } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
 import { TaskStatus } from "integration/graphql";
 import { useActions } from "lib/useActions";
 import { TaskById } from "modules/app/datatypes";
 import {
-  AntennaBars1,
   Circle,
   CircleCheck,
   CircleDot,
   CircleX,
   CircleDotted,
   ChartPie2,
-  X,
-  Check,
 } from "tabler-icons-react";
+
 import { priorityName } from "./priority";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";

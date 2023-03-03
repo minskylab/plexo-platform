@@ -1,10 +1,9 @@
 import { Button, Kbd, Menu, Text, TextInput, Skeleton, Tooltip } from "@mantine/core";
-import { Check, LayoutGrid, X } from "tabler-icons-react";
+import { LayoutGrid } from "tabler-icons-react";
 
 import { Project, TaskById } from "modules/app/datatypes";
 import { useData } from "lib/useData";
 import { useActions } from "lib/useActions";
-import { showNotification } from "@mantine/notifications";
 import { statusName } from "./status";
 import { priorityName } from "./priority";
 import { assigneesId } from "./assignees";

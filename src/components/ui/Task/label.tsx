@@ -11,10 +11,9 @@ import {
   Group,
   Tooltip,
 } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
 import { useActions } from "lib/useActions";
 import { TaskById } from "modules/app/datatypes";
-import { Check, Tag, X } from "tabler-icons-react";
+import { Tag } from "tabler-icons-react";
 
 import { LabelType } from "./types";
 import { useState, useEffect } from "react";

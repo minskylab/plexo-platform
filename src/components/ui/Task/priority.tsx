@@ -1,5 +1,4 @@
 import { Button, Kbd, Menu, Text, TextInput, Tooltip } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
 import { TaskPriority } from "integration/graphql";
 import { useActions } from "lib/useActions";
 import { TaskById } from "modules/app/datatypes";
@@ -9,8 +8,6 @@ import {
   AntennaBars3,
   AntennaBars4,
   AntennaBars5,
-  Check,
-  X,
 } from "tabler-icons-react";
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";

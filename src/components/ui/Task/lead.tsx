@@ -1,6 +1,4 @@
 import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton, Tooltip } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
-import { Check, X } from "tabler-icons-react";
 
 import { Member, Task, TaskById } from "modules/app/datatypes";
 import { useData } from "lib/useData";
