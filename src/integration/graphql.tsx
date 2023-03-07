@@ -61,78 +61,29 @@ export enum MemberRole {
 
 export type MutationRoot = {
   __typename?: "MutationRoot";
-  addAssigneesToTask: Task;
-  addMembersToProject: Project;
-  addMembersToTeam: Team;
-  addProjectsToMember: Member;
-  addProjectsToTeam: Team;
-  addTeamsToMember: Member;
-  addTeamsToProject: Project;
   createProject: Project;
   createTask: Task;
   createTeam: Team;
-  deleteAssigneesFromTask: Task;
   deleteMember: Member;
-  deleteMembersFromProject: Project;
-  deleteMembersFromTeam: Team;
   deleteProject: Project;
-  deleteProjectsFromMember: Member;
-  deleteProjectsFromTeam: Team;
   deleteTask: Task;
   deleteTeam: Team;
-  deleteTeamsFromMember: Member;
-  deleteTeamsFromProject: Project;
   updateMember: Member;
   updateProject: Project;
   updateTask: Task;
   updateTeam: Team;
 };
 
-export type MutationRootAddAssigneesToTaskArgs = {
-  membersId: Array<Scalars["UUID"]>;
-  taskId: Scalars["UUID"];
-};
-
-export type MutationRootAddMembersToProjectArgs = {
-  membersId: Array<Scalars["UUID"]>;
-  projectId: Scalars["UUID"];
-};
-
-export type MutationRootAddMembersToTeamArgs = {
-  membersId: Array<Scalars["UUID"]>;
-  teamId: Scalars["UUID"];
-};
-
-export type MutationRootAddProjectsToMemberArgs = {
-  memberId: Scalars["UUID"];
-  projectsId: Array<Scalars["UUID"]>;
-};
-
-export type MutationRootAddProjectsToTeamArgs = {
-  projectsId: Array<Scalars["UUID"]>;
-  teamId: Scalars["UUID"];
-};
-
-export type MutationRootAddTeamsToMemberArgs = {
-  memberId: Scalars["UUID"];
-  teamsId: Array<Scalars["UUID"]>;
-};
-
-export type MutationRootAddTeamsToProjectArgs = {
-  projectId: Scalars["UUID"];
-  teamsId: Array<Scalars["UUID"]>;
-};
-
 export type MutationRootCreateProjectArgs = {
-  addMembersId?: InputMaybe<Array<Scalars["UUID"]>>;
-  addTeamsId?: InputMaybe<Array<Scalars["UUID"]>>;
   description?: InputMaybe<Scalars["String"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   leadId?: InputMaybe<Scalars["UUID"]>;
+  members?: InputMaybe<Array<Scalars["UUID"]>>;
   name: Scalars["String"];
   ownerId: Scalars["UUID"];
   prefix?: InputMaybe<Scalars["String"]>;
   startDate?: InputMaybe<Scalars["DateTime"]>;
+  teams?: InputMaybe<Array<Scalars["UUID"]>>;
 };
 
 export type MutationRootCreateTaskArgs = {
@@ -149,45 +100,20 @@ export type MutationRootCreateTaskArgs = {
 };
 
 export type MutationRootCreateTeamArgs = {
-  addMembersId?: InputMaybe<Array<Scalars["UUID"]>>;
-  addProjectsId?: InputMaybe<Array<Scalars["UUID"]>>;
+  members?: InputMaybe<Array<Scalars["UUID"]>>;
   name: Scalars["String"];
   ownerId: Scalars["UUID"];
   prefix?: InputMaybe<Scalars["String"]>;
+  projects?: InputMaybe<Array<Scalars["UUID"]>>;
   visibility?: InputMaybe<Scalars["String"]>;
-};
-
-export type MutationRootDeleteAssigneesFromTaskArgs = {
-  membersId: Array<Scalars["UUID"]>;
-  taskId: Scalars["UUID"];
 };
 
 export type MutationRootDeleteMemberArgs = {
   id: Scalars["UUID"];
 };
 
-export type MutationRootDeleteMembersFromProjectArgs = {
-  membersId: Array<Scalars["UUID"]>;
-  projectId: Scalars["UUID"];
-};
-
-export type MutationRootDeleteMembersFromTeamArgs = {
-  membersId: Array<Scalars["UUID"]>;
-  teamId: Scalars["UUID"];
-};
-
 export type MutationRootDeleteProjectArgs = {
   id: Scalars["UUID"];
-};
-
-export type MutationRootDeleteProjectsFromMemberArgs = {
-  memberId: Scalars["UUID"];
-  projectsId: Array<Scalars["UUID"]>;
-};
-
-export type MutationRootDeleteProjectsFromTeamArgs = {
-  projectsId: Array<Scalars["UUID"]>;
-  teamId: Scalars["UUID"];
 };
 
 export type MutationRootDeleteTaskArgs = {
@@ -198,39 +124,26 @@ export type MutationRootDeleteTeamArgs = {
   id: Scalars["UUID"];
 };
 
-export type MutationRootDeleteTeamsFromMemberArgs = {
-  memberId: Scalars["UUID"];
-  teamsId: Array<Scalars["UUID"]>;
-};
-
-export type MutationRootDeleteTeamsFromProjectArgs = {
-  projectId: Scalars["UUID"];
-  teamsId: Array<Scalars["UUID"]>;
-};
-
 export type MutationRootUpdateMemberArgs = {
-  addProjectsId?: InputMaybe<Array<Scalars["UUID"]>>;
-  addTeamsId?: InputMaybe<Array<Scalars["UUID"]>>;
-  deleteProjectsId?: InputMaybe<Array<Scalars["UUID"]>>;
-  deleteTeamsId?: InputMaybe<Array<Scalars["UUID"]>>;
   email?: InputMaybe<Scalars["String"]>;
   id: Scalars["UUID"];
   name?: InputMaybe<Scalars["String"]>;
+  projects?: InputMaybe<Array<Scalars["UUID"]>>;
+  role?: InputMaybe<Scalars["String"]>;
+  teams?: InputMaybe<Array<Scalars["UUID"]>>;
 };
 
 export type MutationRootUpdateProjectArgs = {
-  addMembersId?: InputMaybe<Array<Scalars["UUID"]>>;
-  addTeamsId?: InputMaybe<Array<Scalars["UUID"]>>;
-  deleteMembersId?: InputMaybe<Array<Scalars["UUID"]>>;
-  deleteTeamsId?: InputMaybe<Array<Scalars["UUID"]>>;
   description?: InputMaybe<Scalars["String"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   id: Scalars["UUID"];
   leadId?: InputMaybe<Scalars["UUID"]>;
+  members?: InputMaybe<Array<Scalars["UUID"]>>;
   name?: InputMaybe<Scalars["String"]>;
   ownerId?: InputMaybe<Scalars["UUID"]>;
   prefix?: InputMaybe<Scalars["String"]>;
   startDate?: InputMaybe<Scalars["DateTime"]>;
+  teams?: InputMaybe<Array<Scalars["UUID"]>>;
 };
 
 export type MutationRootUpdateTaskArgs = {
@@ -247,14 +160,12 @@ export type MutationRootUpdateTaskArgs = {
 };
 
 export type MutationRootUpdateTeamArgs = {
-  addMembersId?: InputMaybe<Array<Scalars["UUID"]>>;
-  addProjectsId?: InputMaybe<Array<Scalars["UUID"]>>;
-  deleteMembersId?: InputMaybe<Array<Scalars["UUID"]>>;
-  deleteProjectsId?: InputMaybe<Array<Scalars["UUID"]>>;
   id: Scalars["UUID"];
+  members?: InputMaybe<Array<Scalars["UUID"]>>;
   name?: InputMaybe<Scalars["String"]>;
   ownerId?: InputMaybe<Scalars["UUID"]>;
   prefix?: InputMaybe<Scalars["String"]>;
+  projects?: InputMaybe<Array<Scalars["UUID"]>>;
   visibility?: InputMaybe<Scalars["String"]>;
 };
 
@@ -494,12 +405,14 @@ export type ProjectsSubscriptionSubscription = {
 
 export type NewProjectMutationVariables = Exact<{
   name: Scalars["String"];
-  prefix: Scalars["String"];
+  prefix?: InputMaybe<Scalars["String"]>;
   ownerId: Scalars["UUID"];
   description?: InputMaybe<Scalars["String"]>;
   leadId?: InputMaybe<Scalars["UUID"]>;
   startDate?: InputMaybe<Scalars["DateTime"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
+  members?: InputMaybe<Array<Scalars["UUID"]> | Scalars["UUID"]>;
+  teams?: InputMaybe<Array<Scalars["UUID"]> | Scalars["UUID"]>;
 }>;
 
 export type NewProjectMutation = {
@@ -878,10 +791,7 @@ export const NewProjectDocument = {
         {
           kind: "VariableDefinition",
           variable: { kind: "Variable", name: { kind: "Name", value: "prefix" } },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
         {
           kind: "VariableDefinition",
@@ -910,6 +820,28 @@ export const NewProjectDocument = {
           kind: "VariableDefinition",
           variable: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
           type: { kind: "NamedType", name: { kind: "Name", value: "DateTime" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "members" } },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "teams" } },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+            },
+          },
         },
       ],
       selectionSet: {
@@ -953,6 +885,16 @@ export const NewProjectDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "dueDate" },
                 value: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "members" },
+                value: { kind: "Variable", name: { kind: "Name", value: "members" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "teams" },
+                value: { kind: "Variable", name: { kind: "Name", value: "teams" } },
               },
             ],
             selectionSet: {

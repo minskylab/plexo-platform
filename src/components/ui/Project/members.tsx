@@ -10,7 +10,6 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { Users } from "tabler-icons-react";
-import { useState } from "react";
 
 import { useData } from "lib/useData";
 import { Member } from "modules/app/datatypes";
@@ -42,8 +41,8 @@ export const MemberName = (member: Member | undefined) => {
 
 type GenericMembersMenuProps = {
   children: React.ReactNode;
-  selectedMembers: string[];
-  setSelectedMembers: (selectedMembers: string[]) => void;
+  selectedMembers?: string[];
+  setSelectedMembers?: (selectedMembers: string[]) => void;
 };
 
 export const GenericMemberMenu = ({
@@ -94,14 +93,17 @@ export const GenericMemberMenu = ({
   );
 };
 
-export const MemberSelector = () => {
-  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+type MemberSelectorProps = {
+  members: string[];
+  setMembers: (members: string[]) => void;
+};
 
+export const MemberSelector = ({ members, setMembers }: MemberSelectorProps) => {
   return (
-    <GenericMemberMenu selectedMembers={selectedMembers} setSelectedMembers={setSelectedMembers}>
-      {selectedMembers.length ? (
+    <GenericMemberMenu selectedMembers={members} setSelectedMembers={setMembers}>
+      {members.length ? (
         <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
-          <Text size={"xs"}>{selectedMembers.length} Members</Text>
+          <Text size={"xs"}>{members.length} Members</Text>
         </Button>
       ) : (
         <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>

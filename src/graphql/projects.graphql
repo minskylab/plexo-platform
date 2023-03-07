@@ -42,12 +42,14 @@ subscription ProjectsSubscription {
 
 mutation NewProject(
   $name: String!
-  $prefix: String!
+  $prefix: String
   $ownerId: UUID!
   $description: String
   $leadId: UUID
   $startDate: DateTime
   $dueDate: DateTime
+  $members: [UUID!]
+  $teams: [UUID!]
 ) {
   createProject(
     name: $name
@@ -57,6 +59,8 @@ mutation NewProject(
     leadId: $leadId
     startDate: $startDate
     dueDate: $dueDate
+    members: $members
+    teams: $teams
   ) {
     id
     name

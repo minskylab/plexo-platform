@@ -155,15 +155,13 @@ export const AssigneesSelector = ({
       selectedAssignees={selectedAssignees}
       setSelectedAssignees={setSelectedAssignees}
     >
-      {selectedAssignees.length ? (
-        <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
+      <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
+        {selectedAssignees.length ? (
           <Text size={"xs"}>{selectedAssignees.length} Assignees</Text>
-        </Button>
-      ) : (
-        <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
+        ) : (
           <Text size={"xs"}>Assignees</Text>
-        </Button>
-      )}
+        )}
+      </Button>
     </GenericAssigneesMenu>
   );
 };

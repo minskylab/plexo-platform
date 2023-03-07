@@ -18,7 +18,7 @@ import { Member } from "modules/app/datatypes";
 import { useState } from "react";
 import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
 
-import { TeamSelector } from "../Task/team";
+import { TeamSelector } from "./team";
 import { LeadProjectSelector } from "./lead";
 import { MemberSelector } from "./members";
 
@@ -34,8 +34,10 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
   const [prefix, setPrefix] = useState("");
   const [description, setDescription] = useState("");
   const [lead, setLead] = useState<Member | null>(null);
-  const [targetDate, setTargetDate] = useState<Date | null>(null);
+  const [dueDate, setDueDate] = useState<Date | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
+  const [members, setMembers] = useState<string[]>([]);
+  const [teams, setTeams] = useState<string[]>([]);
 
   const { createProject, fetchCreateProject } = useActions();
 
@@ -55,8 +57,11 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
         prefix: prefix,
         ownerId: "52fbe576-843d-47a5-a84c-79ce00d18265", //Bregy
         description: description.length ? description : null,
+        leadId: lead?.id,
+        dueDate: dueDate,
         startDate: startDate,
-        dueDate: targetDate,
+        members: members,
+        teams: teams,
       });
 
       if (res.data) {
@@ -86,10 +91,13 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
     setName("");
     setPrefix("");
     setDescription("");
-    setTargetDate(null);
+    setLead(null);
+    setDueDate(null);
     setStartDate(null);
+    setMembers([]);
+    setTeams([]);
   };
-
+  console.log(teams);
   return (
     <Modal
       overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
@@ -104,7 +112,6 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
       shadow="md"
       title={
         <Group spacing={8}>
-          <TeamSelector initialTeam={undefined} />
           <Text size={"sm"}>New Project</Text>
         </Group>
       }
@@ -130,8 +137,8 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
       </Box>
       <Group spacing={6} mb={"md"}>
         <LeadProjectSelector lead={lead} setLead={setLead} />
-        {/* <MemberSelector /> */}
-
+        <MemberSelector members={members} setMembers={setMembers} />
+        <TeamSelector teams={teams} setTeams={setTeams} />
         <Popover position="bottom" shadow="md">
           <Popover.Target>
             <Tooltip label="Change start date" position="bottom">
@@ -147,14 +154,14 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
 
         <Popover position="bottom" shadow="md">
           <Popover.Target>
-            <Tooltip label="Change target date" position="bottom">
+            <Tooltip label="Change due date" position="bottom">
               <Button compact variant="light" color={"gray"} leftIcon={<CalendarTime size={16} />}>
-                <Text size={"xs"}>{DateLabel(targetDate, "Target date")}</Text>
+                <Text size={"xs"}>{DateLabel(dueDate, "Due date")}</Text>
               </Button>
             </Tooltip>
           </Popover.Target>
           <Popover.Dropdown>
-            <Calendar value={targetDate} onChange={setTargetDate} />
+            <Calendar value={dueDate} onChange={setDueDate} />
           </Popover.Dropdown>
         </Popover>
       </Group>

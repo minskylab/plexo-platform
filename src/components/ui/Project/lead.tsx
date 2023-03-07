@@ -63,7 +63,7 @@ export const GenericLeadMenu = ({
   };
 
   return (
-    <Menu shadow="md" width={180}>
+    <Menu shadow="md" /* width={180} */>
       <Menu.Target>
         <Tooltip label={memberName ? `Lead by ${memberName}` : "Lead by"} position="bottom">
           {children}
