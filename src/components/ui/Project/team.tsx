@@ -35,7 +35,7 @@ export const GenericTeamMenu = ({ children, teams, setTeams }: GenericTeamsMenuP
   const { teamsData, isLoadingTeams } = useData({});
 
   return (
-    <Menu shadow="md" width={180} closeOnItemClick={false} position="bottom-start">
+    <Menu shadow="md" closeOnItemClick={false} position="bottom-start">
       <Menu.Target>
         <Tooltip label="Teams" position="bottom">
           {children}
@@ -52,7 +52,7 @@ export const GenericTeamMenu = ({ children, teams, setTeams }: GenericTeamsMenuP
         {isLoadingTeams ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
-          <Checkbox.Group spacing={0} value={teams} onChange={setTeams}>
+          <Checkbox.Group spacing={0} value={teams} onChange={setTeams} orientation="vertical">
             {teamsData?.teams.map(t => {
               return (
                 <Menu.Item key={t.id}>

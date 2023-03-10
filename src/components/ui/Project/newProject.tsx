@@ -97,7 +97,7 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
     setMembers([]);
     setTeams([]);
   };
-  console.log(teams);
+
   return (
     <Modal
       overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}

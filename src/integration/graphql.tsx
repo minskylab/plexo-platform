@@ -571,6 +571,19 @@ export type TeamsQuery = {
   }>;
 };
 
+export type NewTeamMutationVariables = Exact<{
+  name: Scalars["String"];
+  ownerId: Scalars["UUID"];
+  prefix?: InputMaybe<Scalars["String"]>;
+  members?: InputMaybe<Array<Scalars["UUID"]> | Scalars["UUID"]>;
+  projects?: InputMaybe<Array<Scalars["UUID"]> | Scalars["UUID"]>;
+}>;
+
+export type NewTeamMutation = {
+  __typename?: "MutationRoot";
+  createTeam: { __typename?: "Team"; id: any; name: string };
+};
+
 export const MembersDocument = {
   kind: "Document",
   definitions: [
@@ -1613,3 +1626,101 @@ export const TeamsDocument = {
     },
   ],
 } as unknown as DocumentNode<TeamsQuery, TeamsQueryVariables>;
+export const NewTeamDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "NewTeam" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "ownerId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "prefix" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "members" } },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "projects" } },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "createTeam" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "name" },
+                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "ownerId" },
+                value: { kind: "Variable", name: { kind: "Name", value: "ownerId" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "prefix" },
+                value: { kind: "Variable", name: { kind: "Name", value: "prefix" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "members" },
+                value: { kind: "Variable", name: { kind: "Name", value: "members" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "projects" },
+                value: { kind: "Variable", name: { kind: "Name", value: "projects" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<NewTeamMutation, NewTeamMutationVariables>;

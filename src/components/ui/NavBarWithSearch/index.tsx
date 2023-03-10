@@ -18,6 +18,7 @@ import { useState } from "react";
 import { Affiliate, Edit, LayoutGrid, Plus } from "tabler-icons-react";
 import NewProject from "../Project/newProject";
 import JoinTeam from "../Team/joinTeam";
+import NewTeam from "../Team/newTeam";
 import { UserButton } from "../UserButton";
 import ProjectsList from "./projects";
 import TeamsList from "./teams";
@@ -133,7 +134,7 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
   const { classes, theme } = useStyles();
   const [section, setSection] = useState<"teams" | "projects">("teams");
   const [newProjectOpened, setNewProjectOpened] = useState(false);
-  const [joinTeamOpened, setJoinTeamOpened] = useState(false);
+  const [newTeamOpened, setNewTeamOpened] = useState(false);
 
   const mainLinks = links.map(link => (
     <UnstyledButton key={link.label} className={classes.mainLink}>
@@ -152,7 +153,8 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
   return (
     <>
       <NewProject newProjectOpened={newProjectOpened} setNewProjectOpened={setNewProjectOpened} />
-      <JoinTeam joinTeamOpened={joinTeamOpened} setJoinTeamOpened={setJoinTeamOpened} />
+      {/* <JoinTeam joinTeamOpened={joinTeamOpened} setJoinTeamOpened={setJoinTeamOpened} /> */}
+      <NewTeam newTeamOpened={newTeamOpened} setNewTeamOpened={setNewTeamOpened} />
       <Navbar
         width={{ sm: 300 }}
         className={classes.navbar}
@@ -223,7 +225,7 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
           <Tooltip label={section === "teams" ? "New team" : "New project"} position="top">
             <ActionIcon
               onClick={() =>
-                section === "teams" ? setJoinTeamOpened(true) : setNewProjectOpened(true)
+                section === "teams" ? setNewTeamOpened(true) : setNewProjectOpened(true)
               }
             >
               <Plus size={18} />

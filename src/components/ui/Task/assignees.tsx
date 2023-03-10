@@ -101,7 +101,7 @@ export const GenericAssigneesMenu = ({
   }, [assignees]);
 
   return (
-    <Menu shadow="md" width={250} closeOnItemClick={false} position="bottom-start">
+    <Menu shadow="md" closeOnItemClick={false} position="bottom-start">
       <Menu.Target>
         <Tooltip label="Assignees" position="bottom">
           {children}
@@ -114,7 +114,12 @@ export const GenericAssigneesMenu = ({
         {isLoadingMembers ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
-          <Checkbox.Group spacing={0} value={labelValue} onChange={onChangeLabel}>
+          <Checkbox.Group
+            spacing={0}
+            value={labelValue}
+            onChange={onChangeLabel}
+            orientation="vertical"
+          >
             {membersData?.members.map(m => {
               return (
                 <Menu.Item key={m.id}>

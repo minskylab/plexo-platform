@@ -53,7 +53,7 @@ export const GenericMemberMenu = ({
   const { membersData, isLoadingMembers } = useData({});
 
   return (
-    <Menu shadow="md" closeOnItemClick={false}>
+    <Menu shadow="md" closeOnItemClick={false} position="bottom-start">
       <Menu.Target>
         <Tooltip label="Project members" position="bottom">
           {children}
@@ -64,9 +64,14 @@ export const GenericMemberMenu = ({
         <TextInput placeholder="Change project members" variant="filled"></TextInput>
         <Menu.Divider />
         {isLoadingMembers ? (
-          <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+          <Skeleton height={36} radius="sm" />
         ) : (
-          <Checkbox.Group spacing={0} value={selectedMembers} onChange={setSelectedMembers}>
+          <Checkbox.Group
+            spacing={0}
+            value={selectedMembers}
+            onChange={setSelectedMembers}
+            orientation="vertical"
+          >
             {membersData?.members.map(m => {
               return (
                 <Menu.Item key={m.id}>
@@ -101,15 +106,13 @@ type MemberSelectorProps = {
 export const MemberSelector = ({ members, setMembers }: MemberSelectorProps) => {
   return (
     <GenericMemberMenu selectedMembers={members} setSelectedMembers={setMembers}>
-      {members.length ? (
-        <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
+      <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
+        {members.length ? (
           <Text size={"xs"}>{members.length} Members</Text>
-        </Button>
-      ) : (
-        <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
+        ) : (
           <Text size={"xs"}>Members</Text>
-        </Button>
-      )}
+        )}
+      </Button>
     </GenericMemberMenu>
   );
 };

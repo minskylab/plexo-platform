@@ -140,7 +140,7 @@ export const GenericLabelMenu = ({
   const onChangeLabel = selectedLabels ? setSelectedLabels : setLabels;
 
   return (
-    <Menu shadow="md" width={180} closeOnItemClick={false} position="bottom-start">
+    <Menu shadow="md" closeOnItemClick={false} position="bottom-start">
       <Menu.Target>
         <Tooltip label="Add labels" position="bottom">
           {children}
@@ -154,7 +154,12 @@ export const GenericLabelMenu = ({
           rightSection={<Kbd px={8}>L</Kbd>}
         ></TextInput>
         <Menu.Divider />
-        <Checkbox.Group spacing={0} value={labelValue} onChange={onChangeLabel}>
+        <Checkbox.Group
+          spacing={0}
+          value={labelValue}
+          onChange={onChangeLabel}
+          orientation="vertical"
+        >
           {Object.values(LabelType).map(label => (
             <Menu.Item key={label} p={0}>
               <Checkbox

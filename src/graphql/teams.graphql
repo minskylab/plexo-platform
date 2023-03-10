@@ -6,13 +6,34 @@ query Teams {
     name
     ownerId
     visibility
-    
-    owner{
+
+    owner {
       id
     }
-    
-    members{
+
+    members {
       id
     }
+  }
+}
+
+mutation NewTeam(
+  $name: String!
+  $ownerId: UUID!
+  # $visibility: String
+  $prefix: String
+  $members: [UUID!]
+  $projects: [UUID!]
+) {
+  createTeam(
+    name: $name
+    ownerId: $ownerId
+    # visibility: $visibility
+    prefix: $prefix
+    members: $members
+    projects: $projects
+  ) {
+    id
+    name
   }
 }
