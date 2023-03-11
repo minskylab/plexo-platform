@@ -6,11 +6,13 @@ import {
   createStyles,
   Group,
   Paper,
+  Stack,
   Text,
   useMantineTheme,
 } from "@mantine/core";
 import React, { useState } from "react";
 import { DotsVertical } from "tabler-icons-react";
+import router from "next/router";
 
 import { Task } from "modules/app/datatypes";
 import { GenericPriorityMenu, PriorityIcon } from "./priority";
@@ -18,11 +20,9 @@ import { GenericStatusMenu, StatusIcon } from "./status";
 import { TaskMenu } from "./menu";
 import { GenericLeadTaskMenu } from "./lead";
 import { LabelColor } from "./label";
-import Link from "next/link";
-import router from "next/router";
 import { DateLabel } from "lib/utils";
 
-type TaskListElementProps = {
+type TaskProps = {
   task: Task;
   active?: boolean;
   checked?: boolean;
@@ -39,25 +39,8 @@ const useStyles = createStyles(theme => ({
       display: "none",
     },
   },
-  badge: {
-    [theme.fn.smallerThan(375)]: {
-      width: "65px",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-    },
-    [theme.fn.smallerThan(330)]: {
-      width: "40px",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-    },
-  },
-  task: {
-    [theme.fn.smallerThan(375)]: {
-      width: "65px",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-    },
-    [theme.fn.smallerThan(330)]: {
+  mobileElement: {
+    [theme.fn.smallerThan("xs")]: {
       width: "40px",
       overflow: "hidden",
       textOverflow: "ellipsis",
@@ -65,11 +48,7 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-export const TaskListElement = ({
-  task,
-  active = false,
-  checked = false,
-}: TaskListElementProps) => {
+export const TaskListElement = ({ task, active = false, checked = false }: TaskProps) => {
   const theme = useMantineTheme();
   const [controlledChecked, setChecked] = useState(checked);
   const { classes } = useStyles();
@@ -106,7 +85,7 @@ export const TaskListElement = ({
             onClick={() => router.push(`/tasks/${task.id}`)}
             lineClamp={1}
             size={"sm"}
-            className={classes.task}
+            className={classes.mobileElement}
             sx={{ flexGrow: 1 }}
           >
             {task.title}
@@ -121,7 +100,7 @@ export const TaskListElement = ({
                   key={index}
                   variant={"dot"}
                   leftSection={LabelColor(l, theme)}
-                  className={classes.badge}
+                  className={classes.mobileElement}
                   styles={{
                     root: {
                       "&:before": {
@@ -139,7 +118,7 @@ export const TaskListElement = ({
                 </Badge>
               );
             })}
-          {task.project && <Badge className={classes.badge}>{task.project?.name}</Badge>}
+          {task.project && <Badge className={classes.mobileElement}>{task.project?.name}</Badge>}
           <Text lineClamp={1} className={classes.date} size={"sm"} color={"dimmed"}>
             {DateLabel(task.createdAt)}
           </Text>
@@ -158,6 +137,45 @@ export const TaskListElement = ({
           </TaskMenu>
         </Group>
       </Group>
+    </Paper>
+  );
+};
+
+export const TaskCardElement = ({ task, active = false }: TaskProps) => {
+  const { classes } = useStyles();
+  const theme = useMantineTheme();
+
+  // console.log(task.assigneeId);
+  return (
+    <Paper px={6} py={4} mt={1} withBorder={active} style={{ marginTop: 10 }}>
+      <Stack spacing={3}>
+        <Group position="apart">
+          <Text size={"sm"} color={"dimmed"}>
+            MIN-169
+          </Text>
+          <GenericLeadTaskMenu task={task}>
+            <ActionIcon variant="transparent">
+              <Avatar size="sm" radius="xl">
+                {/* {task.leadId} */}
+              </Avatar>
+            </ActionIcon>
+          </GenericLeadTaskMenu>
+        </Group>
+        <Text size={"sm"}>{task.title}</Text>
+        <Group spacing={8}>
+          <GenericPriorityMenu task={task}>
+            <ActionIcon variant="light" radius={"sm"}>
+              {PriorityIcon(task.priority)}
+            </ActionIcon>
+          </GenericPriorityMenu>
+          <GenericStatusMenu task={task}>
+            <ActionIcon variant="light" radius={"sm"}>
+              {StatusIcon(theme, task.status)}
+            </ActionIcon>
+          </GenericStatusMenu>
+          {task.project && <Badge className={classes.mobileElement}>{task.project?.name}</Badge>}
+        </Group>
+      </Stack>
     </Paper>
   );
 };
