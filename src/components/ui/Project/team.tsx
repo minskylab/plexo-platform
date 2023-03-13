@@ -5,24 +5,64 @@ import {
   Text,
   TextInput,
   Skeleton,
-  useMantineTheme,
   Tooltip,
   Checkbox,
+  createStyles,
+  Group,
 } from "@mantine/core";
-import { Affiliate, Dna } from "tabler-icons-react";
+import { Affiliate } from "tabler-icons-react";
 
 import { Team } from "modules/app/datatypes";
 import { useData } from "lib/useData";
 
-export const TeamIcon = (team: Team | undefined) => {
-  const theme = useMantineTheme();
-  //insert teamicon
-  return <Dna size={16} color={theme.colors.red[4]} />;
+const useStyles = createStyles(theme => ({
+  checkbox: {
+    width: "100%",
+  },
+}));
+
+export const TeamIcon = (/* team: Team | undefined */) => {
+  return <Affiliate size={16} />;
 };
 
 export const TeamName = (team: Team | undefined) => {
   //change to team prefix
   return team ? team.name : "NT"; //(No Team)
+};
+
+export const TeamCheckboxGroup = () => {
+  const { classes } = useStyles();
+  const { teamsData } = useData({});
+
+  return (
+    <Checkbox.Group
+      orientation="vertical"
+      spacing={0}
+      /* value={labelValue}
+            onChange={onChangeLabel} */
+    >
+      {teamsData?.teams.map(t => {
+        return (
+          <Checkbox
+            key={t.id}
+            size="xs"
+            pb={10}
+            value={t.id}
+            label={
+              <Group spacing={5}>
+                {TeamIcon()}
+                {TeamName(t)}
+              </Group>
+            }
+            classNames={{
+              body: classes.checkbox,
+              labelWrapper: classes.checkbox,
+            }}
+          />
+        );
+      })}
+    </Checkbox.Group>
+  );
 };
 
 type GenericTeamsMenuProps = {

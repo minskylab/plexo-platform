@@ -48,6 +48,38 @@ export const assigneesId = (task: TaskById | undefined) => {
   return task?.assignees.map(a => a.id);
 };
 
+export const MembersCheckboxGroup = () => {
+  const { membersData } = useData({});
+  return (
+    <Checkbox.Group
+      orientation="vertical"
+      spacing={0}
+      /* value={labelValue}
+            onChange={onChangeLabel} */
+    >
+      {membersData?.members.map(m => {
+        return (
+          <Checkbox
+            key={m.id}
+            size="xs"
+            pb={10}
+            value={m.id}
+            label={AssigneesPhoto(m)}
+            styles={{
+              body: {
+                alignItems: "center",
+              },
+              label: {
+                paddingLeft: 5,
+              },
+            }}
+          />
+        );
+      })}
+    </Checkbox.Group>
+  );
+};
+
 type GenericAssigneesMenuProps = {
   children: React.ReactNode;
   selectedAssignees?: string[];

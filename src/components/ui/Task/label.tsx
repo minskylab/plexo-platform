@@ -10,6 +10,7 @@ import {
   Checkbox,
   Group,
   Tooltip,
+  createStyles,
 } from "@mantine/core";
 import { useActions } from "lib/useActions";
 import { TaskById } from "modules/app/datatypes";
@@ -21,6 +22,12 @@ import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+
+const useStyles = createStyles(theme => ({
+  checkbox: {
+    width: "100%",
+  },
+}));
 
 export const LabelColor = (labels: string[] | string | undefined, theme: MantineTheme) => {
   if (labels) {
@@ -88,6 +95,31 @@ const LabelData = (label: LabelType | undefined, theme: MantineTheme) => {
       {LabelColor(label, theme)}
       {LabelName(label)}
     </Group>
+  );
+};
+
+export const LabelCheckboxGroup = () => {
+  const { classes, theme } = useStyles();
+
+  return (
+    <Checkbox.Group
+      orientation="vertical"
+      spacing={0} /* value={statusFilters} onChange={setStatusFilters} */
+    >
+      {Object.values(LabelType).map(label => (
+        <Checkbox
+          key={label}
+          size="xs"
+          pb={10}
+          value={label}
+          label={LabelData(label, theme)}
+          classNames={{
+            body: classes.checkbox,
+            labelWrapper: classes.checkbox,
+          }}
+        />
+      ))}
+    </Checkbox.Group>
   );
 };
 

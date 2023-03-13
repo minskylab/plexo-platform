@@ -1,4 +1,14 @@
-import { Button, Kbd, Menu, Text, TextInput, Tooltip } from "@mantine/core";
+import {
+  Button,
+  Checkbox,
+  createStyles,
+  Group,
+  Kbd,
+  Menu,
+  Text,
+  TextInput,
+  Tooltip,
+} from "@mantine/core";
 import { TaskPriority } from "integration/graphql";
 import { useActions } from "lib/useActions";
 import { TaskById } from "modules/app/datatypes";
@@ -12,6 +22,12 @@ import {
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+
+const useStyles = createStyles(theme => ({
+  checkbox: {
+    width: "100%",
+  },
+}));
 
 export const PriorityIcon = (
   priority: TaskPriority | undefined,
@@ -59,6 +75,93 @@ export const priorityName = (priority: TaskPriority | undefined) => {
     case "URGENT":
       return "Urgent";
   }
+};
+
+export const PriorityCheckboxGroup = () => {
+  const { classes } = useStyles();
+
+  return (
+    <Checkbox.Group
+      orientation="vertical"
+      spacing={0} /* value={statusFilters} onChange={setStatusFilters} */
+    >
+      <Checkbox
+        size="xs"
+        pb={10}
+        value={TaskPriority.None}
+        label={
+          <Group spacing={5}>
+            {PriorityIcon(TaskPriority.None)}
+            {priorityLabel(TaskPriority.None)}
+          </Group>
+        }
+        classNames={{
+          body: classes.checkbox,
+          labelWrapper: classes.checkbox,
+        }}
+      />
+      <Checkbox
+        size="xs"
+        pb={10}
+        value={TaskPriority.Low}
+        label={
+          <Group spacing={5}>
+            {PriorityIcon(TaskPriority.Low)}
+            {priorityLabel(TaskPriority.Low)}
+          </Group>
+        }
+        classNames={{
+          body: classes.checkbox,
+          labelWrapper: classes.checkbox,
+        }}
+      />
+      <Checkbox
+        size="xs"
+        pb={10}
+        value={TaskPriority.Medium}
+        label={
+          <Group spacing={5}>
+            {PriorityIcon(TaskPriority.Medium)}
+            {priorityLabel(TaskPriority.Medium)}
+          </Group>
+        }
+        classNames={{
+          body: classes.checkbox,
+          labelWrapper: classes.checkbox,
+        }}
+      />
+      <Checkbox
+        size="xs"
+        pb={10}
+        value={TaskPriority.High}
+        label={
+          <Group spacing={5}>
+            {PriorityIcon(TaskPriority.High)}
+            {priorityLabel(TaskPriority.High)}
+          </Group>
+        }
+        classNames={{
+          body: classes.checkbox,
+          labelWrapper: classes.checkbox,
+        }}
+      />
+      <Checkbox
+        size="xs"
+        pb={10}
+        value={TaskPriority.Urgent}
+        label={
+          <Group spacing={5}>
+            {PriorityIcon(TaskPriority.Urgent)}
+            {priorityLabel(TaskPriority.Urgent)}
+          </Group>
+        }
+        classNames={{
+          body: classes.checkbox,
+          labelWrapper: classes.checkbox,
+        }}
+      />
+    </Checkbox.Group>
+  );
 };
 
 type GenericPriorityMenuProps = {

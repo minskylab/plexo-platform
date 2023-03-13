@@ -26,6 +26,7 @@ import { TaskCardElement, TaskListElement } from "components/ui/Task/task";
 import { StatusIcon, statusName } from "components/ui/Task/status";
 import { usePlexoContext } from "context/PlexoContext";
 import { Task } from "../datatypes";
+import FilterMenu from "components/ui/Filters/filterMenu";
 
 const useStyles = createStyles(theme => ({
   burger: {
@@ -168,7 +169,7 @@ const OverviewBoard = ({ taskData, fetching }: OverviewProps) => {
   };
 
   return (
-    <ScrollArea type="hover" style={{ height: "calc(100vh - 90px)" }}>
+    <ScrollArea type="hover" offsetScrollbars style={{ height: "calc(100vh - 90px)" }}>
       <SimpleGrid cols={6} spacing={325}>
         <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
           <StatusCounter taskData={taskData} status={TaskStatus.None} />
@@ -241,9 +242,9 @@ const OverviewList = ({ taskData, fetching }: OverviewProps) => {
 
     return <DndTaskList statusData={data} />;
   };
-  /* console.log(window.innerHeight); */
+
   return (
-    <ScrollArea type="hover" style={{ height: "calc(100vh - 90px)" }}>
+    <ScrollArea type="hover" offsetScrollbars style={{ height: "calc(100vh - 90px)" }}>
       <Container>
         <StatusCounter taskData={taskData} status={TaskStatus.None} />
         {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"NONE"} />}
@@ -297,13 +298,12 @@ export const OverviewContent = () => {
           },
         }}
       >
-        <Group spacing="md">
-          <MediaQuery largerThan="md" styles={{ display: "none" }}>
-            <ActionIcon onClick={() => setNavBarOpened(true)}>
-              <LayoutSidebar size={16} />
-            </ActionIcon>
-          </MediaQuery>
-        </Group>
+        <MediaQuery largerThan="md" styles={{ display: "none" }}>
+          <ActionIcon onClick={() => setNavBarOpened(true)}>
+            <LayoutSidebar size={16} />
+          </ActionIcon>
+        </MediaQuery>
+        <FilterMenu />
         <Group>
           <SegmentedControl
             className={classes["segmented-control"]}
