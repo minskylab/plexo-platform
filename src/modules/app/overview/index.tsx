@@ -11,7 +11,6 @@ import {
   Stack,
   createStyles,
   MediaQuery,
-  Box,
   ActionIcon,
   useMantineTheme,
 } from "@mantine/core";
@@ -162,8 +161,6 @@ const StatusCounter = ({ status, taskData }: StatusCounterProps) => {
 };
 
 const OverviewBoard = ({ taskData, fetching }: OverviewProps) => {
-  const [scrollPosition, onScrollPositionChange] = useState({ x: 0, y: 0 });
-
   const TaskCard = ({ status }: TaskProps) => {
     const data = taskData ? taskData?.filter((t: { status: string }) => t.status == status) : [];
 
@@ -171,12 +168,7 @@ const OverviewBoard = ({ taskData, fetching }: OverviewProps) => {
   };
 
   return (
-    <ScrollArea
-      type="auto"
-      offsetScrollbars
-      style={{ height: innerHeight - 90 }}
-      onScrollPositionChange={onScrollPositionChange}
-    >
+    <ScrollArea type="hover" style={{ height: "calc(100vh - 90px)" }}>
       <SimpleGrid cols={6} spacing={325}>
         <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
           <StatusCounter taskData={taskData} status={TaskStatus.None} />
@@ -249,22 +241,24 @@ const OverviewList = ({ taskData, fetching }: OverviewProps) => {
 
     return <DndTaskList statusData={data} />;
   };
-
+  /* console.log(window.innerHeight); */
   return (
-    <Container>
-      <StatusCounter taskData={taskData} status={TaskStatus.None} />
-      {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"NONE"} />}
-      <StatusCounter taskData={taskData} status={TaskStatus.InProgress} />
-      {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"IN_PROGRESS"} />}
-      <StatusCounter taskData={taskData} status={TaskStatus.ToDo} />
-      {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"TO_DO"} />}
-      <StatusCounter taskData={taskData} status={TaskStatus.Backlog} />
-      {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"BACKLOG"} />}
-      <StatusCounter taskData={taskData} status={TaskStatus.Done} />
-      {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"DONE"} />}
-      <StatusCounter taskData={taskData} status={TaskStatus.Canceled} />
-      {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"CANCELED"} />}
-    </Container>
+    <ScrollArea type="hover" style={{ height: "calc(100vh - 90px)" }}>
+      <Container>
+        <StatusCounter taskData={taskData} status={TaskStatus.None} />
+        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"NONE"} />}
+        <StatusCounter taskData={taskData} status={TaskStatus.InProgress} />
+        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"IN_PROGRESS"} />}
+        <StatusCounter taskData={taskData} status={TaskStatus.ToDo} />
+        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"TO_DO"} />}
+        <StatusCounter taskData={taskData} status={TaskStatus.Backlog} />
+        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"BACKLOG"} />}
+        <StatusCounter taskData={taskData} status={TaskStatus.Done} />
+        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"DONE"} />}
+        <StatusCounter taskData={taskData} status={TaskStatus.Canceled} />
+        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"CANCELED"} />}
+      </Container>
+    </ScrollArea>
   );
 };
 
@@ -344,13 +338,12 @@ export const OverviewContent = () => {
           />
         </Group>
       </Group>
-      <Box>
-        {viewMode === "list" ? (
-          <OverviewList taskData={tasksData?.tasks} fetching={isFetchingTasksData} />
-        ) : (
-          <OverviewBoard taskData={tasksData?.tasks} fetching={isFetchingTasksData} />
-        )}
-      </Box>
+
+      {viewMode === "list" ? (
+        <OverviewList taskData={tasksData?.tasks} fetching={isFetchingTasksData} />
+      ) : (
+        <OverviewBoard taskData={tasksData?.tasks} fetching={isFetchingTasksData} />
+      )}
     </Stack>
   );
 };
