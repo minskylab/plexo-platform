@@ -18,6 +18,7 @@ import { useActions } from "lib/useActions";
 import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import { usePlexoContext } from "context/PlexoContext";
 
 export const AssigneesIcon = (member: Member | undefined) => {
   return member?.photoUrl ? (
@@ -46,6 +47,47 @@ export const AssigneesName = (member: Member | undefined) => {
 
 export const assigneesId = (task: TaskById | undefined) => {
   return task?.assignees.map(a => a.id);
+};
+
+type MembersCheckboxProps = {
+  selectedMembers: string[];
+  setSelectedMembers: (selectedMembers: string[]) => void;
+};
+
+export const MembersCheckboxGroup = ({
+  selectedMembers,
+  setSelectedMembers,
+}: MembersCheckboxProps) => {
+  const { membersData } = useData({});
+
+  return (
+    <Checkbox.Group
+      orientation="vertical"
+      spacing={0}
+      value={selectedMembers}
+      onChange={setSelectedMembers}
+    >
+      {membersData?.members.map(m => {
+        return (
+          <Checkbox
+            key={m.id}
+            size="xs"
+            pb={10}
+            value={m.id}
+            label={AssigneesPhoto(m)}
+            styles={{
+              body: {
+                alignItems: "center",
+              },
+              label: {
+                paddingLeft: 5,
+              },
+            }}
+          />
+        );
+      })}
+    </Checkbox.Group>
+  );
 };
 
 type GenericAssigneesMenuProps = {

@@ -7,6 +7,9 @@ import {
   Tooltip,
   useMantineTheme,
   MantineTheme,
+  Checkbox,
+  createStyles,
+  Group,
 } from "@mantine/core";
 import { TaskStatus } from "integration/graphql";
 import { useActions } from "lib/useActions";
@@ -23,6 +26,13 @@ import {
 import { priorityName } from "./priority";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import { usePlexoContext } from "context/PlexoContext";
+
+const useStyles = createStyles(theme => ({
+  checkbox: {
+    width: "100%",
+  },
+}));
 
 export const StatusIcon = (
   theme: MantineTheme,
@@ -38,15 +48,13 @@ export const StatusIcon = (
       return <Circle size={size} />;
     case "IN_PROGRESS":
       return <ChartPie2 size={size} color={theme.colors.yellow[6]} />;
-    /* case "in-review":
-      return <DotsCircleHorizontal size={size} color={theme.colors.green[6]} />; */
     case "DONE":
       return <CircleCheck size={size} color={theme.colors.indigo[6]} />;
     case "CANCELED":
       return <CircleX size={size} color={theme.colors.red[6]} />;
+    default:
+      return <></>;
   }
-
-  /* return <AntennaBars1 />; */
 };
 
 export const statusLabel = (status?: TaskStatus) => {
@@ -87,6 +95,115 @@ export const statusName = (status: TaskStatus | undefined) => {
     case "CANCELED":
       return "Canceled";
   }
+};
+
+type StatusCheckboxProps = {
+  statusFilters: string[];
+  setStatusFilters: (statusFilters: string[]) => void;
+};
+
+export const StatusCheckboxGroup = ({ statusFilters, setStatusFilters }: StatusCheckboxProps) => {
+  const { classes, theme } = useStyles();
+
+  return (
+    <Checkbox.Group
+      orientation="vertical"
+      spacing={0}
+      value={statusFilters}
+      onChange={setStatusFilters}
+    >
+      <Checkbox
+        size="xs"
+        pb={10}
+        value={TaskStatus.None}
+        label={
+          <Group spacing={5}>
+            {StatusIcon(theme, TaskStatus.None)}
+            None
+          </Group>
+        }
+        classNames={{
+          body: classes.checkbox,
+          labelWrapper: classes.checkbox,
+        }}
+      />
+      <Checkbox
+        size="xs"
+        pb={10}
+        value={TaskStatus.Backlog}
+        label={
+          <Group spacing={5}>
+            {StatusIcon(theme, TaskStatus.Backlog)}
+            {statusLabel(TaskStatus.Backlog)}
+          </Group>
+        }
+        classNames={{
+          body: classes.checkbox,
+          labelWrapper: classes.checkbox,
+        }}
+      />
+      <Checkbox
+        size="xs"
+        pb={10}
+        value={TaskStatus.ToDo}
+        label={
+          <Group spacing={5}>
+            {StatusIcon(theme, TaskStatus.ToDo)}
+            {statusLabel(TaskStatus.ToDo)}
+          </Group>
+        }
+        classNames={{
+          body: classes.checkbox,
+          labelWrapper: classes.checkbox,
+        }}
+      />
+      <Checkbox
+        size="xs"
+        pb={10}
+        value={TaskStatus.InProgress}
+        label={
+          <Group spacing={5}>
+            {StatusIcon(theme, TaskStatus.InProgress)}
+            {statusLabel(TaskStatus.InProgress)}
+          </Group>
+        }
+        classNames={{
+          body: classes.checkbox,
+          labelWrapper: classes.checkbox,
+        }}
+      />
+      <Checkbox
+        size="xs"
+        pb={10}
+        value={TaskStatus.Done}
+        label={
+          <Group spacing={5}>
+            {StatusIcon(theme, TaskStatus.Done)}
+            {statusLabel(TaskStatus.Done)}
+          </Group>
+        }
+        classNames={{
+          body: classes.checkbox,
+          labelWrapper: classes.checkbox,
+        }}
+      />
+      <Checkbox
+        size="xs"
+        pb={10}
+        value={TaskStatus.Canceled}
+        label={
+          <Group spacing={5}>
+            {StatusIcon(theme, TaskStatus.Canceled)}
+            {statusLabel(TaskStatus.Canceled)}
+          </Group>
+        }
+        classNames={{
+          body: classes.checkbox,
+          labelWrapper: classes.checkbox,
+        }}
+      />
+    </Checkbox.Group>
+  );
 };
 
 type GenericStatusMenuProps = {
@@ -136,7 +253,7 @@ export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMen
         />
         <Menu.Divider />
         <Menu.Item
-          icon={<CircleDot size={18} color={theme.colors.gray[6]} />}
+          icon={StatusIcon(theme, TaskStatus.None)}
           onClick={() => {
             onSelect && onSelect(TaskStatus.None);
             task && onUpdateTaskStatus(TaskStatus.None);
@@ -145,7 +262,7 @@ export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMen
           None
         </Menu.Item>
         <Menu.Item
-          icon={<CircleDotted size={18} color={theme.colors.gray[6]} />}
+          icon={StatusIcon(theme, TaskStatus.Backlog)}
           onClick={() => {
             onSelect && onSelect(TaskStatus.Backlog);
             task && onUpdateTaskStatus(TaskStatus.Backlog);
@@ -154,7 +271,7 @@ export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMen
           Backlog
         </Menu.Item>
         <Menu.Item
-          icon={<Circle size={18} />}
+          icon={StatusIcon(theme, TaskStatus.ToDo)}
           onClick={() => {
             onSelect && onSelect(TaskStatus.ToDo);
             task && onUpdateTaskStatus(TaskStatus.ToDo);
@@ -163,7 +280,7 @@ export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMen
           Todo
         </Menu.Item>
         <Menu.Item
-          icon={<ChartPie2 size={18} color={theme.colors.yellow[6]} />}
+          icon={StatusIcon(theme, TaskStatus.InProgress)}
           onClick={() => {
             onSelect && onSelect(TaskStatus.InProgress);
             task && onUpdateTaskStatus(TaskStatus.InProgress);
@@ -171,19 +288,8 @@ export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMen
         >
           In Progress
         </Menu.Item>
-        {/*  <Menu.Item
-          icon={
-            <DotsCircleHorizontal
-              size={18}
-              color={theme.colors.green[6]}
-              onClick={() => onSelect && onSelect("in-review")}
-            />
-          }
-        >
-          In Review
-        </Menu.Item> */}
         <Menu.Item
-          icon={<CircleCheck size={18} color={theme.colors.indigo[6]} />}
+          icon={StatusIcon(theme, TaskStatus.Done)}
           onClick={() => {
             onSelect && onSelect(TaskStatus.Done);
             task && onUpdateTaskStatus(TaskStatus.Done);
@@ -192,7 +298,7 @@ export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMen
           Done
         </Menu.Item>
         <Menu.Item
-          icon={<CircleX size={18} color={theme.colors.red[6]} />}
+          icon={StatusIcon(theme, TaskStatus.Canceled)}
           onClick={() => {
             onSelect && onSelect(TaskStatus.Canceled);
             task && onUpdateTaskStatus(TaskStatus.Canceled);

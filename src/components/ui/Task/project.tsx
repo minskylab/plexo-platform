@@ -1,4 +1,15 @@
-import { Button, Kbd, Menu, Text, TextInput, Skeleton, Tooltip } from "@mantine/core";
+import {
+  Button,
+  Kbd,
+  Menu,
+  Text,
+  TextInput,
+  Skeleton,
+  Tooltip,
+  Checkbox,
+  Group,
+  createStyles,
+} from "@mantine/core";
 import { LayoutGrid } from "tabler-icons-react";
 
 import { Project, TaskById } from "modules/app/datatypes";
@@ -9,6 +20,12 @@ import { priorityName } from "./priority";
 import { assigneesId } from "./assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 
+const useStyles = createStyles(theme => ({
+  checkbox: {
+    width: "100%",
+  },
+}));
+
 export const ProjectIcon = (project?: Project | null) => {
   //insert project icon
   return <LayoutGrid size={16} />;
@@ -16,6 +33,48 @@ export const ProjectIcon = (project?: Project | null) => {
 
 export const ProjectName = (name: string | undefined) => {
   return name ? name : "Project";
+};
+
+type ProjectsCheckboxProps = {
+  projectFilters: string[];
+  setProjectFilters: (projectFilters: string[]) => void;
+};
+export const ProjectsCheckboxGroup = ({
+  projectFilters,
+  setProjectFilters,
+}: ProjectsCheckboxProps) => {
+  const { classes } = useStyles();
+  const { projectsData } = useData({});
+
+  return (
+    <Checkbox.Group
+      orientation="vertical"
+      spacing={0}
+      value={projectFilters}
+      onChange={setProjectFilters}
+    >
+      {projectsData?.projects.map(p => {
+        return (
+          <Checkbox
+            key={p.id}
+            size="xs"
+            pb={10}
+            value={p.id}
+            label={
+              <Group spacing={5}>
+                {ProjectIcon(p)}
+                {ProjectName(p.name)}
+              </Group>
+            }
+            classNames={{
+              body: classes.checkbox,
+              labelWrapper: classes.checkbox,
+            }}
+          />
+        );
+      })}
+    </Checkbox.Group>
+  );
 };
 
 type GenericProjectsMenuProps = {

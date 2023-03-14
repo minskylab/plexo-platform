@@ -10,6 +10,7 @@ import {
   Checkbox,
   Group,
   Tooltip,
+  createStyles,
 } from "@mantine/core";
 import { useActions } from "lib/useActions";
 import { TaskById } from "modules/app/datatypes";
@@ -21,6 +22,13 @@ import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import { usePlexoContext } from "context/PlexoContext";
+
+const useStyles = createStyles(theme => ({
+  checkbox: {
+    width: "100%",
+  },
+}));
 
 export const LabelColor = (labels: string[] | string | undefined, theme: MantineTheme) => {
   if (labels) {
@@ -88,6 +96,38 @@ const LabelData = (label: LabelType | undefined, theme: MantineTheme) => {
       {LabelColor(label, theme)}
       {LabelName(label)}
     </Group>
+  );
+};
+
+type LabelCheckboxProps = {
+  labelsFilters: string[];
+  setLabelsFilters: (labelsFilters: string[]) => void;
+};
+
+export const LabelCheckboxGroup = ({ labelsFilters, setLabelsFilters }: LabelCheckboxProps) => {
+  const { classes, theme } = useStyles();
+
+  return (
+    <Checkbox.Group
+      orientation="vertical"
+      spacing={0}
+      value={labelsFilters}
+      onChange={setLabelsFilters}
+    >
+      {Object.values(LabelType).map(label => (
+        <Checkbox
+          key={label}
+          size="xs"
+          pb={10}
+          value={label}
+          label={LabelData(label, theme)}
+          classNames={{
+            body: classes.checkbox,
+            labelWrapper: classes.checkbox,
+          }}
+        />
+      ))}
+    </Checkbox.Group>
   );
 };
 
