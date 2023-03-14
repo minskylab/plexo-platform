@@ -22,6 +22,7 @@ import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import { usePlexoContext } from "context/PlexoContext";
 
 const useStyles = createStyles(theme => ({
   checkbox: {
@@ -98,13 +99,20 @@ const LabelData = (label: LabelType | undefined, theme: MantineTheme) => {
   );
 };
 
-export const LabelCheckboxGroup = () => {
+type LabelCheckboxProps = {
+  labelsFilters: string[];
+  setLabelsFilters: (labelsFilters: string[]) => void;
+};
+
+export const LabelCheckboxGroup = ({ labelsFilters, setLabelsFilters }: LabelCheckboxProps) => {
   const { classes, theme } = useStyles();
 
   return (
     <Checkbox.Group
       orientation="vertical"
-      spacing={0} /* value={statusFilters} onChange={setStatusFilters} */
+      spacing={0}
+      value={labelsFilters}
+      onChange={setLabelsFilters}
     >
       {Object.values(LabelType).map(label => (
         <Checkbox

@@ -30,7 +30,12 @@ export const TeamName = (team: Team | undefined) => {
   return team ? team.name : "NT"; //(No Team)
 };
 
-export const TeamCheckboxGroup = () => {
+type TeamCheckboxProps = {
+  teamFilters: string[];
+  setTeamFilters: (teamFilters: string[]) => void;
+};
+
+export const TeamCheckboxGroup = ({ teamFilters, setTeamFilters }: TeamCheckboxProps) => {
   const { classes } = useStyles();
   const { teamsData } = useData({});
 
@@ -38,8 +43,8 @@ export const TeamCheckboxGroup = () => {
     <Checkbox.Group
       orientation="vertical"
       spacing={0}
-      /* value={labelValue}
-            onChange={onChangeLabel} */
+      value={teamFilters}
+      onChange={setTeamFilters}
     >
       {teamsData?.teams.map(t => {
         return (

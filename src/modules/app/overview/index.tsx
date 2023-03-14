@@ -140,11 +140,16 @@ type StatusCounterProps = {
 };
 
 type TaskProps = {
-  status: string;
+  status: TaskStatus;
 };
 
 type OverviewProps = {
   taskData: Task[] | undefined;
+  fetching: boolean;
+};
+
+type CounterProps = {
+  status: TaskStatus;
   fetching: boolean;
 };
 
@@ -237,27 +242,50 @@ const OverviewBoard = ({ taskData, fetching }: OverviewProps) => {
 };
 
 const OverviewList = ({ taskData, fetching }: OverviewProps) => {
-  const TaskList = ({ status }: TaskProps) => {
+  const dataByStatus = (status: TaskStatus) => {
     const data = taskData ? taskData?.filter((t: { status: string }) => t.status == status) : [];
+    return data;
+  };
+  const TaskList = ({ status }: TaskProps) => {
+    return <DndTaskList statusData={dataByStatus(status)} />;
+  };
 
-    return <DndTaskList statusData={data} />;
+  const Counter = ({ status, fetching }: CounterProps) => {
+    return dataByStatus(status).length || fetching ? (
+      <StatusCounter taskData={taskData} status={status} />
+    ) : (
+      <></>
+    );
   };
 
   return (
     <ScrollArea type="hover" offsetScrollbars style={{ height: "calc(100vh - 90px)" }}>
       <Container>
-        <StatusCounter taskData={taskData} status={TaskStatus.None} />
-        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"NONE"} />}
-        <StatusCounter taskData={taskData} status={TaskStatus.InProgress} />
-        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"IN_PROGRESS"} />}
-        <StatusCounter taskData={taskData} status={TaskStatus.ToDo} />
-        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"TO_DO"} />}
-        <StatusCounter taskData={taskData} status={TaskStatus.Backlog} />
-        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"BACKLOG"} />}
-        <StatusCounter taskData={taskData} status={TaskStatus.Done} />
-        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"DONE"} />}
-        <StatusCounter taskData={taskData} status={TaskStatus.Canceled} />
-        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={"CANCELED"} />}
+        <Counter status={TaskStatus.None} fetching={fetching} />
+        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={TaskStatus.None} />}
+
+        <Counter status={TaskStatus.InProgress} fetching={fetching} />
+        {fetching ? (
+          <Skeleton height={36} radius="sm" />
+        ) : (
+          <TaskList status={TaskStatus.InProgress} />
+        )}
+
+        <Counter status={TaskStatus.ToDo} fetching={fetching} />
+        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={TaskStatus.ToDo} />}
+
+        <Counter status={TaskStatus.Backlog} fetching={fetching} />
+        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={TaskStatus.Backlog} />}
+
+        <Counter status={TaskStatus.Done} fetching={fetching} />
+        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={TaskStatus.Done} />}
+
+        <Counter status={TaskStatus.Canceled} fetching={fetching} />
+        {fetching ? (
+          <Skeleton height={36} radius="sm" />
+        ) : (
+          <TaskList status={TaskStatus.Canceled} />
+        )}
       </Container>
     </ScrollArea>
   );
@@ -267,6 +295,17 @@ export const OverviewContent = () => {
   const { classes, theme } = useStyles();
   const [viewMode, setViewMode] = useState<"list" | "columns">("list");
   const { setNavBarOpened } = usePlexoContext();
+
+  const {
+    statusFilters,
+    assigneeFilters,
+    leaderFilters,
+    creatorFilters,
+    priorityFilters,
+    labelsFilters,
+    projectFilters,
+    teamFilters,
+  } = usePlexoContext();
 
   useEffect(() => {
     setViewMode(getCookie("viewMode") === "columns" ? "columns" : "list");
@@ -280,6 +319,21 @@ export const OverviewContent = () => {
 
   const [{ data: tasksData, fetching: isFetchingTasksData }] = useQuery({
     query: TasksDocument,
+  });
+
+  const filteredTasks = tasksData?.tasks.filter(task => {
+    return (
+      (!statusFilters.length || statusFilters.includes(task.status)) &&
+      (!assigneeFilters.length ||
+        assigneeFilters.every(id => task.assignees.some(t => t.id === id))) &&
+      (!leaderFilters.length || leaderFilters.includes(task.leadId)) &&
+      (!creatorFilters.length || creatorFilters.includes(task.ownerId)) &&
+      (!priorityFilters.length || priorityFilters.includes(task.priority)) &&
+      (!labelsFilters.length ||
+        labelsFilters.every(filterLabel => task.labels.some(label => label === filterLabel))) &&
+      (!projectFilters.length || projectFilters.includes(task.projectId))
+      //Team
+    );
   });
 
   return (
@@ -340,9 +394,9 @@ export const OverviewContent = () => {
       </Group>
 
       {viewMode === "list" ? (
-        <OverviewList taskData={tasksData?.tasks} fetching={isFetchingTasksData} />
+        <OverviewList taskData={filteredTasks} fetching={isFetchingTasksData} />
       ) : (
-        <OverviewBoard taskData={tasksData?.tasks} fetching={isFetchingTasksData} />
+        <OverviewBoard taskData={filteredTasks} fetching={isFetchingTasksData} />
       )}
     </Stack>
   );

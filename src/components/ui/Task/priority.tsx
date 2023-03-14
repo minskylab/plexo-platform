@@ -22,6 +22,7 @@ import {
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import { usePlexoContext } from "context/PlexoContext";
 
 const useStyles = createStyles(theme => ({
   checkbox: {
@@ -77,13 +78,23 @@ export const priorityName = (priority: TaskPriority | undefined) => {
   }
 };
 
-export const PriorityCheckboxGroup = () => {
+type PriorityCheckboxProps = {
+  priorityFilters: string[];
+  setPriorityFilters: (priorityFilters: string[]) => void;
+};
+
+export const PriorityCheckboxGroup = ({
+  priorityFilters,
+  setPriorityFilters,
+}: PriorityCheckboxProps) => {
   const { classes } = useStyles();
 
   return (
     <Checkbox.Group
       orientation="vertical"
-      spacing={0} /* value={statusFilters} onChange={setStatusFilters} */
+      spacing={0}
+      value={priorityFilters}
+      onChange={setPriorityFilters}
     >
       <Checkbox
         size="xs"

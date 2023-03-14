@@ -1,4 +1,16 @@
-import { Box, Button, NavLink, Popover, createStyles } from "@mantine/core";
+import {
+  Box,
+  Button,
+  NavLink,
+  Popover,
+  createStyles,
+  Text,
+  Badge,
+  Group,
+  Anchor,
+} from "@mantine/core";
+import { usePlexoContext } from "context/PlexoContext";
+import { TaskPriority, TaskStatus } from "integration/graphql";
 import {
   Affiliate,
   AntennaBars5,
@@ -16,9 +28,11 @@ import { LabelCheckboxGroup } from "../Task/label";
 import { PriorityCheckboxGroup } from "../Task/priority";
 import { ProjectsCheckboxGroup } from "../Task/project";
 import { StatusCheckboxGroup } from "../Task/status";
+import { LabelType } from "../Task/types";
 
 const useStyles = createStyles(theme => ({
   navlink: {
+    borderRadius: 4,
     "&:hover": {
       backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[1],
     },
@@ -31,6 +45,35 @@ const useStyles = createStyles(theme => ({
 
 const FilterMenu = () => {
   const { classes, theme } = useStyles();
+  const {
+    statusFilters,
+    setStatusFilters,
+    assigneeFilters,
+    setAssigneeFilters,
+    leaderFilters,
+    setLeaderFilters,
+    creatorFilters,
+    setCreatorFilters,
+    priorityFilters,
+    setPriorityFilters,
+    labelsFilters,
+    setLabelsFilters,
+    projectFilters,
+    setProjectFilters,
+    teamFilters,
+    setTeamFilters,
+  } = usePlexoContext();
+
+  const handleClearFilters = () => {
+    setStatusFilters([]);
+    setAssigneeFilters([]);
+    setLeaderFilters([]);
+    setCreatorFilters([]);
+    setPriorityFilters([]);
+    setLabelsFilters([]);
+    setProjectFilters([]);
+    setTeamFilters([]);
+  };
 
   return (
     <Popover
@@ -53,69 +96,165 @@ const FilterMenu = () => {
         </Button>
       </Popover.Target>
       <Popover.Dropdown>
+        <Group py={8} px={12} position={"apart"}>
+          <Text weight={600}>Filters</Text>
+          <Anchor size={"sm"} onClick={handleClearFilters}>
+            Clear
+          </Anchor>
+        </Group>
         <Box w={240}>
           <NavLink
-            label="Status"
+            label={
+              <Group>
+                <Text>Status</Text>
+                {statusFilters.length && (
+                  <Badge size="sm" variant="light">
+                    {statusFilters.length}
+                  </Badge>
+                )}
+              </Group>
+            }
             icon={<CircleDashed size={16} />}
             classNames={{ root: classes.navlink, children: classes.navlinkChildren }}
           >
-            <StatusCheckboxGroup />
+            <StatusCheckboxGroup
+              statusFilters={statusFilters}
+              setStatusFilters={setStatusFilters}
+            />
           </NavLink>
 
           <NavLink
-            label="Assignee"
+            label={
+              <Group>
+                <Text>Assignee</Text>
+                {assigneeFilters.length && (
+                  <Badge size="sm" variant="light">
+                    {assigneeFilters.length}
+                  </Badge>
+                )}
+              </Group>
+            }
             icon={<Users size={16} />}
             classNames={{ root: classes.navlink, children: classes.navlinkChildren }}
           >
-            <MembersCheckboxGroup />
+            <MembersCheckboxGroup
+              selectedMembers={assigneeFilters}
+              setSelectedMembers={setAssigneeFilters}
+            />
           </NavLink>
 
           <NavLink
-            label="Leader"
+            label={
+              <Group>
+                <Text>Leader</Text>
+                {leaderFilters.length && (
+                  <Badge size="sm" variant="light">
+                    {leaderFilters.length}
+                  </Badge>
+                )}
+              </Group>
+            }
             icon={<UserCircle size={16} />}
             classNames={{ root: classes.navlink, children: classes.navlinkChildren }}
           >
-            <MembersCheckboxGroup />
+            <MembersCheckboxGroup
+              selectedMembers={leaderFilters}
+              setSelectedMembers={setLeaderFilters}
+            />
           </NavLink>
 
           <NavLink
-            label="Creator"
+            label={
+              <Group>
+                <Text>Creator</Text>
+                {creatorFilters.length && (
+                  <Badge size="sm" variant="light">
+                    {creatorFilters.length}
+                  </Badge>
+                )}
+              </Group>
+            }
             icon={<User size={16} />}
             classNames={{ root: classes.navlink, children: classes.navlinkChildren }}
           >
-            <MembersCheckboxGroup />
+            <MembersCheckboxGroup
+              selectedMembers={creatorFilters}
+              setSelectedMembers={setCreatorFilters}
+            />
           </NavLink>
 
           <NavLink
-            label="Priority"
+            label={
+              <Group>
+                <Text>Priority</Text>
+                {priorityFilters.length && (
+                  <Badge size="sm" variant="light">
+                    {priorityFilters.length}
+                  </Badge>
+                )}
+              </Group>
+            }
             icon={<AntennaBars5 size={16} />}
             classNames={{ root: classes.navlink, children: classes.navlinkChildren }}
           >
-            <PriorityCheckboxGroup />
+            <PriorityCheckboxGroup
+              priorityFilters={priorityFilters}
+              setPriorityFilters={setPriorityFilters}
+            />
           </NavLink>
 
           <NavLink
-            label="Labels"
+            label={
+              <Group>
+                <Text>Labels</Text>
+                {labelsFilters.length && (
+                  <Badge size="sm" variant="light">
+                    {labelsFilters.length}
+                  </Badge>
+                )}
+              </Group>
+            }
             icon={<Tag size={16} />}
             classNames={{ root: classes.navlink, children: classes.navlinkChildren }}
           >
-            <LabelCheckboxGroup />
+            <LabelCheckboxGroup labelsFilters={labelsFilters} setLabelsFilters={setLabelsFilters} />
           </NavLink>
 
           <NavLink
-            label="Project"
+            label={
+              <Group>
+                <Text>Project</Text>
+                {projectFilters.length && (
+                  <Badge size="sm" variant="light">
+                    {projectFilters.length}
+                  </Badge>
+                )}
+              </Group>
+            }
             icon={<LayoutGrid size={16} />}
             classNames={{ root: classes.navlink, children: classes.navlinkChildren }}
           >
-            <ProjectsCheckboxGroup />
+            <ProjectsCheckboxGroup
+              projectFilters={projectFilters}
+              setProjectFilters={setProjectFilters}
+            />
           </NavLink>
 
           <NavLink
-            label="Team"
+            label={
+              <Group>
+                <Text>Team</Text>
+                {teamFilters.length && (
+                  <Badge size="sm" variant="light">
+                    {teamFilters.length}
+                  </Badge>
+                )}
+              </Group>
+            }
             icon={<Affiliate size={16} />}
             classNames={{ root: classes.navlink, children: classes.navlinkChildren }}
           >
-            <TeamCheckboxGroup />
+            <TeamCheckboxGroup teamFilters={teamFilters} setTeamFilters={setTeamFilters} />
           </NavLink>
         </Box>
       </Popover.Dropdown>

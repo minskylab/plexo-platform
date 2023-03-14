@@ -35,7 +35,14 @@ export const ProjectName = (name: string | undefined) => {
   return name ? name : "Project";
 };
 
-export const ProjectsCheckboxGroup = () => {
+type ProjectsCheckboxProps = {
+  projectFilters: string[];
+  setProjectFilters: (projectFilters: string[]) => void;
+};
+export const ProjectsCheckboxGroup = ({
+  projectFilters,
+  setProjectFilters,
+}: ProjectsCheckboxProps) => {
   const { classes } = useStyles();
   const { projectsData } = useData({});
 
@@ -43,8 +50,8 @@ export const ProjectsCheckboxGroup = () => {
     <Checkbox.Group
       orientation="vertical"
       spacing={0}
-      /* value={labelValue}
-            onChange={onChangeLabel} */
+      value={projectFilters}
+      onChange={setProjectFilters}
     >
       {projectsData?.projects.map(p => {
         return (
