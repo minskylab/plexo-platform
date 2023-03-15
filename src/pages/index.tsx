@@ -1,5 +1,14 @@
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+
 const Plexo = () => {
-  return <div>Plexo</div>;
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push("/tasks");
+  }, []);
+
+  return <></>;
 };
 
 export default Plexo;

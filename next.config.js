@@ -5,7 +5,8 @@
 // });
 
 module.exports = {
-  async redirects() {
+  reactStrictMode: true,
+  /*  async redirects() {
     return [
       {
         source: "/",
@@ -13,5 +14,5 @@ module.exports = {
         permanent: true,
       },
     ];
-  },
+  }, */
 };
