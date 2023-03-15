@@ -9,6 +9,7 @@ import {
   Checkbox,
   Group,
   createStyles,
+  ScrollArea,
 } from "@mantine/core";
 import { LayoutGrid } from "tabler-icons-react";
 
@@ -47,33 +48,35 @@ export const ProjectsCheckboxGroup = ({
   const { projectsData } = useData({});
 
   return (
-    <Checkbox.Group
-      orientation="vertical"
-      spacing={0}
-      value={projectFilters}
-      onChange={setProjectFilters}
-    >
-      {projectsData?.projects.map(p => {
-        return (
-          <Checkbox
-            key={p.id}
-            size="xs"
-            pb={10}
-            value={p.id}
-            label={
-              <Group spacing={5}>
-                {ProjectIcon(p)}
-                {ProjectName(p.name)}
-              </Group>
-            }
-            classNames={{
-              body: classes.checkbox,
-              labelWrapper: classes.checkbox,
-            }}
-          />
-        );
-      })}
-    </Checkbox.Group>
+    <ScrollArea h={250}>
+      <Checkbox.Group
+        orientation="vertical"
+        spacing={0}
+        value={projectFilters}
+        onChange={setProjectFilters}
+      >
+        {projectsData?.projects.map(p => {
+          return (
+            <Checkbox
+              key={p.id}
+              size="xs"
+              pb={10}
+              value={p.id}
+              label={
+                <Group spacing={5}>
+                  {ProjectIcon(p)}
+                  {ProjectName(p.name)}
+                </Group>
+              }
+              classNames={{
+                body: classes.checkbox,
+                labelWrapper: classes.checkbox,
+              }}
+            />
+          );
+        })}
+      </Checkbox.Group>
+    </ScrollArea>
   );
 };
 

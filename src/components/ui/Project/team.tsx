@@ -9,6 +9,7 @@ import {
   Checkbox,
   createStyles,
   Group,
+  ScrollArea,
 } from "@mantine/core";
 import { Affiliate } from "tabler-icons-react";
 
@@ -40,33 +41,35 @@ export const TeamCheckboxGroup = ({ teamFilters, setTeamFilters }: TeamCheckboxP
   const { teamsData } = useData({});
 
   return (
-    <Checkbox.Group
-      orientation="vertical"
-      spacing={0}
-      value={teamFilters}
-      onChange={setTeamFilters}
-    >
-      {teamsData?.teams.map(t => {
-        return (
-          <Checkbox
-            key={t.id}
-            size="xs"
-            pb={10}
-            value={t.id}
-            label={
-              <Group spacing={5}>
-                {TeamIcon()}
-                {TeamName(t)}
-              </Group>
-            }
-            classNames={{
-              body: classes.checkbox,
-              labelWrapper: classes.checkbox,
-            }}
-          />
-        );
-      })}
-    </Checkbox.Group>
+    <ScrollArea h={250}>
+      <Checkbox.Group
+        orientation="vertical"
+        spacing={0}
+        value={teamFilters}
+        onChange={setTeamFilters}
+      >
+        {teamsData?.teams.map(t => {
+          return (
+            <Checkbox
+              key={t.id}
+              size="xs"
+              pb={10}
+              value={t.id}
+              label={
+                <Group spacing={5}>
+                  {TeamIcon()}
+                  {TeamName(t)}
+                </Group>
+              }
+              classNames={{
+                body: classes.checkbox,
+                labelWrapper: classes.checkbox,
+              }}
+            />
+          );
+        })}
+      </Checkbox.Group>
+    </ScrollArea>
   );
 };
 
