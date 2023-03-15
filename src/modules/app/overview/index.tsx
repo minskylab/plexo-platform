@@ -352,12 +352,15 @@ export const OverviewContent = () => {
           },
         }}
       >
-        <MediaQuery largerThan="md" styles={{ display: "none" }}>
-          <ActionIcon onClick={() => setNavBarOpened(true)}>
-            <LayoutSidebar size={16} />
-          </ActionIcon>
-        </MediaQuery>
-        <FilterMenu />
+        <Group>
+          <MediaQuery largerThan="md" styles={{ display: "none" }}>
+            <ActionIcon onClick={() => setNavBarOpened(true)}>
+              <LayoutSidebar size={16} />
+            </ActionIcon>
+          </MediaQuery>
+          <FilterMenu />
+        </Group>
+
         <Group>
           <SegmentedControl
             className={classes["segmented-control"]}
