@@ -11,6 +11,7 @@ import {
   Group,
   Tooltip,
   createStyles,
+  Divider,
 } from "@mantine/core";
 import { useActions } from "lib/useActions";
 import { TaskById } from "modules/app/datatypes";
@@ -106,28 +107,47 @@ type LabelCheckboxProps = {
 
 export const LabelCheckboxGroup = ({ labelsFilters, setLabelsFilters }: LabelCheckboxProps) => {
   const { classes, theme } = useStyles();
+  const [searchValue, setSearchValue] = useState("");
+  const [labelOptions, setLabelOptions] = useState<LabelType[]>([]);
+
+  useEffect(() => {
+    setLabelOptions(
+      Object.values(LabelType).filter(item =>
+        item.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    );
+  }, [searchValue]);
 
   return (
-    <Checkbox.Group
-      orientation="vertical"
-      spacing={0}
-      value={labelsFilters}
-      onChange={setLabelsFilters}
-    >
-      {Object.values(LabelType).map(label => (
-        <Checkbox
-          key={label}
-          size="xs"
-          pb={10}
-          value={label}
-          label={LabelData(label, theme)}
-          classNames={{
-            body: classes.checkbox,
-            labelWrapper: classes.checkbox,
-          }}
-        />
-      ))}
-    </Checkbox.Group>
+    <>
+      <TextInput
+        placeholder="Label"
+        variant="unstyled"
+        value={searchValue}
+        onChange={event => setSearchValue(event.currentTarget.value)}
+      />
+      <Divider />
+      <Checkbox.Group
+        orientation="vertical"
+        spacing={0}
+        value={labelsFilters}
+        onChange={setLabelsFilters}
+      >
+        {labelOptions.map(label => (
+          <Checkbox
+            key={label}
+            size="xs"
+            pb={10}
+            value={label}
+            label={LabelData(label, theme)}
+            classNames={{
+              body: classes.checkbox,
+              labelWrapper: classes.checkbox,
+            }}
+          />
+        ))}
+      </Checkbox.Group>
+    </>
   );
 };
 
@@ -147,6 +167,16 @@ export const GenericLabelMenu = ({
   const theme = useMantineTheme();
   const { fetchUpdateTask } = useActions();
   const [labels, setLabels] = useState<string[] | null>(null);
+  const [searchValue, setSearchValue] = useState("");
+  const [labelOptions, setLabelOptions] = useState<LabelType[]>([]);
+
+  useEffect(() => {
+    setLabelOptions(
+      Object.values(LabelType).filter(item =>
+        item.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    );
+  }, [searchValue]);
 
   const onUpdateTaskLabels = async (labels: string[]) => {
     const res = await fetchUpdateTask({
@@ -191,6 +221,8 @@ export const GenericLabelMenu = ({
         <TextInput
           placeholder="Change labels..."
           variant="filled"
+          value={searchValue}
+          onChange={event => setSearchValue(event.currentTarget.value)}
           rightSection={<Kbd px={8}>L</Kbd>}
         ></TextInput>
         <Menu.Divider />
@@ -200,7 +232,7 @@ export const GenericLabelMenu = ({
           onChange={onChangeLabel}
           orientation="vertical"
         >
-          {Object.values(LabelType).map(label => (
+          {labelOptions.map(label => (
             <Menu.Item key={label} p={0}>
               <Checkbox
                 size="xs"

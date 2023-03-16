@@ -8,6 +8,7 @@ import {
   Checkbox,
   Group,
   Tooltip,
+  Divider,
 } from "@mantine/core";
 import { Users } from "tabler-icons-react";
 import { useEffect, useState } from "react";
@@ -52,41 +53,64 @@ export const assigneesId = (task: TaskById | undefined) => {
 type MembersCheckboxProps = {
   selectedMembers: string[];
   setSelectedMembers: (selectedMembers: string[]) => void;
+  inputPlaceholder: string;
 };
 
 export const MembersCheckboxGroup = ({
   selectedMembers,
   setSelectedMembers,
+  inputPlaceholder,
 }: MembersCheckboxProps) => {
   const { membersData } = useData({});
+  const [searchValue, setSearchValue] = useState("");
+  const [membersOptions, setMembersOptions] = useState<Member[]>([]);
+
+  useEffect(() => {
+    if (membersData?.members) {
+      setMembersOptions(
+        membersData?.members.filter(item =>
+          item.name.toLowerCase().includes(searchValue.toLowerCase())
+        )
+      );
+    }
+  }, [searchValue]);
 
   return (
-    <Checkbox.Group
-      orientation="vertical"
-      spacing={0}
-      value={selectedMembers}
-      onChange={setSelectedMembers}
-    >
-      {membersData?.members.map(m => {
-        return (
-          <Checkbox
-            key={m.id}
-            size="xs"
-            pb={10}
-            value={m.id}
-            label={AssigneesPhoto(m)}
-            styles={{
-              body: {
-                alignItems: "center",
-              },
-              label: {
-                paddingLeft: 5,
-              },
-            }}
-          />
-        );
-      })}
-    </Checkbox.Group>
+    <>
+      <TextInput
+        placeholder={inputPlaceholder}
+        variant="unstyled"
+        value={searchValue}
+        onChange={event => setSearchValue(event.currentTarget.value)}
+      />
+      <Divider />
+      <Checkbox.Group
+        orientation="vertical"
+        spacing={0}
+        value={selectedMembers}
+        onChange={setSelectedMembers}
+      >
+        {membersOptions.map(m => {
+          return (
+            <Checkbox
+              key={m.id}
+              size="xs"
+              pb={10}
+              value={m.id}
+              label={AssigneesPhoto(m)}
+              styles={{
+                body: {
+                  alignItems: "center",
+                },
+                label: {
+                  paddingLeft: 5,
+                },
+              }}
+            />
+          );
+        })}
+      </Checkbox.Group>
+    </>
   );
 };
 
@@ -106,6 +130,18 @@ export const GenericAssigneesMenu = ({
   const { membersData, isLoadingMembers } = useData({});
   const { fetchUpdateTask } = useActions();
   const [assignees, setAssignees] = useState<string[] | null>(null);
+  const [searchValue, setSearchValue] = useState("");
+  const [membersOptions, setMembersOptions] = useState<Member[]>([]);
+
+  useEffect(() => {
+    if (membersData?.members) {
+      setMembersOptions(
+        membersData?.members.filter(item =>
+          item.name.toLowerCase().includes(searchValue.toLowerCase())
+        )
+      );
+    }
+  }, [searchValue]);
 
   const labelValue = selectedAssignees
     ? selectedAssignees
@@ -151,7 +187,12 @@ export const GenericAssigneesMenu = ({
       </Menu.Target>
 
       <Menu.Dropdown>
-        <TextInput placeholder="Change assigness" variant="filled"></TextInput>
+        <TextInput
+          placeholder="Change assigness"
+          variant="filled"
+          value={searchValue}
+          onChange={event => setSearchValue(event.currentTarget.value)}
+        ></TextInput>
         <Menu.Divider />
         {isLoadingMembers ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
@@ -162,7 +203,7 @@ export const GenericAssigneesMenu = ({
             onChange={onChangeLabel}
             orientation="vertical"
           >
-            {membersData?.members.map(m => {
+            {membersOptions.map(m => {
               return (
                 <Menu.Item key={m.id}>
                   <Checkbox

@@ -2,6 +2,7 @@ import {
   Button,
   Checkbox,
   createStyles,
+  Divider,
   Group,
   Kbd,
   Menu,
@@ -23,6 +24,7 @@ import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { usePlexoContext } from "context/PlexoContext";
+import { useEffect, useState } from "react";
 
 const useStyles = createStyles(theme => ({
   checkbox: {
@@ -51,7 +53,7 @@ export const PriorityIcon = (
 export const priorityLabel = (priority: TaskPriority | undefined) => {
   switch (priority) {
     case "NONE":
-      return "Priority";
+      return "None";
     case "LOW":
       return "Low";
     case "MEDIUM":
@@ -88,90 +90,52 @@ export const PriorityCheckboxGroup = ({
   setPriorityFilters,
 }: PriorityCheckboxProps) => {
   const { classes } = useStyles();
+  const [searchValue, setSearchValue] = useState("");
+  const [statusOptions, setStatusOptions] = useState<TaskPriority[]>([]);
+
+  useEffect(() => {
+    setStatusOptions(
+      Object.values(TaskPriority).filter(item => item.includes(searchValue.toUpperCase()))
+    );
+  }, [searchValue]);
 
   return (
-    <Checkbox.Group
-      orientation="vertical"
-      spacing={0}
-      value={priorityFilters}
-      onChange={setPriorityFilters}
-    >
-      <Checkbox
-        size="xs"
-        pb={10}
-        value={TaskPriority.None}
-        label={
-          <Group spacing={5}>
-            {PriorityIcon(TaskPriority.None)}
-            {priorityLabel(TaskPriority.None)}
-          </Group>
-        }
-        classNames={{
-          body: classes.checkbox,
-          labelWrapper: classes.checkbox,
-        }}
+    <>
+      <TextInput
+        placeholder="Status"
+        variant="unstyled"
+        value={searchValue}
+        onChange={event => setSearchValue(event.currentTarget.value)}
       />
-      <Checkbox
-        size="xs"
-        pb={10}
-        value={TaskPriority.Low}
-        label={
-          <Group spacing={5}>
-            {PriorityIcon(TaskPriority.Low)}
-            {priorityLabel(TaskPriority.Low)}
-          </Group>
-        }
-        classNames={{
-          body: classes.checkbox,
-          labelWrapper: classes.checkbox,
-        }}
-      />
-      <Checkbox
-        size="xs"
-        pb={10}
-        value={TaskPriority.Medium}
-        label={
-          <Group spacing={5}>
-            {PriorityIcon(TaskPriority.Medium)}
-            {priorityLabel(TaskPriority.Medium)}
-          </Group>
-        }
-        classNames={{
-          body: classes.checkbox,
-          labelWrapper: classes.checkbox,
-        }}
-      />
-      <Checkbox
-        size="xs"
-        pb={10}
-        value={TaskPriority.High}
-        label={
-          <Group spacing={5}>
-            {PriorityIcon(TaskPriority.High)}
-            {priorityLabel(TaskPriority.High)}
-          </Group>
-        }
-        classNames={{
-          body: classes.checkbox,
-          labelWrapper: classes.checkbox,
-        }}
-      />
-      <Checkbox
-        size="xs"
-        pb={10}
-        value={TaskPriority.Urgent}
-        label={
-          <Group spacing={5}>
-            {PriorityIcon(TaskPriority.Urgent)}
-            {priorityLabel(TaskPriority.Urgent)}
-          </Group>
-        }
-        classNames={{
-          body: classes.checkbox,
-          labelWrapper: classes.checkbox,
-        }}
-      />
-    </Checkbox.Group>
+      <Divider />
+      <Checkbox.Group
+        orientation="vertical"
+        spacing={0}
+        value={priorityFilters}
+        onChange={setPriorityFilters}
+      >
+        {statusOptions.map(priority => {
+          return (
+            <Checkbox
+              key={priority}
+              size="xs"
+              pb={10}
+              value={priority}
+              label={
+                <Group spacing={5}>
+                  {PriorityIcon(priority)}
+                  {priorityLabel(priority)}
+                </Group>
+              }
+              classNames={{
+                body: classes.checkbox,
+                labelWrapper: classes.checkbox,
+              }}
+            />
+          );
+        })}
+      </Checkbox.Group>
+    </>
   );
 };
 
@@ -183,6 +147,14 @@ type GenericPriorityMenuProps = {
 
 export const GenericPriorityMenu = ({ children, onSelect, task }: GenericPriorityMenuProps) => {
   const { fetchUpdateTask } = useActions();
+  const [searchValue, setSearchValue] = useState("");
+  const [statusOptions, setStatusOptions] = useState<TaskPriority[]>([]);
+
+  useEffect(() => {
+    setStatusOptions(
+      Object.values(TaskPriority).filter(item => item.includes(searchValue.toUpperCase()))
+    );
+  }, [searchValue]);
 
   const onUpdateTaskPriority = async (priority: TaskPriority) => {
     const res = await fetchUpdateTask({
@@ -214,56 +186,27 @@ export const GenericPriorityMenu = ({ children, onSelect, task }: GenericPriorit
       </Menu.Target>
       <Menu.Dropdown>
         <TextInput
+          value={searchValue}
+          onChange={event => setSearchValue(event.currentTarget.value)}
           placeholder="Change Priority..."
           variant="filled"
           rightSection={<Kbd px={8}>P</Kbd>}
         ></TextInput>
         <Menu.Divider />
-        <Menu.Item
-          icon={<AntennaBars1 size={18} />}
-          onClick={() => {
-            onSelect && onSelect(TaskPriority.None);
-            task && onUpdateTaskPriority(TaskPriority.None);
-          }}
-        >
-          No Priority
-        </Menu.Item>
-        <Menu.Item
-          icon={<AntennaBars2 size={18} />}
-          onClick={() => {
-            onSelect && onSelect(TaskPriority.Low);
-            task && onUpdateTaskPriority(TaskPriority.Low);
-          }}
-        >
-          Low
-        </Menu.Item>
-        <Menu.Item
-          icon={<AntennaBars3 size={18} />}
-          onClick={() => {
-            onSelect && onSelect(TaskPriority.Medium);
-            task && onUpdateTaskPriority(TaskPriority.Medium);
-          }}
-        >
-          Medium
-        </Menu.Item>
-        <Menu.Item
-          icon={<AntennaBars4 size={18} />}
-          onClick={() => {
-            onSelect && onSelect(TaskPriority.High);
-            task && onUpdateTaskPriority(TaskPriority.High);
-          }}
-        >
-          High
-        </Menu.Item>
-        <Menu.Item
-          icon={<AntennaBars5 size={18} />}
-          onClick={() => {
-            onSelect && onSelect(TaskPriority.Urgent);
-            task && onUpdateTaskPriority(TaskPriority.Urgent);
-          }}
-        >
-          Urgent
-        </Menu.Item>
+        {statusOptions.map(priority => {
+          return (
+            <Menu.Item
+              key={priority}
+              icon={PriorityIcon(priority)}
+              onClick={() => {
+                onSelect && onSelect(priority);
+                task && onUpdateTaskPriority(priority);
+              }}
+            >
+              {priorityLabel(priority)}
+            </Menu.Item>
+          );
+        })}
       </Menu.Dropdown>
     </Menu>
   );

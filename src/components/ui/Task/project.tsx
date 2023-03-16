@@ -10,6 +10,7 @@ import {
   Group,
   createStyles,
   ScrollArea,
+  Divider,
 } from "@mantine/core";
 import { LayoutGrid } from "tabler-icons-react";
 
@@ -20,6 +21,7 @@ import { statusName } from "./status";
 import { priorityName } from "./priority";
 import { assigneesId } from "./assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import { useEffect, useState } from "react";
 
 const useStyles = createStyles(theme => ({
   checkbox: {
@@ -40,43 +42,65 @@ type ProjectsCheckboxProps = {
   projectFilters: string[];
   setProjectFilters: (projectFilters: string[]) => void;
 };
+
 export const ProjectsCheckboxGroup = ({
   projectFilters,
   setProjectFilters,
 }: ProjectsCheckboxProps) => {
   const { classes } = useStyles();
   const { projectsData } = useData({});
+  const [searchValue, setSearchValue] = useState("");
+  const [projectsOptions, setProjectsOptions] = useState<Project[]>([]);
+
+  useEffect(() => {
+    if (projectsData?.projects) {
+      setProjectsOptions(
+        projectsData?.projects.filter(item =>
+          item.name.toLowerCase().includes(searchValue.toLowerCase())
+        )
+      );
+    }
+  }, [searchValue]);
 
   return (
-    <ScrollArea h={250}>
-      <Checkbox.Group
-        orientation="vertical"
-        spacing={0}
-        value={projectFilters}
-        onChange={setProjectFilters}
-      >
-        {projectsData?.projects.map(p => {
-          return (
-            <Checkbox
-              key={p.id}
-              size="xs"
-              pb={10}
-              value={p.id}
-              label={
-                <Group spacing={5}>
-                  {ProjectIcon(p)}
-                  {ProjectName(p.name)}
-                </Group>
-              }
-              classNames={{
-                body: classes.checkbox,
-                labelWrapper: classes.checkbox,
-              }}
-            />
-          );
-        })}
-      </Checkbox.Group>
-    </ScrollArea>
+    <>
+      <TextInput
+        placeholder="Project"
+        variant="unstyled"
+        value={searchValue}
+        onChange={event => setSearchValue(event.currentTarget.value)}
+      />
+      <Divider />
+      <ScrollArea h={250}>
+        <Checkbox.Group
+          orientation="vertical"
+          spacing={0}
+          value={projectFilters}
+          onChange={setProjectFilters}
+        >
+          {projectsOptions.map(p => {
+            return (
+              <Checkbox
+                key={p.id}
+                size="xs"
+                pb={10}
+                value={p.id}
+                label={
+                  <Group spacing={5}>
+                    {ProjectIcon(p)}
+                    {ProjectName(p.name)}
+                  </Group>
+                }
+                classNames={{
+                  body: classes.checkbox,
+                  labelWrapper: classes.checkbox,
+                }}
+              />
+            );
+          })}
+        </Checkbox.Group>
+      </ScrollArea>
+    </>
   );
 };
 
@@ -89,6 +113,18 @@ type GenericProjectsMenuProps = {
 export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProjectsMenuProps) => {
   const { projectsData, isLoadingProjects } = useData({});
   const { fetchUpdateTask } = useActions();
+  const [searchValue, setSearchValue] = useState("");
+  const [projectsOptions, setProjectsOptions] = useState<Project[]>([]);
+
+  useEffect(() => {
+    if (projectsData?.projects) {
+      setProjectsOptions(
+        projectsData?.projects.filter(item =>
+          item.name.toLowerCase().includes(searchValue.toLowerCase())
+        )
+      );
+    }
+  }, [searchValue]);
 
   const onUpdateTaskProject = async (projectId: string | null) => {
     const res = await fetchUpdateTask({
@@ -124,6 +160,8 @@ export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProject
         <TextInput
           placeholder="Add to project..."
           variant="filled"
+          value={searchValue}
+          onChange={event => setSearchValue(event.currentTarget.value)}
           rightSection={<Kbd px={8}>P</Kbd>}
         ></TextInput>
         <Menu.Divider />
@@ -139,7 +177,7 @@ export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProject
         {isLoadingProjects ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
-          projectsData?.projects.map(p => {
+          projectsOptions.map(p => {
             return (
               <Menu.Item
                 key={p.id}

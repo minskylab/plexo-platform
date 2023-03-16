@@ -7,6 +7,7 @@ import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import { useEffect, useState } from "react";
 
 export const LeadTaskPhoto = (member: Member | null) => {
   return member?.photoUrl ? (
@@ -35,7 +36,19 @@ export const GenericLeadTaskMenu = ({
 }: GenericLeadMenuProps) => {
   const { membersData, isLoadingMembers } = useData({});
   const { fetchUpdateTask } = useActions();
+  const [searchValue, setSearchValue] = useState("");
+  const [membersOptions, setMembersOptions] = useState<Member[]>([]);
   const leadName = task?.leader?.name ? task?.leader?.name : selectedLead?.name;
+
+  useEffect(() => {
+    if (membersData?.members) {
+      setMembersOptions(
+        membersData?.members.filter(item =>
+          item.name.toLowerCase().includes(searchValue.toLowerCase())
+        )
+      );
+    }
+  }, [searchValue]);
 
   const onUpdateTaskLead = async (leadId: string | null) => {
     const res = await fetchUpdateTask({
@@ -69,6 +82,8 @@ export const GenericLeadTaskMenu = ({
         <TextInput
           placeholder="Lead by..."
           variant="filled"
+          value={searchValue}
+          onChange={event => setSearchValue(event.currentTarget.value)}
           rightSection={<Kbd px={8}>A</Kbd>}
         ></TextInput>
         <Menu.Divider />
@@ -84,7 +99,7 @@ export const GenericLeadTaskMenu = ({
         {isLoadingMembers ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
-          membersData?.members.map(m => {
+          membersOptions.map(m => {
             return (
               <Menu.Item
                 key={m.id}

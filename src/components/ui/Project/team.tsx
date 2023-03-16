@@ -10,11 +10,13 @@ import {
   createStyles,
   Group,
   ScrollArea,
+  Divider,
 } from "@mantine/core";
 import { Affiliate } from "tabler-icons-react";
 
 import { Team } from "modules/app/datatypes";
 import { useData } from "lib/useData";
+import { useEffect, useState } from "react";
 
 const useStyles = createStyles(theme => ({
   checkbox: {
@@ -39,37 +41,56 @@ type TeamCheckboxProps = {
 export const TeamCheckboxGroup = ({ teamFilters, setTeamFilters }: TeamCheckboxProps) => {
   const { classes } = useStyles();
   const { teamsData } = useData({});
+  const [searchValue, setSearchValue] = useState("");
+  const [teamOptions, setTeamOptions] = useState<Team[]>([]);
+
+  useEffect(() => {
+    if (teamsData?.teams) {
+      setTeamOptions(
+        teamsData?.teams.filter(item => item.name.toLowerCase().includes(searchValue.toLowerCase()))
+      );
+    }
+  }, [searchValue]);
 
   return (
-    <ScrollArea h={250}>
-      <Checkbox.Group
-        orientation="vertical"
-        spacing={0}
-        value={teamFilters}
-        onChange={setTeamFilters}
-      >
-        {teamsData?.teams.map(t => {
-          return (
-            <Checkbox
-              key={t.id}
-              size="xs"
-              pb={10}
-              value={t.id}
-              label={
-                <Group spacing={5}>
-                  {TeamIcon()}
-                  {TeamName(t)}
-                </Group>
-              }
-              classNames={{
-                body: classes.checkbox,
-                labelWrapper: classes.checkbox,
-              }}
-            />
-          );
-        })}
-      </Checkbox.Group>
-    </ScrollArea>
+    <>
+      <TextInput
+        placeholder="Team"
+        variant="unstyled"
+        value={searchValue}
+        onChange={event => setSearchValue(event.currentTarget.value)}
+      />
+      <Divider />
+      <ScrollArea h={250}>
+        <Checkbox.Group
+          orientation="vertical"
+          spacing={0}
+          value={teamFilters}
+          onChange={setTeamFilters}
+        >
+          {teamOptions.map(t => {
+            return (
+              <Checkbox
+                key={t.id}
+                size="xs"
+                pb={10}
+                value={t.id}
+                label={
+                  <Group spacing={5}>
+                    {TeamIcon()}
+                    {TeamName(t)}
+                  </Group>
+                }
+                classNames={{
+                  body: classes.checkbox,
+                  labelWrapper: classes.checkbox,
+                }}
+              />
+            );
+          })}
+        </Checkbox.Group>
+      </ScrollArea>
+    </>
   );
 };
 
@@ -81,6 +102,16 @@ type GenericTeamsMenuProps = {
 
 export const GenericTeamMenu = ({ children, teams, setTeams }: GenericTeamsMenuProps) => {
   const { teamsData, isLoadingTeams } = useData({});
+  const [searchValue, setSearchValue] = useState("");
+  const [teamOptions, setTeamOptions] = useState<Team[]>([]);
+
+  useEffect(() => {
+    if (teamsData?.teams) {
+      setTeamOptions(
+        teamsData?.teams.filter(item => item.name.toLowerCase().includes(searchValue.toLowerCase()))
+      );
+    }
+  }, [searchValue]);
 
   return (
     <Menu shadow="md" closeOnItemClick={false} position="bottom-start">
@@ -94,6 +125,8 @@ export const GenericTeamMenu = ({ children, teams, setTeams }: GenericTeamsMenuP
         <TextInput
           placeholder="Set team..."
           variant="filled"
+          value={searchValue}
+          onChange={event => setSearchValue(event.currentTarget.value)}
           rightSection={<Kbd px={8}>T</Kbd>}
         ></TextInput>
         <Menu.Divider />
@@ -101,7 +134,7 @@ export const GenericTeamMenu = ({ children, teams, setTeams }: GenericTeamsMenuP
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
           <Checkbox.Group spacing={0} value={teams} onChange={setTeams} orientation="vertical">
-            {teamsData?.teams.map(t => {
+            {teamOptions.map(t => {
               return (
                 <Menu.Item key={t.id}>
                   <Checkbox

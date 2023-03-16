@@ -8,6 +8,8 @@ import {
   Badge,
   Group,
   Anchor,
+  TextInput,
+  Divider,
 } from "@mantine/core";
 import { usePlexoContext } from "context/PlexoContext";
 import { TaskPriority, TaskStatus } from "integration/graphql";
@@ -28,7 +30,6 @@ import { LabelCheckboxGroup } from "../Task/label";
 import { PriorityCheckboxGroup } from "../Task/priority";
 import { ProjectsCheckboxGroup } from "../Task/project";
 import { StatusCheckboxGroup } from "../Task/status";
-import { LabelType } from "../Task/types";
 
 const useStyles = createStyles(theme => ({
   navlink: {
@@ -39,6 +40,7 @@ const useStyles = createStyles(theme => ({
   },
   navlinkChildren: {
     paddingLeft: 12,
+    paddingRight: 12,
     backgroundColor: theme.colorScheme === "dark" ? "#1a1b1e8f" : theme.colors.gray[0],
   },
 }));
@@ -140,6 +142,7 @@ const FilterMenu = () => {
             <MembersCheckboxGroup
               selectedMembers={assigneeFilters}
               setSelectedMembers={setAssigneeFilters}
+              inputPlaceholder="Assignee"
             />
           </NavLink>
 
@@ -160,6 +163,7 @@ const FilterMenu = () => {
             <MembersCheckboxGroup
               selectedMembers={leaderFilters}
               setSelectedMembers={setLeaderFilters}
+              inputPlaceholder="Leader"
             />
           </NavLink>
 
@@ -180,6 +184,7 @@ const FilterMenu = () => {
             <MembersCheckboxGroup
               selectedMembers={creatorFilters}
               setSelectedMembers={setCreatorFilters}
+              inputPlaceholder="Creator"
             />
           </NavLink>
 

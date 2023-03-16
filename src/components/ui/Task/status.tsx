@@ -10,6 +10,7 @@ import {
   Checkbox,
   createStyles,
   Group,
+  Divider,
 } from "@mantine/core";
 import { TaskStatus } from "integration/graphql";
 import { useActions } from "lib/useActions";
@@ -26,7 +27,7 @@ import {
 import { priorityName } from "./priority";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
-import { usePlexoContext } from "context/PlexoContext";
+import { use, useState, useEffect } from "react";
 
 const useStyles = createStyles(theme => ({
   checkbox: {
@@ -60,15 +61,13 @@ export const StatusIcon = (
 export const statusLabel = (status?: TaskStatus) => {
   switch (status) {
     case "NONE":
-      return "Status";
+      return "None";
     case "BACKLOG":
       return "Backlog";
     case "TO_DO":
       return "Todo";
     case "IN_PROGRESS":
       return "In Progress";
-    /* case "in-review":
-      return "In Review"; */
     case "DONE":
       return "Done";
     case "CANCELED":
@@ -104,105 +103,52 @@ type StatusCheckboxProps = {
 
 export const StatusCheckboxGroup = ({ statusFilters, setStatusFilters }: StatusCheckboxProps) => {
   const { classes, theme } = useStyles();
+  const [searchValue, setSearchValue] = useState("");
+  const [statusOptions, setStatusOptions] = useState<TaskStatus[]>([]);
+
+  useEffect(() => {
+    setStatusOptions(
+      Object.values(TaskStatus).filter(item => item.includes(searchValue.toUpperCase()))
+    );
+  }, [searchValue]);
 
   return (
-    <Checkbox.Group
-      orientation="vertical"
-      spacing={0}
-      value={statusFilters}
-      onChange={setStatusFilters}
-    >
-      <Checkbox
-        size="xs"
-        pb={10}
-        value={TaskStatus.None}
-        label={
-          <Group spacing={5}>
-            {StatusIcon(theme, TaskStatus.None)}
-            None
-          </Group>
-        }
-        classNames={{
-          body: classes.checkbox,
-          labelWrapper: classes.checkbox,
-        }}
+    <>
+      <TextInput
+        placeholder="Status"
+        variant="unstyled"
+        value={searchValue}
+        onChange={event => setSearchValue(event.currentTarget.value)}
       />
-      <Checkbox
-        size="xs"
-        pb={10}
-        value={TaskStatus.Backlog}
-        label={
-          <Group spacing={5}>
-            {StatusIcon(theme, TaskStatus.Backlog)}
-            {statusLabel(TaskStatus.Backlog)}
-          </Group>
-        }
-        classNames={{
-          body: classes.checkbox,
-          labelWrapper: classes.checkbox,
-        }}
-      />
-      <Checkbox
-        size="xs"
-        pb={10}
-        value={TaskStatus.ToDo}
-        label={
-          <Group spacing={5}>
-            {StatusIcon(theme, TaskStatus.ToDo)}
-            {statusLabel(TaskStatus.ToDo)}
-          </Group>
-        }
-        classNames={{
-          body: classes.checkbox,
-          labelWrapper: classes.checkbox,
-        }}
-      />
-      <Checkbox
-        size="xs"
-        pb={10}
-        value={TaskStatus.InProgress}
-        label={
-          <Group spacing={5}>
-            {StatusIcon(theme, TaskStatus.InProgress)}
-            {statusLabel(TaskStatus.InProgress)}
-          </Group>
-        }
-        classNames={{
-          body: classes.checkbox,
-          labelWrapper: classes.checkbox,
-        }}
-      />
-      <Checkbox
-        size="xs"
-        pb={10}
-        value={TaskStatus.Done}
-        label={
-          <Group spacing={5}>
-            {StatusIcon(theme, TaskStatus.Done)}
-            {statusLabel(TaskStatus.Done)}
-          </Group>
-        }
-        classNames={{
-          body: classes.checkbox,
-          labelWrapper: classes.checkbox,
-        }}
-      />
-      <Checkbox
-        size="xs"
-        pb={10}
-        value={TaskStatus.Canceled}
-        label={
-          <Group spacing={5}>
-            {StatusIcon(theme, TaskStatus.Canceled)}
-            {statusLabel(TaskStatus.Canceled)}
-          </Group>
-        }
-        classNames={{
-          body: classes.checkbox,
-          labelWrapper: classes.checkbox,
-        }}
-      />
-    </Checkbox.Group>
+      <Divider />
+      <Checkbox.Group
+        orientation="vertical"
+        spacing={0}
+        value={statusFilters}
+        onChange={setStatusFilters}
+      >
+        {statusOptions.map(status => {
+          return (
+            <Checkbox
+              key={status}
+              size="xs"
+              pb={10}
+              value={status}
+              label={
+                <Group spacing={5}>
+                  {StatusIcon(theme, status)}
+                  {statusLabel(status)}
+                </Group>
+              }
+              classNames={{
+                body: classes.checkbox,
+                labelWrapper: classes.checkbox,
+              }}
+            />
+          );
+        })}
+      </Checkbox.Group>
+    </>
   );
 };
 
@@ -215,6 +161,14 @@ type GenericStatusMenuProps = {
 export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMenuProps) => {
   const theme = useMantineTheme();
   const { fetchUpdateTask } = useActions();
+  const [searchValue, setSearchValue] = useState("");
+  const [statusOptions, setStatusOptions] = useState<TaskStatus[]>([]);
+
+  useEffect(() => {
+    setStatusOptions(
+      Object.values(TaskStatus).filter(item => item.includes(searchValue.toUpperCase()))
+    );
+  }, [searchValue]);
 
   const onUpdateTaskStatus = async (status: TaskStatus) => {
     const res = await fetchUpdateTask({
@@ -249,63 +203,25 @@ export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMen
         <TextInput
           placeholder="Change Status..."
           variant="filled"
+          value={searchValue}
+          onChange={event => setSearchValue(event.currentTarget.value)}
           rightSection={<Kbd px={8}>S</Kbd>}
         />
         <Menu.Divider />
-        <Menu.Item
-          icon={StatusIcon(theme, TaskStatus.None)}
-          onClick={() => {
-            onSelect && onSelect(TaskStatus.None);
-            task && onUpdateTaskStatus(TaskStatus.None);
-          }}
-        >
-          None
-        </Menu.Item>
-        <Menu.Item
-          icon={StatusIcon(theme, TaskStatus.Backlog)}
-          onClick={() => {
-            onSelect && onSelect(TaskStatus.Backlog);
-            task && onUpdateTaskStatus(TaskStatus.Backlog);
-          }}
-        >
-          Backlog
-        </Menu.Item>
-        <Menu.Item
-          icon={StatusIcon(theme, TaskStatus.ToDo)}
-          onClick={() => {
-            onSelect && onSelect(TaskStatus.ToDo);
-            task && onUpdateTaskStatus(TaskStatus.ToDo);
-          }}
-        >
-          Todo
-        </Menu.Item>
-        <Menu.Item
-          icon={StatusIcon(theme, TaskStatus.InProgress)}
-          onClick={() => {
-            onSelect && onSelect(TaskStatus.InProgress);
-            task && onUpdateTaskStatus(TaskStatus.InProgress);
-          }}
-        >
-          In Progress
-        </Menu.Item>
-        <Menu.Item
-          icon={StatusIcon(theme, TaskStatus.Done)}
-          onClick={() => {
-            onSelect && onSelect(TaskStatus.Done);
-            task && onUpdateTaskStatus(TaskStatus.Done);
-          }}
-        >
-          Done
-        </Menu.Item>
-        <Menu.Item
-          icon={StatusIcon(theme, TaskStatus.Canceled)}
-          onClick={() => {
-            onSelect && onSelect(TaskStatus.Canceled);
-            task && onUpdateTaskStatus(TaskStatus.Canceled);
-          }}
-        >
-          Canceled
-        </Menu.Item>
+        {statusOptions.map(status => {
+          return (
+            <Menu.Item
+              key={status}
+              icon={StatusIcon(theme, status)}
+              onClick={() => {
+                onSelect && onSelect(status);
+                task && onUpdateTaskStatus(status);
+              }}
+            >
+              {statusLabel(status)}
+            </Menu.Item>
+          );
+        })}
       </Menu.Dropdown>
     </Menu>
   );
