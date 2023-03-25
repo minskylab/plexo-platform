@@ -11,22 +11,22 @@ import {
   Popover,
   Tooltip,
 } from "@mantine/core";
+import { Calendar } from "@mantine/dates";
 import { showNotification } from "@mantine/notifications";
 import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
 import { useState } from "react";
 
-import { TaskStatus, TaskPriority } from "integration/graphql";
-import { Member, Project } from "modules/app/datatypes";
-import { LeadTaskSelector } from "./lead";
-import { LabelSelector } from "./label";
-import { priorityName, PrioritySelector } from "./priority";
-import { ProjectSelector } from "./project";
-import { statusName, StatusSelector } from "./status";
 import { LabelType } from "./types";
-import { useActions } from "lib/useActions";
-import { AssigneesSelector } from "./assignees";
-import { Calendar } from "@mantine/dates";
 import { DateLabel } from "lib/utils";
+import { LeadTaskSelector } from "./lead";
+import { useActions } from "lib/useActions";
+import { ProjectSelector } from "./project";
+import { LabelsSelector } from "./labels";
+import { AssigneesSelector } from "./assignees";
+import { statusName, StatusSelector } from "./status";
+import { Member, Project } from "modules/app/datatypes";
+import { TaskStatus, TaskPriority } from "integration/graphql";
+import { priorityName, PrioritySelector } from "./priority";
 
 type NewTaskProps = {
   newTaskOpened: boolean;
@@ -44,7 +44,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
   const [priority, setPriority] = useState<TaskPriority>(TaskPriority.None);
   const [lead, setLead] = useState<Member | null>(null);
   const [selectedAssignees, setSelectedAssignees] = useState<string[]>([]);
-  const [selectedLabels, setSelectedLabels] = useState<LabelType[]>([]);
+  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [project, setProject] = useState<Project | null>(null);
   const [dueDate, setDueDate] = useState<Date | null>(null);
 
@@ -154,7 +154,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
           selectedAssignees={selectedAssignees}
           setSelectedAssignees={setSelectedAssignees}
         />
-        <LabelSelector selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels} />
+        <LabelsSelector selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels} />
         <ProjectSelector project={project} setProject={setProject} />
         <Popover position="bottom" shadow="md">
           <Popover.Target>

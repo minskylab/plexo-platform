@@ -23,7 +23,6 @@ import { IconChevronLeft } from "@tabler/icons";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
-import { GenericLabelMenu, LabelColor, LabelName } from "components/ui/Task/label";
 import { GenericLeadTaskMenu, LeadTaskName } from "components/ui/Task/lead";
 import {
   GenericPriorityMenu,
@@ -39,6 +38,7 @@ import { TaskById } from "../datatypes";
 import { usePlexoContext } from "context/PlexoContext";
 import { assigneesId, GenericAssigneesMenu } from "components/ui/Task/assignees";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
+import { GenericLabelsMenu, LabelColor, LabelNameBtn } from "components/ui/Task/labels";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -386,16 +386,18 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Labels
             </Text>
-            <GenericLabelMenu task={task}>
+            <GenericLabelsMenu task={task}>
               <Button
                 compact
                 variant="light"
                 color={"gray"}
-                leftIcon={LabelColor(task?.labels, theme)}
+                leftIcon={LabelColor(task ? task?.labels.map(l => l.id as string) : [])}
               >
-                <Text size={"xs"}>{LabelName(task?.labels)}</Text>
+                <Text size={"xs"}>
+                  {LabelNameBtn(task ? task?.labels.map(l => l.id as string) : [])}
+                </Text>
               </Button>
-            </GenericLabelMenu>
+            </GenericLabelsMenu>
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>

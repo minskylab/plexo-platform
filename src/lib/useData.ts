@@ -1,4 +1,9 @@
-import { MembersDocument, ProjectsDocument, TeamsDocument } from "integration/graphql";
+import {
+  LabelsDocument,
+  MembersDocument,
+  ProjectsDocument,
+  TeamsDocument,
+} from "integration/graphql";
 import { useQuery } from "urql";
 import { MemberByIdDocument, TaskByIdDocument } from "../integration/graphql";
 
@@ -19,6 +24,10 @@ export const useData = ({ memberId, taskId }: UseDataProps) => {
 
   const [{ data: teamsData, fetching: isLoadingTeams }] = useQuery({
     query: TeamsDocument,
+  });
+
+  const [{ data: labelsData, fetching: isLoadingLabels }] = useQuery({
+    query: LabelsDocument,
   });
 
   const [{ data: memberData, fetching: isLoadingMember }] = useQuery({
@@ -44,6 +53,8 @@ export const useData = ({ memberId, taskId }: UseDataProps) => {
     isLoadingMembers,
     teamsData,
     isLoadingTeams,
+    labelsData,
+    isLoadingLabels,
     memberData,
     isLoadingMember,
     taskData,

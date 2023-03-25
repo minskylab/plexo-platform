@@ -3,6 +3,7 @@ import {
   Avatar,
   Badge,
   Checkbox,
+  ColorSwatch,
   createStyles,
   Group,
   Paper,
@@ -19,7 +20,6 @@ import { GenericPriorityMenu, PriorityIcon } from "./priority";
 import { GenericStatusMenu, StatusIcon } from "./status";
 import { TaskMenu } from "./menu";
 import { GenericLeadTaskMenu } from "./lead";
-import { LabelColor } from "./label";
 import { DateLabel } from "lib/utils";
 
 type TaskProps = {
@@ -99,7 +99,7 @@ export const TaskListElement = ({ task, active = false, checked = false }: TaskP
                 <Badge
                   key={index}
                   variant={"dot"}
-                  leftSection={LabelColor(l, theme)}
+                  leftSection={<ColorSwatch color={l.color as string} size={10} />}
                   className={classes.mobileElement}
                   styles={{
                     root: {
@@ -114,10 +114,11 @@ export const TaskListElement = ({ task, active = false, checked = false }: TaskP
                     },
                   }}
                 >
-                  {l}
+                  {l.name}
                 </Badge>
               );
             })}
+
           {task.project && <Badge className={classes.mobileElement}>{task.project?.name}</Badge>}
           <Text lineClamp={1} className={classes.date} size={"sm"} color={"dimmed"}>
             {DateLabel(task.createdAt)}

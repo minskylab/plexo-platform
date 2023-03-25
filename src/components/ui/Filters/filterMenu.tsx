@@ -26,7 +26,7 @@ import {
 } from "tabler-icons-react";
 import { TeamCheckboxGroup } from "../Project/team";
 import { MembersCheckboxGroup } from "../Task/assignees";
-import { LabelCheckboxGroup } from "../Task/label";
+import { LabelCheckboxGroup } from "../Task/labels";
 import { PriorityCheckboxGroup } from "../Task/priority";
 import { ProjectsCheckboxGroup } from "../Task/project";
 import { StatusCheckboxGroup } from "../Task/status";

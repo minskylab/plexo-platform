@@ -330,7 +330,7 @@ export const OverviewContent = () => {
       (!creatorFilters.length || creatorFilters.includes(task.ownerId)) &&
       (!priorityFilters.length || priorityFilters.includes(task.priority)) &&
       (!labelsFilters.length ||
-        labelsFilters.every(filterLabel => task.labels.some(label => label === filterLabel))) &&
+        labelsFilters.every(filterLabel => task.labels.some(label => label.id === filterLabel))) &&
       (!projectFilters.length || projectFilters.includes(task.projectId))
       //Team
     );

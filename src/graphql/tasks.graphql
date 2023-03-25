@@ -8,7 +8,11 @@ query Tasks {
     status
     priority
     ownerId
-    labels
+    labels {
+      id
+      name
+      color
+    }
     leadId
     projectId
     dueDate
@@ -41,7 +45,10 @@ query TaskById($taskId: UUID!) {
     status
     priority
     dueDate
-    labels
+    labels {
+      id
+      name
+    }
     assignees {
       id
       name
@@ -67,7 +74,10 @@ subscription TasksSubscription {
     updatedAt
     priority
     ownerId
-    labels
+    labels {
+      id
+      name
+    }
     leadId
     projectId
   }
@@ -81,7 +91,7 @@ mutation NewTask(
   $priority: String
   $projectId: UUID
   $leadId: UUID
-  $labels: [String!]
+  $labels: [UUID!]
   $assigness: [UUID!]
   $dueDate: DateTime
 ) {
@@ -119,7 +129,7 @@ mutation UpdateTask(
   $dueDate: DateTime
   $projectId: UUID
   $leadId: UUID
-  $labels: [String!]
+  $labels: [UUID!]
   $assignees: [UUID!]
 ) {
   updateTask(
