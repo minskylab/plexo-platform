@@ -8,11 +8,9 @@ import {
   Badge,
   Group,
   Anchor,
-  TextInput,
-  Divider,
 } from "@mantine/core";
 import { usePlexoContext } from "context/PlexoContext";
-import { TaskPriority, TaskStatus } from "integration/graphql";
+import { useMemo } from "react";
 import {
   Affiliate,
   AntennaBars5,
@@ -24,6 +22,7 @@ import {
   UserCircle,
   Users,
 } from "tabler-icons-react";
+
 import { TeamCheckboxGroup } from "../Project/team";
 import { MembersCheckboxGroup } from "../Task/assignees";
 import { LabelCheckboxGroup } from "../Task/labels";
@@ -42,6 +41,9 @@ const useStyles = createStyles(theme => ({
     paddingLeft: 12,
     paddingRight: 12,
     backgroundColor: theme.colorScheme === "dark" ? "#1a1b1e8f" : theme.colors.gray[0],
+  },
+  filterBtn: {
+    backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[5] : "#fff",
   },
 }));
 
@@ -77,6 +79,31 @@ const FilterMenu = () => {
     setTeamFilters([]);
   };
 
+  const totalFilters = useMemo(() => {
+    const filters = [
+      statusFilters,
+      assigneeFilters,
+      leaderFilters,
+      creatorFilters,
+      priorityFilters,
+      labelsFilters,
+      projectFilters,
+    ];
+
+    return filters.reduce((acc, curr) => {
+      const total = curr.length ? 1 : 0;
+      return acc + total;
+    }, 0);
+  }, [
+    statusFilters,
+    assigneeFilters,
+    leaderFilters,
+    creatorFilters,
+    priorityFilters,
+    labelsFilters,
+    projectFilters,
+  ]);
+
   return (
     <Popover
       position="bottom-start"
@@ -93,6 +120,14 @@ const FilterMenu = () => {
           variant="light"
           color={"gray"}
           leftIcon={<Filter size={16} color={theme.colors.red[4]} />}
+          rightIcon={
+            totalFilters && (
+              <Badge size="sm" variant="light">
+                {totalFilters}
+              </Badge>
+            )
+          }
+          className={classes.filterBtn}
         >
           Filters
         </Button>
