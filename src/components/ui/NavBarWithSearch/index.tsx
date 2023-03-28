@@ -14,6 +14,7 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { IconBulb, IconCheckbox, IconSearch, IconSelector } from "@tabler/icons";
+import router from "next/router";
 import { useState } from "react";
 import { Affiliate, Edit, LayoutGrid, Plus } from "tabler-icons-react";
 import NewProject from "../Project/newProject";
@@ -120,7 +121,7 @@ const useStyles = createStyles(theme => ({
 
 const links = [
   { icon: IconBulb, label: "Activity", notifications: 3 },
-  { icon: IconCheckbox, label: "Tasks" },
+  { icon: IconCheckbox, label: "Tasks", link: "/tasks" },
   //   { icon: IconUser, label: "Contacts" },
 ];
 
@@ -137,7 +138,11 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
   const [newTeamOpened, setNewTeamOpened] = useState(false);
 
   const mainLinks = links.map(link => (
-    <UnstyledButton key={link.label} className={classes.mainLink}>
+    <UnstyledButton
+      key={link.label}
+      className={classes.mainLink}
+      onClick={() => link.link && router.push(link.link)}
+    >
       <div className={classes.mainLinkInner}>
         <link.icon size={20} className={classes.mainLinkIcon} stroke={1.5} />
         <Text size="sm">{link.label}</Text>

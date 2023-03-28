@@ -40,6 +40,38 @@ subscription ProjectsSubscription {
   }
 }
 
+query ProjectById($projectId: UUID!) {
+  projectById(id: $projectId) {
+    id
+    name
+    prefix
+    description
+    leadId
+    startDate
+    dueDate
+    owner {
+      id
+      name
+    }
+    leader {
+      id
+      name
+    }
+    members {
+      id
+      name
+    }
+    tasks {
+      id
+      title
+    }
+    teams {
+      id
+      name
+    }
+  }
+}
+
 mutation NewProject(
   $name: String!
   $prefix: String

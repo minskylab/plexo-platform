@@ -12,7 +12,7 @@ import {
 import { Users } from "tabler-icons-react";
 
 import { useData } from "lib/useData";
-import { Member } from "modules/app/datatypes";
+import { Member, ProjectById } from "modules/app/datatypes";
 
 export const MembersIcon = (member: Member | undefined) => {
   return member?.photoUrl ? (
@@ -43,12 +43,14 @@ type GenericMembersMenuProps = {
   children: React.ReactNode;
   selectedMembers?: string[];
   setSelectedMembers?: (selectedMembers: string[]) => void;
+  project?: ProjectById;
 };
 
 export const GenericMemberMenu = ({
   children,
   selectedMembers,
   setSelectedMembers,
+  project,
 }: GenericMembersMenuProps) => {
   const { membersData, isLoadingMembers } = useData({});
 

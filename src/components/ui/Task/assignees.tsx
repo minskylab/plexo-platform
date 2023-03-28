@@ -1,15 +1,4 @@
-import {
-  Button,
-  Menu,
-  Text,
-  TextInput,
-  Avatar,
-  Skeleton,
-  Checkbox,
-  Group,
-  Tooltip,
-  Divider,
-} from "@mantine/core";
+import { Button, Menu, Text, TextInput, Skeleton, Checkbox, Tooltip, Divider } from "@mantine/core";
 import { Users } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
@@ -19,32 +8,7 @@ import { useActions } from "lib/useActions";
 import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
-import { usePlexoContext } from "context/PlexoContext";
-
-export const AssigneesIcon = (member: Member | undefined) => {
-  return member?.photoUrl ? (
-    <Avatar src={member.photoUrl} size="sm" radius="xl" />
-  ) : (
-    <Users size={16} />
-  );
-};
-
-export const AssigneesPhoto = (member: Member | undefined) => {
-  return (
-    <Group spacing={5}>
-      {member?.photoUrl ? (
-        <Avatar src={member.photoUrl} size="sm" radius="xl" />
-      ) : (
-        <Avatar size="sm" radius="xl" />
-      )}
-      {member?.name}
-    </Group>
-  );
-};
-
-export const AssigneesName = (member: Member | undefined) => {
-  return member ? member?.name : "Member";
-};
+import { MemberPhoto } from "components/ui/Project/members";
 
 export const assigneesId = (task: TaskById | undefined) => {
   return task?.assignees.map(a => a.id);
@@ -97,7 +61,7 @@ export const MembersCheckboxGroup = ({
               size="xs"
               pb={10}
               value={m.id}
-              label={AssigneesPhoto(m)}
+              label={MemberPhoto(m)}
               styles={{
                 body: {
                   alignItems: "center",
@@ -209,7 +173,7 @@ export const GenericAssigneesMenu = ({
                   <Checkbox
                     size="xs"
                     value={m.id}
-                    label={AssigneesPhoto(m)}
+                    label={MemberPhoto(m)}
                     styles={{
                       body: {
                         alignItems: "center",

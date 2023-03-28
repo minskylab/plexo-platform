@@ -16,14 +16,13 @@ import {
   MediaQuery,
 } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
-import { showNotification } from "@mantine/notifications";
 import { DatePicker } from "@mantine/dates";
-import { AlertCircle, Check, Copy, Dots, LayoutSidebar, Users, X } from "tabler-icons-react";
 import { IconChevronLeft } from "@tabler/icons";
-import Link from "next/link";
 import { useState, useEffect } from "react";
+import { Copy, Dots, LayoutSidebar, Users } from "tabler-icons-react";
+import Link from "next/link";
 
-import { GenericLeadTaskMenu, LeadTaskName } from "components/ui/Task/lead";
+import { GenericLeadTaskMenu } from "components/ui/Task/lead";
 import {
   GenericPriorityMenu,
   PriorityIcon,
@@ -39,6 +38,7 @@ import { usePlexoContext } from "context/PlexoContext";
 import { assigneesId, GenericAssigneesMenu } from "components/ui/Task/assignees";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 import { GenericLabelsMenu, LabelColor, LabelNameBtn } from "components/ui/Task/labels";
+import { LeadName } from "components/ui/Project/lead";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -242,7 +242,7 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
                     color={"gray"}
                     leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
                   >
-                    <Text size={"xs"}>{LeadTaskName(task?.leader?.name)}</Text>
+                    <Text size={"xs"}>{LeadName(task?.leader?.name)}</Text>
                   </Button>
                 </GenericLeadTaskMenu>
                 {/* <GenericLabelMenu task={task}>
@@ -364,7 +364,7 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
                 color={"gray"}
                 leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
               >
-                <Text size={"xs"}>{LeadTaskName(task?.leader?.name)}</Text>
+                <Text size={"xs"}>{LeadName(task?.leader?.name)}</Text>
               </Button>
             </GenericLeadTaskMenu>
           </Group>

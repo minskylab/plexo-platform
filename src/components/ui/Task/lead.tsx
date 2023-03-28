@@ -1,4 +1,5 @@
 import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton, Tooltip } from "@mantine/core";
+import { useEffect, useState } from "react";
 
 import { Member, Task, TaskById } from "modules/app/datatypes";
 import { useData } from "lib/useData";
@@ -7,19 +8,7 @@ import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
-import { useEffect, useState } from "react";
-
-export const LeadTaskPhoto = (member: Member | null) => {
-  return member?.photoUrl ? (
-    <Avatar src={member.photoUrl} size="sm" radius="xl" />
-  ) : (
-    <Avatar size="sm" radius="xl" />
-  );
-};
-
-export const LeadTaskName = (name: string | undefined) => {
-  return name ? name : "Lead";
-};
+import { LeadName, LeadPhoto } from "../Project/lead";
 
 type GenericLeadMenuProps = {
   children: React.ReactNode;
@@ -135,11 +124,11 @@ export const LeadTaskSelector = ({ lead, setLead }: LeadTaskSelectorProps) => {
     <GenericLeadTaskMenu onSelect={member => setLead(member)} selectedLead={lead}>
       {typeof lead === "undefined" ? (
         <Button compact variant="light" color={"gray"}>
-          {LeadTaskPhoto(lead)}
+          {LeadPhoto(lead)}
         </Button>
       ) : (
-        <Button compact variant="light" color={"gray"} leftIcon={LeadTaskPhoto(lead)}>
-          <Text size={"xs"}>{LeadTaskName(lead?.name)}</Text>
+        <Button compact variant="light" color={"gray"} leftIcon={LeadPhoto(lead)}>
+          <Text size={"xs"}>{LeadName(lead?.name)}</Text>
         </Button>
       )}
     </GenericLeadTaskMenu>

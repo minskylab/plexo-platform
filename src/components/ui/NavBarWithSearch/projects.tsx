@@ -1,5 +1,6 @@
 import { Navbar, NavLink, useMantineTheme } from "@mantine/core";
 import { Rocket } from "tabler-icons-react";
+import router from "next/router";
 
 import { useData } from "lib/useData";
 
@@ -13,6 +14,7 @@ const ProjectsList = () => {
         key={index}
         label={p.name}
         icon={<Rocket size={16} color={theme.colors.blue[4]} />}
+        onClick={() => router.push(`/projects/${p.id}`)}
       ></NavLink>
     );
   });

@@ -187,6 +187,7 @@ export type Project = {
   dueDate?: Maybe<Scalars["DateTime"]>;
   id: Scalars["UUID"];
   leadId?: Maybe<Scalars["UUID"]>;
+  leader?: Maybe<Member>;
   members: Array<Member>;
   name: Scalars["String"];
   owner?: Maybe<Member>;
@@ -419,6 +420,29 @@ export type ProjectsSubscriptionSubscription = {
     dueDate?: any | null;
     ownerId: any;
     leadId?: any | null;
+  };
+};
+
+export type ProjectByIdQueryVariables = Exact<{
+  projectId: Scalars["UUID"];
+}>;
+
+export type ProjectByIdQuery = {
+  __typename?: "QueryRoot";
+  projectById: {
+    __typename?: "Project";
+    id: any;
+    name: string;
+    prefix?: string | null;
+    description?: string | null;
+    leadId?: any | null;
+    startDate?: any | null;
+    dueDate?: any | null;
+    owner?: { __typename?: "Member"; id: any; name: string } | null;
+    leader?: { __typename?: "Member"; id: any; name: string } | null;
+    members: Array<{ __typename?: "Member"; id: any; name: string }>;
+    tasks: Array<{ __typename?: "Task"; id: any; title: string }>;
+    teams: Array<{ __typename?: "Team"; id: any; name: string }>;
   };
 };
 
@@ -831,6 +855,109 @@ export const ProjectsSubscriptionDocument = {
   ProjectsSubscriptionSubscription,
   ProjectsSubscriptionSubscriptionVariables
 >;
+export const ProjectByIdDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "ProjectById" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "projectId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "projectById" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "projectId" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "prefix" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "leadId" } },
+                { kind: "Field", name: { kind: "Name", value: "startDate" } },
+                { kind: "Field", name: { kind: "Name", value: "dueDate" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "owner" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "leader" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "members" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "tasks" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "title" } },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "teams" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectByIdQuery, ProjectByIdQueryVariables>;
 export const NewProjectDocument = {
   kind: "Document",
   definitions: [

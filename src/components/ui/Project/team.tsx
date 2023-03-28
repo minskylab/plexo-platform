@@ -103,15 +103,6 @@ type GenericTeamsMenuProps = {
 export const GenericTeamMenu = ({ children, teams, setTeams }: GenericTeamsMenuProps) => {
   const { teamsData, isLoadingTeams } = useData({});
   const [searchValue, setSearchValue] = useState("");
-  const [teamOptions, setTeamOptions] = useState<Team[]>([]);
-
-  useEffect(() => {
-    if (teamsData?.teams) {
-      setTeamOptions(
-        teamsData?.teams.filter(item => item.name.toLowerCase().includes(searchValue.toLowerCase()))
-      );
-    }
-  }, [searchValue]);
 
   return (
     <Menu shadow="md" closeOnItemClick={false} position="bottom-start">
@@ -134,7 +125,7 @@ export const GenericTeamMenu = ({ children, teams, setTeams }: GenericTeamsMenuP
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
           <Checkbox.Group spacing={0} value={teams} onChange={setTeams} orientation="vertical">
-            {teamOptions.map(t => {
+            {teamsData?.teams.map(t => {
               return (
                 <Menu.Item key={t.id}>
                   <Checkbox

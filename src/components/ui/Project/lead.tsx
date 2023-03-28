@@ -1,13 +1,13 @@
 import { Button, Menu, Text, TextInput, Avatar, Skeleton, Tooltip, Kbd } from "@mantine/core";
-import { useState } from "react";
-
-import { useData } from "lib/useData";
-import { Member, Project } from "modules/app/datatypes";
-import { useActions } from "lib/useActions";
 import { showNotification } from "@mantine/notifications";
 import { Check, X } from "tabler-icons-react";
 
-export const LeadProjectPhoto = (member: Member | null) => {
+import { Member, Project } from "modules/app/datatypes";
+import { useData } from "lib/useData";
+import { useActions } from "lib/useActions";
+import { ProjectById } from "../../../modules/app/datatypes/index";
+
+export const LeadPhoto = (member: Member | null) => {
   return member?.photoUrl ? (
     <Avatar src={member.photoUrl} size="sm" radius="xl" />
   ) : (
@@ -15,23 +15,23 @@ export const LeadProjectPhoto = (member: Member | null) => {
   );
 };
 
-export const LeadProjectName = (member: Member | null) => {
-  return member ? member?.name : "Lead";
+export const LeadName = (name: string | undefined) => {
+  return name ? name : "Lead";
 };
 
-type GenericLeadsMenuProps = {
+type GenericLeadMenuProps = {
   children: React.ReactNode;
   onSelect?: (member: Member | null) => void;
-  project?: Project;
+  project?: Project | ProjectById;
   selectedLead?: Member | null;
 };
 
-export const GenericLeadMenu = ({
+export const GenericLeadProjectMenu = ({
   children,
   onSelect,
   project,
   selectedLead,
-}: GenericLeadsMenuProps) => {
+}: GenericLeadMenuProps) => {
   const { membersData, isLoadingMembers, memberData } = useData({ memberId: project?.leadId });
   const { fetchUpdateProject } = useActions();
   const memberName = memberData?.memberById.name ? memberData?.memberById.name : selectedLead?.name;
@@ -121,16 +121,16 @@ type LeadProjectSelectorProps = {
 
 export const LeadProjectSelector = ({ lead, setLead }: LeadProjectSelectorProps) => {
   return (
-    <GenericLeadMenu onSelect={member => setLead(member)} selectedLead={lead}>
+    <GenericLeadProjectMenu onSelect={member => setLead(member)} selectedLead={lead}>
       {typeof lead === "undefined" ? (
         <Button compact variant="light" color={"gray"}>
-          {LeadProjectPhoto(lead)}
+          {LeadPhoto(lead)}
         </Button>
       ) : (
-        <Button compact variant="light" color={"gray"} leftIcon={LeadProjectPhoto(lead)}>
-          <Text size={"xs"}>{LeadProjectName(lead)}</Text>
+        <Button compact variant="light" color={"gray"} leftIcon={LeadPhoto(lead)}>
+          <Text size={"xs"}>{LeadName(lead?.name)}</Text>
         </Button>
       )}
-    </GenericLeadMenu>
+    </GenericLeadProjectMenu>
   );
 };
