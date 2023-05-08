@@ -17,6 +17,22 @@ query Teams {
   }
 }
 
+query TeamById($teamId: UUID!) {
+  teamById(id: $teamId) {
+    id
+    name
+    prefix
+    members {
+      id
+      name
+    }
+    projects {
+      id
+      name
+    }
+  }
+}
+
 mutation NewTeam(
   $name: String!
   $ownerId: UUID!

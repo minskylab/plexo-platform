@@ -1,6 +1,7 @@
 import { Navbar, NavLink, useMantineTheme } from "@mantine/core";
 import { useData } from "lib/useData";
-import { Book, Dice, Dna, Dna2, Rocket } from "tabler-icons-react";
+import router from "next/router";
+import { Dna } from "tabler-icons-react";
 
 const TeamsList = () => {
   const theme = useMantineTheme();
@@ -12,32 +13,12 @@ const TeamsList = () => {
         key={index}
         label={p.name}
         icon={<Dna size={16} color={theme.colors.red[4]} />}
+        onClick={() => router.push(`/teams/${p.id}`)}
       ></NavLink>
     );
   });
 
-  return (
-    <Navbar.Section>
-      {teams}
-      {/* <NavLink label="Research" icon={<Rocket size={16} color={theme.colors.blue[4]} />}></NavLink>
-
-      <NavLink
-        label="Management"
-        icon={<Book size={16} color={theme.colors.gray[5]} />}
-        defaultOpened
-        opened={true}
-      >
-        <NavLink icon={<Dice size={16} color={theme.colors.gray[6]} />} label="Main Team" />
-      </NavLink>
-
-      <NavLink
-        label="Development"
-        icon={<Dna2 size={16} color={theme.colors.orange[4]} />}
-        defaultOpened
-        opened={true}
-      ></NavLink> */}
-    </Navbar.Section>
-  );
+  return <Navbar.Section>{teams}</Navbar.Section>;
 };
 
 export default TeamsList;

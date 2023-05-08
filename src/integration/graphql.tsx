@@ -614,6 +614,22 @@ export type TeamsQuery = {
   }>;
 };
 
+export type TeamByIdQueryVariables = Exact<{
+  teamId: Scalars["UUID"];
+}>;
+
+export type TeamByIdQuery = {
+  __typename?: "QueryRoot";
+  teamById: {
+    __typename?: "Team";
+    id: any;
+    name: string;
+    prefix?: string | null;
+    members: Array<{ __typename?: "Member"; id: any; name: string }>;
+    projects: Array<{ __typename?: "Project"; id: any; name: string }>;
+  };
+};
+
 export type NewTeamMutationVariables = Exact<{
   name: Scalars["String"];
   ownerId: Scalars["UUID"];
@@ -1830,6 +1846,72 @@ export const TeamsDocument = {
     },
   ],
 } as unknown as DocumentNode<TeamsQuery, TeamsQueryVariables>;
+export const TeamByIdDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "TeamById" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "teamId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teamById" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "teamId" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "prefix" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "members" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "projects" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TeamByIdQuery, TeamByIdQueryVariables>;
 export const NewTeamDocument = {
   kind: "Document",
   definitions: [

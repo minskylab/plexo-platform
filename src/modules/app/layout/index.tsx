@@ -59,7 +59,9 @@ const Layout = ({ children }: LayoutProps) => {
         />
       </Drawer>
       <AppShell
+        fixed
         padding={0}
+        navbarOffsetBreakpoint="md"
         navbar={
           <NavbarSearch
             onNewTask={() => {
@@ -76,8 +78,6 @@ const Layout = ({ children }: LayoutProps) => {
               theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
           },
         })}
-        navbarOffsetBreakpoint="md"
-        fixed
       >
         {children}
       </AppShell>

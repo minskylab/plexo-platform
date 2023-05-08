@@ -11,11 +11,12 @@ import {
   TextInput,
 } from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
+import { useEffect, useState } from "react";
+import { Affiliate, Dots, Users } from "tabler-icons-react";
+
 import { GenericLeadProjectMenu, LeadName } from "components/ui/Project/lead";
 import { GenericMemberMenu } from "components/ui/Project/members";
 import { GenericTeamMenu } from "components/ui/Project/team";
-import { useEffect, useState } from "react";
-import { Affiliate, Dots, Users } from "tabler-icons-react";
 import { ProjectById } from "../datatypes";
 
 type ProjectDetailProps = {
@@ -62,7 +63,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
         <Divider />
         <TextInput
           value={project?.name ? project?.name : ""}
-          /* onChange={e => setTitle(e.target.value)} */
+          onChange={() => {}}
           placeholder="Project Title"
           size="lg"
           styles={theme => ({

@@ -1,4 +1,4 @@
-import { ProjectByIdQuery } from "../../../integration/graphql";
+import { ProjectByIdQuery, TeamByIdQuery } from "../../../integration/graphql";
 import {
   TasksQuery,
   MembersQuery,
@@ -15,3 +15,4 @@ export type Member = MembersQuery["members"][number];
 export type Team = TeamsQuery["teams"][number];
 export type Label = LabelsQuery["labels"][number];
 export type ProjectById = ProjectByIdQuery["projectById"];
+export type TeamById = TeamByIdQuery["teamById"];
