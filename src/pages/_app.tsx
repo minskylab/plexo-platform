@@ -1,66 +1,43 @@
+import { ColorScheme } from "@mantine/core";
 import type { AppProps } from "next/app";
+import { getCookie } from "cookies-next";
+import { ReactElement, ReactNode } from "react";
 import { Provider as URQLProvider } from "urql";
-import { URQLClient } from "lib/client";
-import { ColorScheme, ColorSchemeProvider, MantineProvider, Tooltip } from "@mantine/core";
+import { GetServerSidePropsContext, NextPage } from "next";
+
 import Fonts from "theming/fonts";
-import { useState } from "react";
-import { getCookie, setCookie } from "cookies-next";
-import { GetServerSidePropsContext } from "next";
-import { colorBrandDark, colorBrandPrimary } from "theming";
-import { NotificationsProvider } from "@mantine/notifications";
-import { ModalsProvider } from "@mantine/modals";
-import Layout from "modules/app/layout";
+import { URQLClient } from "lib/client";
+import { MyMantineProvider } from "theming/mantine";
 import PlexoProvider from "../context/PlexoContext";
+
+export type NextPageWithLayout<T = {}> = NextPage<T> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout<T> = AppProps & {
+  Component: NextPageWithLayout<T>;
+};
+
+type LogesAppProps = {
+  colorScheme: ColorScheme;
+};
 
 const client = URQLClient();
 
-const PlexoApp = (props: AppProps & { colorScheme: ColorScheme }) => {
-  const { Component, pageProps } = props;
-  const [colorScheme, setColorScheme] = useState<ColorScheme>(props.colorScheme);
-
-  const toggleColorScheme = (value?: ColorScheme) => {
-    const nextColorScheme = value || (colorScheme === "dark" ? "light" : "dark");
-    setColorScheme(nextColorScheme);
-    setCookie("mantine-color-scheme", nextColorScheme, { maxAge: 60 * 60 * 24 * 30 });
-  };
+const PlexoApp = ({
+  Component,
+  pageProps,
+  colorScheme,
+}: AppPropsWithLayout<LogesAppProps> & LogesAppProps) => {
+  const getLayout = Component.getLayout ?? (page => page);
 
   return (
     <URQLProvider value={client}>
       <PlexoProvider>
-        <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-          <MantineProvider
-            withGlobalStyles
-            withNormalizeCSS
-            theme={{
-              colorScheme: colorScheme,
-              fontFamily: "Open Sans",
-              colors: {
-                brand: colorBrandPrimary,
-                dark: colorBrandDark,
-              },
-              primaryColor: "brand",
-              components: {
-                Tooltip: {
-                  styles: {
-                    tooltip: {
-                      marginTop: 5,
-                      fontSize: 12,
-                    },
-                  },
-                },
-              },
-            }}
-          >
-            <ModalsProvider>
-              <NotificationsProvider>
-                <Fonts />
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
-              </NotificationsProvider>
-            </ModalsProvider>
-          </MantineProvider>
-        </ColorSchemeProvider>
+        <MyMantineProvider colorScheme={colorScheme}>
+          <Fonts />
+          {getLayout(<Component {...pageProps} />)}
+        </MyMantineProvider>
       </PlexoProvider>
     </URQLProvider>
   );

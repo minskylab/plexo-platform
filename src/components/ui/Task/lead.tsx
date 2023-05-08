@@ -1,7 +1,7 @@
 import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton, Tooltip } from "@mantine/core";
 import { useEffect, useState } from "react";
 
-import { Member, Task, TaskById } from "modules/app/datatypes";
+import { Member, Task, TaskById } from "lib/types";
 import { useData } from "lib/useData";
 import { useActions } from "lib/useActions";
 import { priorityName } from "./priority";

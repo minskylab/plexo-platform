@@ -3,7 +3,7 @@ import { Users } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
 import { useData } from "lib/useData";
-import { Member, TaskById } from "modules/app/datatypes";
+import { Member, TaskById } from "lib/types";
 import { useActions } from "lib/useActions";
 import { priorityName } from "./priority";
 import { statusName } from "./status";

@@ -24,7 +24,7 @@ import { ProjectSelector } from "./project";
 import { LabelsSelector } from "./labels";
 import { AssigneesSelector } from "./assignees";
 import { statusName, StatusSelector } from "./status";
-import { Member, Project } from "modules/app/datatypes";
+import { Member, Project } from "lib/types";
 import { TaskStatus, TaskPriority } from "integration/graphql";
 import { priorityName, PrioritySelector } from "./priority";
 

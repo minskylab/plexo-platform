@@ -14,7 +14,7 @@ import {
 } from "@mantine/core";
 import { TaskStatus } from "integration/graphql";
 import { useActions } from "lib/useActions";
-import { TaskById } from "modules/app/datatypes";
+import { TaskById } from "lib/types";
 import {
   Circle,
   CircleCheck,

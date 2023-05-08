@@ -1,13 +1,22 @@
-import { useData } from "lib/useData";
-import TaskDetailContent from "modules/app/taskDetail";
+import type { ReactElement } from "react";
+import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 
-const TaskPage = () => {
+import { useData } from "lib/useData";
+import { NextPageWithLayout } from "pages/_app";
+import TaskDetailPageContent from "modules/taskDetail";
+import Layout from "components/ui/Layout";
+
+const TaskPage: NextPageWithLayout = () => {
   const router = useRouter();
   const { id } = router.query;
   const { taskData, isLoadingTask } = useData({ taskId: id as string });
 
-  return <TaskDetailContent task={taskData?.taskById} isLoading={isLoadingTask} />;
+  return <TaskDetailPageContent task={taskData?.taskById} isLoading={isLoadingTask} />;
+};
+
+TaskPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default TaskPage;

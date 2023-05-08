@@ -1,7 +1,7 @@
 import { Button, Center, Stack, Title } from "@mantine/core";
 import { BrandGithub } from "tabler-icons-react";
 
-const Login = () => {
+const LoginPage = () => {
   return (
     <Center style={{ height: "100vh" }}>
       <Stack align={"center"}>
@@ -19,4 +19,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;

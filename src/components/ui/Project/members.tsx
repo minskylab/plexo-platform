@@ -12,7 +12,7 @@ import {
 import { Users } from "tabler-icons-react";
 
 import { useData } from "lib/useData";
-import { Member, ProjectById } from "modules/app/datatypes";
+import { Member, ProjectById } from "lib/types";
 
 export const MembersIcon = (member: Member | undefined) => {
   return member?.photoUrl ? (

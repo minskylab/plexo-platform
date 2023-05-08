@@ -31,14 +31,14 @@ import {
 } from "components/ui/Task/priority";
 import { GenericProjectsMenu, ProjectIcon, ProjectName } from "components/ui/Task/project";
 import { GenericStatusMenu, StatusIcon, statusLabel, statusName } from "components/ui/Task/status";
-import { TaskMenu } from "components/ui/Task/menu";
-import { useActions } from "lib/useActions";
-import { TaskById } from "../datatypes";
-import { usePlexoContext } from "context/PlexoContext";
-import { assigneesId, GenericAssigneesMenu } from "components/ui/Task/assignees";
-import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 import { GenericLabelsMenu, LabelColor, LabelNameBtn } from "components/ui/Task/labels";
+import { assigneesId, GenericAssigneesMenu } from "components/ui/Task/assignees";
 import { LeadName } from "components/ui/Project/lead";
+import { TaskMenu } from "components/ui/Task/menu";
+import { TaskById } from "lib/types";
+import { useActions } from "lib/useActions";
+import { usePlexoContext } from "context/PlexoContext";
+import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -59,7 +59,7 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
+const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
   const { classes, theme } = useStyles();
   const { setNavBarOpened } = usePlexoContext();
   const { fetchUpdateTask } = useActions();
@@ -433,4 +433,4 @@ const TaskDetailContent = ({ task, isLoading }: TaskDetailProps) => {
   );
 };
 
-export default TaskDetailContent;
+export default TaskDetailPageContent;

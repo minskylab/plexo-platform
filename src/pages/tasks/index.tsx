@@ -1,3 +1,16 @@
-import { OverviewContent } from "modules/app/overview";
+import type { ReactElement } from "react";
+import type { GetServerSideProps } from "next";
 
-export default OverviewContent;
+import Layout from "components/ui/Layout";
+import { TasksPageContent } from "modules/tasks";
+import { NextPageWithLayout } from "pages/_app";
+
+const TasksPage: NextPageWithLayout = () => {
+  return <TasksPageContent />;
+};
+
+TasksPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};
+
+export default TasksPage;

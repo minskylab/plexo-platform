@@ -21,11 +21,11 @@ import { LayoutColumns, LayoutRows, LayoutSidebar } from "tabler-icons-react";
 import { getCookie, setCookie } from "cookies-next";
 import { useQuery } from "urql";
 
-import { TasksDocument, TaskStatus } from "../../../integration/graphql";
+import { TasksDocument, TaskStatus } from "integration/graphql";
 import { TaskCardElement, TaskListElement } from "components/ui/Task/task";
 import { StatusIcon, statusName } from "components/ui/Task/status";
 import { usePlexoContext } from "context/PlexoContext";
-import { Task } from "../datatypes";
+import { Task } from "lib/types";
 import FilterMenu from "components/ui/Filters/filterMenu";
 
 const useStyles = createStyles(theme => ({
@@ -143,7 +143,7 @@ type TaskProps = {
   status: TaskStatus;
 };
 
-type OverviewProps = {
+type TasksProps = {
   taskData: Task[] | undefined;
   fetching: boolean;
 };
@@ -166,7 +166,7 @@ const StatusCounter = ({ status, taskData }: StatusCounterProps) => {
   );
 };
 
-const OverviewBoard = ({ taskData, fetching }: OverviewProps) => {
+const TasksBoard = ({ taskData, fetching }: TasksProps) => {
   const TaskCard = ({ status }: TaskProps) => {
     const data = taskData ? taskData?.filter((t: { status: string }) => t.status == status) : [];
 
@@ -241,7 +241,7 @@ const OverviewBoard = ({ taskData, fetching }: OverviewProps) => {
   );
 };
 
-const OverviewList = ({ taskData, fetching }: OverviewProps) => {
+const TasksList = ({ taskData, fetching }: TasksProps) => {
   const dataByStatus = (status: TaskStatus) => {
     const data = taskData ? taskData?.filter((t: { status: string }) => t.status == status) : [];
     return data;
@@ -291,7 +291,7 @@ const OverviewList = ({ taskData, fetching }: OverviewProps) => {
   );
 };
 
-export const OverviewContent = () => {
+export const TasksPageContent = () => {
   const { classes, theme } = useStyles();
   const [viewMode, setViewMode] = useState<"list" | "columns">("list");
   const { setNavBarOpened } = usePlexoContext();
@@ -397,9 +397,9 @@ export const OverviewContent = () => {
       </Group>
 
       {viewMode === "list" ? (
-        <OverviewList taskData={filteredTasks} fetching={isFetchingTasksData} />
+        <TasksList taskData={filteredTasks} fetching={isFetchingTasksData} />
       ) : (
-        <OverviewBoard taskData={filteredTasks} fetching={isFetchingTasksData} />
+        <TasksBoard taskData={filteredTasks} fetching={isFetchingTasksData} />
       )}
     </Stack>
   );

@@ -14,7 +14,7 @@ import { Calendar } from "@mantine/dates";
 import { showNotification } from "@mantine/notifications";
 import { useActions } from "lib/useActions";
 import { DateLabel } from "lib/utils";
-import { Member } from "modules/app/datatypes";
+import { Member } from "lib/types";
 import { useState } from "react";
 import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
 

@@ -1,4 +1,4 @@
-import { ProjectByIdQuery, TeamByIdQuery } from "../../../integration/graphql";
+import { ProjectByIdQuery, TeamByIdQuery } from "../integration/graphql";
 import {
   TasksQuery,
   MembersQuery,

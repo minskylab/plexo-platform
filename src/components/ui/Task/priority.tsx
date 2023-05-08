@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 import { TaskPriority } from "integration/graphql";
 import { useActions } from "lib/useActions";
-import { TaskById } from "modules/app/datatypes";
+import { TaskById } from "lib/types";
 import {
   AntennaBars1,
   AntennaBars2,

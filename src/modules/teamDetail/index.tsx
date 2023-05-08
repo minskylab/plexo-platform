@@ -1,13 +1,14 @@
 import { ActionIcon, Divider, Group, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
-import { TeamById } from "../datatypes/index";
 import { Dots } from "tabler-icons-react";
+
+import { TeamById } from "lib/types";
 
 type TeamDetailProps = {
   team: TeamById | undefined;
   isLoading: boolean;
 };
 
-const TeamDetailContent = ({ team, isLoading }: TeamDetailProps) => {
+const TeamDetailPageContent = ({ team, isLoading }: TeamDetailProps) => {
   const theme = useMantineTheme();
 
   return (
@@ -21,7 +22,7 @@ const TeamDetailContent = ({ team, isLoading }: TeamDetailProps) => {
           }`,
         }}
       >
-        <Text>Project</Text>
+        <Text>Team</Text>
       </Group>
       <Stack w={860} h={"100%"} m="auto">
         <Group position="apart">
@@ -54,4 +55,4 @@ const TeamDetailContent = ({ team, isLoading }: TeamDetailProps) => {
   );
 };
 
-export default TeamDetailContent;
+export default TeamDetailPageContent;

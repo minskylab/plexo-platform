@@ -14,7 +14,7 @@ import {
 } from "@mantine/core";
 import { Affiliate } from "tabler-icons-react";
 
-import { Team } from "modules/app/datatypes";
+import { Team } from "lib/types";
 import { useData } from "lib/useData";
 import { useEffect, useState } from "react";
 

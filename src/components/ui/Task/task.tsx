@@ -15,7 +15,7 @@ import React, { useState } from "react";
 import { DotsVertical } from "tabler-icons-react";
 import router from "next/router";
 
-import { Task } from "modules/app/datatypes";
+import { Task } from "lib/types";
 import { GenericPriorityMenu, PriorityIcon } from "./priority";
 import { GenericStatusMenu, StatusIcon } from "./status";
 import { TaskMenu } from "./menu";

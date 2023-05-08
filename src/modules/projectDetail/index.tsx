@@ -17,7 +17,7 @@ import { Affiliate, Dots, Users } from "tabler-icons-react";
 import { GenericLeadProjectMenu, LeadName } from "components/ui/Project/lead";
 import { GenericMemberMenu } from "components/ui/Project/members";
 import { GenericTeamMenu } from "components/ui/Project/team";
-import { ProjectById } from "../datatypes";
+import { ProjectById } from "lib/types";
 
 type ProjectDetailProps = {
   project: ProjectById | undefined;

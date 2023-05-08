@@ -14,7 +14,7 @@ import {
 } from "@mantine/core";
 import { LayoutGrid } from "tabler-icons-react";
 
-import { Project, TaskById } from "modules/app/datatypes";
+import { Project, TaskById } from "lib/types";
 import { useData } from "lib/useData";
 import { useActions } from "lib/useActions";
 import { statusName } from "./status";
