@@ -10,10 +10,11 @@ import {
   Text,
   Popover,
   Tooltip,
+  ActionIcon,
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { showNotification } from "@mantine/notifications";
-import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
+import { AlertCircle, CalendarTime, Check, Robot, X } from "tabler-icons-react";
 import { useState } from "react";
 
 import { DateLabel } from "lib/utils";
@@ -122,6 +123,11 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       shadow="md"
       title={
         <Group spacing={8}>
+          <Tooltip label="AI Suggestion" position="bottom">
+            <ActionIcon variant="light" color="orange">
+              <Robot size="1rem" />
+            </ActionIcon>
+          </Tooltip>
           <Text size={"sm"}>New Task</Text>
         </Group>
       }
