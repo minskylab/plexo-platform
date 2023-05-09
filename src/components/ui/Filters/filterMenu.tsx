@@ -119,7 +119,7 @@ const FilterMenu = () => {
           compact
           variant="light"
           color={"gray"}
-          leftIcon={<Filter size={16} color={theme.colors.red[4]} />}
+          leftIcon={<Filter size={16} color={theme.colors.brand[6]} />}
           rightIcon={
             totalFilters && (
               <Badge size="sm" variant="light">

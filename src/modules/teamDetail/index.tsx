@@ -45,7 +45,7 @@ const TeamDetailPageContent = ({ team, isLoading }: TeamDetailProps) => {
               backgroundColor: "transparent",
               borderColor: "transparent",
               "&:focus-within": {
-                borderColor: theme.colors.orange[7],
+                borderColor: theme.colors.brand[6],
               },
             },
           })}

@@ -13,7 +13,7 @@ const ProjectsList = () => {
       <NavLink
         key={index}
         label={p.name}
-        icon={<Rocket size={16} color={theme.colors.blue[4]} />}
+        icon={<Rocket size={16} color={theme.colors.brand[4]} />}
         onClick={() => router.push(`/projects/${p.id}`)}
       ></NavLink>
     );

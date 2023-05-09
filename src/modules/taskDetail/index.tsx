@@ -275,7 +275,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                   backgroundColor: "transparent",
                   borderColor: "transparent",
                   "&:focus-within": {
-                    borderColor: theme.colors.orange[7],
+                    borderColor: theme.colors.brand[6],
                   },
                 },
               })}
@@ -294,7 +294,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                   backgroundColor: "transparent",
                   borderColor: "transparent",
                   "&:focus-within": {
-                    borderColor: theme.colors.orange[7],
+                    borderColor: theme.colors.brand[6],
                   },
                 },
               })}

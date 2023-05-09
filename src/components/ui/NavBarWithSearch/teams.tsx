@@ -12,7 +12,7 @@ const TeamsList = () => {
       <NavLink
         key={index}
         label={p.name}
-        icon={<Dna size={16} color={theme.colors.red[4]} />}
+        icon={<Dna size={16} color={theme.colors.brand[6]} />}
         onClick={() => router.push(`/teams/${p.id}`)}
       ></NavLink>
     );
