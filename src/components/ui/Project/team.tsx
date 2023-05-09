@@ -13,10 +13,10 @@ import {
   Divider,
 } from "@mantine/core";
 import { Affiliate } from "tabler-icons-react";
+import { useEffect, useState } from "react";
 
 import { Team } from "lib/types";
 import { useData } from "lib/useData";
-import { useEffect, useState } from "react";
 
 const useStyles = createStyles(theme => ({
   checkbox: {

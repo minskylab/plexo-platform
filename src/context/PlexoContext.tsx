@@ -1,6 +1,3 @@
-import { LabelType } from "components/ui/Task/types";
-import { TaskPriority, TaskStatus } from "integration/graphql";
-import { Member, Project, Team } from "lib/types";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 type PlexoProviderProps = {

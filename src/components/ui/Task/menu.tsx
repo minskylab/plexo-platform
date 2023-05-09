@@ -1,18 +1,10 @@
 import { Menu, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
 import { showNotification } from "@mantine/notifications";
+import { Check, Trash, X } from "tabler-icons-react";
+
 import { useActions } from "lib/useActions";
 import { Task, TaskById } from "lib/types";
-import {
-  AntennaBars5,
-  ChartPie2,
-  Check,
-  LayoutGrid,
-  Tag,
-  Trash,
-  UserCircle,
-  X,
-} from "tabler-icons-react";
 
 type TaskMenuProps = {
   children: React.ReactNode;

@@ -16,17 +16,16 @@ import { showNotification } from "@mantine/notifications";
 import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
 import { useState } from "react";
 
-import { LabelType } from "./types";
 import { DateLabel } from "lib/utils";
-import { LeadTaskSelector } from "./lead";
 import { useActions } from "lib/useActions";
+import { LeadTaskSelector } from "./lead";
 import { ProjectSelector } from "./project";
 import { LabelsSelector } from "./labels";
 import { AssigneesSelector } from "./assignees";
 import { statusName, StatusSelector } from "./status";
 import { Member, Project } from "lib/types";
-import { TaskStatus, TaskPriority } from "integration/graphql";
 import { priorityName, PrioritySelector } from "./priority";
+import { TaskStatus, TaskPriority } from "integration/graphql";
 
 type NewTaskProps = {
   newTaskOpened: boolean;

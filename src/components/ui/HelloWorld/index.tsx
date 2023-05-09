@@ -1,6 +1,6 @@
 import { ActionIcon, useMantineColorScheme } from "@mantine/core";
-import { MoonStars, Sun, ChevronDown, World } from "tabler-icons-react";
 import { Title, Group, Select } from "@mantine/core";
+import { MoonStars, Sun, ChevronDown, World } from "tabler-icons-react";
 import useTranslation from "next-translate/useTranslation";
 import { useRouter } from "next/router";
 

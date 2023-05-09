@@ -17,8 +17,8 @@ import { IconBulb, IconCheckbox, IconSearch, IconSelector } from "@tabler/icons"
 import router from "next/router";
 import { useState } from "react";
 import { Affiliate, Edit, LayoutGrid, Plus } from "tabler-icons-react";
+
 import NewProject from "../Project/newProject";
-import JoinTeam from "../Team/joinTeam";
 import NewTeam from "../Team/newTeam";
 import { UserButton } from "../UserButton";
 import ProjectsList from "./projects";

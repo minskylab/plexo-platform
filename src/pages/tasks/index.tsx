@@ -1,5 +1,4 @@
 import type { ReactElement } from "react";
-import type { GetServerSideProps } from "next";
 
 import Layout from "components/ui/Layout";
 import { TasksPageContent } from "modules/tasks";

@@ -1,7 +1,8 @@
 import { AppShell, createStyles, Drawer } from "@mantine/core";
+import { ReactNode } from "react";
+
 import { NavbarSearch } from "components/ui/NavBarWithSearch";
 import NewTask from "components/ui/Task/newTask";
-import { ReactNode, useState } from "react";
 import { usePlexoContext } from "../../../context/PlexoContext";
 
 interface LayoutProps {

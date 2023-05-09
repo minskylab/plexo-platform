@@ -13,6 +13,7 @@ import {
   Divider,
 } from "@mantine/core";
 import { LayoutGrid } from "tabler-icons-react";
+import { useEffect, useState } from "react";
 
 import { Project, TaskById } from "lib/types";
 import { useData } from "lib/useData";
@@ -21,7 +22,6 @@ import { statusName } from "./status";
 import { priorityName } from "./priority";
 import { assigneesId } from "./assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
-import { useEffect, useState } from "react";
 
 const useStyles = createStyles(theme => ({
   checkbox: {

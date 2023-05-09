@@ -1,9 +1,10 @@
 import { Group, Modal, useMantineTheme, Text, TextInput, Button } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { useActions } from "lib/useActions";
-import { useData } from "lib/useData";
 import { useState } from "react";
 import { Check, X } from "tabler-icons-react";
+
+import { useActions } from "lib/useActions";
+import { useData } from "lib/useData";
 import { MemberSelector } from "../Project/members";
 import { ProjectsSelector } from "./projects";
 

@@ -12,12 +12,12 @@ import {
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { showNotification } from "@mantine/notifications";
+import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
+import { useState } from "react";
+
 import { useActions } from "lib/useActions";
 import { DateLabel } from "lib/utils";
 import { Member } from "lib/types";
-import { useState } from "react";
-import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
-
 import { TeamSelector } from "./team";
 import { LeadProjectSelector } from "./lead";
 import { MemberSelector } from "./members";

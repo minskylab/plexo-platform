@@ -1,7 +1,8 @@
 import { Navbar, NavLink, useMantineTheme } from "@mantine/core";
-import { useData } from "lib/useData";
-import router from "next/router";
 import { Dna } from "tabler-icons-react";
+import router from "next/router";
+
+import { useData } from "lib/useData";
 
 const TeamsList = () => {
   const theme = useMantineTheme();

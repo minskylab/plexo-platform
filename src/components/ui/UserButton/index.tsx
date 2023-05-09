@@ -6,9 +6,7 @@ import {
   Text,
   createStyles,
   Menu,
-  ActionIcon,
   useMantineColorScheme,
-  Select,
   Switch,
   useMantineTheme,
 } from "@mantine/core";
@@ -111,7 +109,6 @@ export function UserButton({ image, name, email, icon, ...others }: UserButtonPr
               variant="unstyled"
             ></Select> */}
             <Switch
-              color="yellow"
               onLabel={
                 <Group spacing={5}>
                   <Sun color={theme.white} size={18} />
@@ -130,7 +127,7 @@ export function UserButton({ image, name, email, icon, ...others }: UserButtonPr
               styles={{ root: { width: 120, marginLeft: -4 } }}
             />
           </Menu.Item>
-          <Menu.Item component="button" icon={<Logout size={14} />}>
+          <Menu.Item color="red" component="button" icon={<Logout size={14} />}>
             Log out
           </Menu.Item>
         </Menu.Dropdown>

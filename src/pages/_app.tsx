@@ -4,12 +4,12 @@ import { getCookie } from "cookies-next";
 import { ReactElement, ReactNode } from "react";
 import { Provider as URQLProvider } from "urql";
 import { GetServerSidePropsContext, NextPage } from "next";
+import Head from "next/head";
 
 import Fonts from "theming/fonts";
 import { URQLClient } from "lib/client";
 import { MyMantineProvider } from "theming/mantine";
 import PlexoProvider from "../context/PlexoContext";
-import Head from "next/head";
 
 export type NextPageWithLayout<T = {}> = NextPage<T> & {
   getLayout?: (page: ReactElement) => ReactNode;

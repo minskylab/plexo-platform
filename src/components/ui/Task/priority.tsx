@@ -10,9 +10,7 @@ import {
   TextInput,
   Tooltip,
 } from "@mantine/core";
-import { TaskPriority } from "integration/graphql";
-import { useActions } from "lib/useActions";
-import { TaskById } from "lib/types";
+import { useEffect, useState } from "react";
 import {
   AntennaBars1,
   AntennaBars2,
@@ -20,11 +18,13 @@ import {
   AntennaBars4,
   AntennaBars5,
 } from "tabler-icons-react";
+
+import { TaskPriority } from "integration/graphql";
+import { useActions } from "lib/useActions";
+import { TaskById } from "lib/types";
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
-import { usePlexoContext } from "context/PlexoContext";
-import { useEffect, useState } from "react";
 
 const useStyles = createStyles(theme => ({
   checkbox: {

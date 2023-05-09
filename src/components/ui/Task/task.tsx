@@ -16,11 +16,11 @@ import { DotsVertical } from "tabler-icons-react";
 import router from "next/router";
 
 import { Task } from "lib/types";
-import { GenericPriorityMenu, PriorityIcon } from "./priority";
-import { GenericStatusMenu, StatusIcon } from "./status";
+import { DateLabel } from "lib/utils";
 import { TaskMenu } from "./menu";
 import { GenericLeadTaskMenu } from "./lead";
-import { DateLabel } from "lib/utils";
+import { GenericStatusMenu, StatusIcon } from "./status";
+import { GenericPriorityMenu, PriorityIcon } from "./priority";
 
 type TaskProps = {
   task: Task;

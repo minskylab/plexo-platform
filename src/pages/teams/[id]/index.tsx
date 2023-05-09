@@ -1,6 +1,5 @@
 import type { ReactElement } from "react";
 import { useRouter } from "next/router";
-import type { GetServerSideProps } from "next";
 
 import { useData } from "lib/useData";
 import Layout from "components/ui/Layout";

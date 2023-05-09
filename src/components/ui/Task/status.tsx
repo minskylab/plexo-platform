@@ -23,11 +23,11 @@ import {
   CircleDotted,
   ChartPie2,
 } from "tabler-icons-react";
+import { use, useState, useEffect } from "react";
 
 import { priorityName } from "./priority";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
-import { use, useState, useEffect } from "react";
 
 const useStyles = createStyles(theme => ({
   checkbox: {

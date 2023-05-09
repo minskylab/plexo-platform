@@ -3,14 +3,12 @@ import {
   MembersDocument,
   ProjectsDocument,
   TeamsDocument,
-} from "integration/graphql";
-import { useQuery } from "urql";
-import {
   MemberByIdDocument,
   TaskByIdDocument,
   ProjectByIdDocument,
   TeamByIdDocument,
-} from "../integration/graphql";
+} from "integration/graphql";
+import { useQuery } from "urql";
 
 interface UseDataProps {
   memberId?: string | undefined;

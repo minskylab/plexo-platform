@@ -13,12 +13,13 @@ import {
   Divider,
   createStyles,
 } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { Tag } from "tabler-icons-react";
+
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { useActions } from "lib/useActions";
 import { useData } from "lib/useData";
 import { Label, TaskById } from "lib/types";
-import { useEffect, useState } from "react";
-import { Tag } from "tabler-icons-react";
 import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
