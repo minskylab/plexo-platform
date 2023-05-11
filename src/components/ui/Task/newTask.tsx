@@ -17,7 +17,7 @@ import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
 import { useState } from "react";
 
 import { DateLabel } from "lib/utils";
-import { useActions } from "lib/useActions";
+import { useActions } from "lib/hooks/useActions";
 import { LeadTaskSelector } from "./lead";
 import { ProjectSelector } from "./project";
 import { LabelsSelector } from "./labels";

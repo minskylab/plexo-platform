@@ -2,7 +2,7 @@ import { Navbar, NavLink, useMantineTheme } from "@mantine/core";
 import { Rocket } from "tabler-icons-react";
 import router from "next/router";
 
-import { useData } from "lib/useData";
+import { useData } from "lib/hooks/useData";
 
 const ProjectsList = () => {
   const theme = useMantineTheme();

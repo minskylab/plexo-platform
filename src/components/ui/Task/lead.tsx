@@ -2,8 +2,8 @@ import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton, Tooltip } from "@
 import { useEffect, useState } from "react";
 
 import { Member, Task, TaskById } from "lib/types";
-import { useData } from "lib/useData";
-import { useActions } from "lib/useActions";
+import { useData } from "lib/hooks/useData";
+import { useActions } from "lib/hooks/useActions";
 import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";

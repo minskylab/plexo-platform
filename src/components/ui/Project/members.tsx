@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { Users } from "tabler-icons-react";
 
-import { useData } from "lib/useData";
+import { useData } from "lib/hooks/useData";
 import { Member, ProjectById } from "lib/types";
 
 export const MembersIcon = (member: Member | undefined) => {

@@ -2,7 +2,7 @@ import { Navbar, NavLink, useMantineTheme } from "@mantine/core";
 import { Dna } from "tabler-icons-react";
 import router from "next/router";
 
-import { useData } from "lib/useData";
+import { useData } from "lib/hooks/useData";
 
 const TeamsList = () => {
   const theme = useMantineTheme();

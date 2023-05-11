@@ -20,7 +20,7 @@ import {
 } from "tabler-icons-react";
 
 import { TaskPriority } from "integration/graphql";
-import { useActions } from "lib/useActions";
+import { useActions } from "lib/hooks/useActions";
 import { TaskById } from "lib/types";
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";

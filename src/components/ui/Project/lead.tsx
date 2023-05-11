@@ -3,8 +3,8 @@ import { showNotification } from "@mantine/notifications";
 import { Check, X } from "tabler-icons-react";
 
 import { Member, Project } from "lib/types";
-import { useData } from "lib/useData";
-import { useActions } from "lib/useActions";
+import { useData } from "lib/hooks/useData";
+import { useActions } from "lib/hooks/useActions";
 import { ProjectById } from "lib/types";
 
 export const LeadPhoto = (member: Member | null) => {

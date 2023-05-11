@@ -16,7 +16,7 @@ import { Affiliate } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
 import { Team } from "lib/types";
-import { useData } from "lib/useData";
+import { useData } from "lib/hooks/useData";
 
 const useStyles = createStyles(theme => ({
   checkbox: {

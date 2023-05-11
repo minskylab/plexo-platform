@@ -3,7 +3,7 @@ import { openConfirmModal } from "@mantine/modals";
 import { showNotification } from "@mantine/notifications";
 import { Check, Trash, X } from "tabler-icons-react";
 
-import { useActions } from "lib/useActions";
+import { useActions } from "lib/hooks/useActions";
 import { Task, TaskById } from "lib/types";
 
 type TaskMenuProps = {
