@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useState, useEffect } from "react";
 
 type PlexoProviderProps = {
   children: ReactNode;
@@ -40,6 +40,7 @@ type PlexoContextProps = {
   setTeamFilters: (teamFilters: string[]) => void;
   filterValues: FilterValues | null;
   setFilterValues: (filterValues: FilterValues | null) => void;
+  total : any;
 };
 
 export const PlexoContext = createContext<PlexoContextProps | null>(null);
@@ -57,16 +58,51 @@ const PlexoProvider = ({ children }: PlexoProviderProps) => {
   const [newTaskOpened, setNewTaskOpened] = useState(false);
   const [createMoreTasks, setCreateMoreTasks] = useState(false);
   //Filters
-  const [statusFilters, setStatusFilters] = useState<string[]>([]);
-  const [assigneeFilters, setAssigneeFilters] = useState<string[]>([]);
-  const [leaderFilters, setLeaderFilters] = useState<string[]>([]);
-  const [creatorFilters, setCreatorFilters] = useState<string[]>([]);
-  const [priorityFilters, setPriorityFilters] = useState<string[]>([]);
-  const [labelsFilters, setLabelsFilters] = useState<string[]>([]);
-  const [projectFilters, setProjectFilters] = useState<string[]>([]);
-  const [teamFilters, setTeamFilters] = useState<string[]>([]);
+
+  const STORAGE_KEY = 'filterValues';
+
+
+  let storedFilterValues;
+  if (typeof window !== "undefined") {
+    storedFilterValues = localStorage.getItem(STORAGE_KEY);
+  }
+ 
+  const filterValuesStorage = storedFilterValues ? JSON.parse(storedFilterValues) : {
+    status: [],
+    assignees: [],
+    leader: [],
+    creator: [],
+    priority: [],
+    labels: [],
+    project: [],
+    team: [],
+  };
+
+  const [statusFilters, setStatusFilters] = useState<string[]>(filterValuesStorage.status ?? []);
+  const [assigneeFilters, setAssigneeFilters] = useState<string[]>(filterValuesStorage.assignees ?? []);
+  const [leaderFilters, setLeaderFilters] = useState<string[]>(filterValuesStorage.leader ?? []);
+  const [creatorFilters, setCreatorFilters] = useState<string[]>(filterValuesStorage.creator ?? []);
+  const [priorityFilters, setPriorityFilters] = useState<string[]>(filterValuesStorage.priority ?? []);
+  const [labelsFilters, setLabelsFilters] = useState<string[]>(filterValuesStorage.labels ?? []);
+  const [projectFilters, setProjectFilters] = useState<string[]>(filterValuesStorage.project ?? []);
+  const [teamFilters, setTeamFilters] = useState<string[]>(filterValuesStorage.team ?? []);
+  const [total, setTotal] = useState(0);
   const [filterValues, setFilterValues] = useState<FilterValues | null>(null);
 
+  useEffect(() => {
+    const filterValues = {
+      status: statusFilters,
+      assignee: assigneeFilters,
+      leader: leaderFilters,
+      creator: creatorFilters,
+      priority: priorityFilters,
+      labels: labelsFilters,
+      project: projectFilters,
+    };
+    let filtrostotal = Object.values(filterValues).filter((value) => value.length > 0);
+    setTotal(filtrostotal.length);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(filterValues));
+  }, [statusFilters, assigneeFilters, leaderFilters, creatorFilters, priorityFilters, labelsFilters, projectFilters]);
   return (
     <PlexoContext.Provider
       value={{
@@ -94,6 +130,7 @@ const PlexoProvider = ({ children }: PlexoProviderProps) => {
         setTeamFilters,
         filterValues,
         setFilterValues,
+        total
       }}
     >
       {children}
