@@ -62,7 +62,6 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
     } else {
       const res = await fetchCreateTask({
         title: title,
-        ownerId: "52fbe576-843d-47a5-a84c-79ce00d18265", //Bregy
         description: description.length ? description : null,
         status: statusName(status),
         priority: priorityName(priority),

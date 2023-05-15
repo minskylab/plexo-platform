@@ -85,7 +85,6 @@ subscription TasksSubscription {
 
 mutation NewTask(
   $title: String!
-  $ownerId: UUID!
   $description: String
   $status: String
   $priority: String
@@ -97,7 +96,6 @@ mutation NewTask(
 ) {
   createTask(
     title: $title
-    ownerId: $ownerId
     description: $description
     status: $status
     priority: $priority

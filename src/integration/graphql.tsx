@@ -53,7 +53,7 @@ export type Member = {
   projects: Array<Project>;
   role: MemberRole;
   tasks: Array<Task>;
-  teams: Array<Team>;
+  teams?: Maybe<Array<Team>>;
   updatedAt: Scalars["DateTime"];
 };
 
@@ -72,17 +72,26 @@ export enum MemberRole {
 
 export type MutationRoot = {
   __typename?: "MutationRoot";
+  createLabel: Label;
   createProject: Project;
   createTask: Task;
   createTeam: Team;
+  deleteLabel: Label;
   deleteMember: Member;
   deleteProject: Project;
   deleteTask: Task;
   deleteTeam: Team;
+  updateLabel: Label;
   updateMember: Member;
   updateProject: Project;
   updateTask: Task;
   updateTeam: Team;
+};
+
+export type MutationRootCreateLabelArgs = {
+  color?: InputMaybe<Scalars["String"]>;
+  description?: InputMaybe<Scalars["String"]>;
+  name: Scalars["String"];
 };
 
 export type MutationRootCreateProjectArgs = {
@@ -103,7 +112,6 @@ export type MutationRootCreateTaskArgs = {
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   labels?: InputMaybe<Array<Scalars["UUID"]>>;
   leadId?: InputMaybe<Scalars["UUID"]>;
-  ownerId: Scalars["UUID"];
   priority?: InputMaybe<Scalars["String"]>;
   projectId?: InputMaybe<Scalars["UUID"]>;
   status?: InputMaybe<Scalars["String"]>;
@@ -117,6 +125,10 @@ export type MutationRootCreateTeamArgs = {
   prefix?: InputMaybe<Scalars["String"]>;
   projects?: InputMaybe<Array<Scalars["UUID"]>>;
   visibility?: InputMaybe<Scalars["String"]>;
+};
+
+export type MutationRootDeleteLabelArgs = {
+  id: Scalars["UUID"];
 };
 
 export type MutationRootDeleteMemberArgs = {
@@ -133,6 +145,13 @@ export type MutationRootDeleteTaskArgs = {
 
 export type MutationRootDeleteTeamArgs = {
   id: Scalars["UUID"];
+};
+
+export type MutationRootUpdateLabelArgs = {
+  color?: InputMaybe<Scalars["String"]>;
+  description?: InputMaybe<Scalars["String"]>;
+  id: Scalars["UUID"];
+  name?: InputMaybe<Scalars["String"]>;
 };
 
 export type MutationRootUpdateMemberArgs = {
@@ -207,11 +226,13 @@ export type ProjectFilter = {
 export type QueryRoot = {
   __typename?: "QueryRoot";
   labels: Array<Label>;
+  me: Member;
   memberByEmail: Member;
   memberById: Member;
   members: Array<Member>;
   projectById: Project;
   projects: Array<Project>;
+  suggestNewTask: TaskSuggestionResult;
   taskById: Task;
   tasks: Array<Task>;
   teamById: Team;
@@ -236,6 +257,10 @@ export type QueryRootProjectByIdArgs = {
 
 export type QueryRootProjectsArgs = {
   filter?: InputMaybe<ProjectFilter>;
+};
+
+export type QueryRootSuggestNewTaskArgs = {
+  task: TaskSuggestion;
 };
 
 export type QueryRootTaskByIdArgs = {
@@ -283,7 +308,7 @@ export type Task = {
   labels: Array<Label>;
   leadId?: Maybe<Scalars["UUID"]>;
   leader?: Maybe<Member>;
-  owner: Member;
+  owner?: Maybe<Member>;
   ownerId: Scalars["UUID"];
   priority: TaskPriority;
   project?: Maybe<Project>;
@@ -319,13 +344,30 @@ export enum TaskStatus {
   ToDo = "TO_DO",
 }
 
+export type TaskSuggestion = {
+  description?: InputMaybe<Scalars["String"]>;
+  dueDate?: InputMaybe<Scalars["DateTime"]>;
+  priority?: InputMaybe<TaskPriority>;
+  status?: InputMaybe<TaskStatus>;
+  title?: InputMaybe<Scalars["String"]>;
+};
+
+export type TaskSuggestionResult = {
+  __typename?: "TaskSuggestionResult";
+  description: Scalars["String"];
+  dueDate: Scalars["DateTime"];
+  priority: TaskPriority;
+  status: TaskStatus;
+  title: Scalars["String"];
+};
+
 export type Team = {
   __typename?: "Team";
   createdAt: Scalars["DateTime"];
   id: Scalars["UUID"];
   members: Array<Member>;
   name: Scalars["String"];
-  owner: Member;
+  owner?: Maybe<Member>;
   ownerId: Scalars["UUID"];
   prefix?: Maybe<Scalars["String"]>;
   projects: Array<Project>;
@@ -503,7 +545,7 @@ export type TasksQuery = {
     projectId?: any | null;
     dueDate?: any | null;
     labels: Array<{ __typename?: "Label"; id: any; name: string; color?: string | null }>;
-    owner: { __typename?: "Member"; id: any };
+    owner?: { __typename?: "Member"; id: any } | null;
     assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
     project?: { __typename?: "Project"; id: any; name: string } | null;
     leader?: { __typename?: "Member"; id: any; name: string } | null;
@@ -554,7 +596,6 @@ export type TasksSubscriptionSubscription = {
 
 export type NewTaskMutationVariables = Exact<{
   title: Scalars["String"];
-  ownerId: Scalars["UUID"];
   description?: InputMaybe<Scalars["String"]>;
   status?: InputMaybe<Scalars["String"]>;
   priority?: InputMaybe<Scalars["String"]>;
@@ -609,7 +650,7 @@ export type TeamsQuery = {
     name: string;
     ownerId: any;
     visibility: TeamVisibility;
-    owner: { __typename?: "Member"; id: any };
+    owner?: { __typename?: "Member"; id: any } | null;
     members: Array<{ __typename?: "Member"; id: any }>;
   }>;
 };
@@ -1481,14 +1522,6 @@ export const NewTaskDocument = {
         },
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "ownerId" } },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-          },
-        },
-        {
-          kind: "VariableDefinition",
           variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
@@ -1551,11 +1584,6 @@ export const NewTaskDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "title" },
                 value: { kind: "Variable", name: { kind: "Name", value: "title" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "ownerId" },
-                value: { kind: "Variable", name: { kind: "Name", value: "ownerId" } },
               },
               {
                 kind: "Argument",
