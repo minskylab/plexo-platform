@@ -40,8 +40,10 @@ type PlexoContextProps = {
   setTeamFilters: (teamFilters: string[]) => void;
   filterValues: FilterValues | null;
   setFilterValues: (filterValues: FilterValues | null) => void;
-  total : any;
+  total: number;
 };
+
+const STORAGE_KEY = "filterValues";
 
 export const PlexoContext = createContext<PlexoContextProps | null>(null);
 
@@ -57,32 +59,37 @@ const PlexoProvider = ({ children }: PlexoProviderProps) => {
   const [navBarOpened, setNavBarOpened] = useState(false);
   const [newTaskOpened, setNewTaskOpened] = useState(false);
   const [createMoreTasks, setCreateMoreTasks] = useState(false);
+
   //Filters
 
-  const STORAGE_KEY = 'filterValues';
-
-
   let storedFilterValues;
+
   if (typeof window !== "undefined") {
     storedFilterValues = localStorage.getItem(STORAGE_KEY);
   }
- 
-  const filterValuesStorage = storedFilterValues ? JSON.parse(storedFilterValues) : {
-    status: [],
-    assignees: [],
-    leader: [],
-    creator: [],
-    priority: [],
-    labels: [],
-    project: [],
-    team: [],
-  };
+
+  const filterValuesStorage = storedFilterValues
+    ? JSON.parse(storedFilterValues)
+    : {
+        status: [],
+        assignee: [],
+        leader: [],
+        creator: [],
+        priority: [],
+        labels: [],
+        project: [],
+        team: [],
+      };
 
   const [statusFilters, setStatusFilters] = useState<string[]>(filterValuesStorage.status ?? []);
-  const [assigneeFilters, setAssigneeFilters] = useState<string[]>(filterValuesStorage.assignees ?? []);
+  const [assigneeFilters, setAssigneeFilters] = useState<string[]>(
+    filterValuesStorage.assignee ?? []
+  );
   const [leaderFilters, setLeaderFilters] = useState<string[]>(filterValuesStorage.leader ?? []);
   const [creatorFilters, setCreatorFilters] = useState<string[]>(filterValuesStorage.creator ?? []);
-  const [priorityFilters, setPriorityFilters] = useState<string[]>(filterValuesStorage.priority ?? []);
+  const [priorityFilters, setPriorityFilters] = useState<string[]>(
+    filterValuesStorage.priority ?? []
+  );
   const [labelsFilters, setLabelsFilters] = useState<string[]>(filterValuesStorage.labels ?? []);
   const [projectFilters, setProjectFilters] = useState<string[]>(filterValuesStorage.project ?? []);
   const [teamFilters, setTeamFilters] = useState<string[]>(filterValuesStorage.team ?? []);
@@ -99,10 +106,19 @@ const PlexoProvider = ({ children }: PlexoProviderProps) => {
       labels: labelsFilters,
       project: projectFilters,
     };
-    let filtrostotal = Object.values(filterValues).filter((value) => value.length > 0);
+    let filtrostotal = Object.values(filterValues).filter(value => value.length > 0);
     setTotal(filtrostotal.length);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filterValues));
-  }, [statusFilters, assigneeFilters, leaderFilters, creatorFilters, priorityFilters, labelsFilters, projectFilters]);
+  }, [
+    statusFilters,
+    assigneeFilters,
+    leaderFilters,
+    creatorFilters,
+    priorityFilters,
+    labelsFilters,
+    projectFilters,
+  ]);
+
   return (
     <PlexoContext.Provider
       value={{
@@ -130,7 +146,7 @@ const PlexoProvider = ({ children }: PlexoProviderProps) => {
         setTeamFilters,
         filterValues,
         setFilterValues,
-        total
+        total,
       }}
     >
       {children}
