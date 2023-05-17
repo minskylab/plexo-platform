@@ -12,8 +12,9 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
+import { useToggle } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
-import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
+import { AlertCircle, CalendarTime, Check, Subtask, X } from "tabler-icons-react";
 import { useState } from "react";
 
 import { DateLabel } from "lib/utils";
@@ -26,6 +27,7 @@ import { statusName, StatusSelector } from "./status";
 import { Member, Project } from "lib/types";
 import { priorityName, PrioritySelector } from "./priority";
 import { TaskStatus, TaskPriority } from "integration/graphql";
+import NewSubTasks from "./newSubtasks";
 
 type NewTaskProps = {
   newTaskOpened: boolean;
@@ -46,6 +48,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [project, setProject] = useState<Project | null>(null);
   const [dueDate, setDueDate] = useState<Date | null>(null);
+  const [showSubtasks, toggleSubtasks] = useToggle([false, true]);
 
   const { createTask, fetchCreateTask } = useActions();
 
@@ -166,7 +169,17 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
             <Calendar value={dueDate} onChange={setDueDate} />
           </Popover.Dropdown>
         </Popover>
+        <Button
+          compact
+          variant="light"
+          color={"gray"}
+          leftIcon={<Subtask size={16} />}
+          onClick={() => toggleSubtasks()}
+        >
+          <Text size={"xs"}>Subtasks</Text>
+        </Button>
       </Group>
+      {showSubtasks && <NewSubTasks />}
       <Group
         pt={"md"}
         position="right"
