@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
-/* import { useEffect } from "react"; */
+import { useEffect } from "react";
 
 const Plexo = () => {
-  /* const router = useRouter(); */
+  const router = useRouter();
 
-  /* useEffect(() => {
+  useEffect(() => {
     router.push("/tasks");
-  }, []); */
+  }, []);
 
   return <h1>Plexo</h1>;
 };
