@@ -2,6 +2,7 @@ import {
   LabelsDocument,
   MembersDocument,
   ProjectsDocument,
+  SuggestNewTaskDocument,
   TeamsDocument,
   MemberByIdDocument,
   TaskByIdDocument,
@@ -10,14 +11,25 @@ import {
 } from "integration/graphql";
 import { useQuery } from "urql";
 
+import { TaskStatus, TaskPriority } from "integration/graphql";
+
+
 interface UseDataProps {
   memberId?: string | undefined;
   taskId?: string | undefined;
   projectId?: string | undefined;
   teamId?: string | undefined;
+  taskDetails?: {
+    title: string | null;
+    description: string | null;
+    dueDate: Date | null;
+    status: TaskStatus | null;
+    priority: TaskPriority  | null;
+  }
+  fetchTaskSuggestion?: boolean;
 }
 
-export const useData = ({ memberId, taskId, projectId, teamId }: UseDataProps) => {
+export const useData = ({ memberId, taskId, projectId, teamId, taskDetails, fetchTaskSuggestion }: UseDataProps) => {
   //Queries
   const [{ data: projectsData, fetching: isLoadingProjects }] = useQuery({
     query: ProjectsDocument,
@@ -67,6 +79,20 @@ export const useData = ({ memberId, taskId, projectId, teamId }: UseDataProps) =
     },
   });
 
+  const [{ data: taskSuggestionData, fetching: isLoadingTaskSuggestion}, ] = useQuery({ 
+    pause: fetchTaskSuggestion? false : true,
+    query: SuggestNewTaskDocument,
+    variables: {
+      taskSuggestion:{
+        title: taskDetails?.title ? taskDetails?.title : null,
+        description: taskDetails?.description   ? taskDetails?.description : null,
+        dueDate: taskDetails?.dueDate ? taskDetails?.dueDate : null,
+        status: taskDetails?.status ?  taskDetails?.status : null ,
+        priority: taskDetails?.priority ? taskDetails?.priority : null,
+      }
+    },
+  });
+
   return {
     projectsData,
     isLoadingProjects,
@@ -84,5 +110,7 @@ export const useData = ({ memberId, taskId, projectId, teamId }: UseDataProps) =
     isLoadingProject,
     teamData,
     isLoadingTeam,
+    taskSuggestionData,
+    isLoadingTaskSuggestion,
   };
 };

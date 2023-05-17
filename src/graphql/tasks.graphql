@@ -91,7 +91,7 @@ mutation NewTask(
   $projectId: UUID
   $leadId: UUID
   $labels: [UUID!]
-  $assigness: [UUID!]
+  $assignees: [UUID!]
   $dueDate: DateTime
 ) {
   createTask(
@@ -102,7 +102,7 @@ mutation NewTask(
     projectId: $projectId
     leadId: $leadId
     labels: $labels
-    assignees: $assigness
+    assignees: $assignees
     dueDate: $dueDate
   ) {
     id
@@ -144,5 +144,15 @@ mutation UpdateTask(
   ) {
     id
     title
+  }
+}
+
+query SuggestNewTask($taskSuggestion : TaskSuggestion! ) {
+  suggestNewTask(task: $taskSuggestion){
+    title
+    description
+    status
+    priority
+    dueDate
   }
 }
