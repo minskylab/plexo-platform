@@ -29,7 +29,7 @@ import { Member, Project } from "lib/types";
 import { priorityName, PrioritySelector } from "./priority";
 import { TaskStatus, TaskPriority } from "integration/graphql";
 
-import { useData } from "lib/useData";
+import { useData } from "lib/hooks/useData";
 
 type NewTaskProps = {
   newTaskOpened: boolean;
