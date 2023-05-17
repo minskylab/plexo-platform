@@ -3,8 +3,8 @@ import { showNotification } from "@mantine/notifications";
 import { useState } from "react";
 import { Check, X } from "tabler-icons-react";
 
-import { useActions } from "lib/useActions";
-import { useData } from "lib/useData";
+import { useActions } from "lib/hooks/useActions";
+import { useData } from "lib/hooks/useData";
 import { MemberSelector } from "../Project/members";
 import { ProjectsSelector } from "./projects";
 

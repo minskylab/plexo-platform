@@ -15,7 +15,7 @@ import { showNotification } from "@mantine/notifications";
 import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
 import { useState } from "react";
 
-import { useActions } from "lib/useActions";
+import { useActions } from "lib/hooks/useActions";
 import { DateLabel } from "lib/utils";
 import { Member } from "lib/types";
 import { TeamSelector } from "./team";

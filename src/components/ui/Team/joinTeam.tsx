@@ -1,7 +1,7 @@
 import { Modal, useMantineTheme, TextInput, Divider, Text, NavLink } from "@mantine/core";
 import { Dna } from "tabler-icons-react";
 
-import { useData } from "lib/useData";
+import { useData } from "lib/hooks/useData";
 
 type JoinTeamProps = {
   joinTeamOpened: boolean;

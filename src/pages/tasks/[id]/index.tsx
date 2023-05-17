@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 import { useRouter } from "next/router";
 
-import { useData } from "lib/useData";
+import { useData } from "lib/hooks/useData";
 import { NextPageWithLayout } from "pages/_app";
 import TaskDetailPageContent from "modules/taskDetail";
 import Layout from "components/ui/Layout";

@@ -2,9 +2,9 @@ import { Button, Menu, Text, TextInput, Skeleton, Checkbox, Tooltip, Divider } f
 import { Users } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
-import { useData } from "lib/useData";
+import { useData } from "lib/hooks/useData";
 import { Member, TaskById } from "lib/types";
-import { useActions } from "lib/useActions";
+import { useActions } from "lib/hooks/useActions";
 import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";

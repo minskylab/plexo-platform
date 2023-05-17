@@ -1,7 +1,7 @@
 import { Button, Menu, Text, TextInput, Skeleton, Checkbox, Tooltip } from "@mantine/core";
 import { LayoutGrid } from "tabler-icons-react";
 
-import { useData } from "lib/useData";
+import { useData } from "lib/hooks/useData";
 
 export const ProjectName = (name: string | undefined) => {
   return name ? name : "Project";

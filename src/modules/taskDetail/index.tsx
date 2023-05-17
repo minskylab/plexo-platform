@@ -36,7 +36,7 @@ import { assigneesId, GenericAssigneesMenu } from "components/ui/Task/assignees"
 import { LeadName } from "components/ui/Project/lead";
 import { TaskMenu } from "components/ui/Task/menu";
 import { TaskById } from "lib/types";
-import { useActions } from "lib/useActions";
+import { useActions } from "lib/hooks/useActions";
 import { usePlexoContext } from "context/PlexoContext";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 

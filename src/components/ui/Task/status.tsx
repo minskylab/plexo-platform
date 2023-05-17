@@ -13,7 +13,7 @@ import {
   Divider,
 } from "@mantine/core";
 import { TaskStatus } from "integration/graphql";
-import { useActions } from "lib/useActions";
+import { useActions } from "lib/hooks/useActions";
 import { TaskById } from "lib/types";
 import {
   Circle,

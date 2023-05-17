@@ -16,8 +16,8 @@ import { LayoutGrid } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
 import { Project, TaskById } from "lib/types";
-import { useData } from "lib/useData";
-import { useActions } from "lib/useActions";
+import { useData } from "lib/hooks/useData";
+import { useActions } from "lib/hooks/useActions";
 import { statusName } from "./status";
 import { priorityName } from "./priority";
 import { assigneesId } from "./assignees";

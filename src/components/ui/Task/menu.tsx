@@ -2,7 +2,7 @@ import { Menu, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
 import { showNotification } from "@mantine/notifications";
 
-import { useActions } from "lib/useActions";
+import { useActions } from "lib/hooks/useActions";
 import { Task, TaskById } from "lib/types";
 import {
   AntennaBars5,
