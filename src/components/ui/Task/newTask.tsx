@@ -162,20 +162,12 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       }}
       shadow="md"
       title={
-        <Group spacing={8}>{
-          !isLoadingTaskSuggestion ?
-          <Tooltip label="AI Suggestion" position="bottom"  onClick={applyAiTaskSuggestion}>
-          <ActionIcon variant="light" color="orange"   >
+        <Group spacing={8}>
+          <Tooltip label="AI Suggestion" position="bottom" >
+          <ActionIcon variant="light" color="orange"   onClick={applyAiTaskSuggestion} loading={isLoadingTaskSuggestion}>
             <Robot size="1rem"  />
           </ActionIcon>
-        </Tooltip> :
-        <Tooltip label="AI Suggestion" position="bottom"  >
-          <ActionIcon variant="light" color="gray"   >
-            <LoadingOverlay visible={isLoadingTaskSuggestion} />
-          </ActionIcon>
-        </Tooltip>
-        }
-          
+        </Tooltip> 
           <Text size={"sm"}>New Task</Text>
         </Group>
       }
