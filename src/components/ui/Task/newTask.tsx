@@ -11,12 +11,11 @@ import {
   Popover,
   Tooltip,
   ActionIcon,
-  LoadingOverlay
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { useToggle } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
-import { AlertCircle, CalendarTime, Check, Robot, Subtask, X } from "tabler-icons-react";
+import { CalendarTime, Check, Robot, Subtask, X } from "tabler-icons-react";
 import { useState, useEffect } from "react";
 
 import { DateLabel } from "lib/utils";
@@ -30,7 +29,6 @@ import { Member, Project } from "lib/types";
 import { priorityName, PrioritySelector } from "./priority";
 import { TaskStatus, TaskPriority } from "integration/graphql";
 import NewSubTasks from "./newSubtasks";
-
 import { useData } from "lib/hooks/useData";
 
 type NewTaskProps = {
@@ -55,17 +53,18 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
   const [showSubtasks, toggleSubtasks] = useToggle([false, true]);
   const [fetchTaskSuggestion, setFetchTaskSuggestion] = useState(false);
 
-
   const { createTask, fetchCreateTask } = useActions();
 
-  const { taskSuggestionData, isLoadingTaskSuggestion } = useData({taskDetails: {
-    title: title ? title : null,
-    description: description ? description : null,
-    status: status == TaskStatus.Backlog ? null : status,
-    priority: priority == TaskPriority.None ? null : priority,
-    dueDate: dueDate ? dueDate : null,
-  }, fetchTaskSuggestion: fetchTaskSuggestion});
-
+  const { taskSuggestionData, isLoadingTaskSuggestion } = useData({
+    taskDetails: {
+      title: title ? title : null,
+      description: description ? description : null,
+      status: status == TaskStatus.Backlog ? null : status,
+      priority: priority == TaskPriority.None ? null : priority,
+      dueDate: dueDate ? dueDate : null,
+    },
+    fetchTaskSuggestion: fetchTaskSuggestion,
+  });
 
   useEffect(() => {
     if (!isLoadingTaskSuggestion && taskSuggestionData) {
@@ -79,58 +78,44 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
 
       setFetchTaskSuggestion(false);
     }
-    
   }, [isLoadingTaskSuggestion, taskSuggestionData]);
 
   const applyAiTaskSuggestion = async () => {
     setFetchTaskSuggestion(true);
   };
 
-
-
   const onCreateTask = async () => {
-    if (!title.length) {
-      showNotification({
-        id: "titleRequired",
-        autoClose: 5000,
-        title: "Title required",
-        message: "Please enter a title before submitting",
-        color: "yellow",
-        icon: <AlertCircle size={18} />,
-      });
-    } else {
-      const res = await fetchCreateTask({
-        title: title,
-        description: description.length ? description : null,
-        status: statusName(status),
-        priority: priorityName(priority),
-        dueDate: dueDate,
-        projectId: project?.id,
-        leadId: lead?.id, //revisar
-        labels: selectedLabels,
-        assignees: selectedAssignees,
-      });
+    const res = await fetchCreateTask({
+      title: title,
+      description: description.length ? description : null,
+      status: statusName(status),
+      priority: priorityName(priority),
+      dueDate: dueDate,
+      projectId: project?.id,
+      leadId: lead?.id, //revisar
+      labels: selectedLabels,
+      assignees: selectedAssignees,
+    });
 
-      if (res.data) {
-        setNewTaskOpened(false); //Close modal
-        resetInitialValues(); //Reset values
-        showNotification({
-          autoClose: 5000,
-          title: "Task created",
-          message: res.data.createTask.title,
-          color: "blue",
-          icon: <Check size={18} />,
-        });
-      }
-      if (res.error) {
-        showNotification({
-          autoClose: 5000,
-          title: "Error!",
-          message: "Try again",
-          color: "red",
-          icon: <X size={18} />,
-        });
-      }
+    if (res.data) {
+      setNewTaskOpened(false); //Close modal
+      resetInitialValues(); //Reset values
+      showNotification({
+        autoClose: 5000,
+        title: "Task created",
+        message: res.data.createTask.title,
+        color: "blue",
+        icon: <Check size={18} />,
+      });
+    }
+    if (res.error) {
+      showNotification({
+        autoClose: 5000,
+        title: "Error!",
+        message: "Try again",
+        color: "red",
+        icon: <X size={18} />,
+      });
     }
   };
 
@@ -146,9 +131,6 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
     setDueDate(null);
   };
 
-
-    
-
   return (
     <Modal
       overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
@@ -163,11 +145,16 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       shadow="md"
       title={
         <Group spacing={8}>
-          <Tooltip label="AI Suggestion" position="bottom" >
-          <ActionIcon variant="light" color="orange"   onClick={applyAiTaskSuggestion} loading={isLoadingTaskSuggestion}>
-            <Robot size="1rem"  />
-          </ActionIcon>
-        </Tooltip> 
+          <Tooltip label="AI Suggestion" position="bottom">
+            <ActionIcon
+              variant="light"
+              color="orange"
+              onClick={applyAiTaskSuggestion}
+              loading={isLoadingTaskSuggestion}
+            >
+              <Robot size="1rem" />
+            </ActionIcon>
+          </Tooltip>
           <Text size={"sm"}>New Task</Text>
         </Group>
       }
@@ -244,6 +231,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
         <Button
           compact
           variant="filled"
+          disabled={title.length ? false : true}
           loading={createTask.fetching}
           onClick={() => {
             onCreateTask();
