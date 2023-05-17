@@ -11,11 +11,12 @@ import {
   Popover,
   Tooltip,
   ActionIcon,
+  LoadingOverlay
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { showNotification } from "@mantine/notifications";
 import { AlertCircle, CalendarTime, Check, Robot, X } from "tabler-icons-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { DateLabel } from "lib/utils";
 import { useActions } from "lib/useActions";
@@ -27,6 +28,8 @@ import { statusName, StatusSelector } from "./status";
 import { Member, Project } from "lib/types";
 import { priorityName, PrioritySelector } from "./priority";
 import { TaskStatus, TaskPriority } from "integration/graphql";
+
+import { useData } from "lib/useData";
 
 type NewTaskProps = {
   newTaskOpened: boolean;
@@ -47,8 +50,39 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [project, setProject] = useState<Project | null>(null);
   const [dueDate, setDueDate] = useState<Date | null>(null);
+  const [fetchTaskSuggestion, setFetchTaskSuggestion] = useState(false);
 
   const { createTask, fetchCreateTask } = useActions();
+
+  const { taskSuggestionData, isLoadingTaskSuggestion } = useData({taskDetails: {
+    title: title ? title : null,
+    description: description ? description : null,
+    status: status == TaskStatus.Backlog ? null : status,
+    priority: priority == TaskPriority.None ? null : priority,
+    dueDate: dueDate ? dueDate : null,
+  }, fetchTaskSuggestion: fetchTaskSuggestion});
+
+
+  useEffect(() => {
+    if (!isLoadingTaskSuggestion && taskSuggestionData) {
+      const res = taskSuggestionData;
+
+      setTitle(res?.suggestNewTask.title || title);
+      setDescription(res?.suggestNewTask.description || description);
+      setStatus(res?.suggestNewTask.status || status);
+      setPriority(res?.suggestNewTask.priority || priority);
+      setDueDate(res?.suggestNewTask.dueDate || dueDate);
+
+      setFetchTaskSuggestion(false);
+    }
+    
+  }, [isLoadingTaskSuggestion, taskSuggestionData]);
+
+  const applyAiTaskSuggestion = async () => {
+    setFetchTaskSuggestion(true);
+  };
+
+
 
   const onCreateTask = async () => {
     if (!title.length) {
@@ -63,7 +97,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
     } else {
       const res = await fetchCreateTask({
         title: title,
-        ownerId: "52fbe576-843d-47a5-a84c-79ce00d18265", //Bregy
+        //ownerId: "52fbe576-843d-47a5-a84c-79ce00d18265", //Bregy
         description: description.length ? description : null,
         status: statusName(status),
         priority: priorityName(priority),
@@ -71,7 +105,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
         projectId: project?.id,
         leadId: lead?.id, //revisar
         labels: selectedLabels,
-        assigness: selectedAssignees,
+        assignees: selectedAssignees,
       });
 
       if (res.data) {
@@ -109,6 +143,9 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
     setDueDate(null);
   };
 
+
+    
+
   return (
     <Modal
       overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
@@ -122,12 +159,20 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       }}
       shadow="md"
       title={
-        <Group spacing={8}>
-          <Tooltip label="AI Suggestion" position="bottom">
-            <ActionIcon variant="light" color="orange">
-              <Robot size="1rem" />
-            </ActionIcon>
-          </Tooltip>
+        <Group spacing={8}>{
+          !isLoadingTaskSuggestion ?
+          <Tooltip label="AI Suggestion" position="bottom"  onClick={applyAiTaskSuggestion}>
+          <ActionIcon variant="light" color="orange"   >
+            <Robot size="1rem"  />
+          </ActionIcon>
+        </Tooltip> :
+        <Tooltip label="AI Suggestion" position="bottom"  >
+          <ActionIcon variant="light" color="gray"   >
+            <LoadingOverlay visible={isLoadingTaskSuggestion} />
+          </ActionIcon>
+        </Tooltip>
+        }
+          
           <Text size={"sm"}>New Task</Text>
         </Group>
       }

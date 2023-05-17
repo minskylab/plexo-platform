@@ -85,26 +85,24 @@ subscription TasksSubscription {
 
 mutation NewTask(
   $title: String!
-  $ownerId: UUID!
   $description: String
   $status: String
   $priority: String
   $projectId: UUID
   $leadId: UUID
   $labels: [UUID!]
-  $assigness: [UUID!]
+  $assignees: [UUID!]
   $dueDate: DateTime
 ) {
   createTask(
     title: $title
-    ownerId: $ownerId
     description: $description
     status: $status
     priority: $priority
     projectId: $projectId
     leadId: $leadId
     labels: $labels
-    assignees: $assigness
+    assignees: $assignees
     dueDate: $dueDate
   ) {
     id
@@ -146,5 +144,15 @@ mutation UpdateTask(
   ) {
     id
     title
+  }
+}
+
+query SuggestNewTask($taskSuggestion : TaskSuggestion! ) {
+  suggestNewTask(task: $taskSuggestion){
+    title
+    description
+    status
+    priority
+    dueDate
   }
 }
