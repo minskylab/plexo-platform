@@ -5,16 +5,18 @@ import {
   Textarea,
   Button,
   Switch,
-  Box,
-  useMantineTheme,
   Text,
   Popover,
   Tooltip,
+  ActionIcon,
+  createStyles,
+  Stack,
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
+import { useToggle } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
-import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
-import { useState } from "react";
+import { CalendarTime, Check, Robot, Subtask, X } from "tabler-icons-react";
+import { useState, useEffect } from "react";
 
 import { DateLabel } from "lib/utils";
 import { useActions } from "lib/hooks/useActions";
@@ -26,6 +28,8 @@ import { statusName, StatusSelector } from "./status";
 import { Member, Project } from "lib/types";
 import { priorityName, PrioritySelector } from "./priority";
 import { TaskStatus, TaskPriority } from "integration/graphql";
+import NewSubTasks from "./newSubtasks";
+import { useData } from "lib/hooks/useData";
 
 type NewTaskProps = {
   newTaskOpened: boolean;
@@ -34,8 +38,18 @@ type NewTaskProps = {
   setCreateMore: (createMore: boolean) => void;
 };
 
+const useStyles = createStyles(theme => ({
+  input: {
+    backgroundColor: "transparent",
+    borderColor: "transparent",
+    "&:focus-within": {
+      borderColor: theme.colors.brand[6],
+    },
+  },
+}));
+
 const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }: NewTaskProps) => {
-  const theme = useMantineTheme();
+  const { classes, theme } = useStyles();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -46,52 +60,72 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [project, setProject] = useState<Project | null>(null);
   const [dueDate, setDueDate] = useState<Date | null>(null);
+  const [showSubtasks, toggleSubtasks] = useToggle([false, true]);
+  const [fetchTaskSuggestion, setFetchTaskSuggestion] = useState(false);
 
   const { createTask, fetchCreateTask } = useActions();
 
-  const onCreateTask = async () => {
-    if (!title.length) {
-      showNotification({
-        id: "titleRequired",
-        autoClose: 5000,
-        title: "Title required",
-        message: "Please enter a title before submitting",
-        color: "yellow",
-        icon: <AlertCircle size={18} />,
-      });
-    } else {
-      const res = await fetchCreateTask({
-        title: title,
-        description: description.length ? description : null,
-        status: statusName(status),
-        priority: priorityName(priority),
-        dueDate: dueDate,
-        projectId: project?.id,
-        leadId: lead?.id, //revisar
-        labels: selectedLabels,
-        assigness: selectedAssignees,
-      });
+  const { taskSuggestionData, isLoadingTaskSuggestion } = useData({
+    taskDetails: {
+      title: title ? title : null,
+      description: description ? description : null,
+      status: status == TaskStatus.Backlog ? null : status,
+      priority: priority == TaskPriority.None ? null : priority,
+      dueDate: dueDate ? dueDate : null,
+    },
+    fetchTaskSuggestion: fetchTaskSuggestion,
+  });
 
-      if (res.data) {
-        setNewTaskOpened(false); //Close modal
-        resetInitialValues(); //Reset values
-        showNotification({
-          autoClose: 5000,
-          title: "Task created",
-          message: res.data.createTask.title,
-          color: "blue",
-          icon: <Check size={18} />,
-        });
-      }
-      if (res.error) {
-        showNotification({
-          autoClose: 5000,
-          title: "Error!",
-          message: "Try again",
-          color: "red",
-          icon: <X size={18} />,
-        });
-      }
+  useEffect(() => {
+    if (!isLoadingTaskSuggestion && taskSuggestionData) {
+      const res = taskSuggestionData;
+
+      setTitle(res?.suggestNewTask.title || title);
+      setDescription(res?.suggestNewTask.description || description);
+      setStatus(res?.suggestNewTask.status || status);
+      setPriority(res?.suggestNewTask.priority || priority);
+      setDueDate(res?.suggestNewTask.dueDate || dueDate);
+
+      setFetchTaskSuggestion(false);
+    }
+  }, [isLoadingTaskSuggestion, taskSuggestionData]);
+
+  const applyAiTaskSuggestion = async () => {
+    setFetchTaskSuggestion(true);
+  };
+
+  const onCreateTask = async () => {
+    const res = await fetchCreateTask({
+      title: title,
+      description: description.length ? description : null,
+      status: statusName(status),
+      priority: priorityName(priority),
+      dueDate: dueDate,
+      projectId: project?.id,
+      leadId: lead?.id, //revisar
+      labels: selectedLabels,
+      assignees: selectedAssignees,
+    });
+
+    if (res.data) {
+      setNewTaskOpened(false); //Close modal
+      resetInitialValues(); //Reset values
+      showNotification({
+        autoClose: 5000,
+        title: "Task created",
+        message: res.data.createTask.title,
+        color: "blue",
+        icon: <Check size={18} />,
+      });
+    }
+    if (res.error) {
+      showNotification({
+        autoClose: 5000,
+        title: "Error!",
+        message: "Try again",
+        color: "red",
+        icon: <X size={18} />,
+      });
     }
   };
 
@@ -109,64 +143,95 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
 
   return (
     <Modal
-      overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
-      overlayOpacity={0.5}
-      transition={"slide-up"}
-      size={"xl"}
+      closeOnEscape
       opened={newTaskOpened}
       onClose={() => {
         setNewTaskOpened(false);
         resetInitialValues();
       }}
-      shadow="md"
       title={
         <Group spacing={8}>
+          <Tooltip label="AI Suggestion" position="bottom">
+            <ActionIcon
+              variant="light"
+              color="brand"
+              onClick={applyAiTaskSuggestion}
+              loading={isLoadingTaskSuggestion}
+            >
+              <Robot size="1rem" />
+            </ActionIcon>
+          </Tooltip>
           <Text size={"sm"}>New Task</Text>
         </Group>
       }
+      transition={"slide-up"}
+      size={"xl"}
+      shadow="md"
+      overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
+      overlayOpacity={0.5}
     >
-      <Box>
+      <Stack spacing={10}>
         <TextInput
+          data-autofocus
           placeholder="Task Title"
-          variant="unstyled"
           size="lg"
-          autoFocus
           value={title}
           onChange={e => setTitle(e.target.value)}
+          classNames={{
+            input: classes.input,
+          }}
         />
         <Textarea
+          autosize
           placeholder="Add description..."
-          variant="unstyled"
           size="sm"
+          minRows={2}
           value={description}
           onChange={e => setDescription(e.target.value)}
-          autosize
-          minRows={2}
+          classNames={{
+            input: classes.input,
+          }}
         />
-      </Box>
-      <Group spacing={6} mb={"md"}>
-        <StatusSelector status={status} setStatus={setStatus} />
-        <PrioritySelector priority={priority} setPriority={setPriority} />
-        <LeadTaskSelector lead={lead} setLead={setLead} />
-        <AssigneesSelector
-          selectedAssignees={selectedAssignees}
-          setSelectedAssignees={setSelectedAssignees}
-        />
-        <LabelsSelector selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels} />
-        <ProjectSelector project={project} setProject={setProject} />
-        <Popover position="bottom" shadow="md">
-          <Popover.Target>
-            <Tooltip label="Set due date" position="bottom">
-              <Button compact variant="light" color={"gray"} leftIcon={<CalendarTime size={16} />}>
-                <Text size={"xs"}>{DateLabel(dueDate, "Due date")}</Text>
-              </Button>
-            </Tooltip>
-          </Popover.Target>
-          <Popover.Dropdown>
-            <Calendar value={dueDate} onChange={setDueDate} />
-          </Popover.Dropdown>
-        </Popover>
-      </Group>
+        <Group spacing={6} mb={"md"}>
+          <StatusSelector status={status} setStatus={setStatus} />
+          <PrioritySelector priority={priority} setPriority={setPriority} />
+          <LeadTaskSelector lead={lead} setLead={setLead} />
+          <AssigneesSelector
+            selectedAssignees={selectedAssignees}
+            setSelectedAssignees={setSelectedAssignees}
+          />
+          <LabelsSelector selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels} />
+          <ProjectSelector project={project} setProject={setProject} />
+          <Popover position="bottom" shadow="md">
+            <Popover.Target>
+              <Tooltip label="Set due date" position="bottom">
+                <Button
+                  compact
+                  variant="light"
+                  color={"gray"}
+                  leftIcon={<CalendarTime size={16} />}
+                >
+                  <Text size={"xs"}>{DateLabel(dueDate, "Due date")}</Text>
+                </Button>
+              </Tooltip>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <Calendar value={dueDate} onChange={setDueDate} />
+            </Popover.Dropdown>
+          </Popover>
+          <Button
+            compact
+            variant="light"
+            color={"gray"}
+            leftIcon={<Subtask size={16} />}
+            onClick={() => toggleSubtasks()}
+          >
+            <Text size={"xs"}>Subtasks</Text>
+          </Button>
+        </Group>
+      </Stack>
+
+      {showSubtasks && <NewSubTasks />}
       <Group
         pt={"md"}
         position="right"
@@ -187,6 +252,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
         <Button
           compact
           variant="filled"
+          disabled={title.length ? false : true}
           loading={createTask.fetching}
           onClick={() => {
             onCreateTask();

@@ -1,10 +1,20 @@
 import { Menu, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
 import { showNotification } from "@mantine/notifications";
-import { Check, Trash, X } from "tabler-icons-react";
 
 import { useActions } from "lib/hooks/useActions";
 import { Task, TaskById } from "lib/types";
+import {
+  AntennaBars5,
+  ChartPie2,
+  Check,
+  LayoutGrid,
+  Robot,
+  Tag,
+  Trash,
+  UserCircle,
+  X,
+} from "tabler-icons-react";
 
 type TaskMenuProps = {
   children: React.ReactNode;
@@ -59,6 +69,9 @@ export const TaskMenu = ({ children, task }: TaskMenuProps) => {
         <Menu.Item py={7}  icon={<Tag size={18} />}>Labels</Menu.Item>
         <Menu.Item py={7}  icon={<LayoutGrid size={18} />}>Project</Menu.Item>
         <Menu.Divider /> */}
+        <Menu.Item py={7} icon={<Robot size={18} />}>
+          Auto Divide
+        </Menu.Item>
         <Menu.Item py={7} icon={<Trash size={16} />} onClick={openDeleteModal}>
           Delete
         </Menu.Item>

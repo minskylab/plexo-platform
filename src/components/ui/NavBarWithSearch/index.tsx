@@ -23,6 +23,7 @@ import NewTeam from "../Team/newTeam";
 import { UserButton } from "../UserButton";
 import ProjectsList from "./projects";
 import TeamsList from "./teams";
+import { useData } from "lib/hooks/useData";
 
 const useStyles = createStyles(theme => ({
   navbar: {
@@ -136,6 +137,7 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
   const [section, setSection] = useState<"teams" | "projects">("teams");
   const [newProjectOpened, setNewProjectOpened] = useState(false);
   const [newTeamOpened, setNewTeamOpened] = useState(false);
+  const { userData, isLoadingUser } = useData({});
 
   const mainLinks = links.map(link => (
     <UnstyledButton
@@ -167,12 +169,7 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
         hidden={!openedNav}
       >
         <Navbar.Section className={classes.section} mb="sm">
-          <UserButton
-            image="https://uploads.linear.app/4389bd24-0b3b-438e-84be-56d33b0a8c76/ec023124-ed27-491a-a2d0-e2ca9370b620/256x256/a8a546b8-5668-43ce-be0e-ce4915f747dc"
-            name="Minsky"
-            email="Bregy Malpartida"
-            icon={<IconSelector size={14} stroke={1.5} />}
-          />
+          <UserButton user={userData?.me} isLoadingUser={isLoadingUser} />
         </Navbar.Section>
 
         <Navbar.Section className={classes.section} mb="sm">

@@ -602,7 +602,7 @@ export type NewTaskMutationVariables = Exact<{
   projectId?: InputMaybe<Scalars["UUID"]>;
   leadId?: InputMaybe<Scalars["UUID"]>;
   labels?: InputMaybe<Array<Scalars["UUID"]> | Scalars["UUID"]>;
-  assigness?: InputMaybe<Array<Scalars["UUID"]> | Scalars["UUID"]>;
+  assignees?: InputMaybe<Array<Scalars["UUID"]> | Scalars["UUID"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]>;
 }>;
 
@@ -636,6 +636,22 @@ export type UpdateTaskMutationVariables = Exact<{
 export type UpdateTaskMutation = {
   __typename?: "MutationRoot";
   updateTask: { __typename?: "Task"; id: any; title: string };
+};
+
+export type SuggestNewTaskQueryVariables = Exact<{
+  taskSuggestion: TaskSuggestion;
+}>;
+
+export type SuggestNewTaskQuery = {
+  __typename?: "QueryRoot";
+  suggestNewTask: {
+    __typename?: "TaskSuggestionResult";
+    title: string;
+    description: string;
+    status: TaskStatus;
+    priority: TaskPriority;
+    dueDate: any;
+  };
 };
 
 export type TeamsQueryVariables = Exact<{ [key: string]: never }>;
@@ -682,6 +698,13 @@ export type NewTeamMutationVariables = Exact<{
 export type NewTeamMutation = {
   __typename?: "MutationRoot";
   createTeam: { __typename?: "Team"; id: any; name: string };
+};
+
+export type UserQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserQuery = {
+  __typename?: "QueryRoot";
+  me: { __typename?: "Member"; id: any; name: string; email: string; photoUrl?: string | null };
 };
 
 export const LabelsDocument = {
@@ -1558,7 +1581,7 @@ export const NewTaskDocument = {
         },
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "assigness" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "assignees" } },
           type: {
             kind: "ListType",
             type: {
@@ -1618,7 +1641,7 @@ export const NewTaskDocument = {
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "assignees" },
-                value: { kind: "Variable", name: { kind: "Name", value: "assigness" } },
+                value: { kind: "Variable", name: { kind: "Name", value: "assignees" } },
               },
               {
                 kind: "Argument",
@@ -1828,6 +1851,52 @@ export const UpdateTaskDocument = {
     },
   ],
 } as unknown as DocumentNode<UpdateTaskMutation, UpdateTaskMutationVariables>;
+export const SuggestNewTaskDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "SuggestNewTask" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "taskSuggestion" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "TaskSuggestion" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "suggestNewTask" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "task" },
+                value: { kind: "Variable", name: { kind: "Name", value: "taskSuggestion" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "status" } },
+                { kind: "Field", name: { kind: "Name", value: "priority" } },
+                { kind: "Field", name: { kind: "Name", value: "dueDate" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SuggestNewTaskQuery, SuggestNewTaskQueryVariables>;
 export const TeamsDocument = {
   kind: "Document",
   definitions: [
@@ -2038,3 +2107,31 @@ export const NewTeamDocument = {
     },
   ],
 } as unknown as DocumentNode<NewTeamMutation, NewTeamMutationVariables>;
+export const UserDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "User" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "me" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+                { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UserQuery, UserQueryVariables>;

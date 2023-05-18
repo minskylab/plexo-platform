@@ -10,7 +10,7 @@ import {
   Anchor,
 } from "@mantine/core";
 import { usePlexoContext } from "context/PlexoContext";
-import { useMemo } from "react";
+import { useMemo , useEffect, useState} from "react";
 import {
   Affiliate,
   AntennaBars5,
@@ -66,7 +66,10 @@ const FilterMenu = () => {
     setProjectFilters,
     teamFilters,
     setTeamFilters,
+    total
   } = usePlexoContext();
+  
+  
 
   const handleClearFilters = () => {
     setStatusFilters([]);
@@ -79,30 +82,31 @@ const FilterMenu = () => {
     setTeamFilters([]);
   };
 
-  const totalFilters = useMemo(() => {
-    const filters = [
-      statusFilters,
-      assigneeFilters,
-      leaderFilters,
-      creatorFilters,
-      priorityFilters,
-      labelsFilters,
-      projectFilters,
-    ];
 
-    return filters.reduce((acc, curr) => {
-      const total = curr.length ? 1 : 0;
-      return acc + total;
-    }, 0);
-  }, [
-    statusFilters,
-    assigneeFilters,
-    leaderFilters,
-    creatorFilters,
-    priorityFilters,
-    labelsFilters,
-    projectFilters,
-  ]);
+//  const totalFilters = useMemo(() => {
+//    const filters = [
+//      statusFilters,
+//      assigneeFilters,
+//      leaderFilters,
+//      creatorFilters,
+//      priorityFilters,
+//      labelsFilters,
+//      projectFilters,
+//    ];
+//
+//    return filters.reduce((acc, curr) => {
+//      const total = curr.length ? 1 : 0;
+//      return acc + total;
+//    }, 0);
+//  }, [
+//    statusFilters,
+//    assigneeFilters,
+//    leaderFilters,
+//    creatorFilters,
+//    priorityFilters,
+//    labelsFilters,
+//    projectFilters,
+//  ]);
 
   return (
     <Popover
@@ -121,9 +125,9 @@ const FilterMenu = () => {
           color={"gray"}
           leftIcon={<Filter size={16} color={theme.colors.brand[6]} />}
           rightIcon={
-            totalFilters && (
+            total != 0 && (
               <Badge size="sm" variant="light">
-                {totalFilters}
+                {total}
               </Badge>
             )
           }

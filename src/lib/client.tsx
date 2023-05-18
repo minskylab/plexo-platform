@@ -25,7 +25,7 @@ export const URQLClient = () => {
     url: "https://plexo-minsky.internal.minsky.cc/graphql",
     fetchOptions: {
       headers: {
-        Authorization: "Bearer xxx",
+        Authorization: process.env.NEXT_PUBLIC_PLEXO_TOKEN || "",
       },
     },
     exchanges: [
