@@ -5,12 +5,12 @@ import {
   Textarea,
   Button,
   Switch,
-  Box,
-  useMantineTheme,
   Text,
   Popover,
   Tooltip,
   ActionIcon,
+  createStyles,
+  Stack,
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { useToggle } from "@mantine/hooks";
@@ -38,8 +38,18 @@ type NewTaskProps = {
   setCreateMore: (createMore: boolean) => void;
 };
 
+const useStyles = createStyles(theme => ({
+  input: {
+    backgroundColor: "transparent",
+    borderColor: "transparent",
+    "&:focus-within": {
+      borderColor: theme.colors.brand[6],
+    },
+  },
+}));
+
 const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }: NewTaskProps) => {
-  const theme = useMantineTheme();
+  const { classes, theme } = useStyles();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -133,22 +143,18 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
 
   return (
     <Modal
-      overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
-      overlayOpacity={0.5}
-      transition={"slide-up"}
-      size={"xl"}
+      closeOnEscape
       opened={newTaskOpened}
       onClose={() => {
         setNewTaskOpened(false);
         resetInitialValues();
       }}
-      shadow="md"
       title={
         <Group spacing={8}>
           <Tooltip label="AI Suggestion" position="bottom">
             <ActionIcon
               variant="light"
-              color="orange"
+              color="brand"
               onClick={applyAiTaskSuggestion}
               loading={isLoadingTaskSuggestion}
             >
@@ -158,58 +164,73 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
           <Text size={"sm"}>New Task</Text>
         </Group>
       }
+      transition={"slide-up"}
+      size={"xl"}
+      shadow="md"
+      overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
+      overlayOpacity={0.5}
     >
-      <Box>
+      <Stack spacing={10}>
         <TextInput
+          data-autofocus
           placeholder="Task Title"
-          variant="unstyled"
           size="lg"
-          autoFocus
           value={title}
           onChange={e => setTitle(e.target.value)}
+          classNames={{
+            input: classes.input,
+          }}
         />
         <Textarea
+          autosize
           placeholder="Add description..."
-          variant="unstyled"
           size="sm"
+          minRows={2}
           value={description}
           onChange={e => setDescription(e.target.value)}
-          autosize
-          minRows={2}
+          classNames={{
+            input: classes.input,
+          }}
         />
-      </Box>
-      <Group spacing={6} mb={"md"}>
-        <StatusSelector status={status} setStatus={setStatus} />
-        <PrioritySelector priority={priority} setPriority={setPriority} />
-        <LeadTaskSelector lead={lead} setLead={setLead} />
-        <AssigneesSelector
-          selectedAssignees={selectedAssignees}
-          setSelectedAssignees={setSelectedAssignees}
-        />
-        <LabelsSelector selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels} />
-        <ProjectSelector project={project} setProject={setProject} />
-        <Popover position="bottom" shadow="md">
-          <Popover.Target>
-            <Tooltip label="Set due date" position="bottom">
-              <Button compact variant="light" color={"gray"} leftIcon={<CalendarTime size={16} />}>
-                <Text size={"xs"}>{DateLabel(dueDate, "Due date")}</Text>
-              </Button>
-            </Tooltip>
-          </Popover.Target>
-          <Popover.Dropdown>
-            <Calendar value={dueDate} onChange={setDueDate} />
-          </Popover.Dropdown>
-        </Popover>
-        <Button
-          compact
-          variant="light"
-          color={"gray"}
-          leftIcon={<Subtask size={16} />}
-          onClick={() => toggleSubtasks()}
-        >
-          <Text size={"xs"}>Subtasks</Text>
-        </Button>
-      </Group>
+        <Group spacing={6} mb={"md"}>
+          <StatusSelector status={status} setStatus={setStatus} />
+          <PrioritySelector priority={priority} setPriority={setPriority} />
+          <LeadTaskSelector lead={lead} setLead={setLead} />
+          <AssigneesSelector
+            selectedAssignees={selectedAssignees}
+            setSelectedAssignees={setSelectedAssignees}
+          />
+          <LabelsSelector selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels} />
+          <ProjectSelector project={project} setProject={setProject} />
+          <Popover position="bottom" shadow="md">
+            <Popover.Target>
+              <Tooltip label="Set due date" position="bottom">
+                <Button
+                  compact
+                  variant="light"
+                  color={"gray"}
+                  leftIcon={<CalendarTime size={16} />}
+                >
+                  <Text size={"xs"}>{DateLabel(dueDate, "Due date")}</Text>
+                </Button>
+              </Tooltip>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <Calendar value={dueDate} onChange={setDueDate} />
+            </Popover.Dropdown>
+          </Popover>
+          <Button
+            compact
+            variant="light"
+            color={"gray"}
+            leftIcon={<Subtask size={16} />}
+            onClick={() => toggleSubtasks()}
+          >
+            <Text size={"xs"}>Subtasks</Text>
+          </Button>
+        </Group>
+      </Stack>
+
       {showSubtasks && <NewSubTasks />}
       <Group
         pt={"md"}

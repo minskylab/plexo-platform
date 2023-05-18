@@ -75,28 +75,35 @@ const NewTeam = ({ newTeamOpened, setNewTeamOpened }: NewTeamProps) => {
 
   return (
     <Modal
-      overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
-      overlayOpacity={0.5}
-      transition={"slide-up"}
-      size={"lg"}
+      closeOnEscape
+      title={<Text size={"sm"}>New Team</Text>}
       opened={newTeamOpened}
       onClose={() => {
         setNewTeamOpened(false);
         resetInitialValues();
       }}
       shadow="md"
-      title={<Text size={"sm"}>New Team</Text>}
+      overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
+      overlayOpacity={0.5}
+      transition={"slide-up"}
+      size={"lg"}
     >
       <TextInput
-        placeholder="Team name"
-        variant="unstyled"
+        mb={15}
+        data-autoFocus
         size="md"
-        autoFocus
+        placeholder="Team name"
         error={teamExists ? "Team already exists" : false}
         value={name}
         onChange={e => handleTeamName(e.target.value)}
-        sx={{
-          marginBottom: 16,
+        styles={{
+          input: {
+            backgroundColor: "transparent",
+            borderColor: "transparent",
+            "&:focus-within": {
+              borderColor: theme.colors.brand[6],
+            },
+          },
         }}
       />
       <Group spacing={6} mb={"md"}>

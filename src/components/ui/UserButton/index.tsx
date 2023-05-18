@@ -9,10 +9,13 @@ import {
   useMantineColorScheme,
   Switch,
   useMantineTheme,
+  Skeleton,
+  Stack,
 } from "@mantine/core";
-import { IconChevronRight } from "@tabler/icons";
 import { useState } from "react";
 import { Logout, Moon, Sun } from "tabler-icons-react";
+
+import { User } from "lib/types";
 
 const useStyles = createStyles(theme => ({
   user: {
@@ -28,36 +31,17 @@ const useStyles = createStyles(theme => ({
 }));
 
 interface UserButtonProps extends UnstyledButtonProps {
-  image: string;
-  name: string;
-  email: string;
-  icon?: React.ReactNode;
+  user: User | undefined;
+  isLoadingUser: boolean;
 }
 
-export function UserButton({ image, name, email, icon, ...others }: UserButtonProps) {
+export function UserButton({ user, isLoadingUser }: UserButtonProps) {
   const { classes } = useStyles();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const theme = useMantineTheme();
 
   return (
-    // <UnstyledButton className={classes.user} {...others}>
-    //   <Group>
-    //     <Avatar src={image} radius="xl" />
-
-    //     <div style={{ flex: 1 }}>
-    //       <Text size="sm" weight={500}>
-    //         {name}
-    //       </Text>
-
-    //       <Text color="dimmed" size="xs">
-    //         {email}
-    //       </Text>
-    //     </div>
-
-    //     {icon || <IconChevronRight size={14} stroke={1.5} />}
-    //   </Group>
-    // </UnstyledButton>
     <Group position="center">
       <Menu
         position={"bottom-end"}
@@ -66,48 +50,36 @@ export function UserButton({ image, name, email, icon, ...others }: UserButtonPr
         onOpen={() => setUserMenuOpened(true)}
       >
         <Menu.Target>
-          <UnstyledButton
-            className={classes.user}
-            {...others}
-            sx={theme => ({
-              display: "block",
-            })}
-          >
-            <Group>
-              <Avatar src={image} radius="xl" />
+          <UnstyledButton className={classes.user}>
+            {isLoadingUser ? (
+              <Group>
+                <Skeleton height={38} circle />
 
-              <div style={{ flex: 1 }}>
-                <Text size="sm" weight={500}>
-                  {name}
-                </Text>
+                <Stack spacing={0} sx={{ flex: 1 }}>
+                  <Skeleton height={10} mt={6} width="100%" radius="xs" />
+                  <Skeleton height={8} mt={6} width="100%" radius="xs" />
+                </Stack>
+              </Group>
+            ) : (
+              <Group>
+                <Avatar color="brand" radius="xl">
+                  {user?.name[0]}
+                </Avatar>
+                <Stack spacing={0}>
+                  <Text size="sm" weight={500}>
+                    {user?.name}
+                  </Text>
 
-                <Text color="dimmed" size="xs">
-                  {email}
-                </Text>
-              </div>
-
-              {icon || <IconChevronRight size={14} stroke={1.5} />}
-            </Group>
+                  <Text color="dimmed" size="xs">
+                    {user?.email}
+                  </Text>
+                </Stack>
+              </Group>
+            )}
           </UnstyledButton>
         </Menu.Target>
         <Menu.Dropdown>
           <Menu.Item closeMenuOnClick={!userMenuOpened}>
-            {/* <Select
-              data={[
-                { value: "light", label: "Light" },
-                { value: "dark", label: "Dark" },
-              ]}
-              icon={colorScheme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-              defaultValue={colorScheme}
-              onChange={() => {
-                toggleColorScheme();
-              }}
-              styles={{
-                root: { width: 120, marginLeft: -10 },
-                rightSection: { pointerEvents: "none", display: "none" },
-              }}
-              variant="unstyled"
-            ></Select> */}
             <Switch
               onLabel={
                 <Group spacing={5}>

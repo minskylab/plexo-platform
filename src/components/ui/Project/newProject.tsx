@@ -1,14 +1,14 @@
 import {
   Group,
   Modal,
-  useMantineTheme,
   Text,
-  Box,
   TextInput,
   Textarea,
   Button,
   Popover,
   Tooltip,
+  Stack,
+  createStyles,
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { showNotification } from "@mantine/notifications";
@@ -27,8 +27,18 @@ type NewProjectProps = {
   setNewProjectOpened: (newProjectOpened: boolean) => void;
 };
 
+const useStyles = createStyles(theme => ({
+  input: {
+    backgroundColor: "transparent",
+    borderColor: "transparent",
+    "&:focus-within": {
+      borderColor: theme.colors.brand[6],
+    },
+  },
+}));
+
 const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) => {
-  const theme = useMantineTheme();
+  const { classes, theme } = useStyles();
 
   const [name, setName] = useState("");
   const [prefix, setPrefix] = useState("");
@@ -116,55 +126,70 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
         </Group>
       }
     >
-      <Box>
+      <Stack spacing={10}>
         <TextInput
+          data-autoFocus
           placeholder="Project name"
-          variant="unstyled"
-          size="md"
-          autoFocus
           value={name}
           onChange={e => setName(e.target.value)}
+          size="md"
+          classNames={{
+            input: classes.input,
+          }}
         />
         <Textarea
-          placeholder="Description (optional)"
-          variant="unstyled"
-          size="sm"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
           autosize
           minRows={2}
+          placeholder="Description (optional)"
+          value={description}
+          onChange={e => setDescription(e.target.value)}
+          size="sm"
+          classNames={{
+            input: classes.input,
+          }}
         />
-      </Box>
-      <Group spacing={6} mb={"md"}>
-        <LeadProjectSelector lead={lead} setLead={setLead} />
-        <MemberSelector members={members} setMembers={setMembers} />
-        <TeamSelector teams={teams} setTeams={setTeams} />
-        <Popover position="bottom" shadow="md">
-          <Popover.Target>
-            <Tooltip label="Change start date" position="bottom">
-              <Button compact variant="light" color={"gray"} leftIcon={<CalendarTime size={16} />}>
-                <Text size={"xs"}>{DateLabel(startDate, "Start date")}</Text>
-              </Button>
-            </Tooltip>
-          </Popover.Target>
-          <Popover.Dropdown>
-            <Calendar value={startDate} onChange={setStartDate} />
-          </Popover.Dropdown>
-        </Popover>
+        <Group spacing={6} mb={"md"}>
+          <LeadProjectSelector lead={lead} setLead={setLead} />
+          <MemberSelector members={members} setMembers={setMembers} />
+          <TeamSelector teams={teams} setTeams={setTeams} />
+          <Popover position="bottom" shadow="md">
+            <Popover.Target>
+              <Tooltip label="Change start date" position="bottom">
+                <Button
+                  compact
+                  variant="light"
+                  color={"gray"}
+                  leftIcon={<CalendarTime size={16} />}
+                >
+                  <Text size={"xs"}>{DateLabel(startDate, "Start date")}</Text>
+                </Button>
+              </Tooltip>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <Calendar value={startDate} onChange={setStartDate} />
+            </Popover.Dropdown>
+          </Popover>
 
-        <Popover position="bottom" shadow="md">
-          <Popover.Target>
-            <Tooltip label="Change due date" position="bottom">
-              <Button compact variant="light" color={"gray"} leftIcon={<CalendarTime size={16} />}>
-                <Text size={"xs"}>{DateLabel(dueDate, "Due date")}</Text>
-              </Button>
-            </Tooltip>
-          </Popover.Target>
-          <Popover.Dropdown>
-            <Calendar value={dueDate} onChange={setDueDate} />
-          </Popover.Dropdown>
-        </Popover>
-      </Group>
+          <Popover position="bottom" shadow="md">
+            <Popover.Target>
+              <Tooltip label="Change due date" position="bottom">
+                <Button
+                  compact
+                  variant="light"
+                  color={"gray"}
+                  leftIcon={<CalendarTime size={16} />}
+                >
+                  <Text size={"xs"}>{DateLabel(dueDate, "Due date")}</Text>
+                </Button>
+              </Tooltip>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <Calendar value={dueDate} onChange={setDueDate} />
+            </Popover.Dropdown>
+          </Popover>
+        </Group>
+      </Stack>
+
       <Group
         pt={"md"}
         position="right"

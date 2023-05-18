@@ -12,7 +12,7 @@ import {
 import { useQuery } from "urql";
 
 import { TaskStatus, TaskPriority } from "integration/graphql";
-
+import { UserDocument } from "../../integration/graphql";
 
 interface UseDataProps {
   memberId?: string | undefined;
@@ -24,12 +24,19 @@ interface UseDataProps {
     description: string | null;
     dueDate: Date | null;
     status: TaskStatus | null;
-    priority: TaskPriority  | null;
-  }
+    priority: TaskPriority | null;
+  };
   fetchTaskSuggestion?: boolean;
 }
 
-export const useData = ({ memberId, taskId, projectId, teamId, taskDetails, fetchTaskSuggestion }: UseDataProps) => {
+export const useData = ({
+  memberId,
+  taskId,
+  projectId,
+  teamId,
+  taskDetails,
+  fetchTaskSuggestion,
+}: UseDataProps) => {
   //Queries
   const [{ data: projectsData, fetching: isLoadingProjects }] = useQuery({
     query: ProjectsDocument,
@@ -79,18 +86,22 @@ export const useData = ({ memberId, taskId, projectId, teamId, taskDetails, fetc
     },
   });
 
-  const [{ data: taskSuggestionData, fetching: isLoadingTaskSuggestion}, ] = useQuery({ 
-    pause: fetchTaskSuggestion? false : true,
+  const [{ data: taskSuggestionData, fetching: isLoadingTaskSuggestion }] = useQuery({
+    pause: fetchTaskSuggestion ? false : true,
     query: SuggestNewTaskDocument,
     variables: {
-      taskSuggestion:{
+      taskSuggestion: {
         title: taskDetails?.title ? taskDetails?.title : null,
-        description: taskDetails?.description   ? taskDetails?.description : null,
+        description: taskDetails?.description ? taskDetails?.description : null,
         dueDate: taskDetails?.dueDate ? taskDetails?.dueDate : null,
-        status: taskDetails?.status ?  taskDetails?.status : null ,
+        status: taskDetails?.status ? taskDetails?.status : null,
         priority: taskDetails?.priority ? taskDetails?.priority : null,
-      }
+      },
     },
+  });
+
+  const [{ data: userData, fetching: isLoadingUser }] = useQuery({
+    query: UserDocument,
   });
 
   return {
@@ -112,5 +123,7 @@ export const useData = ({ memberId, taskId, projectId, teamId, taskDetails, fetc
     isLoadingTeam,
     taskSuggestionData,
     isLoadingTaskSuggestion,
+    userData,
+    isLoadingUser,
   };
 };

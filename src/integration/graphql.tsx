@@ -700,6 +700,13 @@ export type NewTeamMutation = {
   createTeam: { __typename?: "Team"; id: any; name: string };
 };
 
+export type UserQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserQuery = {
+  __typename?: "QueryRoot";
+  me: { __typename?: "Member"; id: any; name: string; email: string; photoUrl?: string | null };
+};
+
 export const LabelsDocument = {
   kind: "Document",
   definitions: [
@@ -2100,3 +2107,31 @@ export const NewTeamDocument = {
     },
   ],
 } as unknown as DocumentNode<NewTeamMutation, NewTeamMutationVariables>;
+export const UserDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "User" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "me" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+                { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UserQuery, UserQueryVariables>;
