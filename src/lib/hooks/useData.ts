@@ -26,17 +26,9 @@ interface UseDataProps {
     status: TaskStatus | null;
     priority: TaskPriority | null;
   };
-  fetchTaskSuggestion?: boolean;
 }
 
-export const useData = ({
-  memberId,
-  taskId,
-  projectId,
-  teamId,
-  taskDetails,
-  fetchTaskSuggestion,
-}: UseDataProps) => {
+export const useData = ({ memberId, taskId, projectId, teamId, taskDetails }: UseDataProps) => {
   //Queries
   const [{ data: projectsData, fetching: isLoadingProjects }] = useQuery({
     query: ProjectsDocument,
@@ -86,19 +78,20 @@ export const useData = ({
     },
   });
 
-  const [{ data: taskSuggestionData, fetching: isLoadingTaskSuggestion }] = useQuery({
-    pause: fetchTaskSuggestion ? false : true,
-    query: SuggestNewTaskDocument,
-    variables: {
-      taskSuggestion: {
-        title: taskDetails?.title ? taskDetails?.title : null,
-        description: taskDetails?.description ? taskDetails?.description : null,
-        dueDate: taskDetails?.dueDate ? taskDetails?.dueDate : null,
-        status: taskDetails?.status ? taskDetails?.status : null,
-        priority: taskDetails?.priority ? taskDetails?.priority : null,
+  const [{ data: taskSuggestionData, fetching: isLoadingTaskSuggestion }, fetchTaskSuggestion] =
+    useQuery({
+      pause: true,
+      query: SuggestNewTaskDocument,
+      variables: {
+        taskSuggestion: {
+          title: taskDetails?.title ? taskDetails?.title : null,
+          description: taskDetails?.description ? taskDetails?.description : null,
+          dueDate: taskDetails?.dueDate ? taskDetails?.dueDate : null,
+          status: taskDetails?.status ? taskDetails?.status : null,
+          priority: taskDetails?.priority ? taskDetails?.priority : null,
+        },
       },
-    },
-  });
+    });
 
   const [{ data: userData, fetching: isLoadingUser }] = useQuery({
     query: UserDocument,
@@ -125,5 +118,6 @@ export const useData = ({
     isLoadingTaskSuggestion,
     userData,
     isLoadingUser,
+    fetchTaskSuggestion,
   };
 };
