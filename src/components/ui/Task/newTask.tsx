@@ -108,7 +108,6 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
     });
 
     if (res.data) {
-      setNewTaskOpened(false); //Close modal
       resetInitialValues(); //Reset values
       showNotification({
         autoClose: 5000,
@@ -117,6 +116,9 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
         color: "blue",
         icon: <Check size={18} />,
       });
+      if (!createMore) {
+        setNewTaskOpened(false); //Close modal
+      }
     }
     if (res.error) {
       showNotification({
@@ -126,6 +128,9 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
         color: "red",
         icon: <X size={18} />,
       });
+      if (!createMore) {
+        setNewTaskOpened(false); //Close modal
+      }
     }
   };
 
@@ -147,6 +152,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       opened={newTaskOpened}
       onClose={() => {
         setNewTaskOpened(false);
+        setCreateMore(false);
         resetInitialValues();
       }}
       title={
