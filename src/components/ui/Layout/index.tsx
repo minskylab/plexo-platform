@@ -1,5 +1,5 @@
 import { AppShell, createStyles, Drawer } from "@mantine/core";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 import { NavbarSearch } from "components/ui/NavBarWithSearch";
 import NewTask from "components/ui/Task/newTask";
@@ -27,6 +27,12 @@ const Layout = ({ children }: LayoutProps) => {
     createMoreTasks,
     setCreateMoreTasks,
   } = usePlexoContext();
+
+  useEffect(() => {
+    if (!newTaskOpened && createMoreTasks) {
+      setNewTaskOpened(true);
+    }
+  }, [newTaskOpened, createMoreTasks]);
 
   return (
     <>

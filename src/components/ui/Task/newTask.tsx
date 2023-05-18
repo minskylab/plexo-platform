@@ -61,11 +61,9 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
   const [project, setProject] = useState<Project | null>(null);
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [showSubtasks, toggleSubtasks] = useToggle([false, true]);
-  const [fetchTaskSuggestion, setFetchTaskSuggestion] = useState(false);
-
   const { createTask, fetchCreateTask } = useActions();
 
-  const { taskSuggestionData, isLoadingTaskSuggestion } = useData({
+  const { taskSuggestionData, isLoadingTaskSuggestion, fetchTaskSuggestion } = useData({
     taskDetails: {
       title: title ? title : null,
       description: description ? description : null,
@@ -73,11 +71,10 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       priority: priority == TaskPriority.None ? null : priority,
       dueDate: dueDate ? dueDate : null,
     },
-    fetchTaskSuggestion: fetchTaskSuggestion,
   });
 
   useEffect(() => {
-    if (!isLoadingTaskSuggestion && taskSuggestionData) {
+    if (taskSuggestionData) {
       const res = taskSuggestionData;
 
       setTitle(res?.suggestNewTask.title || title);
@@ -85,13 +82,11 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       setStatus(res?.suggestNewTask.status || status);
       setPriority(res?.suggestNewTask.priority || priority);
       setDueDate(res?.suggestNewTask.dueDate || dueDate);
-
-      setFetchTaskSuggestion(false);
     }
-  }, [isLoadingTaskSuggestion, taskSuggestionData]);
+  }, [taskSuggestionData]);
 
   const applyAiTaskSuggestion = async () => {
-    setFetchTaskSuggestion(true);
+    fetchTaskSuggestion();
   };
 
   const onCreateTask = async () => {
@@ -108,7 +103,6 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
     });
 
     if (res.data) {
-      setNewTaskOpened(false); //Close modal
       resetInitialValues(); //Reset values
       showNotification({
         autoClose: 5000,
@@ -117,6 +111,9 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
         color: "blue",
         icon: <Check size={18} />,
       });
+      if (!createMore) {
+        setNewTaskOpened(false); //Close modal
+      }
     }
     if (res.error) {
       showNotification({
@@ -126,6 +123,9 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
         color: "red",
         icon: <X size={18} />,
       });
+      if (!createMore) {
+        setNewTaskOpened(false); //Close modal
+      }
     }
   };
 
@@ -147,6 +147,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       opened={newTaskOpened}
       onClose={() => {
         setNewTaskOpened(false);
+        setCreateMore(false);
         resetInitialValues();
       }}
       title={
