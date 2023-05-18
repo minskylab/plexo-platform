@@ -50,5 +50,6 @@ export const URQLClient = () => {
       }),
       fetchExchange,
     ],
+    requestPolicy: "network-only",
   });
 };
