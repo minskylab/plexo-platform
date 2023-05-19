@@ -14,7 +14,7 @@ const wsClient =
   typeof window === "undefined"
     ? null
     : createWSClient({
-        url: "wss://plexo-minsky.internal.minsky.cc/graphql/ws",
+        url: "wss://demo.plexo.app/graphql/ws",
         connectionParams: {
           Authorization: "Bearer xxx",
         },
@@ -22,7 +22,7 @@ const wsClient =
 
 export const URQLClient = () => {
   return createClient({
-    url: "https://plexo-minsky.internal.minsky.cc/graphql",
+    url: "https://demo.plexo.app/graphql",
     fetchOptions: {
       headers: {
         Authorization: process.env.NEXT_PUBLIC_PLEXO_TOKEN || "",
