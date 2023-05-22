@@ -10,8 +10,8 @@ import {
 } from "urql";
 import { createClient as createWSClient } from "graphql-ws";
 
-const GRAPHQL_ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "";
-const WS_ENDPOINT = process.env.NEXT_PUBLIC_WS_ENDPOINT || "";
+const GRAPHQL_ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "/graphql";
+const WS_ENDPOINT = process.env.NEXT_PUBLIC_WS_ENDPOINT || "/graphql/ws";
 const PLEXO_TOKEN = process.env.NEXT_PUBLIC_PLEXO_TOKEN || "";
 
 const wsClient =
