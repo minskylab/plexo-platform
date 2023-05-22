@@ -1,8 +1,8 @@
 overwrite: true
 schema:
-  ${NEXT_PUBLIC_GRAPHQL_ENDPOINT}:
+  "https://plexo-minsky.internal.minsky.cc/graphql":
     headers:
-      "Authorization": ""
+      "Authorization": "Bearer xxx"
 documents: "src/graphql/**/*.graphql"
 generates:
   src/integration/graphql.tsx:

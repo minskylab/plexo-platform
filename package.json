@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": false,
   "scripts": {
-    "generate": "graphql-codegen --require dotenv/config --config codegen.yml dotenv_config_path=.env.local",
+    "generate": "graphql-codegen -c codegen.yml",
     "format": "prettier --write '**/*.{ts,tsx,graphql}'",
     "dev": "next dev",
     "build": "next build && next export",
@@ -24,7 +24,6 @@
     "@urql/devtools": "2.0.3",
     "cookies-next": "^2.1.1",
     "dayjs": "^1.11.7",
-    "dotenv": "^16.0.3",
     "framer-motion": "8.3.3",
     "graphql": "16.6.0",
     "graphql-ws": "^5.11.2",
