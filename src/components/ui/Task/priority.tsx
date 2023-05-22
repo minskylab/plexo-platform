@@ -80,6 +80,21 @@ export const priorityName = (priority: TaskPriority | undefined) => {
   }
 };
 
+const priorityOrder = (a: TaskPriority, b: TaskPriority) => {
+  const order = [
+    TaskPriority.None,
+    TaskPriority.Low,
+    TaskPriority.Medium,
+    TaskPriority.High,
+    TaskPriority.Urgent,
+  ];
+
+  const indexA = order.indexOf(a);
+  const indexB = order.indexOf(b);
+
+  return indexA - indexB;
+};
+
 type PriorityCheckboxProps = {
   priorityFilters: string[];
   setPriorityFilters: (priorityFilters: string[]) => void;
@@ -94,8 +109,9 @@ export const PriorityCheckboxGroup = ({
   const [statusOptions, setStatusOptions] = useState<TaskPriority[]>([]);
 
   useEffect(() => {
+    const priorityValues = Object.values(TaskPriority);
     setStatusOptions(
-      Object.values(TaskPriority).filter(item => item.includes(searchValue.toUpperCase()))
+      priorityValues.sort(priorityOrder).filter(item => item.includes(searchValue.toUpperCase()))
     );
   }, [searchValue]);
 
@@ -151,8 +167,9 @@ export const GenericPriorityMenu = ({ children, onSelect, task }: GenericPriorit
   const [statusOptions, setStatusOptions] = useState<TaskPriority[]>([]);
 
   useEffect(() => {
+    const priorityValues = Object.values(TaskPriority);
     setStatusOptions(
-      Object.values(TaskPriority).filter(item => item.includes(searchValue.toUpperCase()))
+      priorityValues.sort(priorityOrder).filter(item => item.includes(searchValue.toUpperCase()))
     );
   }, [searchValue]);
 

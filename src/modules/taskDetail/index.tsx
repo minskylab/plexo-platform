@@ -206,7 +206,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
             <Stack spacing={10}>
               <Group position="apart">
                 <Text lineClamp={1} size={"sm"} color={"dimmed"}>
-                  MIN-169
+                  {`PLE-${task?.count}`}
                 </Text>
                 <TaskMenu task={task}>
                   <ActionIcon radius={"sm"} size={"xs"}>

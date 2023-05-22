@@ -8,6 +8,7 @@ query Tasks {
     status
     priority
     ownerId
+    count
     labels {
       id
       name
@@ -45,6 +46,7 @@ query TaskById($taskId: UUID!) {
     status
     priority
     dueDate
+    count
     labels {
       id
       name
@@ -147,8 +149,8 @@ mutation UpdateTask(
   }
 }
 
-query SuggestNewTask($taskSuggestion : TaskSuggestion! ) {
-  suggestNewTask(task: $taskSuggestion){
+query SuggestNewTask($taskSuggestion: TaskSuggestion!) {
+  suggestNewTask(task: $taskSuggestion) {
     title
     description
     status
