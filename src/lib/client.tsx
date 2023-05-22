@@ -10,22 +10,26 @@ import {
 } from "urql";
 import { createClient as createWSClient } from "graphql-ws";
 
+const GRAPHQL_ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "";
+const WS_ENDPOINT = process.env.NEXT_PUBLIC_WS_ENDPOINT || "";
+const PLEXO_TOKEN = process.env.NEXT_PUBLIC_PLEXO_TOKEN || "";
+
 const wsClient =
   typeof window === "undefined"
     ? null
     : createWSClient({
-        url: "wss://plexo-minsky.internal.minsky.cc/graphql/ws",
+        url: WS_ENDPOINT,
         connectionParams: {
-          Authorization: "Bearer xxx",
+          Authorization: "",
         },
       });
 
 export const URQLClient = () => {
   return createClient({
-    url: "https://plexo-minsky.internal.minsky.cc/graphql",
+    url: GRAPHQL_ENDPOINT,
     fetchOptions: {
       headers: {
-        Authorization: process.env.NEXT_PUBLIC_PLEXO_TOKEN || "",
+        Authorization: PLEXO_TOKEN,
       },
     },
     exchanges: [

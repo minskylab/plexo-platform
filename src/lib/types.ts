@@ -1,4 +1,3 @@
-import { ProjectByIdQuery, TeamByIdQuery } from "../integration/graphql";
 import {
   TasksQuery,
   MembersQuery,
@@ -7,6 +6,8 @@ import {
   TaskByIdQuery,
   LabelsQuery,
   UserQuery,
+  ProjectByIdQuery,
+  TeamByIdQuery,
 } from "integration/graphql";
 
 export type Task = TasksQuery["tasks"][number];
