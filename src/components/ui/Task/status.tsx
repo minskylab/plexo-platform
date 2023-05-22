@@ -13,8 +13,6 @@ import {
   Divider,
 } from "@mantine/core";
 import { TaskStatus } from "integration/graphql";
-import { useActions } from "lib/hooks/useActions";
-import { TaskById } from "lib/types";
 import {
   Circle,
   CircleCheck,
@@ -23,9 +21,11 @@ import {
   CircleDotted,
   ChartPie2,
 } from "tabler-icons-react";
-import { use, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
+import { TaskById } from "lib/types";
 import { priorityName } from "./priority";
+import { useActions } from "lib/hooks/useActions";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 
@@ -96,6 +96,22 @@ export const statusName = (status: TaskStatus | undefined) => {
   }
 };
 
+const statusOrder = (a: TaskStatus, b: TaskStatus) => {
+  const order = [
+    TaskStatus.None,
+    TaskStatus.Backlog,
+    TaskStatus.ToDo,
+    TaskStatus.InProgress,
+    TaskStatus.Done,
+    TaskStatus.Canceled,
+  ];
+
+  const indexA = order.indexOf(a);
+  const indexB = order.indexOf(b);
+
+  return indexA - indexB;
+};
+
 type StatusCheckboxProps = {
   statusFilters: string[];
   setStatusFilters: (statusFilters: string[]) => void;
@@ -107,8 +123,9 @@ export const StatusCheckboxGroup = ({ statusFilters, setStatusFilters }: StatusC
   const [statusOptions, setStatusOptions] = useState<TaskStatus[]>([]);
 
   useEffect(() => {
+    const statusValues = Object.values(TaskStatus);
     setStatusOptions(
-      Object.values(TaskStatus).filter(item => item.includes(searchValue.toUpperCase()))
+      statusValues.sort(statusOrder).filter(item => item.includes(searchValue.toUpperCase()))
     );
   }, [searchValue]);
 
@@ -165,8 +182,9 @@ export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMen
   const [statusOptions, setStatusOptions] = useState<TaskStatus[]>([]);
 
   useEffect(() => {
+    const statusValues = Object.values(TaskStatus);
     setStatusOptions(
-      Object.values(TaskStatus).filter(item => item.includes(searchValue.toUpperCase()))
+      statusValues.sort(statusOrder).filter(item => item.includes(searchValue.toUpperCase()))
     );
   }, [searchValue]);
 
