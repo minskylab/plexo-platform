@@ -43,6 +43,7 @@ jobs:
           build-args: |
             NEXT_PUBLIC_GRAPHQL_ENDPOINT=${{ secrets.NEXT_PUBLIC_GRAPHQL_ENDPOINT }}
             NEXT_PUBLIC_WS_ENDPOINT=${{ secrets.NEXT_PUBLIC_WS_ENDPOINT }}
+            NEXT_PUBLIC_URL_AUTH=${{ secrets.NEXT_PUBLIC_URL_AUTH }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           push: true
