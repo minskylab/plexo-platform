@@ -11,7 +11,7 @@ const LoginPage = () => {
     <Center style={{ height: "100vh" }}>
       <Stack align={"center"}>
         <PlexoLogo typographyColor={colorScheme === "light" ? theme.colors.gray[9] : undefined} />
-        <Button component="a" href="https://demo.plexo.app/auth/github" leftIcon={<BrandGithub />}>
+        <Button component="a" href={process.env.NEXT_PUBLIC_URL_AUTH} leftIcon={<BrandGithub />}>
           Login with Github
         </Button>
       </Stack>
