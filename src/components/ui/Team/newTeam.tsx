@@ -30,7 +30,6 @@ const NewTeam = ({ newTeamOpened, setNewTeamOpened }: NewTeamProps) => {
     const res = await fetchCreateTeam({
       name: name,
       prefix: name,
-      ownerId: "52fbe576-843d-47a5-a84c-79ce00d18265", //Bregy
       members: members,
       projects: projects,
     });

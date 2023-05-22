@@ -65,7 +65,6 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
       const res = await fetchCreateProject({
         name: name,
         prefix: prefix,
-        ownerId: "52fbe576-843d-47a5-a84c-79ce00d18265", //Bregy
         description: description.length ? description : null,
         leadId: lead?.id,
         dueDate: dueDate,

@@ -100,7 +100,6 @@ export type MutationRootCreateProjectArgs = {
   leadId?: InputMaybe<Scalars["UUID"]>;
   members?: InputMaybe<Array<Scalars["UUID"]>>;
   name: Scalars["String"];
-  ownerId: Scalars["UUID"];
   prefix?: InputMaybe<Scalars["String"]>;
   startDate?: InputMaybe<Scalars["DateTime"]>;
   teams?: InputMaybe<Array<Scalars["UUID"]>>;
@@ -112,6 +111,7 @@ export type MutationRootCreateTaskArgs = {
   dueDate?: InputMaybe<Scalars["DateTime"]>;
   labels?: InputMaybe<Array<Scalars["UUID"]>>;
   leadId?: InputMaybe<Scalars["UUID"]>;
+  parentId?: InputMaybe<Scalars["UUID"]>;
   priority?: InputMaybe<Scalars["String"]>;
   projectId?: InputMaybe<Scalars["UUID"]>;
   status?: InputMaybe<Scalars["String"]>;
@@ -121,7 +121,6 @@ export type MutationRootCreateTaskArgs = {
 export type MutationRootCreateTeamArgs = {
   members?: InputMaybe<Array<Scalars["UUID"]>>;
   name: Scalars["String"];
-  ownerId: Scalars["UUID"];
   prefix?: InputMaybe<Scalars["String"]>;
   projects?: InputMaybe<Array<Scalars["UUID"]>>;
   visibility?: InputMaybe<Scalars["String"]>;
@@ -310,10 +309,13 @@ export type Task = {
   leader?: Maybe<Member>;
   owner?: Maybe<Member>;
   ownerId: Scalars["UUID"];
+  parent?: Maybe<Task>;
+  parentId?: Maybe<Scalars["UUID"]>;
   priority: TaskPriority;
   project?: Maybe<Project>;
   projectId?: Maybe<Scalars["UUID"]>;
   status: TaskStatus;
+  subtasks: Array<Task>;
   title: Scalars["String"];
   updatedAt: Scalars["DateTime"];
 };
@@ -491,7 +493,6 @@ export type ProjectByIdQuery = {
 export type NewProjectMutationVariables = Exact<{
   name: Scalars["String"];
   prefix?: InputMaybe<Scalars["String"]>;
-  ownerId: Scalars["UUID"];
   description?: InputMaybe<Scalars["String"]>;
   leadId?: InputMaybe<Scalars["UUID"]>;
   startDate?: InputMaybe<Scalars["DateTime"]>;
@@ -689,7 +690,6 @@ export type TeamByIdQuery = {
 
 export type NewTeamMutationVariables = Exact<{
   name: Scalars["String"];
-  ownerId: Scalars["UUID"];
   prefix?: InputMaybe<Scalars["String"]>;
   members?: InputMaybe<Array<Scalars["UUID"]> | Scalars["UUID"]>;
   projects?: InputMaybe<Array<Scalars["UUID"]> | Scalars["UUID"]>;
@@ -1061,14 +1061,6 @@ export const NewProjectDocument = {
         },
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "ownerId" } },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-          },
-        },
-        {
-          kind: "VariableDefinition",
           variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
@@ -1126,11 +1118,6 @@ export const NewProjectDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "prefix" },
                 value: { kind: "Variable", name: { kind: "Name", value: "prefix" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "ownerId" },
-                value: { kind: "Variable", name: { kind: "Name", value: "ownerId" } },
               },
               {
                 kind: "Argument",
@@ -2027,14 +2014,6 @@ export const NewTeamDocument = {
         },
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "ownerId" } },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-          },
-        },
-        {
-          kind: "VariableDefinition",
           variable: { kind: "Variable", name: { kind: "Name", value: "prefix" } },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
@@ -2072,11 +2051,6 @@ export const NewTeamDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "name" },
                 value: { kind: "Variable", name: { kind: "Name", value: "name" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "ownerId" },
-                value: { kind: "Variable", name: { kind: "Name", value: "ownerId" } },
               },
               {
                 kind: "Argument",

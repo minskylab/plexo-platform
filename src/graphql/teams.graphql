@@ -35,7 +35,6 @@ query TeamById($teamId: UUID!) {
 
 mutation NewTeam(
   $name: String!
-  $ownerId: UUID!
   # $visibility: String
   $prefix: String
   $members: [UUID!]
@@ -43,7 +42,6 @@ mutation NewTeam(
 ) {
   createTeam(
     name: $name
-    ownerId: $ownerId
     # visibility: $visibility
     prefix: $prefix
     members: $members
