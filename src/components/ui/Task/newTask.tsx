@@ -97,7 +97,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       priority: priorityName(priority),
       dueDate: dueDate,
       projectId: project?.id,
-      leadId: lead?.id, //revisar
+      leadId: lead?.id,
       labels: selectedLabels,
       assignees: selectedAssignees,
     });
