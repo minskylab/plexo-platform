@@ -52,48 +52,36 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
   const { createProject, fetchCreateProject } = useActions();
 
   const onCreateProject = async () => {
-    if (!name.length) {
-      showNotification({
-        id: "nameRequired",
-        autoClose: 5000,
-        title: "Name required",
-        message: "Please enter a name before submitting",
-        color: "yellow",
-        icon: <AlertCircle size={18} />,
-      });
-    } else {
-      const res = await fetchCreateProject({
-        name: name,
-        prefix: prefix,
-        ownerId: "52fbe576-843d-47a5-a84c-79ce00d18265", //Bregy
-        description: description.length ? description : null,
-        leadId: lead?.id,
-        dueDate: dueDate,
-        startDate: startDate,
-        members: members,
-        teams: teams,
-      });
+    const res = await fetchCreateProject({
+      name: name,
+      prefix: prefix,
+      description: description.length ? description : null,
+      leadId: lead?.id,
+      dueDate: dueDate,
+      startDate: startDate,
+      members: members,
+      teams: teams,
+    });
 
-      if (res.data) {
-        setNewProjectOpened(false);
-        resetInitialValues();
-        showNotification({
-          autoClose: 5000,
-          title: "Project created",
-          message: res.data.createProject.name,
-          color: "blue",
-          icon: <Check size={18} />,
-        });
-      }
-      if (res.error) {
-        showNotification({
-          autoClose: 5000,
-          title: "Error!",
-          message: "Try again",
-          color: "red",
-          icon: <X size={18} />,
-        });
-      }
+    if (res.data) {
+      setNewProjectOpened(false);
+      resetInitialValues();
+      showNotification({
+        autoClose: 5000,
+        title: "Project created",
+        message: res.data.createProject.name,
+        color: "blue",
+        icon: <Check size={18} />,
+      });
+    }
+    if (res.error) {
+      showNotification({
+        autoClose: 5000,
+        title: "Error!",
+        message: "Try again",
+        color: "red",
+        icon: <X size={18} />,
+      });
     }
   };
 
@@ -206,6 +194,7 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
         <Button
           compact
           variant="filled"
+          disabled={name.length ? false : true}
           loading={createProject.fetching}
           onClick={() => {
             onCreateProject();
