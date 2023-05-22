@@ -79,7 +79,7 @@ export const TaskListElement = ({ task, active = false, checked = false }: TaskP
             </ActionIcon>
           </GenericStatusMenu>
           <Text lineClamp={1} className={classes.MIN} size={"sm"} color={"dimmed"}>
-            MIN-169
+            {`PLE-${task.count}`}
           </Text>
           <Text
             onClick={() => router.push(`/tasks/${task.id}`)}
@@ -152,7 +152,7 @@ export const TaskCardElement = ({ task, active = false }: TaskProps) => {
       <Stack spacing={3}>
         <Group position="apart">
           <Text size={"sm"} color={"dimmed"}>
-            MIN-169
+            {`PLE-${task.count}`}
           </Text>
           <GenericLeadTaskMenu task={task}>
             <ActionIcon variant="transparent">
