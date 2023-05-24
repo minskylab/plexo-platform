@@ -1,3 +1,4 @@
+import { type GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -12,3 +13,13 @@ const Plexo = () => {
 };
 
 export default Plexo;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    redirect: {
+      permanent: false,
+      destination: "/tasks",
+    },
+    props: {},
+  };
+};
