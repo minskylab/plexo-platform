@@ -168,7 +168,11 @@ const StatusCounter = ({ status, taskData }: StatusCounterProps) => {
 
 const TasksBoard = ({ taskData, fetching }: TasksProps) => {
   const TaskCard = ({ status }: TaskProps) => {
-    const data = taskData ? taskData?.filter((t: { status: string }) => t.status == status) : [];
+    const data = taskData
+      ? taskData
+          ?.filter((t: { status: string }) => t.status == status)
+          .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+      : [];
 
     return <DndTaskBoard statusData={data} />;
   };
@@ -243,7 +247,11 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
 
 const TasksList = ({ taskData, fetching }: TasksProps) => {
   const dataByStatus = (status: TaskStatus) => {
-    const data = taskData ? taskData?.filter((t: { status: string }) => t.status == status) : [];
+    const data = taskData
+      ? taskData
+          ?.filter((t: { status: string }) => t.status == status)
+          .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+      : [];
     return data;
   };
   const TaskList = ({ status }: TaskProps) => {
