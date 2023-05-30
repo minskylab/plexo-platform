@@ -39,12 +39,20 @@ const useStyles = createStyles(theme => ({
       display: "none",
     },
   },
-  mobileElement: {
-    [theme.fn.smallerThan("xs")]: {
-      width: "40px",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
+  badgeLabel: {
+    [theme.fn.smallerThan("sm")]: {
+      display: "none",
     },
+  },
+  badgeProject: {
+    [theme.fn.smallerThan("xs")]: {
+      display: "none",
+    },
+  },
+  text: {
+    flex: 1,
+    width: "100%",
+    overflow: "hidden",
   },
 }));
 
@@ -56,7 +64,7 @@ export const TaskListElement = ({ task, active = false, checked = false }: TaskP
   return (
     <Paper px={6} py={4} mt={1} withBorder={active}>
       <Group spacing={0}>
-        <Group position="left" spacing={8} sx={{ flexGrow: 1 }}>
+        <Group position="left" spacing={8} sx={{ flex: 1 }}>
           <Checkbox
             checked={controlledChecked}
             onChange={event => setChecked(event.currentTarget.checked)}
@@ -82,11 +90,10 @@ export const TaskListElement = ({ task, active = false, checked = false }: TaskP
             {`PLE-${task.count}`}
           </Text>
           <Text
-            onClick={() => router.push(`/tasks/${task.id}`)}
-            lineClamp={1}
             size={"sm"}
-            className={classes.mobileElement}
-            sx={{ flexGrow: 1 }}
+            lineClamp={1}
+            onClick={() => router.push(`/tasks/${task.id}`)}
+            className={classes.text}
           >
             {task.title}
           </Text>
@@ -100,7 +107,7 @@ export const TaskListElement = ({ task, active = false, checked = false }: TaskP
                   key={index}
                   variant={"dot"}
                   leftSection={<ColorSwatch color={l.color as string} size={10} />}
-                  className={classes.mobileElement}
+                  className={classes.badgeLabel}
                   styles={{
                     root: {
                       "&:before": {
@@ -119,7 +126,7 @@ export const TaskListElement = ({ task, active = false, checked = false }: TaskP
               );
             })}
 
-          {task.project && <Badge className={classes.mobileElement}>{task.project?.name}</Badge>}
+          {task.project && <Badge className={classes.badgeProject}>{task.project?.name}</Badge>}
           <Text lineClamp={1} className={classes.date} size={"sm"} color={"dimmed"}>
             {DateLabel(task.createdAt)}
           </Text>
@@ -146,7 +153,6 @@ export const TaskCardElement = ({ task, active = false }: TaskProps) => {
   const { classes } = useStyles();
   const theme = useMantineTheme();
 
-  // console.log(task.assigneeId);
   return (
     <Paper px={6} py={4} mt={1} withBorder={active} style={{ marginTop: 10 }}>
       <Stack spacing={3}>
@@ -156,13 +162,13 @@ export const TaskCardElement = ({ task, active = false }: TaskProps) => {
           </Text>
           <GenericLeadTaskMenu task={task}>
             <ActionIcon variant="transparent">
-              <Avatar size="sm" radius="xl">
-                {/* {task.leadId} */}
-              </Avatar>
+              <Avatar size="sm" radius="xl" />
             </ActionIcon>
           </GenericLeadTaskMenu>
         </Group>
-        <Text size={"sm"}>{task.title}</Text>
+        <Text size={"sm"} onClick={() => router.push(`/tasks/${task.id}`)}>
+          {task.title}
+        </Text>
         <Group spacing={8}>
           <GenericPriorityMenu task={task}>
             <ActionIcon variant="light" radius={"sm"}>
@@ -174,7 +180,7 @@ export const TaskCardElement = ({ task, active = false }: TaskProps) => {
               {StatusIcon(theme, task.status)}
             </ActionIcon>
           </GenericStatusMenu>
-          {task.project && <Badge className={classes.mobileElement}>{task.project?.name}</Badge>}
+          {task.project && <Badge>{task.project?.name}</Badge>}
         </Group>
       </Stack>
     </Paper>
