@@ -13,10 +13,10 @@ import {
   Center,
   Tooltip,
 } from "@mantine/core";
-import { IconBulb, IconCheckbox, IconSearch, IconSelector } from "@tabler/icons";
+
 import router from "next/router";
 import { useState } from "react";
-import { Affiliate, Edit, LayoutGrid, Plus } from "tabler-icons-react";
+import { Affiliate, Edit, LayoutGrid, Plus, Bulb, Checkbox, Search } from "tabler-icons-react";
 
 import NewProject from "../Project/newProject";
 import NewTeam from "../Team/newTeam";
@@ -121,8 +121,8 @@ const useStyles = createStyles(theme => ({
 }));
 
 const links = [
-  { icon: IconBulb, label: "Activity", notifications: 3 },
-  { icon: IconCheckbox, label: "Tasks", link: "/tasks" },
+  { icon: Bulb, label: "Activity", notifications: 3 },
+  { icon: Checkbox, label: "Tasks", link: "/tasks" },
   //   { icon: IconUser, label: "Contacts" },
 ];
 
@@ -146,7 +146,7 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
       onClick={() => link.link && router.push(link.link)}
     >
       <div className={classes.mainLinkInner}>
-        <link.icon size={20} className={classes.mainLinkIcon} stroke={1.5} />
+        <link.icon size={20} className={classes.mainLinkIcon} strokeWidth={1.5} />
         <Text size="sm">{link.label}</Text>
       </div>
       {link.notifications && (
@@ -176,8 +176,7 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
           <TextInput
             mx={16}
             placeholder="Search"
-            // size="xs"
-            icon={<IconSearch size={12} stroke={1.5} />}
+            icon={<Search size={12} strokeWidth={1.5} />}
             rightSectionWidth={70}
             rightSection={<Code className={classes.searchCode}>Ctrl + K</Code>}
             styles={{ rightSection: { pointerEvents: "none" } }}

@@ -32,7 +32,7 @@ export const GenericLeadTaskMenu = ({
   useEffect(() => {
     if (membersData?.members) {
       setMembersOptions(
-        membersData?.members.filter(item =>
+        membersData?.members.filter((item: Member) =>
           item.name.toLowerCase().includes(searchValue.toLowerCase())
         )
       );

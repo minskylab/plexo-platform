@@ -9,8 +9,6 @@ import {
   Group,
   Anchor,
 } from "@mantine/core";
-import { usePlexoContext } from "context/PlexoContext";
-import { useMemo , useEffect, useState} from "react";
 import {
   Affiliate,
   AntennaBars5,
@@ -23,6 +21,7 @@ import {
   Users,
 } from "tabler-icons-react";
 
+import { usePlexoContext } from "context/PlexoContext";
 import { TeamCheckboxGroup } from "../Project/team";
 import { MembersCheckboxGroup } from "../Task/assignees";
 import { LabelCheckboxGroup } from "../Task/labels";
@@ -66,10 +65,8 @@ const FilterMenu = () => {
     setProjectFilters,
     teamFilters,
     setTeamFilters,
-    total
+    total,
   } = usePlexoContext();
-  
-  
 
   const handleClearFilters = () => {
     setStatusFilters([]);
@@ -81,32 +78,6 @@ const FilterMenu = () => {
     setProjectFilters([]);
     setTeamFilters([]);
   };
-
-
-//  const totalFilters = useMemo(() => {
-//    const filters = [
-//      statusFilters,
-//      assigneeFilters,
-//      leaderFilters,
-//      creatorFilters,
-//      priorityFilters,
-//      labelsFilters,
-//      projectFilters,
-//    ];
-//
-//    return filters.reduce((acc, curr) => {
-//      const total = curr.length ? 1 : 0;
-//      return acc + total;
-//    }, 0);
-//  }, [
-//    statusFilters,
-//    assigneeFilters,
-//    leaderFilters,
-//    creatorFilters,
-//    priorityFilters,
-//    labelsFilters,
-//    projectFilters,
-//  ]);
 
   return (
     <Popover

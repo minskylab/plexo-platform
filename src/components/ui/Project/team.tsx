@@ -47,7 +47,9 @@ export const TeamCheckboxGroup = ({ teamFilters, setTeamFilters }: TeamCheckboxP
   useEffect(() => {
     if (teamsData?.teams) {
       setTeamOptions(
-        teamsData?.teams.filter(item => item.name.toLowerCase().includes(searchValue.toLowerCase()))
+        teamsData?.teams.filter((item: Team) =>
+          item.name.toLowerCase().includes(searchValue.toLowerCase())
+        )
       );
     }
   }, [searchValue]);
@@ -125,7 +127,7 @@ export const GenericTeamMenu = ({ children, teams, setTeams }: GenericTeamsMenuP
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
           <Checkbox.Group spacing={0} value={teams} onChange={setTeams} orientation="vertical">
-            {teamsData?.teams.map(t => {
+            {teamsData?.teams.map((t: Team) => {
               return (
                 <Menu.Item key={t.id}>
                   <Checkbox

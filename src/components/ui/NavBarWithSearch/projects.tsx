@@ -3,12 +3,13 @@ import { Rocket } from "tabler-icons-react";
 import router from "next/router";
 
 import { useData } from "lib/hooks/useData";
+import { Project } from "lib/types";
 
 const ProjectsList = () => {
   const theme = useMantineTheme();
   const { projectsData, isLoadingProjects } = useData({});
 
-  const projects = projectsData?.projects.map((p, index) => {
+  const projects = projectsData?.projects.map((p: Project, index: number) => {
     return (
       <NavLink
         key={index}
