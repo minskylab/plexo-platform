@@ -74,7 +74,7 @@ export const GenericMemberMenu = ({
             onChange={setSelectedMembers}
             orientation="vertical"
           >
-            {membersData?.members.map(m => {
+            {membersData?.members.map((m: Member) => {
               return (
                 <Menu.Item key={m.id}>
                   <Checkbox

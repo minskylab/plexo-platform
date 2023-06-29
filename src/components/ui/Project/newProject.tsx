@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { showNotification } from "@mantine/notifications";
-import { AlertCircle, CalendarTime, Check, X } from "tabler-icons-react";
+import { CalendarTime, Check, X } from "tabler-icons-react";
 import { useState } from "react";
 
 import { useActions } from "lib/hooks/useActions";

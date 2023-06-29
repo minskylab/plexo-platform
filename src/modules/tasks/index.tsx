@@ -329,7 +329,7 @@ export const TasksPageContent = () => {
     query: TasksDocument,
   });
 
-  const filteredTasks = tasksData?.tasks.filter(task => {
+  const filteredTasks = tasksData?.tasks.filter((task: Task) => {
     return (
       (!statusFilters.length || statusFilters.includes(task.status)) &&
       (!assigneeFilters.length ||

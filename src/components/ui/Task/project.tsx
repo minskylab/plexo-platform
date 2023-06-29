@@ -55,7 +55,7 @@ export const ProjectsCheckboxGroup = ({
   useEffect(() => {
     if (projectsData?.projects) {
       setProjectsOptions(
-        projectsData?.projects.filter(item =>
+        projectsData?.projects.filter((item: Project) =>
           item.name.toLowerCase().includes(searchValue.toLowerCase())
         )
       );
@@ -119,7 +119,7 @@ export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProject
   useEffect(() => {
     if (projectsData?.projects) {
       setProjectsOptions(
-        projectsData?.projects.filter(item =>
+        projectsData?.projects.filter((item: Project) =>
           item.name.toLowerCase().includes(searchValue.toLowerCase())
         )
       );

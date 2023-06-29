@@ -17,9 +17,8 @@ import {
 } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { DatePicker } from "@mantine/dates";
-import { IconChevronLeft } from "@tabler/icons";
 import { useState, useEffect } from "react";
-import { Copy, Dots, LayoutSidebar, Users } from "tabler-icons-react";
+import { Copy, Dots, LayoutSidebar, Users, ChevronLeft } from "tabler-icons-react";
 import Link from "next/link";
 
 import { GenericLeadTaskMenu } from "components/ui/Task/lead";
@@ -196,7 +195,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
         </MediaQuery>
         <Link href="/tasks" passHref>
           <ActionIcon variant="subtle">
-            <IconChevronLeft size={20} />
+            <ChevronLeft size={20} />
           </ActionIcon>
         </Link>
       </Group>

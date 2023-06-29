@@ -2,6 +2,7 @@ import { Modal, useMantineTheme, TextInput, Divider, Text, NavLink } from "@mant
 import { Dna } from "tabler-icons-react";
 
 import { useData } from "lib/hooks/useData";
+import { Team } from "lib/types";
 
 type JoinTeamProps = {
   joinTeamOpened: boolean;
@@ -12,7 +13,7 @@ const JoinTeam = ({ joinTeamOpened, setJoinTeamOpened }: JoinTeamProps) => {
   const theme = useMantineTheme();
   const { teamsData, isLoadingTeams } = useData({});
 
-  const teams = teamsData?.teams.map(t => {
+  const teams = teamsData?.teams.map((t: Team) => {
     return (
       <NavLink
         key={t.id}

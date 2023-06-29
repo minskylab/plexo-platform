@@ -2,6 +2,7 @@ import { Button, Menu, Text, TextInput, Skeleton, Checkbox, Tooltip } from "@man
 import { LayoutGrid } from "tabler-icons-react";
 
 import { useData } from "lib/hooks/useData";
+import { Project } from "lib/types";
 
 export const ProjectName = (name: string | undefined) => {
   return name ? name : "Project";
@@ -40,7 +41,7 @@ export const GenericProjectsMenu = ({
             onChange={setProjects}
             orientation="vertical"
           >
-            {projectsData?.projects.map(p => {
+            {projectsData?.projects.map((p: Project) => {
               return (
                 <Menu.Item key={p.id}>
                   <Checkbox

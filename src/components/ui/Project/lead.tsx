@@ -88,7 +88,7 @@ export const GenericLeadProjectMenu = ({
         {isLoadingMembers ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
-          membersData?.members.map(m => {
+          membersData?.members.map((m: Member) => {
             return (
               <Menu.Item
                 key={m.id}
