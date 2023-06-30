@@ -29,7 +29,7 @@
     "graphql": "16.6.0",
     "graphql-ws": "^5.11.2",
     "next": "13.4.7",
-    "next-translate": "^1.6.0",
+    "next-translate": "^2.0.0",
     "react": "18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "18.2.0",
