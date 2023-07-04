@@ -1,5 +1,5 @@
 import { ColorScheme, ColorSchemeProvider, MantineProvider } from "@mantine/core";
-import { NotificationsProvider } from "@mantine/notifications";
+import { Notifications } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
 import { setCookie } from "cookies-next";
 import { useState, ReactNode } from "react";
@@ -51,10 +51,9 @@ export const MyMantineProvider = ({ children, colorScheme }: MantineProviderProp
           }}
         >
           <ModalsProvider>
-            <NotificationsProvider>
-              <Fonts />
-              {children}
-            </NotificationsProvider>
+            <Notifications />
+            <Fonts />
+            {children}
           </ModalsProvider>
         </MantineProvider>
       </ColorSchemeProvider>

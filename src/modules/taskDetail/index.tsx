@@ -16,7 +16,7 @@ import {
   MediaQuery,
 } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
-import { DatePicker } from "@mantine/dates";
+import { DateInput } from "@mantine/dates";
 import { useState, useEffect } from "react";
 import { Copy, Dots, LayoutSidebar, Users, ChevronLeft } from "tabler-icons-react";
 import Link from "next/link";
@@ -412,7 +412,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Due Date
             </Text>
-            <DatePicker
+            <DateInput
               size="xs"
               placeholder="Set due date"
               value={dueDate}

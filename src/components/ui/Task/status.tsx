@@ -138,18 +138,13 @@ export const StatusCheckboxGroup = ({ statusFilters, setStatusFilters }: StatusC
         onChange={event => setSearchValue(event.currentTarget.value)}
       />
       <Divider />
-      <Checkbox.Group
-        orientation="vertical"
-        spacing={0}
-        value={statusFilters}
-        onChange={setStatusFilters}
-      >
+      <Checkbox.Group mt={10} value={statusFilters} onChange={setStatusFilters}>
         {statusOptions.map(status => {
           return (
             <Checkbox
               key={status}
               size="xs"
-              pb={10}
+              pb={15}
               value={status}
               label={
                 <Group spacing={5}>
@@ -211,7 +206,7 @@ export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMen
   };
 
   return (
-    <Menu shadow="md" width={180} position="bottom-start">
+    <Menu shadow="md" width={180} position="bottom-start" withinPortal>
       <Menu.Target>
         <Tooltip label="Change status" position="bottom">
           {children}

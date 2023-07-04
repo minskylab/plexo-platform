@@ -11,7 +11,7 @@ interface LayoutProps {
 
 const useStyles = createStyles(theme => ({
   drawer: {
-    [theme.fn.largerThan("sm")]: {
+    [theme.fn.largerThan("md")]: {
       display: "none",
     },
   },
@@ -43,12 +43,12 @@ const Layout = ({ children }: LayoutProps) => {
         setCreateMore={setCreateMoreTasks}
       />
       <Drawer
+        size={300}
+        padding={0}
         className={classes.drawer}
-        size="md"
         opened={navBarOpened}
         onClose={() => setNavBarOpened(false)}
         withCloseButton={false}
-        // size={theme.fn.largerThan(300)}
         sx={theme => ({
           main: {
             backgroundColor:

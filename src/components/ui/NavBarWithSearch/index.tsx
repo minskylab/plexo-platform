@@ -12,6 +12,7 @@ import {
   SegmentedControl,
   Center,
   Tooltip,
+  rem,
 } from "@mantine/core";
 
 import router from "next/router";
@@ -36,7 +37,7 @@ const useStyles = createStyles(theme => ({
     // marginBottom: theme.spacing.md,
 
     "&:not(:last-of-type)": {
-      borderBottom: `1px solid ${
+      borderBottom: `${rem(1)} solid ${
         theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
       }`,
     },
@@ -44,16 +45,16 @@ const useStyles = createStyles(theme => ({
 
   searchCode: {
     fontWeight: 700,
-    fontSize: 10,
+    fontSize: rem(10),
     backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0],
-    border: `1px solid ${
+    border: `${rem(1)} solid ${
       theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[2]
     }`,
   },
 
   mainLinks: {
-    paddingLeft: theme.spacing.md - theme.spacing.xs,
-    paddingRight: theme.spacing.md - theme.spacing.xs,
+    paddingLeft: `calc(${theme.spacing.md} - ${theme.spacing.xs})`,
+    paddingRight: `calc(${theme.spacing.md} - ${theme.spacing.xs})`,
     paddingBottom: theme.spacing.md,
   },
 
@@ -62,7 +63,7 @@ const useStyles = createStyles(theme => ({
     alignItems: "center",
     width: "100%",
     fontSize: theme.fontSizes.xs,
-    padding: `8px ${theme.spacing.xs}px`,
+    padding: `${rem(8)} ${theme.spacing.xs}`,
     borderRadius: theme.radius.sm,
     fontWeight: 500,
     color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.colors.gray[7],
@@ -86,26 +87,26 @@ const useStyles = createStyles(theme => ({
 
   mainLinkBadge: {
     padding: 0,
-    width: 20,
-    height: 20,
+    width: rem(20),
+    height: rem(20),
     pointerEvents: "none",
   },
 
   collections: {
-    paddingLeft: theme.spacing.md - 6,
-    paddingRight: theme.spacing.md - 6,
+    paddingLeft: `calc(${theme.spacing.md} - ${rem(6)})`,
+    paddingRight: `calc(${theme.spacing.md} - ${rem(6)})`,
     paddingBottom: theme.spacing.md,
   },
 
   collectionsHeader: {
-    paddingLeft: theme.spacing.md + 2,
+    paddingLeft: `calc(${theme.spacing.md} + ${rem(2)})`,
     paddingRight: theme.spacing.md,
-    marginBottom: 5,
+    marginBottom: rem(5),
   },
 
   collectionLink: {
     display: "block",
-    padding: `8px ${theme.spacing.xs}px`,
+    padding: `${rem(8)} ${theme.spacing.xs}`,
     textDecoration: "none",
     borderRadius: theme.radius.sm,
     fontSize: theme.fontSizes.sm,
@@ -160,13 +161,12 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
   return (
     <>
       <NewProject newProjectOpened={newProjectOpened} setNewProjectOpened={setNewProjectOpened} />
-      {/* <JoinTeam joinTeamOpened={joinTeamOpened} setJoinTeamOpened={setJoinTeamOpened} /> */}
       <NewTeam newTeamOpened={newTeamOpened} setNewTeamOpened={setNewTeamOpened} />
       <Navbar
         width={{ sm: 300 }}
-        className={classes.navbar}
         hiddenBreakpoint="md"
         hidden={!openedNav}
+        className={classes.navbar}
       >
         <Navbar.Section className={classes.section} mb="sm">
           <UserButton user={userData?.me} isLoadingUser={isLoadingUser} />

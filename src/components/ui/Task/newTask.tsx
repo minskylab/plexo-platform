@@ -12,7 +12,7 @@ import {
   createStyles,
   Stack,
 } from "@mantine/core";
-import { Calendar } from "@mantine/dates";
+import { Calendar, DatePicker } from "@mantine/dates";
 import { useToggle } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { CalendarTime, Check, Robot, Subtask, X } from "tabler-icons-react";
@@ -165,11 +165,15 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
           <Text size={"sm"}>New Task</Text>
         </Group>
       }
-      transition={"slide-up"}
+      overlayProps={{
+        color: theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
+        opacity: 0.5,
+        transitionProps: {
+          transition: "slide-up",
+        },
+      }}
       size={"xl"}
       shadow="md"
-      overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
-      overlayOpacity={0.5}
     >
       <Stack spacing={10}>
         <TextInput
@@ -203,7 +207,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
           />
           <LabelsSelector selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels} />
           <ProjectSelector project={project} setProject={setProject} />
-          <Popover position="bottom" shadow="md">
+          <Popover position="bottom" shadow="md" withinPortal>
             <Popover.Target>
               <Tooltip label="Set due date" position="bottom">
                 <Button
@@ -217,7 +221,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
               </Tooltip>
             </Popover.Target>
             <Popover.Dropdown>
-              <Calendar value={dueDate} onChange={setDueDate} />
+              <DatePicker value={dueDate} onChange={setDueDate} />
             </Popover.Dropdown>
           </Popover>
           <Button

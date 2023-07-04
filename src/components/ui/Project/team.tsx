@@ -64,18 +64,13 @@ export const TeamCheckboxGroup = ({ teamFilters, setTeamFilters }: TeamCheckboxP
       />
       <Divider />
       <ScrollArea h={250}>
-        <Checkbox.Group
-          orientation="vertical"
-          spacing={0}
-          value={teamFilters}
-          onChange={setTeamFilters}
-        >
+        <Checkbox.Group mt={10} value={teamFilters} onChange={setTeamFilters}>
           {teamOptions.map(t => {
             return (
               <Checkbox
                 key={t.id}
                 size="xs"
-                pb={10}
+                pb={15}
                 value={t.id}
                 label={
                   <Group spacing={5}>
@@ -107,7 +102,7 @@ export const GenericTeamMenu = ({ children, teams, setTeams }: GenericTeamsMenuP
   const [searchValue, setSearchValue] = useState("");
 
   return (
-    <Menu shadow="md" closeOnItemClick={false} position="bottom-start">
+    <Menu shadow="md" closeOnItemClick={false} position="bottom-start" withinPortal>
       <Menu.Target>
         <Tooltip label="Teams" position="bottom">
           {children}
@@ -126,7 +121,7 @@ export const GenericTeamMenu = ({ children, teams, setTeams }: GenericTeamsMenuP
         {isLoadingTeams ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
-          <Checkbox.Group spacing={0} value={teams} onChange={setTeams} orientation="vertical">
+          <Checkbox.Group mt={10} value={teams} onChange={setTeams}>
             {teamsData?.teams.map((t: Team) => {
               return (
                 <Menu.Item key={t.id}>

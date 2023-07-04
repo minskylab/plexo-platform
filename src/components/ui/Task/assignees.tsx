@@ -48,18 +48,13 @@ export const MembersCheckboxGroup = ({
         onChange={event => setSearchValue(event.currentTarget.value)}
       />
       <Divider />
-      <Checkbox.Group
-        orientation="vertical"
-        spacing={0}
-        value={selectedMembers}
-        onChange={setSelectedMembers}
-      >
+      <Checkbox.Group mt={10} value={selectedMembers} onChange={setSelectedMembers}>
         {membersOptions.map(m => {
           return (
             <Checkbox
               key={m.id}
               size="xs"
-              pb={10}
+              pb={15}
               value={m.id}
               label={MemberPhoto(m)}
               styles={{
@@ -143,7 +138,7 @@ export const GenericAssigneesMenu = ({
   }, [assignees]);
 
   return (
-    <Menu shadow="md" closeOnItemClick={false} position="bottom-start">
+    <Menu shadow="md" closeOnItemClick={false} position="bottom-start" withinPortal>
       <Menu.Target>
         <Tooltip label="Assignees" position="bottom">
           {children}
@@ -161,12 +156,7 @@ export const GenericAssigneesMenu = ({
         {isLoadingMembers ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
-          <Checkbox.Group
-            spacing={0}
-            value={labelValue}
-            onChange={onChangeLabel}
-            orientation="vertical"
-          >
+          <Checkbox.Group mt={10} value={labelValue} onChange={onChangeLabel}>
             {membersOptions.map(m => {
               return (
                 <Menu.Item key={m.id}>

@@ -118,24 +118,19 @@ export const PriorityCheckboxGroup = ({
   return (
     <>
       <TextInput
-        placeholder="Status"
+        placeholder="Priority"
         variant="unstyled"
         value={searchValue}
         onChange={event => setSearchValue(event.currentTarget.value)}
       />
       <Divider />
-      <Checkbox.Group
-        orientation="vertical"
-        spacing={0}
-        value={priorityFilters}
-        onChange={setPriorityFilters}
-      >
+      <Checkbox.Group mt={10} value={priorityFilters} onChange={setPriorityFilters}>
         {statusOptions.map(priority => {
           return (
             <Checkbox
               key={priority}
               size="xs"
-              pb={10}
+              pb={15}
               value={priority}
               label={
                 <Group spacing={5}>
@@ -195,7 +190,7 @@ export const GenericPriorityMenu = ({ children, onSelect, task }: GenericPriorit
     }
   };
   return (
-    <Menu shadow="md" width={180} position="bottom-start">
+    <Menu shadow="md" width={180} position="bottom-start" withinPortal>
       <Menu.Target>
         <Tooltip label="Set priority" position="bottom">
           {children}

@@ -72,18 +72,13 @@ export const ProjectsCheckboxGroup = ({
       />
       <Divider />
       <ScrollArea h={250}>
-        <Checkbox.Group
-          orientation="vertical"
-          spacing={0}
-          value={projectFilters}
-          onChange={setProjectFilters}
-        >
+        <Checkbox.Group mt={10} value={projectFilters} onChange={setProjectFilters}>
           {projectsOptions.map(p => {
             return (
               <Checkbox
                 key={p.id}
                 size="xs"
-                pb={10}
+                pb={15}
                 value={p.id}
                 label={
                   <Group spacing={5}>
@@ -149,7 +144,7 @@ export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProject
   };
 
   return (
-    <Menu shadow="md" width={180} position="bottom-start">
+    <Menu shadow="md" width={180} position="bottom-start" withinPortal>
       <Menu.Target>
         <Tooltip label="Add to project" position="bottom">
           {children}

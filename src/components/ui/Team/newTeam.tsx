@@ -82,11 +82,15 @@ const NewTeam = ({ newTeamOpened, setNewTeamOpened }: NewTeamProps) => {
         setNewTeamOpened(false);
         resetInitialValues();
       }}
-      shadow="md"
-      overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
-      overlayOpacity={0.5}
-      transition={"slide-up"}
       size={"lg"}
+      shadow="md"
+      overlayProps={{
+        color: theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
+        opacity: 0.5,
+        transitionProps: {
+          transition: "slide-up",
+        },
+      }}
     >
       <TextInput
         mb={15}
