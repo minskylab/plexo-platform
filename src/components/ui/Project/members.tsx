@@ -55,7 +55,7 @@ export const GenericMemberMenu = ({
   const { membersData, isLoadingMembers } = useData({});
 
   return (
-    <Menu shadow="md" closeOnItemClick={false} position="bottom-start">
+    <Menu shadow="md" closeOnItemClick={false} position="bottom-start" withinPortal>
       <Menu.Target>
         <Tooltip label="Project members" position="bottom">
           {children}
@@ -68,12 +68,7 @@ export const GenericMemberMenu = ({
         {isLoadingMembers ? (
           <Skeleton height={36} radius="sm" />
         ) : (
-          <Checkbox.Group
-            spacing={0}
-            value={selectedMembers}
-            onChange={setSelectedMembers}
-            orientation="vertical"
-          >
+          <Checkbox.Group mt={10} value={selectedMembers} onChange={setSelectedMembers}>
             {membersData?.members.map((m: Member) => {
               return (
                 <Menu.Item key={m.id}>

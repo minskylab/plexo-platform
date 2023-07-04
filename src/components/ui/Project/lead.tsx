@@ -63,7 +63,7 @@ export const GenericLeadProjectMenu = ({
   };
 
   return (
-    <Menu shadow="md" position="bottom-start">
+    <Menu shadow="md" position="bottom-start" withinPortal>
       <Menu.Target>
         <Tooltip label={memberName ? `Lead by ${memberName}` : "Lead by"} position="bottom">
           {children}

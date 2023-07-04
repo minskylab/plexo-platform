@@ -10,7 +10,7 @@ import {
   Stack,
   createStyles,
 } from "@mantine/core";
-import { Calendar } from "@mantine/dates";
+import { DatePicker } from "@mantine/dates";
 import { showNotification } from "@mantine/notifications";
 import { CalendarTime, Check, X } from "tabler-icons-react";
 import { useState } from "react";
@@ -98,9 +98,13 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
 
   return (
     <Modal
-      overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
-      overlayOpacity={0.5}
-      transition={"slide-up"}
+      overlayProps={{
+        color: theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
+        opacity: 0.5,
+        transitionProps: {
+          transition: "slide-up",
+        },
+      }}
       size={"lg"}
       opened={newProjectOpened}
       onClose={() => {
@@ -140,7 +144,7 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
           <LeadProjectSelector lead={lead} setLead={setLead} />
           <MemberSelector members={members} setMembers={setMembers} />
           <TeamSelector teams={teams} setTeams={setTeams} />
-          <Popover position="bottom" shadow="md">
+          <Popover position="bottom" shadow="md" withinPortal>
             <Popover.Target>
               <Tooltip label="Change start date" position="bottom">
                 <Button
@@ -154,11 +158,11 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
               </Tooltip>
             </Popover.Target>
             <Popover.Dropdown>
-              <Calendar value={startDate} onChange={setStartDate} />
+              <DatePicker value={startDate} onChange={setStartDate} />
             </Popover.Dropdown>
           </Popover>
 
-          <Popover position="bottom" shadow="md">
+          <Popover position="bottom" shadow="md" withinPortal>
             <Popover.Target>
               <Tooltip label="Change due date" position="bottom">
                 <Button
@@ -172,7 +176,7 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
               </Tooltip>
             </Popover.Target>
             <Popover.Dropdown>
-              <Calendar value={dueDate} onChange={setDueDate} />
+              <DatePicker value={dueDate} onChange={setDueDate} />
             </Popover.Dropdown>
           </Popover>
         </Group>

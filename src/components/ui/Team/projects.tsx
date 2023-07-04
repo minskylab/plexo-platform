@@ -22,7 +22,7 @@ export const GenericProjectsMenu = ({
   const { projectsData, isLoadingProjects } = useData({});
 
   return (
-    <Menu shadow="md" closeOnItemClick={false} position="bottom-start">
+    <Menu shadow="md" closeOnItemClick={false} position="bottom-start" withinPortal>
       <Menu.Target>
         <Tooltip label="Project members" position="bottom">
           {children}
@@ -35,12 +35,7 @@ export const GenericProjectsMenu = ({
         {isLoadingProjects ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
-          <Checkbox.Group
-            spacing={0}
-            value={projects}
-            onChange={setProjects}
-            orientation="vertical"
-          >
+          <Checkbox.Group mt={10} value={projects} onChange={setProjects}>
             {projectsData?.projects.map((p: Project) => {
               return (
                 <Menu.Item key={p.id}>
