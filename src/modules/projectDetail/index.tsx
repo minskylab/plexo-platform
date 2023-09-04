@@ -27,6 +27,7 @@ import { useActions } from "lib/hooks/useActions";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 import { usePlexoContext } from "context/PlexoContext";
 import { useClickOutside } from "@mantine/hooks";
+import { ProjectMenu } from "components/ui/Project/menu";
 
 type ProjectDetailProps = {
   project: ProjectById | undefined;
@@ -54,10 +55,11 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
   const { setNavBarOpened } = usePlexoContext();
 
   const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
 
-  const onUpdateTaskDueDate = async (date: Date | null) => {
+  const onUpdateProjectDueDate = async (date: Date | null) => {
     const res = await fetchUpdateProject({
       projectId: project?.id,
       dueDate: date,
@@ -70,7 +72,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
     }
   };
 
-  const onUpdateTaskStartDate = async (date: Date | null) => {
+  const onUpdateProjectStartDate = async (date: Date | null) => {
     const res = await fetchUpdateProject({
       projectId: project?.id,
       startDate: date,
@@ -108,6 +110,20 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
     }
   };
 
+  const onUpdateProjectDescription = async (desc: string | null) => {
+    const res = await fetchUpdateProject({
+      projectId: project?.id,
+      description: desc,
+    });
+
+    if (res.data) {
+      SuccessNotification("Description updated", res.data.updateProject.name);
+    }
+    if (res.error) {
+      ErrorNotification();
+    }
+  };
+
   const refTitle = useClickOutside(() => {
     if (isLoading) {
       return null;
@@ -117,19 +133,32 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
     }
   });
 
+  const refDescription = useClickOutside(() => {
+    if (isLoading) {
+      return null;
+    }
+
+    const desc = description == "" ? null : description;
+    if (desc !== project?.description) {
+      onUpdateProjectDescription(desc);
+    }
+  });
+
   useEffect(() => {
+    project?.name && setTitle(project?.name);
+    project?.description == null ? setDescription("") : setDescription(project?.description);
     project?.dueDate && setDueDate(new Date(project?.dueDate));
     project?.startDate && setStartDate(new Date(project?.startDate));
   }, [project]);
 
   const handleDueDateChange = (date: Date | null) => {
     setDueDate(date);
-    onUpdateTaskDueDate(date);
+    onUpdateProjectDueDate(date);
   };
 
   const handleStartDateChange = (date: Date | null) => {
     setStartDate(date);
-    onUpdateTaskStartDate(date);
+    onUpdateProjectStartDate(date);
   };
 
   return (
@@ -153,14 +182,49 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
       <Group px={20} sx={{ alignItems: "baseline" }}>
         <Box sx={{ flex: 1 }}>
           <Stack maw={860} m="auto">
-            <Group position="apart">
-              <Text size={"sm"} color={"dimmed"}>
-                {project?.prefix ? project.prefix : "PR-001"}
-              </Text>
-              <ActionIcon radius={"sm"} size={"xs"}>
-                <Dots size={18} />
-              </ActionIcon>
-            </Group>
+            <Stack spacing={10}>
+              <Group position="apart">
+                <Text size={"sm"} color={"dimmed"}>
+                  {project?.prefix ? project.prefix : "PR-001"}
+                </Text>
+                <ProjectMenu project={project}>
+                  <ActionIcon radius={"sm"} size={"xs"}>
+                    <Dots size={18} />
+                  </ActionIcon>
+                </ProjectMenu>
+              </Group>
+              <Group spacing={5} className={classes.propsBar}>
+                <GenericLeadProjectMenu project={project}>
+                  <Button
+                    compact
+                    variant="light"
+                    color={"gray"}
+                    leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
+                  >
+                    <Text size={"xs"}>{LeadName(project?.leader?.name)}</Text>
+                  </Button>
+                </GenericLeadProjectMenu>
+                <GenericMemberMenu project={project}>
+                  <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
+                    {project?.members.length ? (
+                      <Text size={"xs"}>{project?.members.length} Members</Text>
+                    ) : (
+                      <Text size={"xs"}>Members</Text>
+                    )}
+                  </Button>
+                </GenericMemberMenu>
+                <GenericTeamMenu project={project}>
+                  <Button compact variant="light" color={"gray"} leftIcon={<Affiliate size={16} />}>
+                    {project?.teams.length ? (
+                      <Text size={"xs"}>{project?.teams.length} Teams</Text>
+                    ) : (
+                      <Text size={"xs"}>Teams</Text>
+                    )}
+                  </Button>
+                </GenericTeamMenu>
+              </Group>
+            </Stack>
+
             <Divider />
             <TextInput
               ref={refTitle}
@@ -180,8 +244,9 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
               })}
             />
             <Textarea
-              value={project?.description ? project?.description : ""}
-              /* onChange={e => setDescription(e.target.value)} */
+              ref={refDescription}
+              value={description}
+              onChange={e => setDescription(e.target.value)}
               placeholder="Add description..."
               size="sm"
               autosize
@@ -257,37 +322,42 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Start Date
             </Text>
-            <DateInput
-              size="xs"
-              placeholder="Set start date"
-              value={startDate}
-              onChange={handleStartDateChange}
-              styles={{
-                input: {
-                  padding: "0px 8px",
-                  borderRadius: 4,
-                  backgroundColor: "transparent",
-                },
-              }}
-            />
+            <Tooltip label="Start Date" position="bottom">
+              <DateInput
+                size="xs"
+                placeholder="Set start date"
+                value={startDate}
+                onChange={handleStartDateChange}
+                styles={{
+                  input: {
+                    padding: "0px 8px",
+                    borderRadius: 4,
+                    backgroundColor: "transparent",
+                  },
+                }}
+              />
+            </Tooltip>
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Due Date
             </Text>
-            <DateInput
-              size="xs"
-              placeholder="Set due date"
-              value={dueDate}
-              onChange={handleDueDateChange}
-              styles={{
-                input: {
-                  padding: "0px 8px",
-                  borderRadius: 4,
-                  backgroundColor: "transparent",
-                },
-              }}
-            />
+
+            <Tooltip label="Due Date" position="bottom">
+              <DateInput
+                size="xs"
+                placeholder="Set due date"
+                value={dueDate}
+                onChange={handleDueDateChange}
+                styles={{
+                  input: {
+                    padding: "0px 8px",
+                    borderRadius: 4,
+                    backgroundColor: "transparent",
+                  },
+                }}
+              />
+            </Tooltip>
           </Group>
         </Stack>
       </Group>
