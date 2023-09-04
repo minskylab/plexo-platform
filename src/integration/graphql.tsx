@@ -700,6 +700,18 @@ export type DeleteTeamMutation = {
   deleteTeam: { __typename?: "Team"; id: any; name: string };
 };
 
+export type UpdateTeamMutationVariables = Exact<{
+  teamId: Scalars["UUID"]["input"];
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  members?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
+  projects?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
+}>;
+
+export type UpdateTeamMutation = {
+  __typename?: "MutationRoot";
+  updateTeam: { __typename?: "Team"; id: any; name: string };
+};
+
 export type UserQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserQuery = {
@@ -2168,6 +2180,91 @@ export const DeleteTeamDocument = {
     },
   ],
 } as unknown as DocumentNode<DeleteTeamMutation, DeleteTeamMutationVariables>;
+export const UpdateTeamDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateTeam" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "teamId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "members" } },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "projects" } },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateTeam" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "teamId" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "name" },
+                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "members" },
+                value: { kind: "Variable", name: { kind: "Name", value: "members" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "projects" },
+                value: { kind: "Variable", name: { kind: "Name", value: "projects" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UpdateTeamMutation, UpdateTeamMutationVariables>;
 export const UserDocument = {
   kind: "Document",
   definitions: [

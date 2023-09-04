@@ -58,3 +58,10 @@ mutation DeleteTeam($teamId: UUID!) {
     name
   }
 }
+
+mutation UpdateTeam($teamId: UUID!, $name: String, $members: [UUID!], $projects: [UUID!]) {
+  updateTeam(id: $teamId, name: $name, members: $members, projects: $projects) {
+    id
+    name
+  }
+}

@@ -10,13 +10,16 @@ import {
   TextInput,
   Tooltip,
   createStyles,
-  useMantineTheme,
 } from "@mantine/core";
 import { Copy, Dots, LayoutSidebar } from "tabler-icons-react";
 
 import { TeamById } from "lib/types";
 import { usePlexoContext } from "context/PlexoContext";
 import { TeamMenu } from "components/ui/Team/menu";
+import { useState, useEffect } from "react";
+import { useClickOutside } from "@mantine/hooks";
+import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
+import { useActions } from "lib/hooks/useActions";
 
 const useStyles = createStyles(theme => ({
   propsSection: {
@@ -40,6 +43,47 @@ type TeamDetailProps = {
 const TeamDetailPageContent = ({ team, isLoading }: TeamDetailProps) => {
   const { classes, theme } = useStyles();
   const { setNavBarOpened } = usePlexoContext();
+  const { fetchUpdateTeam } = useActions();
+
+  const [title, setTitle] = useState<string>("");
+
+  const onUpdateTeamTitle = async (title: string) => {
+    if (!title.length) {
+      AlertNotification(
+        "titleUpdateFailed",
+        "Update Failed",
+        "Please enter a title before submitting"
+      );
+      team?.name && setTitle(team?.name);
+    }
+
+    if (title.length) {
+      const res = await fetchUpdateTeam({
+        teamId: team?.id,
+        name: title,
+      });
+
+      if (res.data) {
+        SuccessNotification("Title updated", res.data.updateTeam.name);
+      }
+      if (res.error) {
+        ErrorNotification();
+      }
+    }
+  };
+
+  const refTitle = useClickOutside(() => {
+    if (isLoading) {
+      return null;
+    }
+    if (title !== team?.name) {
+      onUpdateTeamTitle(title);
+    }
+  });
+
+  useEffect(() => {
+    team?.name && setTitle(team?.name);
+  }, [team]);
 
   return (
     <Stack h={"100vh"}>
@@ -74,8 +118,9 @@ const TeamDetailPageContent = ({ team, isLoading }: TeamDetailProps) => {
             </Group>
             <Divider />
             <TextInput
-              value={team?.name ? team?.name : ""}
-              onChange={() => {}}
+              ref={refTitle}
+              value={title}
+              onChange={e => setTitle(e.target.value)}
               placeholder="Team Title"
               size="lg"
               styles={theme => ({
