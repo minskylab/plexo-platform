@@ -1,6 +1,7 @@
 import {
   DeleteProjectDocument,
   DeleteTaskDocument,
+  DeleteTeamDocument,
   NewProjectDocument,
   NewTaskDocument,
   UpdateProjectDocument,
@@ -20,6 +21,7 @@ export const useActions = () => {
   const [updateProject, fetchUpdateProject] = useMutation(UpdateProjectDocument);
   // Team
   const [createTeam, fetchCreateTeam] = useMutation(NewTeamDocument);
+  const [deleteTeam, fetchDeleteTeam] = useMutation(DeleteTeamDocument);
 
   return {
     createTask,
@@ -36,5 +38,7 @@ export const useActions = () => {
     fetchUpdateProject,
     createTeam,
     fetchCreateTeam,
+    deleteTeam,
+    fetchDeleteTeam,
   };
 };

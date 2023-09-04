@@ -691,6 +691,15 @@ export type NewTeamMutation = {
   createTeam: { __typename?: "Team"; id: any; name: string };
 };
 
+export type DeleteTeamMutationVariables = Exact<{
+  teamId: Scalars["UUID"]["input"];
+}>;
+
+export type DeleteTeamMutation = {
+  __typename?: "MutationRoot";
+  deleteTeam: { __typename?: "Team"; id: any; name: string };
+};
+
 export type UserQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserQuery = {
@@ -2116,6 +2125,49 @@ export const NewTeamDocument = {
     },
   ],
 } as unknown as DocumentNode<NewTeamMutation, NewTeamMutationVariables>;
+export const DeleteTeamDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "DeleteTeam" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "teamId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "deleteTeam" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "teamId" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DeleteTeamMutation, DeleteTeamMutationVariables>;
 export const UserDocument = {
   kind: "Document",
   definitions: [

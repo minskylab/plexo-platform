@@ -51,3 +51,10 @@ mutation NewTeam(
     name
   }
 }
+
+mutation DeleteTeam($teamId: UUID!) {
+  deleteTeam(id: $teamId) {
+    id
+    name
+  }
+}
