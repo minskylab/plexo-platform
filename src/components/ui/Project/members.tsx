@@ -13,7 +13,7 @@ import {
 import { Users } from "tabler-icons-react";
 
 import { useData } from "lib/hooks/useData";
-import { Member, ProjectById } from "lib/types";
+import { Member, ProjectById, TeamById } from "lib/types";
 import { useEffect, useState } from "react";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { useActions } from "lib/hooks/useActions";
@@ -43,8 +43,12 @@ export const MemberName = (member: Member | undefined) => {
   return member ? member?.name : "Member";
 };
 
-export const membersId = (project: ProjectById | undefined) => {
-  return project?.members.map(a => a.id);
+type Payload = {
+  id: string;
+};
+
+export const membersId = (members: Payload[] | undefined) => {
+  return members?.map(a => a.id);
 };
 
 type GenericMembersMenuProps = {
@@ -52,6 +56,7 @@ type GenericMembersMenuProps = {
   selectedMembers?: string[];
   setSelectedMembers?: (selectedMembers: string[]) => void;
   project?: ProjectById;
+  team?: TeamById;
 };
 
 export const GenericMemberMenu = ({
@@ -59,12 +64,14 @@ export const GenericMemberMenu = ({
   selectedMembers,
   setSelectedMembers,
   project,
+  team,
 }: GenericMembersMenuProps) => {
+  const { fetchUpdateProject, fetchUpdateTeam } = useActions();
   const { membersData, isLoadingMembers } = useData({});
+
   const [members, setMembers] = useState<string[] | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [membersOptions, setMembersOptions] = useState<Member[]>([]);
-  const { fetchUpdateProject } = useActions();
 
   useEffect(() => {
     if (membersData?.members) {
@@ -78,7 +85,11 @@ export const GenericMemberMenu = ({
     }
   }, [searchValue]);
 
-  const labelValue = selectedMembers ? selectedMembers : members ? members : membersId(project);
+  const labelValue = selectedMembers
+    ? selectedMembers
+    : members
+    ? members
+    : membersId(project ? project.members : team?.members);
   const onChangeLabel = selectedMembers ? setSelectedMembers : setMembers;
 
   const onUpdateProjectMembers = async (members: string[]) => {
@@ -95,9 +106,24 @@ export const GenericMemberMenu = ({
     }
   };
 
+  const onUpdateTeamMembers = async (members: string[]) => {
+    const res = await fetchUpdateTeam({
+      teamId: team?.id,
+      members: members,
+    });
+
+    if (res.data) {
+      SuccessNotification("Members updated", res.data.updateTeam.name);
+    }
+    if (res.error) {
+      ErrorNotification();
+    }
+  };
+
   useEffect(() => {
     if (members) {
-      onUpdateProjectMembers(members);
+      project && onUpdateProjectMembers(members);
+      team && onUpdateTeamMembers(members);
     }
   }, [members]);
 

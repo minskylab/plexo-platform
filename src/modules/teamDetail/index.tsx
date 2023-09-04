@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Box,
+  Button,
   CopyButton,
   Divider,
   Group,
@@ -11,7 +12,7 @@ import {
   Tooltip,
   createStyles,
 } from "@mantine/core";
-import { Copy, Dots, LayoutSidebar } from "tabler-icons-react";
+import { Copy, Dots, LayoutGrid, LayoutSidebar, Users } from "tabler-icons-react";
 
 import { TeamById } from "lib/types";
 import { usePlexoContext } from "context/PlexoContext";
@@ -20,6 +21,8 @@ import { useState, useEffect } from "react";
 import { useClickOutside } from "@mantine/hooks";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 import { useActions } from "lib/hooks/useActions";
+import { GenericMemberMenu } from "components/ui/Project/members";
+import { GenericProjectsMenu } from "components/ui/Team/projects";
 
 const useStyles = createStyles(theme => ({
   propsSection: {
@@ -149,6 +152,34 @@ const TeamDetailPageContent = ({ team, isLoading }: TeamDetailProps) => {
             )}
           </CopyButton>
           <Divider />
+          <Group>
+            <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
+              Members
+            </Text>
+            <GenericMemberMenu team={team}>
+              <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
+                {team?.members.length ? (
+                  <Text size={"xs"}>{team?.members.length} Members</Text>
+                ) : (
+                  <Text size={"xs"}>Members</Text>
+                )}
+              </Button>
+            </GenericMemberMenu>
+          </Group>
+          <Group>
+            <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
+              Projects
+            </Text>
+            <GenericProjectsMenu team={team}>
+              <Button compact variant="light" color={"gray"} leftIcon={<LayoutGrid size={16} />}>
+                {team?.projects.length ? (
+                  <Text size={"xs"}>{team.projects.length} Projects</Text>
+                ) : (
+                  <Text size={"xs"}>Projects</Text>
+                )}
+              </Button>
+            </GenericProjectsMenu>
+          </Group>
         </Stack>
       </Group>
     </Stack>

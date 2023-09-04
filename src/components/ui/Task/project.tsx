@@ -108,6 +108,7 @@ type GenericProjectsMenuProps = {
 export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProjectsMenuProps) => {
   const { projectsData, isLoadingProjects } = useData({});
   const { fetchUpdateTask } = useActions();
+
   const [searchValue, setSearchValue] = useState("");
   const [projectsOptions, setProjectsOptions] = useState<Project[]>([]);
 
