@@ -1,4 +1,14 @@
-import { Button, Kbd, Menu, Text, TextInput, Avatar, Skeleton, Tooltip } from "@mantine/core";
+import {
+  Button,
+  Kbd,
+  Menu,
+  Text,
+  TextInput,
+  Avatar,
+  Skeleton,
+  Tooltip,
+  ScrollArea,
+} from "@mantine/core";
 import { useEffect, useState } from "react";
 
 import { Member, Task, TaskById } from "lib/types";
@@ -76,39 +86,41 @@ export const GenericLeadTaskMenu = ({
           rightSection={<Kbd px={8}>A</Kbd>}
         ></TextInput>
         <Menu.Divider />
-        <Menu.Item
-          icon={<Avatar size="sm" radius="xl" />}
-          onClick={() => {
-            onSelect && onSelect(null);
-            task && onUpdateTaskLead(null);
-          }}
-        >
-          Unassigned
-        </Menu.Item>
-        {isLoadingMembers ? (
-          <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
-        ) : (
-          membersOptions.map(m => {
-            return (
-              <Menu.Item
-                key={m.id}
-                icon={
-                  m?.photoUrl ? (
-                    <Avatar src={m.photoUrl} size="sm" radius="xl" />
-                  ) : (
-                    <Avatar size="sm" radius="xl" />
-                  )
-                }
-                onClick={() => {
-                  onSelect && onSelect(m);
-                  task && onUpdateTaskLead(m.id);
-                }}
-              >
-                {m.name}
-              </Menu.Item>
-            );
-          })
-        )}
+        <ScrollArea h={250}>
+          <Menu.Item
+            icon={<Avatar size="sm" radius="xl" />}
+            onClick={() => {
+              onSelect && onSelect(null);
+              task && onUpdateTaskLead(null);
+            }}
+          >
+            Unassigned
+          </Menu.Item>
+          {isLoadingMembers ? (
+            <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+          ) : (
+            membersOptions.map(m => {
+              return (
+                <Menu.Item
+                  key={m.id}
+                  icon={
+                    m?.photoUrl ? (
+                      <Avatar src={m.photoUrl} size="sm" radius="xl" />
+                    ) : (
+                      <Avatar size="sm" radius="xl" />
+                    )
+                  }
+                  onClick={() => {
+                    onSelect && onSelect(m);
+                    task && onUpdateTaskLead(m.id);
+                  }}
+                >
+                  {m.name}
+                </Menu.Item>
+              );
+            })
+          )}
+        </ScrollArea>
       </Menu.Dropdown>
     </Menu>
   );
