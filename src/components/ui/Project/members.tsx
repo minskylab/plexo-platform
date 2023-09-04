@@ -8,11 +8,15 @@ import {
   Checkbox,
   Group,
   Tooltip,
+  ScrollArea,
 } from "@mantine/core";
 import { Users } from "tabler-icons-react";
 
 import { useData } from "lib/hooks/useData";
 import { Member, ProjectById } from "lib/types";
+import { useEffect, useState } from "react";
+import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import { useActions } from "lib/hooks/useActions";
 
 export const MembersIcon = (member: Member | undefined) => {
   return member?.photoUrl ? (
@@ -39,6 +43,10 @@ export const MemberName = (member: Member | undefined) => {
   return member ? member?.name : "Member";
 };
 
+export const membersId = (project: ProjectById | undefined) => {
+  return project?.members.map(a => a.id);
+};
+
 type GenericMembersMenuProps = {
   children: React.ReactNode;
   selectedMembers?: string[];
@@ -53,6 +61,45 @@ export const GenericMemberMenu = ({
   project,
 }: GenericMembersMenuProps) => {
   const { membersData, isLoadingMembers } = useData({});
+  const [members, setMembers] = useState<string[] | null>(null);
+  const [searchValue, setSearchValue] = useState("");
+  const [membersOptions, setMembersOptions] = useState<Member[]>([]);
+  const { fetchUpdateProject } = useActions();
+
+  useEffect(() => {
+    if (membersData?.members) {
+      searchValue == ""
+        ? setMembersOptions(membersData?.members)
+        : setMembersOptions(
+            membersData?.members.filter((item: Member) =>
+              item.name.toLowerCase().includes(searchValue.toLowerCase())
+            )
+          );
+    }
+  }, [searchValue]);
+
+  const labelValue = selectedMembers ? selectedMembers : members ? members : membersId(project);
+  const onChangeLabel = selectedMembers ? setSelectedMembers : setMembers;
+
+  const onUpdateProjectMembers = async (members: string[]) => {
+    const res = await fetchUpdateProject({
+      projectId: project?.id,
+      members: members,
+    });
+
+    if (res.data) {
+      SuccessNotification("Members updated", res.data.updateProject.name);
+    }
+    if (res.error) {
+      ErrorNotification();
+    }
+  };
+
+  useEffect(() => {
+    if (members) {
+      onUpdateProjectMembers(members);
+    }
+  }, [members]);
 
   return (
     <Menu shadow="md" closeOnItemClick={false} position="bottom-start" withinPortal>
@@ -63,33 +110,40 @@ export const GenericMemberMenu = ({
       </Menu.Target>
 
       <Menu.Dropdown>
-        <TextInput placeholder="Change project members" variant="filled"></TextInput>
+        <TextInput
+          placeholder="Change members"
+          variant="filled"
+          value={searchValue}
+          onChange={event => setSearchValue(event.currentTarget.value)}
+        ></TextInput>
         <Menu.Divider />
-        {isLoadingMembers ? (
-          <Skeleton height={36} radius="sm" />
-        ) : (
-          <Checkbox.Group mt={10} value={selectedMembers} onChange={setSelectedMembers}>
-            {membersData?.members.map((m: Member) => {
-              return (
-                <Menu.Item key={m.id}>
-                  <Checkbox
-                    size="xs"
-                    value={m.id}
-                    label={MemberPhoto(m)}
-                    styles={{
-                      body: {
-                        alignItems: "center",
-                      },
-                      label: {
-                        paddingLeft: 5,
-                      },
-                    }}
-                  />
-                </Menu.Item>
-              );
-            })}
-          </Checkbox.Group>
-        )}
+        <ScrollArea h={250}>
+          {isLoadingMembers ? (
+            <Skeleton height={36} radius="sm" />
+          ) : (
+            <Checkbox.Group mt={10} value={labelValue} onChange={onChangeLabel}>
+              {membersOptions.map((m: Member) => {
+                return (
+                  <Menu.Item key={m.id}>
+                    <Checkbox
+                      size="xs"
+                      value={m.id}
+                      label={MemberPhoto(m)}
+                      styles={{
+                        body: {
+                          alignItems: "center",
+                        },
+                        label: {
+                          paddingLeft: 5,
+                        },
+                      }}
+                    />
+                  </Menu.Item>
+                );
+              })}
+            </Checkbox.Group>
+          )}
+        </ScrollArea>
       </Menu.Dropdown>
     </Menu>
   );

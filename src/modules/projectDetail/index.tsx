@@ -126,7 +126,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
           <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
             Teams
           </Text>
-          <GenericTeamMenu>
+          <GenericTeamMenu project={project}>
             <Button compact variant="light" color={"gray"} leftIcon={<Affiliate size={16} />}>
               {project?.teams.length ? (
                 <Text size={"xs"}>{project?.teams.length} Teams</Text>

@@ -1,4 +1,14 @@
-import { Button, Menu, Text, TextInput, Skeleton, Checkbox, Tooltip, Divider } from "@mantine/core";
+import {
+  Button,
+  Menu,
+  Text,
+  TextInput,
+  Skeleton,
+  Checkbox,
+  Tooltip,
+  Divider,
+  ScrollArea,
+} from "@mantine/core";
 import { Users } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
@@ -94,11 +104,13 @@ export const GenericAssigneesMenu = ({
 
   useEffect(() => {
     if (membersData?.members) {
-      setMembersOptions(
-        membersData?.members.filter((item: Member) =>
-          item.name.toLowerCase().includes(searchValue.toLowerCase())
-        )
-      );
+      searchValue == ""
+        ? setMembersOptions(membersData?.members)
+        : setMembersOptions(
+            membersData?.members.filter((item: Member) =>
+              item.name.toLowerCase().includes(searchValue.toLowerCase())
+            )
+          );
     }
   }, [searchValue]);
 
@@ -153,31 +165,33 @@ export const GenericAssigneesMenu = ({
           onChange={event => setSearchValue(event.currentTarget.value)}
         ></TextInput>
         <Menu.Divider />
-        {isLoadingMembers ? (
-          <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
-        ) : (
-          <Checkbox.Group mt={10} value={labelValue} onChange={onChangeLabel}>
-            {membersOptions.map(m => {
-              return (
-                <Menu.Item key={m.id}>
-                  <Checkbox
-                    size="xs"
-                    value={m.id}
-                    label={MemberPhoto(m)}
-                    styles={{
-                      body: {
-                        alignItems: "center",
-                      },
-                      label: {
-                        paddingLeft: 5,
-                      },
-                    }}
-                  />
-                </Menu.Item>
-              );
-            })}
-          </Checkbox.Group>
-        )}
+        <ScrollArea h={250}>
+          {isLoadingMembers ? (
+            <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+          ) : (
+            <Checkbox.Group mt={10} value={labelValue} onChange={onChangeLabel}>
+              {membersOptions.map(m => {
+                return (
+                  <Menu.Item key={m.id}>
+                    <Checkbox
+                      size="xs"
+                      value={m.id}
+                      label={MemberPhoto(m)}
+                      styles={{
+                        body: {
+                          alignItems: "center",
+                        },
+                        label: {
+                          paddingLeft: 5,
+                        },
+                      }}
+                    />
+                  </Menu.Item>
+                );
+              })}
+            </Checkbox.Group>
+          )}
+        </ScrollArea>
       </Menu.Dropdown>
     </Menu>
   );
