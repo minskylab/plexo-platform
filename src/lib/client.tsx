@@ -42,11 +42,12 @@ export const URQLClient = () => {
         },
       }),
       subscriptionExchange({
-        forwardSubscription(operation) {
+        forwardSubscription(request) {
+          const input = { ...request, query: request.query || "" };
           return {
-            subscribe: sink => {
+            subscribe(sink) {
               return {
-                unsubscribe: wsClient!.subscribe(operation, sink),
+                unsubscribe: wsClient!.subscribe(input, sink),
               };
             },
           };

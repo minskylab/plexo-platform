@@ -10,7 +10,7 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
-import { DatePicker } from "@mantine/dates";
+import { DateInput } from "@mantine/dates";
 import { useEffect, useState } from "react";
 import { Affiliate, Dots, Users } from "tabler-icons-react";
 
@@ -27,16 +27,12 @@ type ProjectDetailProps = {
 const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
   const theme = useMantineTheme();
   const [dueDate, setDueDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
 
   useEffect(() => {
-    if (project?.dueDate) {
-      setDueDate(new Date(project?.dueDate));
-    }
-  }, [project?.dueDate]);
-
-  const handleDateChange = (date: Date | null) => {
-    setDueDate(date);
-  };
+    project?.dueDate && setDueDate(new Date(project?.dueDate));
+    project?.startDate && setStartDate(new Date(project?.startDate));
+  }, [project]);
 
   return (
     <Stack h={"100vh"}>
@@ -144,11 +140,11 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
           <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
             Due Date
           </Text>
-          <DatePicker
+          <DateInput
             size="xs"
             placeholder="Set due date"
             value={dueDate}
-            onChange={handleDateChange}
+            onChange={setDueDate}
             styles={{
               input: {
                 padding: "0px 8px",
@@ -162,11 +158,11 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
           <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
             Start Date
           </Text>
-          <DatePicker
+          <DateInput
             size="xs"
             placeholder="Set start date"
-            value={dueDate}
-            onChange={handleDateChange}
+            value={startDate}
+            onChange={setStartDate}
             styles={{
               input: {
                 padding: "0px 8px",

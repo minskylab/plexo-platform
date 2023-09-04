@@ -32,7 +32,7 @@ export const GenericLeadTaskMenu = ({
   useEffect(() => {
     if (membersData?.members) {
       setMembersOptions(
-        membersData?.members.filter(item =>
+        membersData?.members.filter((item: Member) =>
           item.name.toLowerCase().includes(searchValue.toLowerCase())
         )
       );
@@ -61,7 +61,7 @@ export const GenericLeadTaskMenu = ({
   };
 
   return (
-    <Menu shadow="md" position="bottom-start">
+    <Menu shadow="md" position="bottom-start" withinPortal>
       <Menu.Target>
         <Tooltip label={leadName ? `Lead by ${leadName}` : "Lead by"} position="bottom">
           {children}

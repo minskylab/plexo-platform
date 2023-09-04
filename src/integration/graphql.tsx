@@ -15,18 +15,6 @@ export type Scalars = {
   UUID: any;
 };
 
-export type DataDiffEvent = {
-  __typename?: "DataDiffEvent";
-  data: Scalars["String"];
-  kind: DataDiffEventKind;
-};
-
-export enum DataDiffEventKind {
-  Created = "CREATED",
-  Deleted = "DELETED",
-  Updated = "UPDATED",
-}
-
 export type Label = {
   __typename?: "Label";
   color?: Maybe<Scalars["String"]>;
@@ -53,7 +41,7 @@ export type Member = {
   projects: Array<Project>;
   role: MemberRole;
   tasks: Array<Task>;
-  teams?: Maybe<Array<Team>>;
+  teams: Array<Team>;
   updatedAt: Scalars["DateTime"];
 };
 
@@ -77,12 +65,12 @@ export type MutationRoot = {
   createTask: Task;
   createTeam: Team;
   deleteLabel: Label;
-  deleteMember: Member;
   deleteProject: Project;
   deleteTask: Task;
   deleteTeam: Team;
   updateLabel: Label;
-  updateMember: Member;
+  updatePassword: Member;
+  updateProfile: Member;
   updateProject: Project;
   updateTask: Task;
   updateTeam: Team;
@@ -130,10 +118,6 @@ export type MutationRootDeleteLabelArgs = {
   id: Scalars["UUID"];
 };
 
-export type MutationRootDeleteMemberArgs = {
-  id: Scalars["UUID"];
-};
-
 export type MutationRootDeleteProjectArgs = {
   id: Scalars["UUID"];
 };
@@ -153,13 +137,15 @@ export type MutationRootUpdateLabelArgs = {
   name?: InputMaybe<Scalars["String"]>;
 };
 
-export type MutationRootUpdateMemberArgs = {
+export type MutationRootUpdatePasswordArgs = {
+  currentPassword: Scalars["String"];
+  newPassword: Scalars["String"];
+};
+
+export type MutationRootUpdateProfileArgs = {
   email?: InputMaybe<Scalars["String"]>;
-  id: Scalars["UUID"];
   name?: InputMaybe<Scalars["String"]>;
-  projects?: InputMaybe<Array<Scalars["UUID"]>>;
-  role?: InputMaybe<Scalars["String"]>;
-  teams?: InputMaybe<Array<Scalars["UUID"]>>;
+  photoUrl?: InputMaybe<Scalars["String"]>;
 };
 
 export type MutationRootUpdateProjectArgs = {
@@ -280,16 +266,10 @@ export type QueryRootTeamsArgs = {
 
 export type SubscriptionRoot = {
   __typename?: "SubscriptionRoot";
-  example: DataDiffEvent;
-  integers: Scalars["Int"];
   projects: Project;
   taskById: Task;
   tasks: Task;
   teams: Team;
-};
-
-export type SubscriptionRootIntegersArgs = {
-  step?: Scalars["Int"];
 };
 
 export type SubscriptionRootTaskByIdArgs = {

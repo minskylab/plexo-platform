@@ -7,6 +7,7 @@ import { useActions } from "lib/hooks/useActions";
 import { useData } from "lib/hooks/useData";
 import { MemberSelector } from "../Project/members";
 import { ProjectsSelector } from "./projects";
+import { Team } from "lib/types";
 
 type NewTeamProps = {
   newTeamOpened: boolean;
@@ -68,7 +69,7 @@ const NewTeam = ({ newTeamOpened, setNewTeamOpened }: NewTeamProps) => {
   const handleTeamName = (value: string) => {
     setName(value);
     const evalName =
-      teamsData?.teams.some(t => t.name.toLowerCase() == value.toLowerCase()) || false;
+      teamsData?.teams.some((t: Team) => t.name.toLowerCase() == value.toLowerCase()) || false;
     setTeamExists(evalName);
   };
 
@@ -81,11 +82,15 @@ const NewTeam = ({ newTeamOpened, setNewTeamOpened }: NewTeamProps) => {
         setNewTeamOpened(false);
         resetInitialValues();
       }}
-      shadow="md"
-      overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
-      overlayOpacity={0.5}
-      transition={"slide-up"}
       size={"lg"}
+      shadow="md"
+      overlayProps={{
+        color: theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
+        opacity: 0.5,
+        transitionProps: {
+          transition: "slide-up",
+        },
+      }}
     >
       <TextInput
         mb={15}

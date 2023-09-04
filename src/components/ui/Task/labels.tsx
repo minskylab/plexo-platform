@@ -40,7 +40,9 @@ type GenericLabelsMenuProps = {
 export const LabelColor = (labels: string[]) => {
   const { labelsData } = useData({});
 
-  const colors = labelsData ? labelsData?.labels.filter(label => labels.includes(label.id)) : [];
+  const colors: Label[] = labelsData
+    ? labelsData?.labels.filter((label: Label) => labels.includes(label.id))
+    : [];
 
   if (labels.length) {
     return (
@@ -79,10 +81,12 @@ export const LabelColor = (labels: string[]) => {
 
 export const LabelNameBtn = (labels: string[]) => {
   const { labelsData } = useData({});
-  const data = labelsData ? labelsData?.labels.filter(label => labels.includes(label.id)) : [];
+  const data = labelsData
+    ? labelsData?.labels.filter((label: Label) => labels.includes(label.id))
+    : [];
 
   if (labels.length == 1) {
-    const labelName = data.filter(label => labels.includes(label.id));
+    const labelName = data.filter((label: Label) => labels.includes(label.id));
     return labelName[0].name;
   }
 
@@ -107,7 +111,7 @@ export const LabelCheckboxGroup = ({ labelsFilters, setLabelsFilters }: LabelChe
   useEffect(() => {
     if (labelsData?.labels) {
       setLabelsOptions(
-        labelsData?.labels.filter(item =>
+        labelsData?.labels.filter((item: Label) =>
           item.name.toLowerCase().includes(searchValue.toLowerCase())
         )
       );
@@ -123,17 +127,12 @@ export const LabelCheckboxGroup = ({ labelsFilters, setLabelsFilters }: LabelChe
         onChange={event => setSearchValue(event.currentTarget.value)}
       />
       <Divider />
-      <Checkbox.Group
-        orientation="vertical"
-        spacing={0}
-        value={labelsFilters}
-        onChange={setLabelsFilters}
-      >
+      <Checkbox.Group mt={10} value={labelsFilters} onChange={setLabelsFilters}>
         {labelsOptions.map(label => (
           <Checkbox
             key={label.id}
             size="xs"
-            pb={10}
+            pb={15}
             value={label.id}
             label={
               <Group spacing={12}>
@@ -167,7 +166,7 @@ export const GenericLabelsMenu = ({
   useEffect(() => {
     if (labelsData?.labels) {
       setLabelsOptions(
-        labelsData?.labels.filter(item =>
+        labelsData?.labels.filter((item: Label) =>
           item.name.toLowerCase().includes(searchValue.toLowerCase())
         )
       );
@@ -210,7 +209,7 @@ export const GenericLabelsMenu = ({
   const onChangeLabel = selectedLabels ? setSelectedLabels : setLabels;
 
   return (
-    <Menu shadow="md" closeOnItemClick={false} position="bottom-start">
+    <Menu shadow="md" closeOnItemClick={false} position="bottom-start" withinPortal>
       <Menu.Target>
         <Tooltip label="Add labels" position="bottom">
           {children}
@@ -225,12 +224,7 @@ export const GenericLabelsMenu = ({
           rightSection={<Kbd px={8}>L</Kbd>}
         ></TextInput>
         <Menu.Divider />
-        <Checkbox.Group
-          spacing={0}
-          value={labelValue}
-          onChange={onChangeLabel}
-          orientation="vertical"
-        >
+        <Checkbox.Group mt={10} value={labelValue} onChange={onChangeLabel}>
           {labelsOptions.map(label => (
             <Menu.Item key={label.id} p={0}>
               <Checkbox

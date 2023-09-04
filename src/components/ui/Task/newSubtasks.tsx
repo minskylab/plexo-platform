@@ -9,12 +9,12 @@ import {
   Button,
 } from "@mantine/core";
 import { Plus, X } from "tabler-icons-react";
+import { useState } from "react";
 
 import { GenericLeadTaskMenu } from "./lead";
 import { GenericStatusMenu, StatusIcon } from "./status";
 import { TaskStatus } from "integration/graphql";
 import { Member } from "lib/types";
-import { useState } from "react";
 
 type SubTask = {
   title: string;
