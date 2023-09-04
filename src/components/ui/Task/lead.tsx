@@ -48,7 +48,7 @@ export const GenericLeadTaskMenu = ({
         )
       );
     }
-  }, [searchValue]);
+  }, [membersData, searchValue]);
 
   const onUpdateTaskLead = async (leadId: string ) => {
     const res = await fetchUpdateTask({

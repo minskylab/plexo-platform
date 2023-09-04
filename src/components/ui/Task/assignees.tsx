@@ -112,7 +112,7 @@ export const GenericAssigneesMenu = ({
             )
           );
     }
-  }, [searchValue]);
+  }, [membersData,searchValue]);
 
   const labelValue = selectedAssignees
     ? selectedAssignees
