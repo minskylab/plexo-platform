@@ -100,7 +100,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
   const onUpdateTaskDescription = async (desc: string | null) => {
     const res = await fetchUpdateTask({
       taskId: task?.id,
-      description: desc,
+      description: desc === null ? "" : desc,
       status: statusName(task?.status),
       priority: priorityName(task?.priority),
       title: task?.title,
@@ -126,7 +126,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
       priority: priorityName(task?.priority),
       title: task?.title,
       description: task?.description,
-      dueDate: dueDate,
+      dueDate: dueDate === null ? new Date(0) : dueDate,
       projectId: task?.project?.id,
       leadId: task?.leader?.id,
       labels: task?.labels,
@@ -340,7 +340,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
-              Lead
+            Lead  
             </Text>
             <GenericLeadTaskMenu task={task}>
               <Button
@@ -401,8 +401,9 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
             <DateInput
               size="xs"
               placeholder="Set due date"
-              value={dueDate}
+              value={dueDate?.toISOString === new Date(0).toISOString ? undefined : dueDate}
               onChange={handleDateChange}
+              clearable 
               styles={{
                 input: {
                   padding: "0px 8px",

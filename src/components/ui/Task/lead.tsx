@@ -19,6 +19,7 @@ import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { LeadName, LeadPhoto } from "../Project/lead";
+import { noMemberId } from "../constant";
 
 type GenericLeadMenuProps = {
   children: React.ReactNode;
@@ -49,7 +50,7 @@ export const GenericLeadTaskMenu = ({
     }
   }, [searchValue]);
 
-  const onUpdateTaskLead = async (leadId: string | null) => {
+  const onUpdateTaskLead = async (leadId: string ) => {
     const res = await fetchUpdateTask({
       taskId: task?.id,
       leadId: leadId,
@@ -91,7 +92,7 @@ export const GenericLeadTaskMenu = ({
             icon={<Avatar size="sm" radius="xl" />}
             onClick={() => {
               onSelect && onSelect(null);
-              task && onUpdateTaskLead(null);
+              task && onUpdateTaskLead(noMemberId);
             }}
           >
             Unassigned
