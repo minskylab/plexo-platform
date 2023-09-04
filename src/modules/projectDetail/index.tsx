@@ -60,7 +60,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
   const onUpdateProjectDueDate = async (date: Date | null) => {
     const res = await fetchUpdateProject({
       projectId: project?.id,
-      dueDate: date,
+      dueDate: date == null ? new Date(0) : date,
     });
     if (res.data) {
       SuccessNotification("Due date updated", res.data.updateProject.name);
@@ -73,7 +73,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
   const onUpdateProjectStartDate = async (date: Date | null) => {
     const res = await fetchUpdateProject({
       projectId: project?.id,
-      startDate: date,
+      startDate: date == null ? new Date(0) : date,
     });
     if (res.data) {
       SuccessNotification("Start date updated", res.data.updateProject.name);
@@ -142,10 +142,12 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
   });
 
   useEffect(() => {
-    project?.name && setTitle(project?.name);
-    project?.description == null ? setDescription("") : setDescription(project?.description);
-    project?.dueDate && setDueDate(new Date(project?.dueDate));
-    project?.startDate && setStartDate(new Date(project?.startDate));
+    if (project) {
+      project.name && setTitle(project.name);
+      project.description == null ? setDescription("") : setDescription(project.description);
+      project.dueDate && setDueDate(new Date(project.dueDate));
+      project.startDate && setStartDate(new Date(project.startDate));
+    }
   }, [project]);
 
   const handleDueDateChange = (date: Date | null) => {
@@ -321,9 +323,10 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
             </Text>
             <Tooltip label="Start Date" position="bottom">
               <DateInput
+                clearable
                 size="xs"
                 placeholder="Set start date"
-                value={startDate}
+                value={startDate?.toISOString === new Date(0).toISOString ? undefined : startDate}
                 onChange={handleStartDateChange}
                 styles={{
                   input: {
@@ -342,9 +345,10 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
 
             <Tooltip label="Due Date" position="bottom">
               <DateInput
+                clearable
                 size="xs"
                 placeholder="Set due date"
-                value={dueDate}
+                value={dueDate?.toISOString === new Date(0).toISOString ? undefined : dueDate}
                 onChange={handleDueDateChange}
                 styles={{
                   input: {
