@@ -110,7 +110,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
     }
   };
 
-  const onUpdateProjectDescription = async (desc: string | null) => {
+  const onUpdateProjectDescription = async (desc: string) => {
     const res = await fetchUpdateProject({
       projectId: project?.id,
       description: desc,
@@ -138,9 +138,8 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
       return null;
     }
 
-    const desc = description == "" ? null : description;
-    if (desc !== project?.description) {
-      onUpdateProjectDescription(desc);
+    if (description !== project?.description) {
+      onUpdateProjectDescription(description);
     }
   });
 
@@ -201,7 +200,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
                     color={"gray"}
                     leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
                   >
-                    <Text size={"xs"}>{LeadName(project?.leader?.name)}</Text>
+                    <Text size={"xs"}>{LeadName(project?.leader)}</Text>
                   </Button>
                 </GenericLeadProjectMenu>
                 <GenericMemberMenu project={project}>
@@ -286,7 +285,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
                 color={"gray"}
                 leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
               >
-                <Text size={"xs"}>{LeadName(project?.leader?.name)}</Text>
+                <Text size={"xs"}>{LeadName(project?.leader)}</Text>
               </Button>
             </GenericLeadProjectMenu>
           </Group>

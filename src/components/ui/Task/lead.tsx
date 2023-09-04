@@ -140,7 +140,7 @@ export const LeadTaskSelector = ({ lead, setLead }: LeadTaskSelectorProps) => {
         </Button>
       ) : (
         <Button compact variant="light" color={"gray"} leftIcon={LeadPhoto(lead)}>
-          <Text size={"xs"}>{LeadName(lead?.name)}</Text>
+          <Text size={"xs"}>{LeadName(lead)}</Text>
         </Button>
       )}
     </GenericLeadTaskMenu>

@@ -237,7 +237,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                     color={"gray"}
                     leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
                   >
-                    <Text size={"xs"}>{LeadName(task?.leader?.name)}</Text>
+                    <Text size={"xs"}>{LeadName(task?.leader)}</Text>
                   </Button>
                 </GenericLeadTaskMenu>
                 {/* <GenericLabelMenu task={task}>
@@ -349,7 +349,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                 color={"gray"}
                 leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
               >
-                <Text size={"xs"}>{LeadName(task?.leader?.name)}</Text>
+                <Text size={"xs"}>{LeadName(task?.leader)}</Text>
               </Button>
             </GenericLeadTaskMenu>
           </Group>
