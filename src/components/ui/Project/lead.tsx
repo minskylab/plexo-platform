@@ -1,4 +1,14 @@
-import { Button, Menu, Text, TextInput, Avatar, Skeleton, Tooltip, Kbd } from "@mantine/core";
+import {
+  Button,
+  Menu,
+  Text,
+  TextInput,
+  Avatar,
+  Skeleton,
+  Tooltip,
+  Kbd,
+  ScrollArea,
+} from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { Check, X } from "tabler-icons-react";
 
@@ -85,30 +95,32 @@ export const GenericLeadProjectMenu = ({
         >
           Unassigned
         </Menu.Item>
-        {isLoadingMembers ? (
-          <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
-        ) : (
-          membersData?.members.map((m: Member) => {
-            return (
-              <Menu.Item
-                key={m.id}
-                icon={
-                  m?.photoUrl ? (
-                    <Avatar src={m.photoUrl} size="sm" radius="xl" />
-                  ) : (
-                    <Avatar size="sm" radius="xl" />
-                  )
-                }
-                onClick={() => {
-                  onSelect && onSelect(m);
-                  project && onUpdateProjectLead(m.id);
-                }}
-              >
-                {m.name}
-              </Menu.Item>
-            );
-          })
-        )}
+        <ScrollArea h={250}>
+          {isLoadingMembers ? (
+            <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+          ) : (
+            membersData?.members.map((m: Member) => {
+              return (
+                <Menu.Item
+                  key={m.id}
+                  icon={
+                    m?.photoUrl ? (
+                      <Avatar src={m.photoUrl} size="sm" radius="xl" />
+                    ) : (
+                      <Avatar size="sm" radius="xl" />
+                    )
+                  }
+                  onClick={() => {
+                    onSelect && onSelect(m);
+                    project && onUpdateProjectLead(m.id);
+                  }}
+                >
+                  {m.name}
+                </Menu.Item>
+              );
+            })
+          )}
+        </ScrollArea>
       </Menu.Dropdown>
     </Menu>
   );

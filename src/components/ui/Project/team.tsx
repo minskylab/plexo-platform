@@ -15,8 +15,10 @@ import {
 import { Affiliate } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
-import { Team } from "lib/types";
+import { ProjectById, Team } from "lib/types";
 import { useData } from "lib/hooks/useData";
+import { useActions } from "lib/hooks/useActions";
+import { ErrorNotification, SuccessNotification } from "lib/notifications";
 
 const useStyles = createStyles(theme => ({
   checkbox: {
@@ -91,15 +93,63 @@ export const TeamCheckboxGroup = ({ teamFilters, setTeamFilters }: TeamCheckboxP
   );
 };
 
-type GenericTeamsMenuProps = {
-  children: React.ReactNode;
-  teams?: string[];
-  setTeams?: (teams: string[]) => void;
+export const teamsId = (project: ProjectById | undefined) => {
+  return project?.teams.map(t => t.id);
 };
 
-export const GenericTeamMenu = ({ children, teams, setTeams }: GenericTeamsMenuProps) => {
+type GenericTeamsMenuProps = {
+  children: React.ReactNode;
+  selectedTeams?: string[];
+  setSelectedTeams?: (teams: string[]) => void;
+  project?: ProjectById;
+};
+
+export const GenericTeamMenu = ({
+  children,
+  selectedTeams,
+  setSelectedTeams,
+  project,
+}: GenericTeamsMenuProps) => {
   const { teamsData, isLoadingTeams } = useData({});
   const [searchValue, setSearchValue] = useState("");
+  const [teamsOptions, setTeamsOptions] = useState<Team[]>([]);
+  const [teams, setTeams] = useState<string[] | null>(null);
+  const { fetchUpdateProject } = useActions();
+
+  useEffect(() => {
+    if (teamsData?.teams) {
+      searchValue == ""
+        ? setTeamsOptions(teamsData?.teams)
+        : setTeamsOptions(
+            teamsData?.teams.filter((item: Team) =>
+              item.name.toLowerCase().includes(searchValue.toLowerCase())
+            )
+          );
+    }
+  }, [searchValue]);
+
+  const labelValue = selectedTeams ? selectedTeams : teams ? teams : teamsId(project);
+  const onChangeLabel = selectedTeams ? setSelectedTeams : setTeams;
+
+  const onUpdateProjectTeams = async (members: string[]) => {
+    const res = await fetchUpdateProject({
+      projectId: project?.id,
+      teams: teams,
+    });
+
+    if (res.data) {
+      SuccessNotification("Teams updated", res.data.updateProject.name);
+    }
+    if (res.error) {
+      ErrorNotification();
+    }
+  };
+
+  useEffect(() => {
+    if (teams) {
+      onUpdateProjectTeams(teams);
+    }
+  }, [teams]);
 
   return (
     <Menu shadow="md" closeOnItemClick={false} position="bottom-start" withinPortal>
@@ -121,8 +171,8 @@ export const GenericTeamMenu = ({ children, teams, setTeams }: GenericTeamsMenuP
         {isLoadingTeams ? (
           <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
         ) : (
-          <Checkbox.Group mt={10} value={teams} onChange={setTeams}>
-            {teamsData?.teams.map((t: Team) => {
+          <Checkbox.Group mt={10} value={labelValue} onChange={onChangeLabel}>
+            {teamsOptions.map((t: Team) => {
               return (
                 <Menu.Item key={t.id}>
                   <Checkbox
@@ -155,7 +205,7 @@ type TeamSelectorProps = {
 
 export const TeamSelector = ({ teams, setTeams }: TeamSelectorProps) => {
   return (
-    <GenericTeamMenu teams={teams} setTeams={setTeams}>
+    <GenericTeamMenu selectedTeams={teams} setSelectedTeams={setTeams}>
       <Button compact variant="light" color={"gray"} leftIcon={<Affiliate size={16} />}>
         {teams.length ? (
           <Text size={"xs"}>{teams.length} Teams</Text>

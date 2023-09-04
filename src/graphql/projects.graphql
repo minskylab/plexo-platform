@@ -110,6 +110,8 @@ mutation UpdateProject(
   $description: String
   $dueDate: DateTime
   $leadId: UUID
+  $members: [UUID!]
+  $teams: [UUID!]
 ) {
   updateProject(
     id: $projectId
@@ -117,6 +119,8 @@ mutation UpdateProject(
     description: $description
     dueDate: $dueDate
     leadId: $leadId
+    members: $members
+    teams: $teams
   ) {
     id
     name

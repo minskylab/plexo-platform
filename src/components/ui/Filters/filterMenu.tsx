@@ -114,7 +114,7 @@ const FilterMenu = () => {
             Clear
           </Anchor>
         </Group>
-        <Box w={240}>
+        <Box miw={240}>
           <NavLink
             label={
               <Group>
