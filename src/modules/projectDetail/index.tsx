@@ -18,6 +18,8 @@ import { GenericLeadProjectMenu, LeadName } from "components/ui/Project/lead";
 import { GenericMemberMenu } from "components/ui/Project/members";
 import { GenericTeamMenu } from "components/ui/Project/team";
 import { ProjectById } from "lib/types";
+import { useActions } from "lib/hooks/useActions";
+import { ErrorNotification, SuccessNotification } from "lib/notifications";
 
 type ProjectDetailProps = {
   project: ProjectById | undefined;
@@ -28,11 +30,48 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
   const theme = useMantineTheme();
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
+  const { fetchUpdateProject } = useActions();
+
+  const onUpdateTaskDueDate = async (date: Date | null) => {
+    const res = await fetchUpdateProject({
+      projectId: project?.id,
+      dueDate: date,
+    });
+    if (res.data) {
+      SuccessNotification("Due date updated", res.data.updateProject.name);
+    }
+    if (res.error) {
+      ErrorNotification();
+    }
+  };
+
+  const onUpdateTaskStartDate = async (date: Date | null) => {
+    const res = await fetchUpdateProject({
+      projectId: project?.id,
+      startDate: date,
+    });
+    if (res.data) {
+      SuccessNotification("Start date updated", res.data.updateProject.name);
+    }
+    if (res.error) {
+      ErrorNotification();
+    }
+  };
 
   useEffect(() => {
     project?.dueDate && setDueDate(new Date(project?.dueDate));
     project?.startDate && setStartDate(new Date(project?.startDate));
   }, [project]);
+
+  const handleDueDateChange = (date: Date | null) => {
+    setDueDate(date);
+    onUpdateTaskDueDate(date);
+  };
+
+  const handleStartDateChange = (date: Date | null) => {
+    setStartDate(date);
+    onUpdateTaskStartDate(date);
+  };
 
   return (
     <Stack h={"100vh"}>
@@ -138,13 +177,13 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
         </Group>
         <Group>
           <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
-            Due Date
+            Start Date
           </Text>
           <DateInput
             size="xs"
-            placeholder="Set due date"
-            value={dueDate}
-            onChange={setDueDate}
+            placeholder="Set start date"
+            value={startDate}
+            onChange={handleStartDateChange}
             styles={{
               input: {
                 padding: "0px 8px",
@@ -156,13 +195,13 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
         </Group>
         <Group>
           <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
-            Start Date
+            Due Date
           </Text>
           <DateInput
             size="xs"
-            placeholder="Set start date"
-            value={startDate}
-            onChange={setStartDate}
+            placeholder="Set due date"
+            value={dueDate}
+            onChange={handleDueDateChange}
             styles={{
               input: {
                 padding: "0px 8px",

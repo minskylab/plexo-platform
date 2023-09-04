@@ -505,6 +505,7 @@ export type UpdateProjectMutationVariables = Exact<{
   projectId: Scalars["UUID"]["input"];
   name?: InputMaybe<Scalars["String"]["input"]>;
   description?: InputMaybe<Scalars["String"]["input"]>;
+  startDate?: InputMaybe<Scalars["DateTime"]["input"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
   leadId?: InputMaybe<Scalars["UUID"]["input"]>;
   members?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
@@ -1224,6 +1225,11 @@ export const UpdateProjectDocument = {
         },
         {
           kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "startDate" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "DateTime" } },
+        },
+        {
+          kind: "VariableDefinition",
           variable: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
           type: { kind: "NamedType", name: { kind: "Name", value: "DateTime" } },
         },
@@ -1276,6 +1282,11 @@ export const UpdateProjectDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "description" },
                 value: { kind: "Variable", name: { kind: "Name", value: "description" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "startDate" },
+                value: { kind: "Variable", name: { kind: "Name", value: "startDate" } },
               },
               {
                 kind: "Argument",
