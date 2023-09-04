@@ -24,8 +24,9 @@ import { GenericMemberMenu } from "components/ui/Project/members";
 import { GenericTeamMenu } from "components/ui/Project/team";
 import { ProjectById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
-import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 import { usePlexoContext } from "context/PlexoContext";
+import { useClickOutside } from "@mantine/hooks";
 
 type ProjectDetailProps = {
   project: ProjectById | undefined;
@@ -49,10 +50,12 @@ const useStyles = createStyles(theme => ({
 const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
   const theme = useMantineTheme();
   const { classes } = useStyles();
+  const { fetchUpdateProject } = useActions();
   const { setNavBarOpened } = usePlexoContext();
+
+  const [title, setTitle] = useState<string>("");
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
-  const { fetchUpdateProject } = useActions();
 
   const onUpdateTaskDueDate = async (date: Date | null) => {
     const res = await fetchUpdateProject({
@@ -79,6 +82,40 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
       ErrorNotification();
     }
   };
+
+  const onUpdateProjectTitle = async (title: string) => {
+    if (!title.length) {
+      AlertNotification(
+        "titleUpdateFailed",
+        "Update Failed",
+        "Please enter a title before submitting"
+      );
+      project?.name && setTitle(project?.name);
+    }
+
+    if (title.length) {
+      const res = await fetchUpdateProject({
+        projectId: project?.id,
+        name: title,
+      });
+
+      if (res.data) {
+        SuccessNotification("Title updated", res.data.updateProject.name);
+      }
+      if (res.error) {
+        ErrorNotification();
+      }
+    }
+  };
+
+  const refTitle = useClickOutside(() => {
+    if (isLoading) {
+      return null;
+    }
+    if (title !== project?.name) {
+      onUpdateProjectTitle(title);
+    }
+  });
 
   useEffect(() => {
     project?.dueDate && setDueDate(new Date(project?.dueDate));
@@ -126,8 +163,9 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
             </Group>
             <Divider />
             <TextInput
-              value={project?.name ? project?.name : ""}
-              onChange={() => {}}
+              ref={refTitle}
+              value={title}
+              onChange={e => setTitle(e.target.value)}
               placeholder="Project Title"
               size="lg"
               styles={theme => ({
