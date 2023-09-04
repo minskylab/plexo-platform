@@ -21,8 +21,8 @@ export const TaskMenu = ({ children, task }: TaskMenuProps) => {
     });
 
     if (res.data) {
-      SuccessNotification("Task deleted", res.data.deleteTask.title);
       router.push("/tasks");
+      SuccessNotification("Task deleted", res.data.deleteTask.title);
     }
     if (res.error) {
       ErrorNotification();

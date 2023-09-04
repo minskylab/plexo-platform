@@ -1,7 +1,6 @@
 import {
   Group,
   Stack,
-  useMantineTheme,
   Text,
   Divider,
   ActionIcon,
@@ -16,18 +15,18 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
+import { useClickOutside } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { Affiliate, Copy, Dots, LayoutSidebar, Users } from "tabler-icons-react";
 
 import { GenericLeadProjectMenu, LeadName } from "components/ui/Project/lead";
 import { GenericMemberMenu } from "components/ui/Project/members";
 import { GenericTeamMenu } from "components/ui/Project/team";
+import { ProjectMenu } from "components/ui/Project/menu";
+import { usePlexoContext } from "context/PlexoContext";
 import { ProjectById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
-import { usePlexoContext } from "context/PlexoContext";
-import { useClickOutside } from "@mantine/hooks";
-import { ProjectMenu } from "components/ui/Project/menu";
 
 type ProjectDetailProps = {
   project: ProjectById | undefined;
@@ -49,8 +48,7 @@ const useStyles = createStyles(theme => ({
 }));
 
 const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
-  const theme = useMantineTheme();
-  const { classes } = useStyles();
+  const { classes, theme } = useStyles();
   const { fetchUpdateProject } = useActions();
   const { setNavBarOpened } = usePlexoContext();
 

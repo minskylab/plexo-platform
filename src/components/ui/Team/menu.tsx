@@ -4,25 +4,25 @@ import { Trash } from "tabler-icons-react";
 import router from "next/router";
 
 import { useActions } from "lib/hooks/useActions";
-import { ProjectById } from "lib/types";
+import { TeamById } from "lib/types";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 
-type ProjectMenuProps = {
+type TeamMenuProps = {
   children: React.ReactNode;
-  project: ProjectById | undefined;
+  team: TeamById | undefined;
 };
 
-export const ProjectMenu = ({ children, project }: ProjectMenuProps) => {
-  const { fetchDeleteProject } = useActions();
+export const TeamMenu = ({ children, team }: TeamMenuProps) => {
+  const { fetchDeleteTeam } = useActions();
 
   const onDeleteProject = async () => {
-    const res = await fetchDeleteProject({
-      projectId: project?.id,
+    const res = await fetchDeleteTeam({
+      teamId: team?.id,
     });
 
     if (res.data) {
       router.push("/tasks");
-      SuccessNotification("Project deleted", res.data.deleteProject.name);
+      SuccessNotification("Project deleted", res.data.deleteTeam.name);
     }
     if (res.error) {
       ErrorNotification();
@@ -31,9 +31,9 @@ export const ProjectMenu = ({ children, project }: ProjectMenuProps) => {
 
   const openDeleteModal = () =>
     openConfirmModal({
-      title: "Delete your project",
+      title: "Delete your team",
       centered: true,
-      children: <Text size="sm">Are you sure you want to delete your project?</Text>,
+      children: <Text size="sm">Are you sure you want to delete your team?</Text>,
       labels: { confirm: "Delete", cancel: "Cancel" },
       onConfirm: () => onDeleteProject(),
     });
