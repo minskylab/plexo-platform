@@ -171,7 +171,7 @@ export const GenericLabelsMenu = ({
         )
       );
     }
-  }, [searchValue]);
+  }, [labelsData, searchValue]);
 
   useEffect(() => {
     if (labels) {

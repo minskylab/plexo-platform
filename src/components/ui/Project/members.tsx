@@ -83,7 +83,7 @@ export const GenericMemberMenu = ({
             )
           );
     }
-  }, [searchValue]);
+  }, [membersData,searchValue]);
 
   const labelValue = selectedMembers
     ? selectedMembers

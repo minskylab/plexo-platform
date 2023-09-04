@@ -120,7 +120,7 @@ export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProject
         )
       );
     }
-  }, [searchValue]);
+  }, [projectsData,searchValue]);
 
   const onUpdateTaskProject = async (projectId: string | null) => {
     const res = await fetchUpdateTask({
