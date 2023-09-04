@@ -191,12 +191,12 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
           </ScrollArea>
         </Stack>
         <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <StatusCounter taskData={taskData} status={TaskStatus.InProgress} />
+          <StatusCounter taskData={taskData} status={TaskStatus.Backlog} />
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
               <Skeleton height={36} radius="sm" />
             ) : (
-              <TaskCard status={TaskStatus.InProgress} />
+              <TaskCard status={TaskStatus.Backlog} />
             )}
           </ScrollArea>
         </Stack>
@@ -211,12 +211,12 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
           </ScrollArea>
         </Stack>
         <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <StatusCounter taskData={taskData} status={TaskStatus.Backlog} />
+          <StatusCounter taskData={taskData} status={TaskStatus.InProgress} />
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
               <Skeleton height={36} radius="sm" />
             ) : (
-              <TaskCard status={TaskStatus.Backlog} />
+              <TaskCard status={TaskStatus.InProgress} />
             )}
           </ScrollArea>
         </Stack>
@@ -272,18 +272,18 @@ const TasksList = ({ taskData, fetching }: TasksProps) => {
         <Counter status={TaskStatus.None} fetching={fetching} />
         {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={TaskStatus.None} />}
 
-        <Counter status={TaskStatus.InProgress} fetching={fetching} />
+        <Counter status={TaskStatus.Backlog} fetching={fetching} />
         {fetching ? (
           <Skeleton height={36} radius="sm" />
         ) : (
-          <TaskList status={TaskStatus.InProgress} />
+          <TaskList status={TaskStatus.Backlog} />
         )}
 
         <Counter status={TaskStatus.ToDo} fetching={fetching} />
         {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={TaskStatus.ToDo} />}
 
-        <Counter status={TaskStatus.Backlog} fetching={fetching} />
-        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={TaskStatus.Backlog} />}
+        <Counter status={TaskStatus.InProgress} fetching={fetching} />
+        {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={TaskStatus.InProgress} />}
 
         <Counter status={TaskStatus.Done} fetching={fetching} />
         {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={TaskStatus.Done} />}
