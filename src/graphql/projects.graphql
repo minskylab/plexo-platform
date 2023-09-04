@@ -108,6 +108,7 @@ mutation UpdateProject(
   $projectId: UUID!
   $name: String
   $description: String
+  $startDate: DateTime
   $dueDate: DateTime
   $leadId: UUID
   $members: [UUID!]
@@ -117,6 +118,7 @@ mutation UpdateProject(
     id: $projectId
     name: $name
     description: $description
+    startDate: $startDate
     dueDate: $dueDate
     leadId: $leadId
     members: $members
