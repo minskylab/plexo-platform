@@ -5,6 +5,7 @@ import { Check, Robot, Trash, X } from "tabler-icons-react";
 
 import { useActions } from "lib/hooks/useActions";
 import { Task, TaskById } from "lib/types";
+import router from "next/router";
 
 type TaskMenuProps = {
   children: React.ReactNode;
@@ -27,6 +28,8 @@ export const TaskMenu = ({ children, task }: TaskMenuProps) => {
         color: "blue",
         icon: <Check size={18} />,
       });
+      
+      router.push(`/tasks`);
     }
     if (res.error) {
       showNotification({
