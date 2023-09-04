@@ -222,7 +222,7 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
         </Stack>
         <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
           <StatusCounter taskData={taskData} status={TaskStatus.Done} />
-          <ScrollArea style={{ height: 812 }} offsetScrollbars>
+          <ScrollArea style={{ height: 812}} offsetScrollbars>
             {fetching ? (
               <Skeleton height={36} radius="sm" />
             ) : (

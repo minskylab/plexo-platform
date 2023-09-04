@@ -117,7 +117,7 @@ export const GenericMemberMenu = ({
           onChange={event => setSearchValue(event.currentTarget.value)}
         ></TextInput>
         <Menu.Divider />
-        <ScrollArea h={250}>
+        <ScrollArea.Autosize mah={250}>
           {isLoadingMembers ? (
             <Skeleton height={36} radius="sm" />
           ) : (
@@ -143,7 +143,7 @@ export const GenericMemberMenu = ({
               })}
             </Checkbox.Group>
           )}
-        </ScrollArea>
+        </ScrollArea.Autosize>
       </Menu.Dropdown>
     </Menu>
   );

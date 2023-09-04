@@ -71,7 +71,7 @@ export const ProjectsCheckboxGroup = ({
         onChange={event => setSearchValue(event.currentTarget.value)}
       />
       <Divider />
-      <ScrollArea h={250}>
+      <ScrollArea.Autosize mah={250}>
         <Checkbox.Group mt={10} value={projectFilters} onChange={setProjectFilters}>
           {projectsOptions.map(p => {
             return (
@@ -94,7 +94,7 @@ export const ProjectsCheckboxGroup = ({
             );
           })}
         </Checkbox.Group>
-      </ScrollArea>
+      </ScrollArea.Autosize>
     </>
   );
 };

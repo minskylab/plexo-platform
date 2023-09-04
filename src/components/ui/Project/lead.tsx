@@ -95,7 +95,7 @@ export const GenericLeadProjectMenu = ({
         >
           Unassigned
         </Menu.Item>
-        <ScrollArea h={250}>
+        <ScrollArea.Autosize mah={250}>
           {isLoadingMembers ? (
             <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
           ) : (
@@ -120,7 +120,7 @@ export const GenericLeadProjectMenu = ({
               );
             })
           )}
-        </ScrollArea>
+        </ScrollArea.Autosize>
       </Menu.Dropdown>
     </Menu>
   );
