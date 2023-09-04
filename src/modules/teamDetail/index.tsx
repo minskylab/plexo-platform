@@ -109,16 +109,44 @@ const TeamDetailPageContent = ({ team, isLoading }: TeamDetailProps) => {
       <Group px={20} sx={{ alignItems: "baseline" }}>
         <Box sx={{ flex: 1 }}>
           <Stack maw={860} m="auto">
-            <Group position="apart">
-              <Text size={"sm"} color={"dimmed"}>
-                {team?.prefix ? team.prefix : "TM-001"}
-              </Text>
-              <TeamMenu team={team}>
-                <ActionIcon radius={"sm"} size={"xs"}>
-                  <Dots size={18} />
-                </ActionIcon>
-              </TeamMenu>
-            </Group>
+            <Stack spacing={10}>
+              <Group position="apart">
+                <Text size={"sm"} color={"dimmed"}>
+                  {team?.prefix ? team.prefix : "TM-001"}
+                </Text>
+                <TeamMenu team={team}>
+                  <ActionIcon radius={"sm"} size={"xs"}>
+                    <Dots size={18} />
+                  </ActionIcon>
+                </TeamMenu>
+              </Group>
+              <Group spacing={5} className={classes.propsBar}>
+                <GenericMemberMenu team={team}>
+                  <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
+                    {team?.members.length ? (
+                      <Text size={"xs"}>{team?.members.length} Members</Text>
+                    ) : (
+                      <Text size={"xs"}>Members</Text>
+                    )}
+                  </Button>
+                </GenericMemberMenu>
+                <GenericProjectsMenu team={team}>
+                  <Button
+                    compact
+                    variant="light"
+                    color={"gray"}
+                    leftIcon={<LayoutGrid size={16} />}
+                  >
+                    {team?.projects.length ? (
+                      <Text size={"xs"}>{team.projects.length} Projects</Text>
+                    ) : (
+                      <Text size={"xs"}>Projects</Text>
+                    )}
+                  </Button>
+                </GenericProjectsMenu>
+              </Group>
+            </Stack>
+
             <Divider />
             <TextInput
               ref={refTitle}
