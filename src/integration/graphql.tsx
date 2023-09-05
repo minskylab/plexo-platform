@@ -32,6 +32,12 @@ export type Label = {
   updatedAt: Scalars["DateTime"]["output"];
 };
 
+export type LoginResponse = {
+  __typename?: "LoginResponse";
+  memberId: Scalars["String"]["output"];
+  token: Scalars["String"]["output"];
+};
+
 export type Member = {
   __typename?: "Member";
   createdAt: Scalars["DateTime"]["output"];
@@ -74,7 +80,10 @@ export type MutationRoot = {
   deleteProject: Project;
   deleteTask: Task;
   deleteTeam: Team;
+  login: LoginResponse;
+  register: LoginResponse;
   updateLabel: Label;
+  updateMember: Member;
   updatePassword: Member;
   updateProfile: Member;
   updateProject: Project;
@@ -136,11 +145,29 @@ export type MutationRootDeleteTeamArgs = {
   id: Scalars["UUID"]["input"];
 };
 
+export type MutationRootLoginArgs = {
+  email: Scalars["String"]["input"];
+  password: Scalars["String"]["input"];
+};
+
+export type MutationRootRegisterArgs = {
+  email: Scalars["String"]["input"];
+  name: Scalars["String"]["input"];
+  password: Scalars["String"]["input"];
+};
+
 export type MutationRootUpdateLabelArgs = {
   color?: InputMaybe<Scalars["String"]["input"]>;
   description?: InputMaybe<Scalars["String"]["input"]>;
   id: Scalars["UUID"]["input"];
   name?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+export type MutationRootUpdateMemberArgs = {
+  email?: InputMaybe<Scalars["String"]["input"]>;
+  id: Scalars["UUID"]["input"];
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  role?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type MutationRootUpdatePasswordArgs = {
@@ -223,6 +250,7 @@ export type QueryRoot = {
   members: Array<Member>;
   projectById: Project;
   projects: Array<Project>;
+  subdivideTask: Array<TaskSuggestionResult>;
   suggestNewTask: TaskSuggestionResult;
   taskById: Task;
   tasks: Array<Task>;
@@ -250,8 +278,13 @@ export type QueryRootProjectsArgs = {
   filter?: InputMaybe<ProjectFilter>;
 };
 
+export type QueryRootSubdivideTaskArgs = {
+  subtasks?: Scalars["Int"]["input"];
+  taskId: Scalars["String"]["input"];
+};
+
 export type QueryRootSuggestNewTaskArgs = {
-  task: TaskSuggestion;
+  task: TaskSuggestionInput;
 };
 
 export type QueryRootTaskByIdArgs = {
@@ -273,6 +306,9 @@ export type QueryRootTeamsArgs = {
 export type SubscriptionRoot = {
   __typename?: "SubscriptionRoot";
   projects: Project;
+  subscribeProject?: Maybe<Project>;
+  subscribeTask?: Maybe<Task>;
+  subscribeTeam?: Maybe<Team>;
   taskById: Task;
   tasks: Task;
   teams: Team;
@@ -332,7 +368,7 @@ export enum TaskStatus {
   ToDo = "TO_DO",
 }
 
-export type TaskSuggestion = {
+export type TaskSuggestionInput = {
   description?: InputMaybe<Scalars["String"]["input"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
   priority?: InputMaybe<TaskPriority>;
@@ -374,6 +410,27 @@ export enum TeamVisibility {
   Private = "PRIVATE",
   Public = "PUBLIC",
 }
+
+export type RegisterMutationVariables = Exact<{
+  name: Scalars["String"]["input"];
+  email: Scalars["String"]["input"];
+  password: Scalars["String"]["input"];
+}>;
+
+export type RegisterMutation = {
+  __typename?: "MutationRoot";
+  register: { __typename?: "LoginResponse"; token: string };
+};
+
+export type LoginMutationVariables = Exact<{
+  email: Scalars["String"]["input"];
+  password: Scalars["String"]["input"];
+}>;
+
+export type LoginMutation = {
+  __typename?: "MutationRoot";
+  login: { __typename?: "LoginResponse"; token: string };
+};
 
 export type LabelsQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -631,7 +688,7 @@ export type UpdateTaskMutation = {
 };
 
 export type SuggestNewTaskQueryVariables = Exact<{
-  taskSuggestion: TaskSuggestion;
+  taskSuggestion: TaskSuggestionInput;
 }>;
 
 export type SuggestNewTaskQuery = {
@@ -719,6 +776,125 @@ export type UserQuery = {
   me: { __typename?: "Member"; id: any; name: string; email: string; photoUrl?: string | null };
 };
 
+export const RegisterDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "Register" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "email" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "password" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "register" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "name" },
+                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "email" },
+                value: { kind: "Variable", name: { kind: "Name", value: "email" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "password" },
+                value: { kind: "Variable", name: { kind: "Name", value: "password" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [{ kind: "Field", name: { kind: "Name", value: "token" } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RegisterMutation, RegisterMutationVariables>;
+export const LoginDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "Login" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "email" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "password" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "login" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "email" },
+                value: { kind: "Variable", name: { kind: "Name", value: "email" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "password" },
+                value: { kind: "Variable", name: { kind: "Name", value: "password" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [{ kind: "Field", name: { kind: "Name", value: "token" } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
 export const LabelsDocument = {
   kind: "Document",
   definitions: [
@@ -1907,7 +2083,7 @@ export const SuggestNewTaskDocument = {
           variable: { kind: "Variable", name: { kind: "Name", value: "taskSuggestion" } },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "TaskSuggestion" } },
+            type: { kind: "NamedType", name: { kind: "Name", value: "TaskSuggestionInput" } },
           },
         },
       ],

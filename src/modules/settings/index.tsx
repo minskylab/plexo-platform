@@ -19,6 +19,8 @@ import { LayoutSidebar, Moon, Sun } from "tabler-icons-react";
 import { usePlexoContext } from "context/PlexoContext";
 
 const NewMemberModal = ({ opened, close }: { opened: boolean; close: () => void }) => {
+  const [registerNewMemberResult, registerNewMember] = useMutation(RegisterDocument);
+
   const form = useForm({
     initialValues: {
       name: "",
@@ -30,9 +32,24 @@ const NewMemberModal = ({ opened, close }: { opened: boolean; close: () => void 
     },
   });
 
+  const onCreateMember = async (values: typeof form.values) => {
+    const res = await registerNewMember({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+    });
+    if (res.data) {
+      SuccessNotification("Member created", values.name);
+      close();
+    }
+    if (res.error) {
+      ErrorNotification();
+    }
+  };
+
   return (
     <Modal opened={opened} onClose={close} title="Register New Member" centered>
-      <form onSubmit={form.onSubmit(values => console.log(values))}>
+      <form onSubmit={form.onSubmit(onCreateMember)}>
         <Stack>
           <TextInput
             label="Name"
@@ -54,7 +71,9 @@ const NewMemberModal = ({ opened, close }: { opened: boolean; close: () => void 
           />
 
           <Group position="right" mt="md">
-            <Button type="submit">Register</Button>
+            <Button type="submit" loading={registerNewMemberResult.fetching}>
+              Register
+            </Button>
           </Group>
         </Stack>
       </form>
@@ -208,10 +227,11 @@ export const SettingsPageContent = () => {
 
 import { useState } from "react";
 import { Table, Checkbox, ScrollArea, Avatar, Text, rem } from "@mantine/core";
-import { useQuery } from "urql";
-import { MembersDocument, TasksDocument } from "integration/graphql";
+import { useMutation, useQuery } from "urql";
+import { MembersDocument, RegisterDocument, TasksDocument } from "integration/graphql";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
+import { ErrorNotification, SuccessNotification } from "lib/notifications";
 
 const useStyles = createStyles(theme => ({
   rowSelected: {

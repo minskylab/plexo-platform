@@ -149,7 +149,7 @@ mutation UpdateTask(
   }
 }
 
-query SuggestNewTask($taskSuggestion: TaskSuggestion!) {
+query SuggestNewTask($taskSuggestion: TaskSuggestionInput!) {
   suggestNewTask(task: $taskSuggestion) {
     title
     description
