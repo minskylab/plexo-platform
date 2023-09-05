@@ -301,8 +301,8 @@ const TasksList = ({ taskData, fetching }: TasksProps) => {
 
 export const TasksPageContent = () => {
   const { classes, theme } = useStyles();
-  const [viewMode, setViewMode] = useState<"list" | "columns">("list");
   const { setNavBarOpened } = usePlexoContext();
+  const [viewMode, setViewMode] = useState<"list" | "columns">("list");
 
   const {
     statusFilters,
