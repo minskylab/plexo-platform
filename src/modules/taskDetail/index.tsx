@@ -142,11 +142,19 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
   };
 
   const refTitle = useClickOutside(() => {
+    if (isLoading) {
+      return null;
+    }
+
     if (title !== task?.title) {
       onUpdateTaskTitle(title);
     }
   });
   const refDescription = useClickOutside(() => {
+    if (isLoading) {
+      return null;
+    }
+
     const desc = description == "" ? null : description;
 
     if (desc !== task?.description) {
@@ -155,22 +163,10 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
   });
 
   useEffect(() => {
-    if (task?.title) {
-      setTitle(task?.title);
-    }
-  }, [task?.title]);
-
-  useEffect(() => {
-    if (task?.description) {
-      setDescription(task?.description);
-    }
-  }, [task?.description]);
-
-  useEffect(() => {
-    if (task?.dueDate) {
-      setDueDate(new Date(task?.dueDate));
-    }
-  }, [task?.dueDate]);
+    task?.title && setTitle(task?.title);
+    task?.description && setDescription(task?.description);
+    task?.dueDate && setDueDate(new Date(task?.dueDate));
+  }, [task]);
 
   const handleDateChange = (date: Date | null) => {
     setDueDate(date);
@@ -241,7 +237,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                     color={"gray"}
                     leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
                   >
-                    <Text size={"xs"}>{LeadName(task?.leader?.name)}</Text>
+                    <Text size={"xs"}>{LeadName(task?.leader)}</Text>
                   </Button>
                 </GenericLeadTaskMenu>
                 {/* <GenericLabelMenu task={task}>
@@ -298,16 +294,6 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                 },
               })}
             />
-            <Divider />
-            <Paper shadow="xs" p="md">
-              <Text fw={500} c="dimmed">
-                Suggestion:
-              </Text>
-              <Text c="dimmed">
-                Use it to create cards, dropdowns, modals and other components that require
-                background with shadow
-              </Text>
-            </Paper>
           </Stack>
         </Box>
         <Divider orientation="vertical" className={classes.propsSection} />
@@ -363,7 +349,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                 color={"gray"}
                 leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
               >
-                <Text size={"xs"}>{LeadName(task?.leader?.name)}</Text>
+                <Text size={"xs"}>{LeadName(task?.leader)}</Text>
               </Button>
             </GenericLeadTaskMenu>
           </Group>

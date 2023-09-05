@@ -108,15 +108,21 @@ mutation UpdateProject(
   $projectId: UUID!
   $name: String
   $description: String
+  $startDate: DateTime
   $dueDate: DateTime
   $leadId: UUID
+  $members: [UUID!]
+  $teams: [UUID!]
 ) {
   updateProject(
     id: $projectId
     name: $name
     description: $description
+    startDate: $startDate
     dueDate: $dueDate
     leadId: $leadId
+    members: $members
+    teams: $teams
   ) {
     id
     name

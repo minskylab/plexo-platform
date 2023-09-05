@@ -1,28 +1,28 @@
 import { Menu, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
-import { Robot, Trash, X } from "tabler-icons-react";
+import { Trash } from "tabler-icons-react";
 import router from "next/router";
 
 import { useActions } from "lib/hooks/useActions";
-import { Task, TaskById } from "lib/types";
+import { TeamById } from "lib/types";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 
-type TaskMenuProps = {
+type TeamMenuProps = {
   children: React.ReactNode;
-  task: Task | TaskById | undefined;
+  team: TeamById | undefined;
 };
 
-export const TaskMenu = ({ children, task }: TaskMenuProps) => {
-  const { fetchDeleteTask } = useActions();
+export const TeamMenu = ({ children, team }: TeamMenuProps) => {
+  const { fetchDeleteTeam } = useActions();
 
-  const onDeleteTask = async () => {
-    const res = await fetchDeleteTask({
-      taskId: task?.id,
+  const onDeleteProject = async () => {
+    const res = await fetchDeleteTeam({
+      teamId: team?.id,
     });
 
     if (res.data) {
       router.push("/tasks");
-      SuccessNotification("Task deleted", res.data.deleteTask.title);
+      SuccessNotification("Project deleted", res.data.deleteTeam.name);
     }
     if (res.error) {
       ErrorNotification();
@@ -31,11 +31,11 @@ export const TaskMenu = ({ children, task }: TaskMenuProps) => {
 
   const openDeleteModal = () =>
     openConfirmModal({
-      title: "Delete your task",
+      title: "Delete your team",
       centered: true,
-      children: <Text size="sm">Are you sure you want to delete your task?</Text>,
+      children: <Text size="sm">Are you sure you want to delete your team?</Text>,
       labels: { confirm: "Delete", cancel: "Cancel" },
-      onConfirm: () => onDeleteTask(),
+      onConfirm: () => onDeleteProject(),
     });
 
   return (
@@ -43,9 +43,6 @@ export const TaskMenu = ({ children, task }: TaskMenuProps) => {
       <Menu.Target>{children}</Menu.Target>
 
       <Menu.Dropdown>
-        <Menu.Item py={7} icon={<Robot size={18} />}>
-          Auto Divide
-        </Menu.Item>
         <Menu.Item py={7} icon={<Trash size={16} />} onClick={openDeleteModal}>
           Delete
         </Menu.Item>
