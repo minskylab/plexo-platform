@@ -87,7 +87,7 @@ export const GenericLeadTaskMenu = ({
           rightSection={<Kbd px={8}>A</Kbd>}
         ></TextInput>
         <Menu.Divider />
-        <ScrollArea h={250}>
+        <ScrollArea.Autosize mah={250}>
           <Menu.Item
             icon={<Avatar size="sm" radius="xl" />}
             onClick={() => {
@@ -121,7 +121,7 @@ export const GenericLeadTaskMenu = ({
               );
             })
           )}
-        </ScrollArea>
+        </ScrollArea.Autosize>
       </Menu.Dropdown>
     </Menu>
   );

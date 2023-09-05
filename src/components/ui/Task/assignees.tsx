@@ -58,27 +58,29 @@ export const MembersCheckboxGroup = ({
         onChange={event => setSearchValue(event.currentTarget.value)}
       />
       <Divider />
-      <Checkbox.Group mt={10} value={selectedMembers} onChange={setSelectedMembers}>
-        {membersOptions.map(m => {
-          return (
-            <Checkbox
-              key={m.id}
-              size="xs"
-              pb={15}
-              value={m.id}
-              label={MemberPhoto(m)}
-              styles={{
-                body: {
-                  alignItems: "center",
-                },
-                label: {
-                  paddingLeft: 5,
-                },
-              }}
-            />
-          );
-        })}
-      </Checkbox.Group>
+      <ScrollArea.Autosize mah={250}>
+        <Checkbox.Group mt={10} value={selectedMembers} onChange={setSelectedMembers}>
+          {membersOptions.map(m => {
+            return (
+              <Checkbox
+                key={m.id}
+                size="xs"
+                pb={15}
+                value={m.id}
+                label={MemberPhoto(m)}
+                styles={{
+                  body: {
+                    alignItems: "center",
+                  },
+                  label: {
+                    paddingLeft: 5,
+                  },
+                }}
+              />
+            );
+          })}
+        </Checkbox.Group>
+      </ScrollArea.Autosize>
     </>
   );
 };
@@ -165,7 +167,7 @@ export const GenericAssigneesMenu = ({
           onChange={event => setSearchValue(event.currentTarget.value)}
         ></TextInput>
         <Menu.Divider />
-        <ScrollArea h={250}>
+        <ScrollArea.Autosize mah={250}>
           {isLoadingMembers ? (
             <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
           ) : (
@@ -191,7 +193,7 @@ export const GenericAssigneesMenu = ({
               })}
             </Checkbox.Group>
           )}
-        </ScrollArea>
+        </ScrollArea.Autosize>
       </Menu.Dropdown>
     </Menu>
   );
