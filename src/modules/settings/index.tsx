@@ -10,17 +10,57 @@ import {
   Container,
   Modal,
   PasswordInput,
+  Switch,
+  useMantineColorScheme,
 } from "@mantine/core";
-import {
-  IconBuilding,
-  IconMessageCircle,
-  IconMicroscope,
-  IconSettings,
-  IconUsers,
-} from "@tabler/icons-react";
-import { IconPhoto } from "@tabler/icons-react";
+import { IconBuilding, IconMicroscope, IconUsers } from "@tabler/icons-react";
+import { LayoutSidebar, Moon, Sun } from "tabler-icons-react";
+
 import { usePlexoContext } from "context/PlexoContext";
-import { LayoutSidebar } from "tabler-icons-react";
+
+const NewMemberModal = ({ opened, close }: { opened: boolean; close: () => void }) => {
+  const form = useForm({
+    initialValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+    validate: {
+      email: value => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+    },
+  });
+
+  return (
+    <Modal opened={opened} onClose={close} title="Register New Member" centered>
+      <form onSubmit={form.onSubmit(values => console.log(values))}>
+        <Stack>
+          <TextInput
+            label="Name"
+            placeholder="you@plexo.app"
+            required
+            {...form.getInputProps("name")}
+          />
+          <TextInput
+            label="Email"
+            placeholder="you@plexo.app"
+            required
+            {...form.getInputProps("email")}
+          />
+          <PasswordInput
+            label="Password"
+            placeholder="Your password"
+            required
+            {...form.getInputProps("password")}
+          />
+
+          <Group position="right" mt="md">
+            <Button type="submit">Register</Button>
+          </Group>
+        </Stack>
+      </form>
+    </Modal>
+  );
+};
 
 export const SettingsPageContent = () => {
   const useStyles = createStyles(theme => ({
@@ -63,7 +103,8 @@ export const SettingsPageContent = () => {
     },
   }));
 
-  const { classes, theme } = useStyles();
+  const { theme } = useStyles();
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const { setNavBarOpened } = usePlexoContext();
 
   const [{ data: membersData, fetching: isFetchingTasksData }] = useQuery({
@@ -83,19 +124,10 @@ export const SettingsPageContent = () => {
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title="Register New Member" centered>
-        <Stack>
-          <TextInput label="Name" placeholder="you@plexo.app" required />
-          <TextInput label="Email" placeholder="you@plexo.app" required />
-          <PasswordInput label="Password" placeholder="Your password" required />
-        </Stack>
-        <Group position="right" mt="md">
-          <Button>Register</Button>
-        </Group>
-      </Modal>
+      <NewMemberModal opened={opened} close={close} />
       <Stack>
         <Group
-          h={73.5}
+          h={73}
           position="apart"
           sx={{
             padding: theme.spacing.md,
@@ -117,7 +149,13 @@ export const SettingsPageContent = () => {
             Settings
           </Group>
 
-          <Group></Group>
+          <Switch
+            onLabel={<Sun color={theme.white} size={18} />}
+            offLabel={<Moon color={theme.colors.gray[6]} size={18} />}
+            checked={colorScheme === "dark"}
+            onChange={() => toggleColorScheme()}
+            size="md"
+          />
         </Group>
 
         <Stack
@@ -173,6 +211,7 @@ import { Table, Checkbox, ScrollArea, Avatar, Text, rem } from "@mantine/core";
 import { useQuery } from "urql";
 import { MembersDocument, TasksDocument } from "integration/graphql";
 import { useDisclosure } from "@mantine/hooks";
+import { useForm } from "@mantine/form";
 
 const useStyles = createStyles(theme => ({
   rowSelected: {
