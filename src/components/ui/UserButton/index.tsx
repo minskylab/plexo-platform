@@ -16,6 +16,7 @@ import { useState } from "react";
 import { Logout, Moon, Sun } from "tabler-icons-react";
 
 import { User } from "lib/types";
+import { Router, useRouter } from "next/router";
 
 const useStyles = createStyles(theme => ({
   user: {
@@ -40,6 +41,8 @@ export function UserButton({ user, isLoadingUser }: UserButtonProps) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const theme = useMantineTheme();
+
+  const router = useRouter();
 
   return (
     <Group position="center">
@@ -98,6 +101,13 @@ export function UserButton({ user, isLoadingUser }: UserButtonProps) {
               size="md"
               styles={{ root: { width: 120, marginLeft: -4 } }}
             />
+          </Menu.Item>
+          <Menu.Item
+            onClick={() => {
+              router.push("/settings");
+            }}
+          >
+            Settings
           </Menu.Item>
           <Menu.Item color="red" component="button" icon={<Logout size={14} />}>
             Log out
