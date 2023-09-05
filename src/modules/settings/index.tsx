@@ -29,6 +29,7 @@ const NewMemberModal = ({ opened, close }: { opened: boolean; close: () => void 
     },
     validate: {
       email: value => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      password: val => (val.length <= 6 ? "Password should include at least 6 characters" : null),
     },
   });
 
