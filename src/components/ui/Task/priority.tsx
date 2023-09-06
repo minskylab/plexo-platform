@@ -178,7 +178,6 @@ export const GenericPriorityMenu = ({ children, onSelect, task }: GenericPriorit
       dueDate: task?.dueDate,
       projectId: task?.project?.id,
       leadId: task?.leader?.id,
-      labels: task?.labels,
       assignees: assigneesId(task),
     });
 

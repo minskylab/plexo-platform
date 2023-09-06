@@ -60,7 +60,6 @@ export const GenericLeadTaskMenu = ({
       description: task?.description,
       dueDate: task?.dueDate,
       projectId: task?.project?.id,
-      labels: task?.labels,
       assignees: assigneesId(task),
     });
     if (res.data) {

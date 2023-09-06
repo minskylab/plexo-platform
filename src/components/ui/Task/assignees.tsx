@@ -127,7 +127,6 @@ export const GenericAssigneesMenu = ({
     const res = await fetchUpdateTask({
       taskId: task?.id,
       assignees: assignees,
-      labels: task?.labels,
       leadId: task?.leader?.id,
       priority: priorityName(task?.priority),
       status: statusName(task?.status),

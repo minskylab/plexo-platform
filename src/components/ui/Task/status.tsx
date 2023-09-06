@@ -193,7 +193,6 @@ export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMen
       dueDate: task?.dueDate,
       projectId: task?.project?.id,
       leadId: task?.leader?.id,
-      labels: task?.labels,
       assignees: assigneesId(task),
     });
 

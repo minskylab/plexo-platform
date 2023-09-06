@@ -182,7 +182,7 @@ export const GenericLabelsMenu = ({
   const onUpdateTaskLabels = async (labels: string[]) => {
     const res = await fetchUpdateTask({
       taskId: task?.id,
-      labels: labels,
+      labels: labels, //TODO: verify if this is correct, and why does this work without a map to send only the id's / to send multiple labels
       leadId: task?.leader?.id,
       priority: priorityName(task?.priority),
       status: statusName(task?.status),

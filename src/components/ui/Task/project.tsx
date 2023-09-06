@@ -132,7 +132,6 @@ export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProject
       description: task?.description,
       dueDate: task?.dueDate,
       leadId: task?.leader?.id,
-      labels: task?.labels,
       assignees: assigneesId(task),
     });
 

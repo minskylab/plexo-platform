@@ -84,7 +84,6 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
         dueDate: task?.dueDate,
         projectId: task?.project?.id,
         leadId: task?.leader?.id,
-        labels: task?.labels,
         assignees: assigneesId(task),
       });
 
@@ -107,7 +106,6 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
       dueDate: task?.dueDate,
       projectId: task?.project?.id,
       leadId: task?.leader?.id,
-      labels: task?.labels,
       assignees: assigneesId(task),
     });
 
@@ -129,7 +127,6 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
       dueDate: dueDate === null ? new Date(0) : dueDate,
       projectId: task?.project?.id,
       leadId: task?.leader?.id,
-      labels: task?.labels,
       assignees: assigneesId(task),
     });
 
