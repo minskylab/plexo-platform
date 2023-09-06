@@ -12,9 +12,10 @@ import {
   PasswordInput,
   Switch,
   useMantineColorScheme,
+  Select,
 } from "@mantine/core";
 import { IconBuilding, IconMicroscope, IconUsers } from "@tabler/icons-react";
-import { LayoutSidebar, Moon, Sun } from "tabler-icons-react";
+import { Edit, LayoutSidebar, Moon, Sun } from "tabler-icons-react";
 
 import { usePlexoContext } from "context/PlexoContext";
 
@@ -49,7 +50,7 @@ const NewMemberModal = ({ opened, close }: { opened: boolean; close: () => void 
   };
 
   return (
-    <Modal opened={opened} onClose={close} title="Register New Member" centered>
+    <Modal opened={opened} onClose={close} title="Register New Member">
       <form onSubmit={form.onSubmit(onCreateMember)}>
         <Stack>
           <TextInput
@@ -135,9 +136,11 @@ export const SettingsPageContent = () => {
     membersData?.members.map(member => ({
       id: member.id as string,
       name: member.name,
+      email: member.email,
+      role: member.role,
       avatar: member.photoUrl ?? "",
       job: member.role.toString(),
-      email: member.email,
+      createdAt: member.createdAt,
     })) ?? [];
 
   const [opened, { open, close }] = useDisclosure(false);
@@ -229,7 +232,7 @@ export const SettingsPageContent = () => {
 import { useState } from "react";
 import { Table, Checkbox, ScrollArea, Avatar, Text, rem } from "@mantine/core";
 import { useMutation, useQuery } from "urql";
-import { MembersDocument, RegisterDocument, TasksDocument } from "integration/graphql";
+import { MembersDocument, RegisterDocument, UpdateMemberDocument } from "integration/graphql";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
@@ -243,13 +246,114 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-interface TableSelectionProps {
-  data: { avatar: string; name: string; email: string; job: string; id: string }[];
+interface MemberProps {
+  avatar: string;
+  name: string;
+  role: string;
+  email: string;
+  job: string;
+  id: string;
+  createdAt: string;
 }
+
+interface TableSelectionProps {
+  data: MemberProps[];
+}
+
+const getRole = (role: string) => {
+  switch (role) {
+    case "MEMBER":
+      return "Member";
+    case "ADMIN":
+      return "Admin";
+    default:
+      return "Read_only";
+  }
+};
+
+const UpdateMemberModal = ({
+  opened,
+  close,
+  member,
+}: {
+  opened: boolean;
+  close: () => void;
+  member: MemberProps | null;
+}) => {
+  const [updateMemberResult, updateMember] = useMutation(UpdateMemberDocument);
+
+  const form = useForm({
+    initialValues: {
+      name: member?.name || "",
+      email: member?.email || "",
+      role: member?.role || "",
+    },
+    validate: {
+      email: value => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+    },
+  });
+
+  const onUpdateMember = async (values: typeof form.values) => {
+    const res = await updateMember({
+      memberId: member?.id,
+      name: values.name,
+      email: values.email,
+      role: getRole(values.role),
+    });
+    if (res.data) {
+      SuccessNotification("Member updated", values.name);
+      close();
+    }
+    if (res.error) {
+      ErrorNotification();
+    }
+  };
+
+  return (
+    <Modal opened={opened} onClose={close} title="Update Member">
+      <form onSubmit={form.onSubmit(onUpdateMember)}>
+        <Stack>
+          <TextInput label="Name" placeholder="you@plexo.app" {...form.getInputProps("name")} />
+          <TextInput label="Email" placeholder="you@plexo.app" {...form.getInputProps("email")} />
+          <Select
+            withinPortal
+            label="Role"
+            data={[
+              { value: "ADMIN", label: "Admin" },
+              { value: "MEMBER", label: "Member" },
+              { value: "READ_ONLY", label: "Read only" },
+            ]}
+            {...form.getInputProps("role")}
+          />
+
+          <Group position="right" mt="md">
+            <Button type="submit" loading={updateMemberResult.fetching}>
+              Update
+            </Button>
+          </Group>
+        </Stack>
+      </form>
+    </Modal>
+  );
+};
+
+const EditMemberAction = ({ member }: { member: MemberProps }) => {
+  const [opened, { open, close }] = useDisclosure(false);
+  return (
+    <>
+      <ActionIcon>
+        <Edit size={18} onClick={open} />
+      </ActionIcon>
+      <UpdateMemberModal opened={opened} close={close} member={member} />
+    </>
+  );
+};
 
 export function TableSelection({ data }: TableSelectionProps) {
   const { classes, cx } = useStyles();
+
   const [selection, setSelection] = useState(["1"]);
+
   const toggleRow = (id: string) =>
     setSelection(current =>
       current.includes(id) ? current.filter(item => item !== id) : [...current, id]
@@ -257,30 +361,35 @@ export function TableSelection({ data }: TableSelectionProps) {
   const toggleAll = () =>
     setSelection(current => (current.length === data.length ? [] : data.map(item => item.id)));
 
-  const rows = data.map(item => {
-    const selected = selection.includes(item.id);
-    return (
-      <tr key={item.id} className={cx({ [classes.rowSelected]: selected })}>
-        <td>
-          <Checkbox
-            checked={selection.includes(item.id)}
-            onChange={() => toggleRow(item.id)}
-            transitionDuration={0}
-          />
-        </td>
-        <td>
-          <Group spacing="sm">
-            <Avatar size={26} src={item.avatar} radius={26} />
-            <Text size="sm" weight={500}>
-              {item.name}
-            </Text>
-          </Group>
-        </td>
-        <td>{item.email}</td>
-        <td>{item.job}</td>
-      </tr>
-    );
-  });
+  const rows = data
+    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+    .map(item => {
+      const selected = selection.includes(item.id);
+      return (
+        <tr key={item.id} className={cx({ [classes.rowSelected]: selected })}>
+          <td>
+            <Checkbox
+              checked={selection.includes(item.id)}
+              onChange={() => toggleRow(item.id)}
+              transitionDuration={0}
+            />
+          </td>
+          <td>
+            <Group spacing="sm">
+              <Avatar size={26} src={item.avatar} radius={26} />
+              <Text size="sm" weight={500}>
+                {item.name}
+              </Text>
+            </Group>
+          </td>
+          <td>{item.email}</td>
+          <td>{item.job}</td>
+          <td>
+            <EditMemberAction member={item} />
+          </td>
+        </tr>
+      );
+    });
 
   return (
     <ScrollArea>
@@ -298,6 +407,7 @@ export function TableSelection({ data }: TableSelectionProps) {
             <th>User</th>
             <th>Email</th>
             <th>Job</th>
+            <th>Edit</th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>
