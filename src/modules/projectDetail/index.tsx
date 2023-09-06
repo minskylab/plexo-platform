@@ -326,7 +326,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
                 clearable
                 size="xs"
                 placeholder="Set start date"
-                value={startDate?.toISOString === new Date(0).toISOString ? undefined : startDate}
+                value={startDate?.toISOString() === new Date(0).toISOString() ? undefined : startDate}
                 onChange={handleStartDateChange}
                 styles={{
                   input: {
@@ -348,7 +348,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
                 clearable
                 size="xs"
                 placeholder="Set due date"
-                value={dueDate?.toISOString === new Date(0).toISOString ? undefined : dueDate}
+                value={dueDate?.toISOString() === new Date(0).toISOString() ? undefined : dueDate}
                 onChange={handleDueDateChange}
                 styles={{
                   input: {

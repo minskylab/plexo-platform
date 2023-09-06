@@ -398,7 +398,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
             <DateInput
               size="xs"
               placeholder="Set due date"
-              value={dueDate?.toISOString === new Date(0).toISOString ? undefined : dueDate}
+              value={dueDate?.toISOString() === new Date(0).toISOString() ? undefined : dueDate}
               onChange={handleDateChange}
               clearable 
               styles={{
