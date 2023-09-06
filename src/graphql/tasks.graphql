@@ -63,6 +63,42 @@ query TaskById($taskId: UUID!) {
       id
       name
     }
+    subtasks {
+      id
+      createdAt
+      updatedAt
+      title
+      description
+      status
+      priority
+      ownerId
+      count
+      labels {
+        id
+        name
+        color
+      }
+      leadId
+      projectId
+      dueDate
+
+      owner {
+        id
+      }
+      assignees {
+        id
+        name
+      }
+      project {
+        id
+        name
+      }
+
+      leader {
+        id
+        name
+      }
+    }
   }
 }
 

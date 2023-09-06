@@ -645,6 +645,26 @@ export type TaskByIdQuery = {
     assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
     leader?: { __typename?: "Member"; id: any; name: string } | null;
     project?: { __typename?: "Project"; id: any; name: string } | null;
+    subtasks: Array<{
+      __typename?: "Task";
+      id: any;
+      createdAt: any;
+      updatedAt: any;
+      title: string;
+      description?: string | null;
+      status: TaskStatus;
+      priority: TaskPriority;
+      ownerId: any;
+      count: number;
+      leadId?: any | null;
+      projectId?: any | null;
+      dueDate?: any | null;
+      labels: Array<{ __typename?: "Label"; id: any; name: string; color?: string | null }>;
+      owner?: { __typename?: "Member"; id: any } | null;
+      assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
+      project?: { __typename?: "Project"; id: any; name: string } | null;
+      leader?: { __typename?: "Member"; id: any; name: string } | null;
+    }>;
   };
 };
 
@@ -1791,6 +1811,80 @@ export const TaskByIdDocument = {
                     selections: [
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "subtasks" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                      { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+                      { kind: "Field", name: { kind: "Name", value: "title" } },
+                      { kind: "Field", name: { kind: "Name", value: "description" } },
+                      { kind: "Field", name: { kind: "Name", value: "status" } },
+                      { kind: "Field", name: { kind: "Name", value: "priority" } },
+                      { kind: "Field", name: { kind: "Name", value: "ownerId" } },
+                      { kind: "Field", name: { kind: "Name", value: "count" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "labels" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "name" } },
+                            { kind: "Field", name: { kind: "Name", value: "color" } },
+                          ],
+                        },
+                      },
+                      { kind: "Field", name: { kind: "Name", value: "leadId" } },
+                      { kind: "Field", name: { kind: "Name", value: "projectId" } },
+                      { kind: "Field", name: { kind: "Name", value: "dueDate" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "owner" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "assignees" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "name" } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "name" } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "leader" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "name" } },
+                          ],
+                        },
+                      },
                     ],
                   },
                 },
