@@ -27,6 +27,7 @@ import { usePlexoContext } from "context/PlexoContext";
 import { ProjectById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
+import { validateDate } from "lib/utils";
 
 type ProjectDetailProps = {
   project: ProjectById | undefined;
@@ -60,7 +61,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
   const onUpdateProjectDueDate = async (date: Date | null) => {
     const res = await fetchUpdateProject({
       projectId: project?.id,
-      dueDate: date == null ? new Date(0) : date,
+      dueDate: date === null ? new Date(0) : date,
     });
     if (res.data) {
       SuccessNotification("Due date updated", res.data.updateProject.name);
@@ -73,7 +74,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
   const onUpdateProjectStartDate = async (date: Date | null) => {
     const res = await fetchUpdateProject({
       projectId: project?.id,
-      startDate: date == null ? new Date(0) : date,
+      startDate: date === null ? new Date(0) : date,
     });
     if (res.data) {
       SuccessNotification("Start date updated", res.data.updateProject.name);
@@ -136,17 +137,21 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
       return null;
     }
 
-    if (description !== project?.description) {
+    if ((!project?.description || project?.description == "") && description == "") {
+      return null;
+    }
+
+    if (project?.description !== description) {
       onUpdateProjectDescription(description);
     }
   });
 
   useEffect(() => {
     if (project) {
-      project.name && setTitle(project.name);
-      project.description == null ? setDescription("") : setDescription(project.description);
-      project.dueDate && setDueDate(new Date(project.dueDate));
-      project.startDate && setStartDate(new Date(project.startDate));
+      setTitle(project.name);
+      setDescription(project.description ? project.description : "");
+      setDueDate(validateDate(project.dueDate));
+      setStartDate(validateDate(project.startDate));
     }
   }, [project]);
 
@@ -326,7 +331,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
                 clearable
                 size="xs"
                 placeholder="Set start date"
-                value={startDate?.toISOString() === new Date(0).toISOString() ? null : startDate}
+                value={startDate}
                 onChange={handleStartDateChange}
                 styles={{
                   input: {
@@ -348,7 +353,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
                 clearable
                 size="xs"
                 placeholder="Set due date"
-                value={dueDate?.toISOString() === new Date(0).toISOString() ? null : dueDate}
+                value={dueDate}
                 onChange={handleDueDateChange}
                 styles={{
                   input: {

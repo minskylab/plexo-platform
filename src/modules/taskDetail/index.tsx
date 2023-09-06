@@ -38,6 +38,7 @@ import { useActions } from "lib/hooks/useActions";
 import { usePlexoContext } from "context/PlexoContext";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 import { TaskListElement } from "components/ui/Task/task";
+import { validateDate } from "lib/utils";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -75,11 +76,6 @@ const SubTasks = ({ task }: { task: TaskById | undefined }) => {
       </Stack>
     </>
   );
-};
-
-const validateDate = (date: string) => {
-  const taskDate = new Date(date);
-  return taskDate.getTime() === 0 ? null : taskDate;
 };
 
 const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
@@ -120,10 +116,10 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
     }
   };
 
-  const onUpdateTaskDescription = async (description: string) => {
+  const onUpdateTaskDescription = async (desc: string) => {
     const res = await fetchUpdateTask({
       taskId: task?.id,
-      description: description,
+      description: desc,
       status: statusName(task?.status),
       priority: priorityName(task?.priority),
       title: task?.title,
