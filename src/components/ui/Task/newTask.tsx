@@ -146,7 +146,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       }
     }
   };
-  console.log(parseSubtasks(subtasks));
+
   const resetInitialValues = () => {
     setTitle("");
     setDescription("");
