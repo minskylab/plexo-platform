@@ -47,6 +47,10 @@ query TaskById($taskId: UUID!) {
     priority
     dueDate
     count
+    parent {
+      id
+      count
+    }
     labels {
       id
       name

@@ -641,6 +641,7 @@ export type TaskByIdQuery = {
     priority: TaskPriority;
     dueDate?: any | null;
     count: number;
+    parent?: { __typename?: "Task"; id: any; count: number } | null;
     labels: Array<{ __typename?: "Label"; id: any; name: string }>;
     assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
     leader?: { __typename?: "Member"; id: any; name: string } | null;
@@ -1770,6 +1771,17 @@ export const TaskByIdDocument = {
                 { kind: "Field", name: { kind: "Name", value: "priority" } },
                 { kind: "Field", name: { kind: "Name", value: "dueDate" } },
                 { kind: "Field", name: { kind: "Name", value: "count" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "parent" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "count" } },
+                    ],
+                  },
+                },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "labels" },

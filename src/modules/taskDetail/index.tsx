@@ -76,12 +76,18 @@ const SubTasks = ({ task }: { task: TaskById | undefined }) => {
     </>
   );
 };
+
+const validateDate = (date: string) => {
+  const taskDate = new Date(date);
+  return taskDate.getTime() === 0 ? null : taskDate;
+};
+
 const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
   const { classes, theme } = useStyles();
   const { setNavBarOpened } = usePlexoContext();
   const { fetchUpdateTask } = useActions();
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date | null>(null);
 
   const onUpdateTaskTitle = async (title: string) => {
@@ -114,10 +120,10 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
     }
   };
 
-  const onUpdateTaskDescription = async (desc: string | null) => {
+  const onUpdateTaskDescription = async (description: string) => {
     const res = await fetchUpdateTask({
       taskId: task?.id,
-      description: desc === null ? "" : desc,
+      description: description,
       status: statusName(task?.status),
       priority: priorityName(task?.priority),
       title: task?.title,
@@ -165,22 +171,27 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
       onUpdateTaskTitle(title);
     }
   });
+
   const refDescription = useClickOutside(() => {
     if (isLoading) {
       return null;
     }
 
-    const desc = description == "" ? null : description;
+    if ((!task?.description || task?.description == "") && description == "") {
+      return null;
+    }
 
-    if (desc !== task?.description) {
-      onUpdateTaskDescription(desc);
+    if (task?.description !== description) {
+      onUpdateTaskDescription(description);
     }
   });
 
   useEffect(() => {
-    task?.title && setTitle(task?.title);
-    task?.description && setDescription(task?.description);
-    task?.dueDate && setDueDate(new Date(task?.dueDate));
+    if (task) {
+      setTitle(task.title);
+      setDescription(task.description ? task.description : "");
+      setDueDate(validateDate(task.dueDate));
+    }
   }, [task]);
 
   const handleDateChange = (date: Date | null) => {
@@ -428,7 +439,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
             <DateInput
               size="xs"
               placeholder="Set due date"
-              value={dueDate?.toISOString() === new Date(0).toISOString() ? null : dueDate}
+              value={dueDate}
               onChange={handleDateChange}
               clearable
               styles={{
