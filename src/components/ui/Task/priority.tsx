@@ -21,7 +21,7 @@ import {
 
 import { TaskPriority } from "integration/graphql";
 import { useActions } from "lib/hooks/useActions";
-import { TaskById } from "lib/types";
+import { Task, TaskById } from "lib/types";
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
@@ -153,7 +153,7 @@ export const PriorityCheckboxGroup = ({
 type GenericPriorityMenuProps = {
   children: React.ReactNode;
   onSelect?: (priority: TaskPriority) => void;
-  task?: TaskById | undefined;
+  task?: TaskById | Task | undefined;
 };
 
 export const GenericPriorityMenu = ({ children, onSelect, task }: GenericPriorityMenuProps) => {

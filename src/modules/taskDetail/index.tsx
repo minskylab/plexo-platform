@@ -9,7 +9,6 @@ import {
   CopyButton,
   Tooltip,
   Box,
-  Paper,
   Avatar,
   Button,
   createStyles,
@@ -34,10 +33,11 @@ import { GenericLabelsMenu, LabelColor, LabelNameBtn } from "components/ui/Task/
 import { assigneesId, GenericAssigneesMenu } from "components/ui/Task/assignees";
 import { LeadName } from "components/ui/Project/lead";
 import { TaskMenu } from "components/ui/Task/menu";
-import { TaskById } from "lib/types";
+import { Task, TaskById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { usePlexoContext } from "context/PlexoContext";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
+import { TaskListElement } from "components/ui/Task/task";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -58,6 +58,24 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
+const SubTasks = ({ task }: { task: TaskById | undefined }) => {
+  if (!task || !task?.subtasks.length) {
+    return <></>;
+  }
+  return (
+    <>
+      <Divider />
+      <Text lineClamp={1} size={"sm"} color={"dimmed"}>
+        Subtasks
+      </Text>
+      <Stack spacing={2}>
+        {task?.subtasks.map((t: Task) => (
+          <TaskListElement key={t.id} task={t} />
+        ))}
+      </Stack>
+    </>
+  );
+};
 const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
   const { classes, theme } = useStyles();
   const { setNavBarOpened } = usePlexoContext();
@@ -237,16 +255,27 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                     <Text size={"xs"}>{LeadName(task?.leader)}</Text>
                   </Button>
                 </GenericLeadTaskMenu>
-                {/* <GenericLabelMenu task={task}>
+                <GenericAssigneesMenu task={task}>
+                  <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
+                    {task?.assignees.length ? (
+                      <Text size={"xs"}>{task?.assignees.length} Assignees</Text>
+                    ) : (
+                      <Text size={"xs"}>Assignees</Text>
+                    )}
+                  </Button>
+                </GenericAssigneesMenu>
+                <GenericLabelsMenu task={task}>
                   <Button
                     compact
                     variant="light"
                     color={"gray"}
-                    leftIcon={LabelColor(task?.labels, theme)}
+                    leftIcon={LabelColor(task ? task?.labels.map(l => l.id as string) : [])}
                   >
-                    <Text size={"xs"}>{LabelName(task?.labels)}</Text>
+                    <Text size={"xs"}>
+                      {LabelNameBtn(task ? task?.labels.map(l => l.id as string) : [])}
+                    </Text>
                   </Button>
-                </GenericLabelMenu> */}
+                </GenericLabelsMenu>
                 <GenericProjectsMenu task={task}>
                   <Button compact variant="light" color={"gray"} leftIcon={ProjectIcon()}>
                     <Text size={"xs"}>{ProjectName(task?.project?.name)}</Text>
@@ -291,6 +320,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                 },
               })}
             />
+            <SubTasks task={task} />
           </Stack>
         </Box>
         <Divider orientation="vertical" className={classes.propsSection} />
@@ -337,7 +367,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
-            Lead  
+              Lead
             </Text>
             <GenericLeadTaskMenu task={task}>
               <Button
@@ -400,7 +430,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
               placeholder="Set due date"
               value={dueDate?.toISOString() === new Date(0).toISOString() ? undefined : dueDate}
               onChange={handleDateChange}
-              clearable 
+              clearable
               styles={{
                 input: {
                   padding: "0px 8px",

@@ -13,14 +13,14 @@ import { Users } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
 import { useData } from "lib/hooks/useData";
-import { Member, TaskById } from "lib/types";
+import { Member, Task, TaskById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { MemberPhoto } from "components/ui/Project/members";
 
-export const assigneesId = (task: TaskById | undefined) => {
+export const assigneesId = (task: TaskById | Task | undefined) => {
   return task?.assignees.map(a => a.id);
 };
 
@@ -114,7 +114,7 @@ export const GenericAssigneesMenu = ({
             )
           );
     }
-  }, [membersData,searchValue]);
+  }, [membersData, searchValue]);
 
   const labelValue = selectedAssignees
     ? selectedAssignees

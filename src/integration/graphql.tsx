@@ -21,6 +21,18 @@ export type Scalars = {
   UUID: { input: any; output: any };
 };
 
+export type CreateTaskInput = {
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
+  labels?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
+  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
+  parentId?: InputMaybe<Scalars["UUID"]["input"]>;
+  priority?: InputMaybe<Scalars["String"]["input"]>;
+  projectId?: InputMaybe<Scalars["UUID"]["input"]>;
+  status?: InputMaybe<Scalars["String"]["input"]>;
+  title: Scalars["String"]["input"];
+};
+
 export type Label = {
   __typename?: "Label";
   color?: Maybe<Scalars["String"]["output"]>;
@@ -118,6 +130,7 @@ export type MutationRootCreateTaskArgs = {
   priority?: InputMaybe<Scalars["String"]["input"]>;
   projectId?: InputMaybe<Scalars["UUID"]["input"]>;
   status?: InputMaybe<Scalars["String"]["input"]>;
+  subtasks?: InputMaybe<Array<CreateTaskInput>>;
   title: Scalars["String"]["input"];
 };
 
@@ -632,6 +645,26 @@ export type TaskByIdQuery = {
     assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
     leader?: { __typename?: "Member"; id: any; name: string } | null;
     project?: { __typename?: "Project"; id: any; name: string } | null;
+    subtasks: Array<{
+      __typename?: "Task";
+      id: any;
+      createdAt: any;
+      updatedAt: any;
+      title: string;
+      description?: string | null;
+      status: TaskStatus;
+      priority: TaskPriority;
+      ownerId: any;
+      count: number;
+      leadId?: any | null;
+      projectId?: any | null;
+      dueDate?: any | null;
+      labels: Array<{ __typename?: "Label"; id: any; name: string; color?: string | null }>;
+      owner?: { __typename?: "Member"; id: any } | null;
+      assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
+      project?: { __typename?: "Project"; id: any; name: string } | null;
+      leader?: { __typename?: "Member"; id: any; name: string } | null;
+    }>;
   };
 };
 
@@ -665,6 +698,7 @@ export type NewTaskMutationVariables = Exact<{
   labels?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
   assignees?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
+  subtasks?: InputMaybe<Array<CreateTaskInput> | CreateTaskInput>;
 }>;
 
 export type NewTaskMutation = {
@@ -1780,6 +1814,80 @@ export const TaskByIdDocument = {
                     ],
                   },
                 },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "subtasks" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                      { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+                      { kind: "Field", name: { kind: "Name", value: "title" } },
+                      { kind: "Field", name: { kind: "Name", value: "description" } },
+                      { kind: "Field", name: { kind: "Name", value: "status" } },
+                      { kind: "Field", name: { kind: "Name", value: "priority" } },
+                      { kind: "Field", name: { kind: "Name", value: "ownerId" } },
+                      { kind: "Field", name: { kind: "Name", value: "count" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "labels" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "name" } },
+                            { kind: "Field", name: { kind: "Name", value: "color" } },
+                          ],
+                        },
+                      },
+                      { kind: "Field", name: { kind: "Name", value: "leadId" } },
+                      { kind: "Field", name: { kind: "Name", value: "projectId" } },
+                      { kind: "Field", name: { kind: "Name", value: "dueDate" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "owner" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "assignees" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "name" } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "name" } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "leader" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "name" } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -1901,6 +2009,17 @@ export const NewTaskDocument = {
           variable: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
           type: { kind: "NamedType", name: { kind: "Name", value: "DateTime" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "subtasks" } },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: { kind: "NamedType", name: { kind: "Name", value: "CreateTaskInput" } },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1953,6 +2072,11 @@ export const NewTaskDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "dueDate" },
                 value: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "subtasks" },
+                value: { kind: "Variable", name: { kind: "Name", value: "subtasks" } },
               },
             ],
             selectionSet: {
