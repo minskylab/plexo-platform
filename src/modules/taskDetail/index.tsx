@@ -278,7 +278,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                 </GenericLabelsMenu>
                 <GenericProjectsMenu task={task}>
                   <Button compact variant="light" color={"gray"} leftIcon={ProjectIcon()}>
-                    <Text size={"xs"}>{ProjectName(task?.project?.name)}</Text>
+                    <Text size={"xs"}>{ProjectName(task?.project)}</Text>
                   </Button>
                 </GenericProjectsMenu>
               </Group>
@@ -417,7 +417,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
             </Text>
             <GenericProjectsMenu task={task}>
               <Button compact variant="light" color={"gray"} leftIcon={ProjectIcon()}>
-                <Text size={"xs"}>{ProjectName(task?.project?.name)}</Text>
+                <Text size={"xs"}>{ProjectName(task?.project)}</Text>
               </Button>
             </GenericProjectsMenu>
           </Group>
