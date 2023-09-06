@@ -15,19 +15,18 @@ import { GenericLeadTaskMenu } from "./lead";
 import { GenericStatusMenu, StatusIcon } from "./status";
 import { TaskStatus } from "integration/graphql";
 import { Member } from "lib/types";
+import { SubTask } from "./newTask";
 
-type SubTask = {
-  title: string;
-  status: TaskStatus;
-  lead: Member | null;
+type NewSubTasks = {
+  subtasks: SubTask[];
+  setSubtasks: (subtasks: SubTask[]) => void;
 };
 
-const NewSubTasks = () => {
+const NewSubTasks = ({ subtasks, setSubtasks }: NewSubTasks) => {
   const theme = useMantineTheme();
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState<TaskStatus>(TaskStatus.Backlog);
   const [lead, setLead] = useState<Member | null>(null);
-  const [subtasks, setSubtasks] = useState<SubTask[]>([]);
 
   const handleAddSubtask = () => {
     setSubtasks([

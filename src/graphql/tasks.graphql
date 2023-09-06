@@ -95,6 +95,7 @@ mutation NewTask(
   $labels: [UUID!]
   $assignees: [UUID!]
   $dueDate: DateTime
+  $subtasks: [CreateTaskInput!]
 ) {
   createTask(
     title: $title
@@ -106,6 +107,7 @@ mutation NewTask(
     labels: $labels
     assignees: $assignees
     dueDate: $dueDate
+    subtasks: $subtasks
   ) {
     id
     title

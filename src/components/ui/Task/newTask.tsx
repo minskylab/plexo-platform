@@ -12,7 +12,7 @@ import {
   createStyles,
   Stack,
 } from "@mantine/core";
-import { Calendar, DatePicker } from "@mantine/dates";
+import { DatePicker } from "@mantine/dates";
 import { useToggle } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { CalendarTime, Check, Robot, Subtask, X } from "tabler-icons-react";
@@ -38,6 +38,12 @@ type NewTaskProps = {
   setCreateMore: (createMore: boolean) => void;
 };
 
+export type SubTask = {
+  title: string;
+  status: TaskStatus;
+  lead: Member | null;
+};
+
 const useStyles = createStyles(theme => ({
   input: {
     backgroundColor: "transparent",
@@ -48,8 +54,20 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
+const parseSubtasks = (subtasks: SubTask[]) => {
+  return subtasks.map(task => {
+    return {
+      title: task.title,
+      leadId: task.lead?.id,
+      status: statusName(task.status),
+    };
+  });
+};
+
 const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }: NewTaskProps) => {
   const { classes, theme } = useStyles();
+  const [showSubtasks, toggleSubtasks] = useToggle([false, true]);
+  const { createTask, fetchCreateTask } = useActions();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -60,8 +78,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [project, setProject] = useState<Project | null>(null);
   const [dueDate, setDueDate] = useState<Date | null>(null);
-  const [showSubtasks, toggleSubtasks] = useToggle([false, true]);
-  const { createTask, fetchCreateTask } = useActions();
+  const [subtasks, setSubtasks] = useState<SubTask[]>([]);
 
   const { taskSuggestionData, isLoadingTaskSuggestion, fetchTaskSuggestion } = useData({
     taskDetails: {
@@ -100,6 +117,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       leadId: lead?.id,
       labels: selectedLabels,
       assignees: selectedAssignees,
+      subtasks: parseSubtasks(subtasks),
     });
 
     if (res.data) {
@@ -128,7 +146,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       }
     }
   };
-
+  console.log(parseSubtasks(subtasks));
   const resetInitialValues = () => {
     setTitle("");
     setDescription("");
@@ -139,6 +157,8 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
     setProject(null);
     setSelectedAssignees([]);
     setDueDate(null);
+    setSubtasks([]);
+    toggleSubtasks(false);
   };
 
   return (
@@ -236,7 +256,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
         </Group>
       </Stack>
 
-      {showSubtasks && <NewSubTasks />}
+      {showSubtasks && <NewSubTasks subtasks={subtasks} setSubtasks={setSubtasks} />}
       <Group
         pt={"md"}
         position="right"

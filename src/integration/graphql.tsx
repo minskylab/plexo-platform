@@ -21,6 +21,18 @@ export type Scalars = {
   UUID: { input: any; output: any };
 };
 
+export type CreateTaskInput = {
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
+  labels?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
+  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
+  parentId?: InputMaybe<Scalars["UUID"]["input"]>;
+  priority?: InputMaybe<Scalars["String"]["input"]>;
+  projectId?: InputMaybe<Scalars["UUID"]["input"]>;
+  status?: InputMaybe<Scalars["String"]["input"]>;
+  title: Scalars["String"]["input"];
+};
+
 export type Label = {
   __typename?: "Label";
   color?: Maybe<Scalars["String"]["output"]>;
@@ -118,6 +130,7 @@ export type MutationRootCreateTaskArgs = {
   priority?: InputMaybe<Scalars["String"]["input"]>;
   projectId?: InputMaybe<Scalars["UUID"]["input"]>;
   status?: InputMaybe<Scalars["String"]["input"]>;
+  subtasks?: InputMaybe<Array<CreateTaskInput>>;
   title: Scalars["String"]["input"];
 };
 
@@ -665,6 +678,7 @@ export type NewTaskMutationVariables = Exact<{
   labels?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
   assignees?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
+  subtasks?: InputMaybe<Array<CreateTaskInput> | CreateTaskInput>;
 }>;
 
 export type NewTaskMutation = {
@@ -1901,6 +1915,17 @@ export const NewTaskDocument = {
           variable: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
           type: { kind: "NamedType", name: { kind: "Name", value: "DateTime" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "subtasks" } },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: { kind: "NamedType", name: { kind: "Name", value: "CreateTaskInput" } },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1953,6 +1978,11 @@ export const NewTaskDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "dueDate" },
                 value: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "subtasks" },
+                value: { kind: "Variable", name: { kind: "Name", value: "subtasks" } },
               },
             ],
             selectionSet: {
