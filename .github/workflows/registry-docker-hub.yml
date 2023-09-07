@@ -25,7 +25,7 @@ jobs:
       - name: Extracting package version
         id: package_version
         run: |
-          echo "version=v$(awk -F'\"' '/"version\": \".+\"/{ print $4; exit; }' package.json)" >> $GITHUB_OUTPUT
+          echo "version=v$(cat package.json | jq -r '.version')" >> $GITHUB_OUTPUT
 
       - name: Docker meta
         id: docker_meta
