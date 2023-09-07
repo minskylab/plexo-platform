@@ -28,3 +28,12 @@ query MemberById($memberId: UUID!) {
     name
   }
 }
+
+mutation UpdateMember($memberId: UUID!, $name: String, $email: String, $role: String) {
+  updateMember(id: $memberId, name: $name, email: $email, role: $role) {
+    id
+    name
+    email
+    role
+  }
+}

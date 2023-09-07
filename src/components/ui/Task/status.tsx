@@ -23,7 +23,7 @@ import {
 } from "tabler-icons-react";
 import { useState, useEffect } from "react";
 
-import { TaskById } from "lib/types";
+import { Task, TaskById } from "lib/types";
 import { priorityName } from "./priority";
 import { useActions } from "lib/hooks/useActions";
 import { assigneesId } from "components/ui/Task/assignees";
@@ -167,7 +167,7 @@ export const StatusCheckboxGroup = ({ statusFilters, setStatusFilters }: StatusC
 type GenericStatusMenuProps = {
   children: React.ReactNode;
   onSelect?: (priority: TaskStatus) => void;
-  task?: TaskById | undefined;
+  task?: TaskById | Task | undefined;
 };
 
 export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMenuProps) => {
@@ -193,7 +193,6 @@ export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMen
       dueDate: task?.dueDate,
       projectId: task?.project?.id,
       leadId: task?.leader?.id,
-      labels: task?.labels,
       assignees: assigneesId(task),
     });
 

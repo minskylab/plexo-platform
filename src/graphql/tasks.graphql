@@ -47,6 +47,10 @@ query TaskById($taskId: UUID!) {
     priority
     dueDate
     count
+    parent {
+      id
+      count
+    }
     labels {
       id
       name
@@ -62,6 +66,42 @@ query TaskById($taskId: UUID!) {
     project {
       id
       name
+    }
+    subtasks {
+      id
+      createdAt
+      updatedAt
+      title
+      description
+      status
+      priority
+      ownerId
+      count
+      labels {
+        id
+        name
+        color
+      }
+      leadId
+      projectId
+      dueDate
+
+      owner {
+        id
+      }
+      assignees {
+        id
+        name
+      }
+      project {
+        id
+        name
+      }
+
+      leader {
+        id
+        name
+      }
     }
   }
 }
@@ -95,6 +135,7 @@ mutation NewTask(
   $labels: [UUID!]
   $assignees: [UUID!]
   $dueDate: DateTime
+  $subtasks: [CreateTaskInput!]
 ) {
   createTask(
     title: $title
@@ -106,6 +147,7 @@ mutation NewTask(
     labels: $labels
     assignees: $assignees
     dueDate: $dueDate
+    subtasks: $subtasks
   ) {
     id
     title
@@ -149,7 +191,7 @@ mutation UpdateTask(
   }
 }
 
-query SuggestNewTask($taskSuggestion: TaskSuggestion!) {
+query SuggestNewTask($taskSuggestion: TaskSuggestionInput!) {
   suggestNewTask(task: $taskSuggestion) {
     title
     description
