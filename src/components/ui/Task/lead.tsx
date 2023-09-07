@@ -19,6 +19,7 @@ import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { LeadName, LeadPhoto } from "../Project/lead";
+import { noMemberId } from "../constant";
 
 type GenericLeadMenuProps = {
   children: React.ReactNode;
@@ -47,9 +48,9 @@ export const GenericLeadTaskMenu = ({
         )
       );
     }
-  }, [searchValue]);
+  }, [membersData, searchValue]);
 
-  const onUpdateTaskLead = async (leadId: string | null) => {
+  const onUpdateTaskLead = async (leadId: string ) => {
     const res = await fetchUpdateTask({
       taskId: task?.id,
       leadId: leadId,
@@ -59,7 +60,6 @@ export const GenericLeadTaskMenu = ({
       description: task?.description,
       dueDate: task?.dueDate,
       projectId: task?.project?.id,
-      labels: task?.labels,
       assignees: assigneesId(task),
     });
     if (res.data) {
@@ -86,12 +86,12 @@ export const GenericLeadTaskMenu = ({
           rightSection={<Kbd px={8}>A</Kbd>}
         ></TextInput>
         <Menu.Divider />
-        <ScrollArea h={250}>
+        <ScrollArea.Autosize mah={250}>
           <Menu.Item
             icon={<Avatar size="sm" radius="xl" />}
             onClick={() => {
               onSelect && onSelect(null);
-              task && onUpdateTaskLead(null);
+              task && onUpdateTaskLead(noMemberId);
             }}
           >
             Unassigned
@@ -120,7 +120,7 @@ export const GenericLeadTaskMenu = ({
               );
             })
           )}
-        </ScrollArea>
+        </ScrollArea.Autosize>
       </Menu.Dropdown>
     </Menu>
   );

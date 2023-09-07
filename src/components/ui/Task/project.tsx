@@ -22,6 +22,7 @@ import { statusName } from "./status";
 import { priorityName } from "./priority";
 import { assigneesId } from "./assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import { noMemberId } from "../constant";
 
 const useStyles = createStyles(theme => ({
   checkbox: {
@@ -34,8 +35,15 @@ export const ProjectIcon = (project?: Project | null) => {
   return <LayoutGrid size={16} />;
 };
 
-export const ProjectName = (name: string | undefined) => {
-  return name ? name : "Project";
+type Payload = {
+  id: any;
+  name: string;
+};
+
+export const ProjectName = (project: Payload | null | undefined) => {
+  return project?.id == noMemberId || project?.name == undefined || project.name == null
+    ? "Project"
+    : project.name;
 };
 
 type ProjectsCheckboxProps = {
@@ -71,7 +79,7 @@ export const ProjectsCheckboxGroup = ({
         onChange={event => setSearchValue(event.currentTarget.value)}
       />
       <Divider />
-      <ScrollArea h={250}>
+      <ScrollArea.Autosize mah={250}>
         <Checkbox.Group mt={10} value={projectFilters} onChange={setProjectFilters}>
           {projectsOptions.map(p => {
             return (
@@ -83,7 +91,7 @@ export const ProjectsCheckboxGroup = ({
                 label={
                   <Group spacing={5}>
                     {ProjectIcon(p)}
-                    {ProjectName(p.name)}
+                    {ProjectName(p)}
                   </Group>
                 }
                 classNames={{
@@ -94,7 +102,7 @@ export const ProjectsCheckboxGroup = ({
             );
           })}
         </Checkbox.Group>
-      </ScrollArea>
+      </ScrollArea.Autosize>
     </>
   );
 };
@@ -120,9 +128,9 @@ export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProject
         )
       );
     }
-  }, [searchValue]);
+  }, [projectsData, searchValue]);
 
-  const onUpdateTaskProject = async (projectId: string | null) => {
+  const onUpdateTaskProject = async (projectId: string) => {
     const res = await fetchUpdateTask({
       taskId: task?.id,
       projectId: projectId,
@@ -132,7 +140,6 @@ export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProject
       description: task?.description,
       dueDate: task?.dueDate,
       leadId: task?.leader?.id,
-      labels: task?.labels,
       assignees: assigneesId(task),
     });
 
@@ -165,7 +172,7 @@ export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProject
           icon={<LayoutGrid size={16} />}
           onClick={() => {
             onSelect && onSelect(null);
-            task && onUpdateTaskProject(null);
+            task && onUpdateTaskProject(noMemberId);
           }}
         >
           No project
@@ -183,7 +190,7 @@ export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProject
                   task && onUpdateTaskProject(p.id);
                 }}
               >
-                {ProjectName(p.name)}
+                {ProjectName(p)}
               </Menu.Item>
             );
           })
@@ -202,7 +209,7 @@ export const ProjectSelector = ({ project, setProject }: ProjectSelectorProps) =
   return (
     <GenericProjectsMenu onSelect={project => setProject(project)}>
       <Button compact variant="light" color={"gray"} leftIcon={ProjectIcon(project)}>
-        <Text size={"xs"}>{ProjectName(project?.name)}</Text>
+        <Text size={"xs"}>{ProjectName(project)}</Text>
       </Button>
     </GenericProjectsMenu>
   );

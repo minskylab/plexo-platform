@@ -13,14 +13,14 @@ import { Users } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
 import { useData } from "lib/hooks/useData";
-import { Member, TaskById } from "lib/types";
+import { Member, Task, TaskById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { MemberPhoto } from "components/ui/Project/members";
 
-export const assigneesId = (task: TaskById | undefined) => {
+export const assigneesId = (task: TaskById | Task | undefined) => {
   return task?.assignees.map(a => a.id);
 };
 
@@ -58,27 +58,29 @@ export const MembersCheckboxGroup = ({
         onChange={event => setSearchValue(event.currentTarget.value)}
       />
       <Divider />
-      <Checkbox.Group mt={10} value={selectedMembers} onChange={setSelectedMembers}>
-        {membersOptions.map(m => {
-          return (
-            <Checkbox
-              key={m.id}
-              size="xs"
-              pb={15}
-              value={m.id}
-              label={MemberPhoto(m)}
-              styles={{
-                body: {
-                  alignItems: "center",
-                },
-                label: {
-                  paddingLeft: 5,
-                },
-              }}
-            />
-          );
-        })}
-      </Checkbox.Group>
+      <ScrollArea.Autosize mah={250}>
+        <Checkbox.Group mt={10} value={selectedMembers} onChange={setSelectedMembers}>
+          {membersOptions.map(m => {
+            return (
+              <Checkbox
+                key={m.id}
+                size="xs"
+                pb={15}
+                value={m.id}
+                label={MemberPhoto(m)}
+                styles={{
+                  body: {
+                    alignItems: "center",
+                  },
+                  label: {
+                    paddingLeft: 5,
+                  },
+                }}
+              />
+            );
+          })}
+        </Checkbox.Group>
+      </ScrollArea.Autosize>
     </>
   );
 };
@@ -112,7 +114,7 @@ export const GenericAssigneesMenu = ({
             )
           );
     }
-  }, [searchValue]);
+  }, [membersData, searchValue]);
 
   const labelValue = selectedAssignees
     ? selectedAssignees
@@ -125,7 +127,6 @@ export const GenericAssigneesMenu = ({
     const res = await fetchUpdateTask({
       taskId: task?.id,
       assignees: assignees,
-      labels: task?.labels,
       leadId: task?.leader?.id,
       priority: priorityName(task?.priority),
       status: statusName(task?.status),
@@ -165,7 +166,7 @@ export const GenericAssigneesMenu = ({
           onChange={event => setSearchValue(event.currentTarget.value)}
         ></TextInput>
         <Menu.Divider />
-        <ScrollArea h={250}>
+        <ScrollArea.Autosize mah={250}>
           {isLoadingMembers ? (
             <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
           ) : (
@@ -191,7 +192,7 @@ export const GenericAssigneesMenu = ({
               })}
             </Checkbox.Group>
           )}
-        </ScrollArea>
+        </ScrollArea.Autosize>
       </Menu.Dropdown>
     </Menu>
   );

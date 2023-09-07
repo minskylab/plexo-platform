@@ -49,7 +49,7 @@ export const GenericProjectsMenu = ({
             )
           );
     }
-  }, [searchValue]);
+  }, [projectsData,searchValue]);
 
   const labelValue = selectedProjects
     ? selectedProjects

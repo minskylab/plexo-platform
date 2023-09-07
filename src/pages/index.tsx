@@ -8,7 +8,7 @@ const Plexo = () => {
     router.push("/tasks");
   }, []);
 
-  return <h1>Plexo</h1>;
+  return;
 };
 
 export default Plexo;

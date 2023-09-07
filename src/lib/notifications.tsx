@@ -11,11 +11,11 @@ export const SuccessNotification = (title: string, message: string) => {
   });
 };
 
-export const ErrorNotification = () => {
+export const ErrorNotification = (message?: string) => {
   return showNotification({
     autoClose: 5000,
     title: "Error!",
-    message: "Try again",
+    message: message ? message : "Try again",
     color: "red",
     icon: <X size={18} />,
   });

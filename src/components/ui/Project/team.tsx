@@ -65,7 +65,7 @@ export const TeamCheckboxGroup = ({ teamFilters, setTeamFilters }: TeamCheckboxP
         onChange={event => setSearchValue(event.currentTarget.value)}
       />
       <Divider />
-      <ScrollArea h={250}>
+      <ScrollArea.Autosize mah={250}>
         <Checkbox.Group mt={10} value={teamFilters} onChange={setTeamFilters}>
           {teamOptions.map(t => {
             return (
@@ -88,7 +88,7 @@ export const TeamCheckboxGroup = ({ teamFilters, setTeamFilters }: TeamCheckboxP
             );
           })}
         </Checkbox.Group>
-      </ScrollArea>
+      </ScrollArea.Autosize>
     </>
   );
 };

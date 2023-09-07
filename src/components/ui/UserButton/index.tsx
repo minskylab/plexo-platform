@@ -6,16 +6,14 @@ import {
   Text,
   createStyles,
   Menu,
-  useMantineColorScheme,
-  Switch,
-  useMantineTheme,
   Skeleton,
   Stack,
 } from "@mantine/core";
-import { useState } from "react";
-import { Logout, Moon, Sun } from "tabler-icons-react";
+
+import { Logout, Settings } from "tabler-icons-react";
 
 import { User } from "lib/types";
+import { useRouter } from "next/router";
 
 const useStyles = createStyles(theme => ({
   user: {
@@ -37,18 +35,12 @@ interface UserButtonProps extends UnstyledButtonProps {
 
 export function UserButton({ user, isLoadingUser }: UserButtonProps) {
   const { classes } = useStyles();
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const [userMenuOpened, setUserMenuOpened] = useState(false);
-  const theme = useMantineTheme();
+
+  const router = useRouter();
 
   return (
     <Group position="center">
-      <Menu
-        position={"bottom-end"}
-        offset={0}
-        onClose={() => setUserMenuOpened(false)}
-        onOpen={() => setUserMenuOpened(true)}
-      >
+      <Menu position={"bottom-end"} offset={0}>
         <Menu.Target>
           <UnstyledButton className={classes.user}>
             {isLoadingUser ? (
@@ -79,25 +71,13 @@ export function UserButton({ user, isLoadingUser }: UserButtonProps) {
           </UnstyledButton>
         </Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item closeMenuOnClick={!userMenuOpened}>
-            <Switch
-              onLabel={
-                <Group spacing={5}>
-                  <Sun color={theme.white} size={18} />
-                  <Text size="sm">Light</Text>
-                </Group>
-              }
-              offLabel={
-                <Group spacing="xs" grow>
-                  <Text size="sm">Dark</Text>
-                  <Moon color={theme.colors.gray[6]} size={18} />
-                </Group>
-              }
-              checked={colorScheme === "dark"}
-              onChange={() => toggleColorScheme()}
-              size="md"
-              styles={{ root: { width: 120, marginLeft: -4 } }}
-            />
+          <Menu.Item
+            onClick={() => {
+              router.push("/settings");
+            }}
+            icon={<Settings strokeWidth={1.5} size={14} />}
+          >
+            Settings
           </Menu.Item>
           <Menu.Item color="red" component="button" icon={<Logout size={14} />}>
             Log out

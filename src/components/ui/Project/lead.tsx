@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { Check, X } from "tabler-icons-react";
+import { useEffect, useState } from "react";
 
 import { Member, Project } from "lib/types";
 import { useData } from "lib/hooks/useData";
@@ -54,6 +55,10 @@ export const GenericLeadProjectMenu = ({
     memberId: project?.leadId == noMemberId ? null : project?.leadId,
   });
   const { fetchUpdateProject } = useActions();
+
+  const [searchValue, setSearchValue] = useState("");
+  const [leadOptions, setLeadOptions] = useState<Member[]>([]);
+
   const memberName = memberData?.memberById.name ? memberData?.memberById.name : selectedLead?.name;
 
   const onUpdateProjectLead = async (leadId: string) => {
@@ -82,6 +87,18 @@ export const GenericLeadProjectMenu = ({
     }
   };
 
+  useEffect(() => {
+    if (membersData?.members) {
+      searchValue == ""
+        ? setLeadOptions(membersData?.members)
+        : setLeadOptions(
+            membersData?.members.filter((item: Member) =>
+              item.name.toLowerCase().includes(searchValue.toLowerCase())
+            )
+          );
+    }
+  }, [membersData, searchValue]);
+
   return (
     <Menu shadow="md" position="bottom-start" withinPortal>
       <Menu.Target>
@@ -96,6 +113,8 @@ export const GenericLeadProjectMenu = ({
         <TextInput
           placeholder="Lead by..."
           variant="filled"
+          value={searchValue}
+          onChange={event => setSearchValue(event.currentTarget.value)}
           rightSection={<Kbd px={8}>A</Kbd>}
         ></TextInput>
         <Menu.Divider />
@@ -108,11 +127,11 @@ export const GenericLeadProjectMenu = ({
         >
           Unassigned
         </Menu.Item>
-        <ScrollArea h={250}>
+        <ScrollArea.Autosize mah={250}>
           {isLoadingMembers ? (
             <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
           ) : (
-            membersData?.members.map((m: Member) => {
+            leadOptions.map((m: Member) => {
               return (
                 <Menu.Item
                   key={m.id}
@@ -133,7 +152,7 @@ export const GenericLeadProjectMenu = ({
               );
             })
           )}
-        </ScrollArea>
+        </ScrollArea.Autosize>
       </Menu.Dropdown>
     </Menu>
   );
