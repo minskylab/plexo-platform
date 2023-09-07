@@ -43,13 +43,21 @@ const LoginPage = () => {
     },
   });
 
-  const onLogin = async (values: typeof form.values) => {
+  const onValidateValues = () => {
+    if (form.validate().hasErrors) {
+      return;
+    }
+
+    onLogin();
+  };
+
+  const onLogin = async () => {
     setLoading(true);
     setAuthResponse(undefined);
 
     const response = await loginWithEmail({
-      email: values.email,
-      password: values.password,
+      email: form.values.email,
+      password: form.values.password,
     });
 
     setLoading(false);
@@ -67,7 +75,7 @@ const LoginPage = () => {
         <PlexoLogo typographyColor={colorScheme === "light" ? theme.colors.gray[9] : undefined} />
         <Paper w={"100%"} radius="md" p="xl" withBorder>
           <Stack>
-            <form onSubmit={form.onSubmit(onLogin)}>
+            <form>
               <Stack>
                 <TextInput
                   withAsterisk
@@ -81,7 +89,7 @@ const LoginPage = () => {
                   placeholder="Your password"
                   {...form.getInputProps("password")}
                 />
-                <Button type="submit" loading={loading}>
+                <Button loading={loading} onClick={() => onValidateValues()}>
                   Login
                 </Button>
                 {authResponse && authResponse.error && (
