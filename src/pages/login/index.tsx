@@ -22,7 +22,6 @@ const LoginPage = () => {
         <Paper w={"100%"} radius="md" p="xl" withBorder>
           <Stack>
             <Button onClick={() => console.log("click")}>Login</Button>
-            <button onClick={() => console.log("click")}>Boton</button>
             <Divider label="Or, continue with" labelPosition="center" />
 
             <Button
