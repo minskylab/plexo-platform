@@ -15,7 +15,7 @@ import { useRouter } from "next/router";
 
 import PlexoLogo from "components/resources/PlexoLogo";
 import { useForm } from "@mantine/form";
-import { loginWithEmail } from "lib/auth";
+/* import { loginWithEmail } from "lib/auth"; */
 import { useState } from "react";
 
 type AuthResponse = {
@@ -44,14 +44,17 @@ const LoginPage = () => {
   });
 
   const onValidateValues = () => {
+    console.log("validando inputs");
     if (form.validate().hasErrors) {
+      console.log("inputs no validos");
       return;
     }
 
-    onLogin();
+    console.log("login");
+    /* onLogin(); */
   };
 
-  const onLogin = async () => {
+  /* const onLogin = async () => {
     setLoading(true);
     setAuthResponse(undefined);
 
@@ -67,7 +70,7 @@ const LoginPage = () => {
     if (response && !response.error) {
       router.push("/");
     }
-  };
+  }; */
 
   return (
     <Center style={{ height: "100vh" }}>
@@ -89,7 +92,7 @@ const LoginPage = () => {
                   placeholder="Your password"
                   {...form.getInputProps("password")}
                 />
-                <Button loading={loading} onClick={() => onValidateValues()}>
+                <Button loading={loading} onClick={onValidateValues}>
                   Login
                 </Button>
                 {authResponse && authResponse.error && (
