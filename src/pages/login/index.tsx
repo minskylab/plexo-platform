@@ -1,76 +1,19 @@
 import {
-  Alert,
   Button,
   Center,
   Divider,
   Paper,
-  PasswordInput,
   Stack,
-  TextInput,
   useMantineColorScheme,
   useMantineTheme,
 } from "@mantine/core";
-import { AlertCircle, BrandGithub } from "tabler-icons-react";
-import { useRouter } from "next/router";
+import { BrandGithub } from "tabler-icons-react";
 
 import PlexoLogo from "components/resources/PlexoLogo";
-import { useForm } from "@mantine/form";
-/* import { loginWithEmail } from "lib/auth"; */
-import { useState } from "react";
-
-type AuthResponse = {
-  error: boolean;
-  message: any;
-};
 
 const LoginPage = () => {
   const { colorScheme } = useMantineColorScheme();
   const theme = useMantineTheme();
-  const router = useRouter();
-
-  const [authResponse, setAuthResponse] = useState<AuthResponse | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
-
-  const form = useForm({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-
-    validate: {
-      email: val => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
-      password: val => (val.length <= 6 ? "Password should include at least 6 characters" : null),
-    },
-  });
-
-  const onValidateValues = () => {
-    console.log("validando inputs");
-    if (form.validate().hasErrors) {
-      console.log("inputs no validos");
-      return;
-    }
-
-    console.log("login");
-    /* onLogin(); */
-  };
-
-  /* const onLogin = async () => {
-    setLoading(true);
-    setAuthResponse(undefined);
-
-    const response = await loginWithEmail({
-      email: form.values.email,
-      password: form.values.password,
-    });
-
-    setLoading(false);
-    setAuthResponse(response);
-
-    //Login succesful
-    if (response && !response.error) {
-      router.push("/");
-    }
-  }; */
 
   return (
     <Center style={{ height: "100vh" }}>
@@ -78,39 +21,8 @@ const LoginPage = () => {
         <PlexoLogo typographyColor={colorScheme === "light" ? theme.colors.gray[9] : undefined} />
         <Paper w={"100%"} radius="md" p="xl" withBorder>
           <Stack>
-            <form>
-              <Stack>
-                <TextInput
-                  withAsterisk
-                  label="Email"
-                  placeholder="hello@plexo.app"
-                  {...form.getInputProps("email")}
-                />
-                <PasswordInput
-                  withAsterisk
-                  label="Password"
-                  placeholder="Your password"
-                  {...form.getInputProps("password")}
-                />
-                <Button loading={loading} onClick={onValidateValues}>
-                  Login
-                </Button>
-                {authResponse && authResponse.error && (
-                  <Alert
-                    color="red"
-                    icon={<AlertCircle size={18} />}
-                    styles={{
-                      message: {
-                        color: "red",
-                      },
-                    }}
-                  >
-                    {authResponse.message}
-                  </Alert>
-                )}
-              </Stack>
-            </form>
-
+            <Button onClick={() => console.log("click")}>Login</Button>
+            <button onClick={() => console.log("click")}>Boton</button>
             <Divider label="Or, continue with" labelPosition="center" />
 
             <Button
