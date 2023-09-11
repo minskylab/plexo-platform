@@ -10,26 +10,31 @@ import {
 } from "urql";
 import { createClient as createWSClient } from "graphql-ws";
 
-const GRAPHQL_ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "/graphql";
-const WS_ENDPOINT = process.env.NEXT_PUBLIC_WS_ENDPOINT || "/graphql/ws";
-const PLEXO_TOKEN = process.env.NEXT_PUBLIC_PLEXO_TOKEN || "";
+export const URQLClient = ({ graphQLEndpoint }: { graphQLEndpoint?: string }) => {
+  // console.log("CREATING URQL CLIENT");
 
-const wsClient =
-  typeof window === "undefined"
-    ? null
-    : createWSClient({
-        url: WS_ENDPOINT,
-        connectionParams: {
-          Authorization: "",
-        },
-      });
+  const GRAPHQL_ENDPOINT =
+    process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || graphQLEndpoint || "/graphql";
 
-export const URQLClient = () => {
+  const WS_ENDPOINT = process.env.NEXT_PUBLIC_WS_ENDPOINT || "/graphql/ws";
+
+  const wsClient =
+    typeof window === "undefined"
+      ? null
+      : createWSClient({
+          url: WS_ENDPOINT,
+          connectionParams: {
+            Authorization: "",
+          },
+        });
+
+  // console.log(GRAPHQL_ENDPOINT);
+
   return createClient({
     url: GRAPHQL_ENDPOINT,
     fetchOptions: {
       headers: {
-        Authorization: PLEXO_TOKEN,
+        // Authorization: PLEXO_TOKEN,
       },
     },
     exchanges: [

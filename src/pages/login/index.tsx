@@ -17,6 +17,7 @@ import PlexoLogo from "components/resources/PlexoLogo";
 import { useForm } from "@mantine/form";
 import { loginWithEmail } from "lib/auth";
 import { useState } from "react";
+import { usePlexoContext } from "context/PlexoContext";
 
 type AuthResponse = {
   error: boolean;
@@ -27,6 +28,8 @@ const LoginPage = () => {
   const { colorScheme } = useMantineColorScheme();
   const theme = useMantineTheme();
   const router = useRouter();
+
+  const plexo = usePlexoContext();
 
   const [authResponse, setAuthResponse] = useState<AuthResponse | undefined>(undefined);
   const [loading, setLoading] = useState(false);
@@ -48,6 +51,7 @@ const LoginPage = () => {
     setAuthResponse(undefined);
 
     const response = await loginWithEmail({
+      authEmailURL: plexo.authEmailURL,
       email: values.email,
       password: values.password,
     });

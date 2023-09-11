@@ -1,8 +1,14 @@
-const EMAIL_AUTH_ENDPOINT = process.env.NEXT_PUBLIC_URL_EMAIL_AUTH || "/auth/email/login";
-
-export const loginWithEmail = async ({ email, password }: { email: string; password: string }) => {
+export const loginWithEmail = async ({
+  authEmailURL,
+  email,
+  password,
+}: {
+  authEmailURL: string | undefined;
+  email: string;
+  password: string;
+}) => {
   try {
-    const res = await fetch(EMAIL_AUTH_ENDPOINT, {
+    const res = await fetch(authEmailURL || "/auth/email/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

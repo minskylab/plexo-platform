@@ -2,6 +2,8 @@ import { createContext, ReactNode, useContext, useState, useEffect } from "react
 
 type PlexoProviderProps = {
   children: ReactNode;
+  authCookie?: string;
+  authEmailURL?: string;
 };
 
 type FilterValues = {
@@ -41,6 +43,8 @@ type PlexoContextProps = {
   filterValues: FilterValues | null;
   setFilterValues: (filterValues: FilterValues | null) => void;
   total: number;
+  authCookie: string | undefined;
+  authEmailURL: string | undefined;
 };
 
 const STORAGE_KEY = "filterValues";
@@ -55,7 +59,7 @@ export const usePlexoContext = () => {
   return context;
 };
 
-const PlexoProvider = ({ children }: PlexoProviderProps) => {
+const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProps) => {
   const [navBarOpened, setNavBarOpened] = useState(false);
   const [newTaskOpened, setNewTaskOpened] = useState(false);
   const [createMoreTasks, setCreateMoreTasks] = useState(false);
@@ -147,6 +151,8 @@ const PlexoProvider = ({ children }: PlexoProviderProps) => {
         filterValues,
         setFilterValues,
         total,
+        authCookie,
+        authEmailURL,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import type { ReactElement } from "react";
+import { useEffect, type ReactElement } from "react";
 import { useRouter } from "next/router";
 
 import { useData } from "lib/hooks/useData";

@@ -6,9 +6,9 @@ const Plexo = () => {
 
   useEffect(() => {
     router.push("/tasks");
-  }, []);
+  }, [router]);
 
-  return;
+  return <h1>Hello Plexo</h1>;
 };
 
 export default Plexo;

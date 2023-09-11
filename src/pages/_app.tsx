@@ -19,18 +19,32 @@ type AppPropsWithLayout<T> = AppProps & {
   Component: NextPageWithLayout<T>;
 };
 
-type LogesAppProps = {
+type PlexoPlatformAppProps = {
   colorScheme: ColorScheme;
+  viewMode: "list" | "grid";
+  authCookie: string;
+  //
+  graphQLEndpoint: string | undefined;
+  authEmailURL: string | undefined;
 };
-
-const client = URQLClient();
 
 const PlexoApp = ({
   Component,
   pageProps,
   colorScheme,
-}: AppPropsWithLayout<LogesAppProps> & LogesAppProps) => {
+  authCookie,
+  graphQLEndpoint,
+  authEmailURL,
+}: AppPropsWithLayout<PlexoPlatformAppProps> & PlexoPlatformAppProps) => {
   const getLayout = Component.getLayout ?? (page => page);
+
+  console.log("authCookie: ", authCookie);
+
+  console.log("graphQLEndpoint: ", graphQLEndpoint);
+
+  const client = URQLClient({
+    graphQLEndpoint: graphQLEndpoint,
+  });
 
   return (
     <>
@@ -40,7 +54,7 @@ const PlexoApp = ({
         <link rel="icon" type="image/png" sizes="5x5" href="/plexo.png" />
       </Head>
       <URQLProvider value={client}>
-        <PlexoProvider>
+        <PlexoProvider authCookie={authCookie} authEmailURL={authEmailURL}>
           <MyMantineProvider colorScheme={colorScheme}>
             <Fonts />
             {getLayout(<Component {...pageProps} />)}
@@ -51,10 +65,20 @@ const PlexoApp = ({
   );
 };
 
-PlexoApp.getInitialProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => ({
-  // get color scheme from cookie
-  colorScheme: getCookie("mantine-color-scheme", ctx) || "light",
-  viewMode: getCookie("viewMode", ctx) || "list",
-});
+PlexoApp.getInitialProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => {
+  console.log("GET INITIAL PROPS");
+  console.log(process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT);
+  console.log(process.env.NEXT_PUBLIC_URL_EMAIL_AUTH);
+
+  return {
+    // get color scheme from cookie
+    colorScheme: getCookie("mantine-color-scheme", ctx) || "light",
+    viewMode: getCookie("viewMode", ctx) || "list",
+
+    authCookie: getCookie("__Host-plexo-session-token", ctx) || "",
+    graphQLEndpoint: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
+    authEmailURL: process.env.NEXT_PUBLIC_URL_EMAIL_AUTH,
+  };
+};
 
 export default PlexoApp;
