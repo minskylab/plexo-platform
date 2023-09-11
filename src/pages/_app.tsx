@@ -5,10 +5,11 @@ import { ReactElement, ReactNode, useState } from "react";
 import { Provider as URQLProvider } from "urql";
 import { GetServerSidePropsContext, NextPage } from "next";
 import Head from "next/head";
+import Script from "next/script";
 
 import Fonts from "theming/fonts";
-import { URQLClient } from "lib/client";
 import { MyMantineProvider } from "theming/mantine";
+import { URQLClient } from "lib/client";
 import PlexoProvider from "../context/PlexoContext";
 
 export type NextPageWithLayout<T = {}> = NextPage<T> & {
@@ -51,6 +52,11 @@ const PlexoApp = ({
 
   return (
     <>
+      <Script
+        async
+        src="https://umami.internal.plexo.app/script.js"
+        data-website-id="605878f4-653c-40f8-a7de-f70e9831c6c3"
+      />
       <Head>
         <title>Plexo</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
