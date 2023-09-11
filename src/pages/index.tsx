@@ -20,7 +20,7 @@ const PlexoPage: NextPageWithLayout = () => {
     router.replace("/tasks", undefined, { shallow: true });
   }, [router]);
 
-  return <h1>Hello Plexo</h1>;
+  return <h1></h1>;
 };
 
 PlexoPage.getLayout = function getLayout(page: ReactElement) {
