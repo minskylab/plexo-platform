@@ -35,11 +35,6 @@ const PlexoApp = ({
 
   return (
     <>
-      <Script
-        async
-        src="https://umami.internal.plexo.app/script.js"
-        data-website-id="605878f4-653c-40f8-a7de-f70e9831c6c3"
-      />
       <Head>
         <title>Plexo</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
