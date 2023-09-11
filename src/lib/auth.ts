@@ -13,6 +13,7 @@ export const loginWithEmail = async ({
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({ email: email, password: password }),
     });
 
@@ -24,10 +25,10 @@ export const loginWithEmail = async ({
         message: errorData.error,
       };
     } else {
-      await res.json();
+      const jsonResult: { access_token: string } = await res.json();
       return {
         error: false,
-        message: null,
+        message: jsonResult,
       };
     }
   } catch (error) {

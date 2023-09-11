@@ -45,6 +45,7 @@ type PlexoContextProps = {
   total: number;
   authCookie: string | undefined;
   authEmailURL: string | undefined;
+  setAuthCookie: (authCookie: string) => void;
 };
 
 const STORAGE_KEY = "filterValues";
@@ -63,6 +64,8 @@ const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProp
   const [navBarOpened, setNavBarOpened] = useState(false);
   const [newTaskOpened, setNewTaskOpened] = useState(false);
   const [createMoreTasks, setCreateMoreTasks] = useState(false);
+
+  const [authCookieState, setAuthCookie] = useState(authCookie);
 
   //Filters
 
@@ -151,7 +154,8 @@ const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProp
         filterValues,
         setFilterValues,
         total,
-        authCookie,
+        authCookie: authCookieState,
+        setAuthCookie,
         authEmailURL,
       }}
     >

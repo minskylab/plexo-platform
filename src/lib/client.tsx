@@ -33,6 +33,7 @@ export const URQLClient = ({ graphQLEndpoint }: { graphQLEndpoint?: string }) =>
   return createClient({
     url: GRAPHQL_ENDPOINT,
     fetchOptions: {
+      credentials: "include",
       headers: {
         // Authorization: PLEXO_TOKEN,
       },

@@ -1,14 +1,30 @@
+import Layout from "components/ui/Layout";
+import { usePlexoContext } from "context/PlexoContext";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { ReactElement, useEffect } from "react";
+import { NextPageWithLayout } from "./_app";
 
-const Plexo = () => {
+const PlexoPage: NextPageWithLayout = () => {
   const router = useRouter();
+  let plexo = usePlexoContext();
+
+  // console.log("plexo auth cookie: ", plexo.authCookie);
+
+  // useEffect(() => {
+  //   if (!plexo.authCookie) {
+  //     router.push("/login");
+  //   }
+  // }, [router, plexo.authCookie]);
 
   useEffect(() => {
-    router.push("/tasks");
+    router.replace("/tasks", undefined, { shallow: true });
   }, [router]);
 
   return <h1>Hello Plexo</h1>;
 };
 
-export default Plexo;
+PlexoPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};
+
+export default PlexoPage;
