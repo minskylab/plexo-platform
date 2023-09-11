@@ -63,5 +63,6 @@ jobs:
         uses: depot/build-push-action@v1
         with:
           project: 2hwvxx9885
+          push: true
           labels: ${{ steps.docker_meta.outputs.labels }}
           tags: ${{ steps.docker_meta.outputs.tags }}
