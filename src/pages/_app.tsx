@@ -41,9 +41,11 @@ const PlexoApp = ({
   // console.log("authCookie: ", authCookie);
   // console.log("graphQLEndpoint: ", graphQLEndpoint);
 
-  const client = URQLClient({
-    graphQLEndpoint: graphQLEndpoint,
-  });
+  const [client, setClient] = useState(
+    URQLClient({
+      graphQLEndpoint: graphQLEndpoint,
+    })
+  );
 
   let [authCookieState, setAuthCookie] = useState(authCookie);
 
