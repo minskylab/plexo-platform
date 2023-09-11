@@ -36,7 +36,8 @@ COPY . .
 RUN yarn generate
 
 # Build code
-RUN yarn build && yarn install --production --ignore-scripts --prefer-offline
+RUN yarn build
+## && yarn install --production --ignore-scripts --prefer-offline
 
 # ------------------------------------
 # STAGE 03 - runner
@@ -46,8 +47,8 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 # Arg to manage production state
-ARG NODE_ENV=production
-ENV NODE_ENV $NODE_ENV
+# ARG NODE_ENV=production
+# ENV NODE_ENV $NODE_ENV
 
 # Arg to port for node
 ARG PORT=3000
