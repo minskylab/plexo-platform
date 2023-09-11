@@ -13,7 +13,7 @@ export const loginWithEmail = async ({
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
+      credentials: "same-origin",
       body: JSON.stringify({ email: email, password: password }),
     });
 
