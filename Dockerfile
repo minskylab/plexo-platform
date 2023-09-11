@@ -20,23 +20,11 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Args needed for code generation
-ARG NEXT_PUBLIC_GRAPHQL_ENDPOINT
-ENV NEXT_PUBLIC_GRAPHQL_ENDPOINT $NEXT_PUBLIC_GRAPHQL_ENDPOINT
-
-ARG NEXT_PUBLIC_WS_ENDPOINT
-ENV NEXT_PUBLIC_WS_ENDPOINT $NEXT_PUBLIC_WS_ENDPOINT
-
-ARG NEXT_PUBLIC_URL_AUTH
-ENV NEXT_PUBLIC_URL_AUTH $NEXT_PUBLIC_URL_AUTH
-
-ARG NEXT_PUBLIC_URL_EMAIL_AUTH
-ENV NEXT_PUBLIC_URL_EMAIL_AUTH $NEXT_PUBLIC_URL_EMAIL_AUTH
-
 RUN yarn generate
 
 # Build code
-RUN yarn build && yarn install --production --ignore-scripts --prefer-offline
+RUN yarn build
+## && yarn install --production --ignore-scripts --prefer-offline
 
 # ------------------------------------
 # STAGE 03 - runner
@@ -46,8 +34,8 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 # Arg to manage production state
-ARG NODE_ENV=production
-ENV NODE_ENV $NODE_ENV
+# ARG NODE_ENV=production
+# ENV NODE_ENV $NODE_ENV
 
 # Arg to port for node
 ARG PORT=3000
@@ -58,7 +46,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # You only need to copy next.config.js if you are NOT using the default configuration
-# COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
