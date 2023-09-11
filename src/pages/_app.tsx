@@ -5,7 +5,6 @@ import { ReactElement, ReactNode } from "react";
 import { Provider as URQLProvider } from "urql";
 import { GetServerSidePropsContext, NextPage } from "next";
 import Head from "next/head";
-import Script from "next/script";
 
 import Fonts from "theming/fonts";
 import { URQLClient } from "lib/client";
