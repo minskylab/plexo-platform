@@ -16,7 +16,10 @@ import { useRouter } from "next/router";
 import PlexoLogo from "components/resources/PlexoLogo";
 import { useForm } from "@mantine/form";
 import { loginWithEmail } from "lib/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePlexoContext } from "context/PlexoContext";
+
+// import Cookies from 'cookies'
 
 type AuthResponse = {
   error: boolean;
@@ -28,8 +31,16 @@ const LoginPage = () => {
   const theme = useMantineTheme();
   const router = useRouter();
 
+  const plexo = usePlexoContext();
+
   const [authResponse, setAuthResponse] = useState<AuthResponse | undefined>(undefined);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (plexo.authCookie) {
+      router.replace("/", undefined, { shallow: true });
+    }
+  }, [router, plexo.authCookie]);
 
   const form = useForm({
     initialValues: {
@@ -39,7 +50,7 @@ const LoginPage = () => {
 
     validate: {
       email: val => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
-      password: val => (val.length <= 6 ? "Password should include at least 6 characters" : null),
+      password: val => (val.length < 5 ? "Password should include at least 5 characters" : null),
     },
   });
 
@@ -48,6 +59,7 @@ const LoginPage = () => {
     setAuthResponse(undefined);
 
     const response = await loginWithEmail({
+      authEmailURL: plexo.authEmailURL,
       email: values.email,
       password: values.password,
     });
@@ -55,9 +67,13 @@ const LoginPage = () => {
     setLoading(false);
     setAuthResponse(response);
 
-    //Login succesful
+    //Login successful
     if (response && !response.error) {
-      router.push("/");
+      // console.log("response: ", response.message);
+      plexo.setAuthCookie(response.message.access_token);
+
+      // router.replace("/", undefined, { shallow: true });
+      // router.reload();
     }
   };
 
