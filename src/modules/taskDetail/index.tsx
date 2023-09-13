@@ -9,7 +9,6 @@ import {
   CopyButton,
   Tooltip,
   Box,
-  Avatar,
   Button,
   createStyles,
   MediaQuery,
@@ -39,6 +38,7 @@ import { usePlexoContext } from "context/PlexoContext";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 import { TaskListElement } from "components/ui/Task/task";
 import { validateDate } from "lib/utils";
+import { MemberPhoto } from "components/ui/MemberPhoto";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -257,7 +257,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                     compact
                     variant="light"
                     color={"gray"}
-                    leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
+                    leftIcon={MemberPhoto(task?.leader?.photoUrl)}
                   >
                     <Text size={"xs"}>{LeadName(task?.leader)}</Text>
                   </Button>
@@ -381,7 +381,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                 compact
                 variant="light"
                 color={"gray"}
-                leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
+                leftIcon={MemberPhoto(task?.leader?.photoUrl)}
               >
                 <Text size={"xs"}>{LeadName(task?.leader)}</Text>
               </Button>

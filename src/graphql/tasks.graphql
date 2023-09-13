@@ -33,6 +33,7 @@ query Tasks {
     leader {
       id
       name
+      photoUrl
     }
   }
 }
@@ -62,6 +63,7 @@ query TaskById($taskId: UUID!) {
     leader {
       id
       name
+      photoUrl
     }
     project {
       id

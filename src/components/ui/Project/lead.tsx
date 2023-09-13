@@ -18,14 +18,7 @@ import { useData } from "lib/hooks/useData";
 import { useActions } from "lib/hooks/useActions";
 import { ProjectById } from "lib/types";
 import { noMemberId } from "../constant";
-
-export const LeadPhoto = (member: Member | null) => {
-  return member?.photoUrl ? (
-    <Avatar src={member.photoUrl} size="sm" radius="xl" />
-  ) : (
-    <Avatar size="sm" radius="xl" />
-  );
-};
+import { MemberPhoto } from "../MemberPhoto";
 
 type Payload = {
   id: any;
@@ -100,7 +93,17 @@ export const GenericLeadProjectMenu = ({
   }, [membersData, searchValue]);
 
   return (
-    <Menu shadow="md" position="bottom-start" withinPortal>
+    <Menu
+      shadow="md"
+      position="bottom-start"
+      withinPortal
+      styles={{
+        itemIcon: {
+          width: 26,
+          height: 26,
+        },
+      }}
+    >
       <Menu.Target>
         <Tooltip
           label={memberName && project?.leadId !== noMemberId ? `Lead by ${memberName}` : "Lead by"}
@@ -129,19 +132,13 @@ export const GenericLeadProjectMenu = ({
         </Menu.Item>
         <ScrollArea.Autosize mah={250}>
           {isLoadingMembers ? (
-            <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+            <Skeleton height={36} radius="sm" />
           ) : (
             leadOptions.map((m: Member) => {
               return (
                 <Menu.Item
                   key={m.id}
-                  icon={
-                    m?.photoUrl ? (
-                      <Avatar src={m.photoUrl} size="sm" radius="xl" />
-                    ) : (
-                      <Avatar size="sm" radius="xl" />
-                    )
-                  }
+                  icon={MemberPhoto(m.photoUrl)}
                   onClick={() => {
                     onSelect && onSelect(m);
                     project && onUpdateProjectLead(m.id);
@@ -168,10 +165,10 @@ export const LeadProjectSelector = ({ lead, setLead }: LeadProjectSelectorProps)
     <GenericLeadProjectMenu onSelect={member => setLead(member)} selectedLead={lead}>
       {typeof lead === "undefined" ? (
         <Button compact variant="light" color={"gray"}>
-          {LeadPhoto(lead)}
+          {MemberPhoto(undefined)}
         </Button>
       ) : (
-        <Button compact variant="light" color={"gray"} leftIcon={LeadPhoto(lead)}>
+        <Button compact variant="light" color={"gray"} leftIcon={MemberPhoto(lead?.photoUrl)}>
           <Text size={"xs"}>{LeadName(lead)}</Text>
         </Button>
       )}

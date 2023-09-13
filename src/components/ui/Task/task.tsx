@@ -1,6 +1,5 @@
 import {
   ActionIcon,
-  Avatar,
   Badge,
   Checkbox,
   ColorSwatch,
@@ -21,6 +20,7 @@ import { TaskMenu } from "./menu";
 import { GenericLeadTaskMenu } from "./lead";
 import { GenericStatusMenu, StatusIcon } from "./status";
 import { GenericPriorityMenu, PriorityIcon } from "./priority";
+import { MemberPhoto } from "../MemberPhoto";
 
 type TaskProps = {
   task: Task;
@@ -131,11 +131,7 @@ export const TaskListElement = ({ task, active = false, checked = false }: TaskP
             {DateLabel(task.createdAt)}
           </Text>
           <GenericLeadTaskMenu task={task}>
-            <ActionIcon variant="transparent">
-              <Avatar size="sm" radius="xl">
-                {/* {task.leadId} */}
-              </Avatar>
-            </ActionIcon>
+            <ActionIcon variant="transparent">{MemberPhoto(task.leader?.photoUrl)}</ActionIcon>
           </GenericLeadTaskMenu>
 
           <TaskMenu task={task}>
@@ -161,9 +157,7 @@ export const TaskCardElement = ({ task, active = false }: TaskProps) => {
             {`PLE-${task.count}`}
           </Text>
           <GenericLeadTaskMenu task={task}>
-            <ActionIcon variant="transparent">
-              <Avatar size="sm" radius="xl" />
-            </ActionIcon>
+            <ActionIcon variant="transparent">{MemberPhoto(task.leader?.photoUrl)}</ActionIcon>
           </GenericLeadTaskMenu>
         </Group>
         <Text size={"sm"} onClick={() => router.push(`/tasks/${task.id}`)}>

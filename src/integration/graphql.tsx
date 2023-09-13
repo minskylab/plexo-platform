@@ -551,7 +551,7 @@ export type ProjectByIdQuery = {
     startDate?: any | null;
     dueDate?: any | null;
     owner?: { __typename?: "Member"; id: any; name: string } | null;
-    leader?: { __typename?: "Member"; id: any; name: string } | null;
+    leader?: { __typename?: "Member"; id: any; name: string; photoUrl?: string | null } | null;
     members: Array<{ __typename?: "Member"; id: any; name: string }>;
     tasks: Array<{ __typename?: "Task"; id: any; title: string }>;
     teams: Array<{ __typename?: "Team"; id: any; name: string }>;
@@ -621,7 +621,7 @@ export type TasksQuery = {
     owner?: { __typename?: "Member"; id: any } | null;
     assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
     project?: { __typename?: "Project"; id: any; name: string } | null;
-    leader?: { __typename?: "Member"; id: any; name: string } | null;
+    leader?: { __typename?: "Member"; id: any; name: string; photoUrl?: string | null } | null;
   }>;
 };
 
@@ -644,7 +644,7 @@ export type TaskByIdQuery = {
     parent?: { __typename?: "Task"; id: any; count: number } | null;
     labels: Array<{ __typename?: "Label"; id: any; name: string }>;
     assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
-    leader?: { __typename?: "Member"; id: any; name: string } | null;
+    leader?: { __typename?: "Member"; id: any; name: string; photoUrl?: string | null } | null;
     project?: { __typename?: "Project"; id: any; name: string } | null;
     subtasks: Array<{
       __typename?: "Task";
@@ -1304,6 +1304,7 @@ export const ProjectByIdDocument = {
                     selections: [
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       { kind: "Field", name: { kind: "Name", value: "name" } },
+                      { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
                     ],
                   },
                 },
@@ -1719,6 +1720,7 @@ export const TasksDocument = {
                     selections: [
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       { kind: "Field", name: { kind: "Name", value: "name" } },
+                      { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
                     ],
                   },
                 },
@@ -1812,6 +1814,7 @@ export const TaskByIdDocument = {
                     selections: [
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       { kind: "Field", name: { kind: "Name", value: "name" } },
+                      { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
                     ],
                   },
                 },
