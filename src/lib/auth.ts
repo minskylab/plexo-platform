@@ -8,7 +8,7 @@ export const loginWithEmail = async ({
   password: string;
 }) => {
   try {
-    const res = await fetch(authEmailURL || "/auth/email/login", {
+    const res = await fetch(authEmailURL || "/api/auth/email/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
