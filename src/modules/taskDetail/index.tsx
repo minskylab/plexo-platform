@@ -12,11 +12,18 @@ import {
   Button,
   createStyles,
   MediaQuery,
+  Card,
+  Paper,
+  useMantineTheme,
+  Avatar,
+  Center,
 } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { DateInput } from "@mantine/dates";
+import { IconSparkles } from "@tabler/icons-react";
+import { Copy, Dots, LayoutSidebar, Users, ChevronLeft, Plus, X } from "tabler-icons-react";
 import { useState, useEffect } from "react";
-import { Copy, Dots, LayoutSidebar, Users, ChevronLeft } from "tabler-icons-react";
+import { useQuery } from "urql";
 import Link from "next/link";
 
 import { GenericLeadTaskMenu } from "components/ui/Task/lead";
@@ -32,13 +39,14 @@ import { GenericLabelsMenu, LabelColor, LabelNameBtn } from "components/ui/Task/
 import { assigneesId, GenericAssigneesMenu } from "components/ui/Task/assignees";
 import { LeadName } from "components/ui/Project/lead";
 import { TaskMenu } from "components/ui/Task/menu";
-import { Task, TaskById } from "lib/types";
+import { Task, TaskById, TaskSuggestion } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { usePlexoContext } from "context/PlexoContext";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 import { TaskListElement } from "components/ui/Task/task";
 import { validateDate } from "lib/utils";
 import { MemberPhoto } from "components/ui/MemberPhoto";
+import { SubdivideTaskDocument } from "integration/graphql";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -60,20 +68,142 @@ const useStyles = createStyles(theme => ({
 }));
 
 const SubTasks = ({ task }: { task: TaskById | undefined }) => {
-  if (!task || !task?.subtasks.length) {
-    return <></>;
-  }
+  const theme = useMantineTheme();
+  const { setNewTaskOpened, setTaskId } = usePlexoContext();
+  const [tasksSuggestion, setTaskSuggestion] = useState<TaskSuggestion[]>([]);
+
+  const [{ data: subdivideTaskData, fetching: isLoadingSubdivide }, fetchTaskSubdivide] = useQuery({
+    pause: true,
+    query: SubdivideTaskDocument,
+    variables: {
+      taskId: task?.id,
+      count: 2,
+    },
+  });
+
+  const applyAiTaskSubdivide = async () => {
+    fetchTaskSubdivide();
+  };
+
+  const onClearSuggestions = () => {
+    setTaskSuggestion([]);
+  };
+
+  const onDeleteTaskSuggestion = (task: TaskSuggestion) => {
+    setTaskSuggestion(tasksSuggestion.filter(t => t.title !== task.title));
+  };
+
+  useEffect(() => {
+    if (subdivideTaskData) {
+      setTaskSuggestion(subdivideTaskData.subdivideTask);
+    }
+  }, [subdivideTaskData]);
+
   return (
     <>
+      <Group position="apart">
+        <Text lineClamp={1} size={"sm"} color={"dimmed"}>
+          Subtasks
+        </Text>
+        <Group spacing={5}>
+          <Tooltip label={"Add sub-task"} position="top">
+            <ActionIcon
+              onClick={() => {
+                setTaskId(task?.id);
+                setNewTaskOpened(true);
+              }}
+            >
+              <Plus size={16} />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label={"Auto divide"} position="top">
+            <ActionIcon
+              variant="light"
+              color="brand"
+              loading={isLoadingSubdivide}
+              onClick={applyAiTaskSubdivide}
+            >
+              <IconSparkles size={16} />
+            </ActionIcon>
+          </Tooltip>
+        </Group>
+      </Group>
       <Divider />
-      <Text lineClamp={1} size={"sm"} color={"dimmed"}>
-        Subtasks
-      </Text>
-      <Stack spacing={2}>
-        {task?.subtasks.map((t: Task) => (
-          <TaskListElement key={t.id} task={t} />
-        ))}
-      </Stack>
+      {task?.subtasks.length ? (
+        <Stack spacing={2}>
+          {task?.subtasks
+            .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+            .map((t: Task) => (
+              <TaskListElement key={t.id} task={t} />
+            ))}
+        </Stack>
+      ) : null}
+
+      {tasksSuggestion.length ? (
+        <Card
+          sx={{
+            backgroundColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[1],
+          }}
+        >
+          <Stack>
+            <Group spacing={"xs"}>
+              <Avatar
+                color="brand"
+                variant="outline"
+                size={"xs"}
+                styles={{
+                  placeholder: {
+                    border: "none",
+                  },
+                }}
+              >
+                <IconSparkles size={16} />
+              </Avatar>
+
+              <Text lineClamp={1} size={"sm"}>
+                Suggestions
+              </Text>
+            </Group>
+            <Stack spacing={3}>
+              {tasksSuggestion.map(task => {
+                return (
+                  <Paper key={task.title} px={6} py={4}>
+                    <Group spacing={8} sx={{ borderRadius: 4 }}>
+                      <Tooltip label={priorityName(task.priority)} position="bottom">
+                        <Center w={28} h={28}>
+                          {PriorityIcon(task.priority)}
+                        </Center>
+                      </Tooltip>
+                      <Tooltip label={statusLabel(task.status)} position="bottom">
+                        <Center w={28} h={28}>
+                          {StatusIcon(theme, task.status)}
+                        </Center>
+                      </Tooltip>
+
+                      <Text size={"sm"} sx={{ flexGrow: 1 }}>
+                        {task.title}
+                      </Text>
+                      <ActionIcon size={"sm"} onClick={() => onDeleteTaskSuggestion(task)}>
+                        <X size={16} />
+                      </ActionIcon>
+                    </Group>
+                  </Paper>
+                );
+              })}
+            </Stack>
+            <Group position="right">
+              <Button compact variant="default" onClick={onClearSuggestions}>
+                Cancel
+              </Button>
+
+              <Button compact variant="filled" disabled>
+                Add subtasks
+              </Button>
+            </Group>
+          </Stack>
+        </Card>
+      ) : null}
     </>
   );
 };

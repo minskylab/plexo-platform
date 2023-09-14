@@ -700,6 +700,7 @@ export type NewTaskMutationVariables = Exact<{
   assignees?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
   subtasks?: InputMaybe<Array<CreateTaskInput> | CreateTaskInput>;
+  parentId?: InputMaybe<Scalars["UUID"]["input"]>;
 }>;
 
 export type NewTaskMutation = {
@@ -748,6 +749,23 @@ export type SuggestNewTaskQuery = {
     priority: TaskPriority;
     dueDate: any;
   };
+};
+
+export type SubdivideTaskQueryVariables = Exact<{
+  taskId: Scalars["String"]["input"];
+  count?: InputMaybe<Scalars["Int"]["input"]>;
+}>;
+
+export type SubdivideTaskQuery = {
+  __typename?: "QueryRoot";
+  subdivideTask: Array<{
+    __typename?: "TaskSuggestionResult";
+    title: string;
+    description: string;
+    status: TaskStatus;
+    priority: TaskPriority;
+    dueDate: any;
+  }>;
 };
 
 export type TeamsQueryVariables = Exact<{ [key: string]: never }>;
@@ -2035,6 +2053,11 @@ export const NewTaskDocument = {
             },
           },
         },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "parentId" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -2092,6 +2115,11 @@ export const NewTaskDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "subtasks" },
                 value: { kind: "Variable", name: { kind: "Name", value: "subtasks" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "parentId" },
+                value: { kind: "Variable", name: { kind: "Name", value: "parentId" } },
               },
             ],
             selectionSet: {
@@ -2342,6 +2370,62 @@ export const SuggestNewTaskDocument = {
     },
   ],
 } as unknown as DocumentNode<SuggestNewTaskQuery, SuggestNewTaskQueryVariables>;
+export const SubdivideTaskDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "SubdivideTask" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "taskId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "count" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "subdivideTask" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "taskId" },
+                value: { kind: "Variable", name: { kind: "Name", value: "taskId" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "subtasks" },
+                value: { kind: "Variable", name: { kind: "Name", value: "count" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "status" } },
+                { kind: "Field", name: { kind: "Name", value: "priority" } },
+                { kind: "Field", name: { kind: "Name", value: "dueDate" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SubdivideTaskQuery, SubdivideTaskQueryVariables>;
 export const TeamsDocument = {
   kind: "Document",
   definitions: [

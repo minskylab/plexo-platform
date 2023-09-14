@@ -18,6 +18,8 @@ type FilterValues = {
 };
 
 type PlexoContextProps = {
+  taskId: string | undefined;
+  setTaskId: (taskId: string | undefined) => void;
   navBarOpened: boolean;
   setNavBarOpened: (navBarOpened: boolean) => void;
   newTaskOpened: boolean;
@@ -61,6 +63,7 @@ export const usePlexoContext = () => {
 };
 
 const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProps) => {
+  const [taskId, setTaskId] = useState<string | undefined>(undefined);
   const [navBarOpened, setNavBarOpened] = useState(false);
   const [newTaskOpened, setNewTaskOpened] = useState(false);
   const [createMoreTasks, setCreateMoreTasks] = useState(false);
@@ -157,6 +160,8 @@ const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProp
         authCookie: authCookieState,
         setAuthCookie,
         authEmailURL,
+        taskId,
+        setTaskId,
       }}
     >
       {children}
