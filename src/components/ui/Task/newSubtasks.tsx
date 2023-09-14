@@ -1,21 +1,24 @@
 import {
   ActionIcon,
-  Avatar,
   Group,
   Stack,
   TextInput,
-  useMantineTheme,
   Text,
   Button,
+  Paper,
+  useMantineTheme,
+  Center,
+  Tooltip,
 } from "@mantine/core";
 import { Plus, X } from "tabler-icons-react";
 import { useState } from "react";
 
 import { GenericLeadTaskMenu } from "./lead";
-import { GenericStatusMenu, StatusIcon } from "./status";
+import { GenericStatusMenu, StatusIcon, statusLabel } from "./status";
 import { TaskStatus } from "integration/graphql";
 import { Member } from "lib/types";
 import { SubTask } from "./newTask";
+import { MemberPhoto } from "../MemberPhoto";
 
 type NewSubTasks = {
   subtasks: SubTask[];
@@ -46,27 +49,30 @@ const NewSubTasks = ({ subtasks, setSubtasks }: NewSubTasks) => {
 
   const tasks = subtasks.map(task => {
     return (
-      <Group key={task.title} spacing={0} sx={{ borderRadius: 4, backgroundColor: "#343a4033" }}>
-        <GenericStatusMenu>
-          <ActionIcon variant="transparent" radius={"sm"}>
-            {StatusIcon(theme, task.status)}
+      <Paper key={task.title} px={6} py={4} mt={1}>
+        <Group spacing={0}>
+          <Tooltip label={statusLabel(task.status)} position="bottom">
+            <Center w={28} h={28}>
+              {StatusIcon(theme, task.status)}
+            </Center>
+          </Tooltip>
+          <Tooltip label={task.lead?.name ? task.lead?.name : "No assignee"} position="bottom">
+            <Center w={28} h={28}>
+              {MemberPhoto(task.lead?.photoUrl)}
+            </Center>
+          </Tooltip>
+
+          <Text size={"sm"} sx={{ flex: 1 }}>
+            {task.title}
+          </Text>
+          <ActionIcon
+            size={"sm"}
+            onClick={() => setSubtasks(subtasks.filter(r => r.title !== task.title))}
+          >
+            <X size={16} />
           </ActionIcon>
-        </GenericStatusMenu>
-        <GenericLeadTaskMenu selectedLead={task.lead}>
-          <ActionIcon variant="transparent">
-            <Avatar size="sm" radius="xl" />
-          </ActionIcon>
-        </GenericLeadTaskMenu>
-        <Text size={"sm"} sx={{ flex: 1 }}>
-          {task.title}
-        </Text>
-        <ActionIcon
-          size={"sm"}
-          onClick={() => setSubtasks(subtasks.filter(r => r.title !== task.title))}
-        >
-          <X size={16} />
-        </ActionIcon>
-      </Group>
+        </Group>
+      </Paper>
     );
   });
 
@@ -78,39 +84,39 @@ const NewSubTasks = ({ subtasks, setSubtasks }: NewSubTasks) => {
         borderTopWidth: 1,
         borderTopStyle: "solid",
         borderTopColor: theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2],
+        backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
       }}
     >
-      <Text pb={10} size={"xs"}>
+      <Text p={"xs"} size={"xs"}>
         Sub-tasks
       </Text>
-      <Group spacing={0}>
+      <Group spacing={0} px={6} py={4}>
         <GenericStatusMenu onSelect={s => setStatus(s)}>
           <ActionIcon variant="transparent" radius={"sm"}>
             {StatusIcon(theme, status)}
           </ActionIcon>
         </GenericStatusMenu>
         <GenericLeadTaskMenu onSelect={member => setLead(member)} selectedLead={lead}>
-          <ActionIcon variant="transparent">
-            <Avatar size="sm" radius="xl" />
-          </ActionIcon>
+          <ActionIcon variant="transparent">{MemberPhoto(lead?.photoUrl)}</ActionIcon>
         </GenericLeadTaskMenu>
         <TextInput
+          autoFocus
           placeholder="Task Title"
           variant="unstyled"
-          autoFocus
           value={title}
           onChange={e => setTitle(e.target.value)}
           styles={{
             root: {
-              flex: 1,
+              flexGrow: 1,
             },
           }}
         />
+
         <Button
           compact
           disabled={title.length ? false : true}
           variant="light"
-          color={"gray"}
+          color={"brand"}
           leftIcon={<Plus size={16} />}
           onClick={handleAddSubtask}
         >
