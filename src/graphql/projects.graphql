@@ -56,6 +56,7 @@ query ProjectById($projectId: UUID!) {
     leader {
       id
       name
+      photoUrl
     }
     members {
       id

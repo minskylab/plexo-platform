@@ -169,7 +169,7 @@ export const GenericTeamMenu = ({
         ></TextInput>
         <Menu.Divider />
         {isLoadingTeams ? (
-          <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+          <Skeleton height={36} radius="sm" />
         ) : (
           <Checkbox.Group mt={10} value={labelValue} onChange={onChangeLabel}>
             {teamsOptions.map((t: Team) => {

@@ -18,8 +18,9 @@ import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
-import { LeadName, LeadPhoto } from "../Project/lead";
+import { LeadName } from "../Project/lead";
 import { noMemberId } from "../constant";
+import { MemberPhoto } from "../MemberPhoto";
 
 type GenericLeadMenuProps = {
   children: React.ReactNode;
@@ -50,7 +51,7 @@ export const GenericLeadTaskMenu = ({
     }
   }, [membersData, searchValue]);
 
-  const onUpdateTaskLead = async (leadId: string ) => {
+  const onUpdateTaskLead = async (leadId: string) => {
     const res = await fetchUpdateTask({
       taskId: task?.id,
       leadId: leadId,
@@ -71,7 +72,17 @@ export const GenericLeadTaskMenu = ({
   };
 
   return (
-    <Menu shadow="md" position="bottom-start" withinPortal>
+    <Menu
+      shadow="md"
+      position="bottom-start"
+      withinPortal
+      styles={{
+        itemIcon: {
+          width: 26,
+          height: 26,
+        },
+      }}
+    >
       <Menu.Target>
         <Tooltip label={leadName ? `Lead by ${leadName}` : "Lead by"} position="bottom">
           {children}
@@ -97,19 +108,13 @@ export const GenericLeadTaskMenu = ({
             Unassigned
           </Menu.Item>
           {isLoadingMembers ? (
-            <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+            <Skeleton height={36} radius="sm" />
           ) : (
             membersOptions.map(m => {
               return (
                 <Menu.Item
                   key={m.id}
-                  icon={
-                    m?.photoUrl ? (
-                      <Avatar src={m.photoUrl} size="sm" radius="xl" />
-                    ) : (
-                      <Avatar size="sm" radius="xl" />
-                    )
-                  }
+                  icon={MemberPhoto(m.photoUrl)}
                   onClick={() => {
                     onSelect && onSelect(m);
                     task && onUpdateTaskLead(m.id);
@@ -136,10 +141,10 @@ export const LeadTaskSelector = ({ lead, setLead }: LeadTaskSelectorProps) => {
     <GenericLeadTaskMenu onSelect={member => setLead(member)} selectedLead={lead}>
       {typeof lead === "undefined" ? (
         <Button compact variant="light" color={"gray"}>
-          {LeadPhoto(lead)}
+          {MemberPhoto(undefined)}
         </Button>
       ) : (
-        <Button compact variant="light" color={"gray"} leftIcon={LeadPhoto(lead)}>
+        <Button compact variant="light" color={"gray"} leftIcon={MemberPhoto(lead?.photoUrl)}>
           <Text size={"xs"}>{LeadName(lead)}</Text>
         </Button>
       )}

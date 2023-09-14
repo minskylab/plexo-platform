@@ -49,7 +49,7 @@ export const GenericProjectsMenu = ({
             )
           );
     }
-  }, [projectsData,searchValue]);
+  }, [projectsData, searchValue]);
 
   const labelValue = selectedProjects
     ? selectedProjects
@@ -95,7 +95,7 @@ export const GenericProjectsMenu = ({
         ></TextInput>
         <Menu.Divider />
         {isLoadingProjects ? (
-          <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+          <Skeleton height={36} radius="sm" />
         ) : (
           <Checkbox.Group mt={10} value={labelValue} onChange={onChangeLabel}>
             {projectOptions.map((p: Project) => {

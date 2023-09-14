@@ -5,7 +5,6 @@ import {
   Divider,
   ActionIcon,
   Button,
-  Avatar,
   Textarea,
   TextInput,
   MediaQuery,
@@ -28,6 +27,7 @@ import { ProjectById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 import { validateDate } from "lib/utils";
+import { MemberPhoto } from "components/ui/MemberPhoto";
 
 type ProjectDetailProps = {
   project: ProjectById | undefined;
@@ -203,7 +203,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
                     compact
                     variant="light"
                     color={"gray"}
-                    leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
+                    leftIcon={MemberPhoto(project?.leader?.photoUrl)}
                   >
                     <Text size={"xs"}>{LeadName(project?.leader)}</Text>
                   </Button>
@@ -288,7 +288,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
                 compact
                 variant="light"
                 color={"gray"}
-                leftIcon={<Avatar size="sm" radius="xl"></Avatar>}
+                leftIcon={MemberPhoto(project?.leader?.photoUrl)}
               >
                 <Text size={"xs"}>{LeadName(project?.leader)}</Text>
               </Button>
