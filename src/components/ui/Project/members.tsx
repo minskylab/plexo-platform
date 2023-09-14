@@ -3,12 +3,13 @@ import {
   Menu,
   Text,
   TextInput,
-  Avatar,
   Skeleton,
   Checkbox,
   Group,
   Tooltip,
   ScrollArea,
+  Box,
+  Center,
 } from "@mantine/core";
 import { Users } from "tabler-icons-react";
 
@@ -17,23 +18,14 @@ import { Member, ProjectById, TeamById } from "lib/types";
 import { useEffect, useState } from "react";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { useActions } from "lib/hooks/useActions";
+import { MemberPhoto } from "../MemberPhoto";
 
-export const MembersIcon = (member: Member | undefined) => {
-  return member?.photoUrl ? (
-    <Avatar src={member.photoUrl} size="sm" radius="xl" />
-  ) : (
-    <Users size={16} />
-  );
-};
-
-export const MemberPhoto = (member: Member | undefined) => {
+export const MemberInfo = (member: Member | undefined) => {
   return (
     <Group spacing={5}>
-      {member?.photoUrl ? (
-        <Avatar src={member.photoUrl} size="sm" radius="xl" />
-      ) : (
-        <Avatar size="sm" radius="xl" />
-      )}
+      <Center w={26} h={26}>
+        {MemberPhoto(member?.photoUrl)}
+      </Center>
       {member?.name}
     </Group>
   );
@@ -83,7 +75,7 @@ export const GenericMemberMenu = ({
             )
           );
     }
-  }, [membersData,searchValue]);
+  }, [membersData, searchValue]);
 
   const labelValue = selectedMembers
     ? selectedMembers
@@ -154,7 +146,7 @@ export const GenericMemberMenu = ({
                     <Checkbox
                       size="xs"
                       value={m.id}
-                      label={MemberPhoto(m)}
+                      label={MemberInfo(m)}
                       styles={{
                         body: {
                           alignItems: "center",

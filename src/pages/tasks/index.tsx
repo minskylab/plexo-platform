@@ -10,8 +10,6 @@ const TasksPage: NextPageWithLayout = () => {
   let router = useRouter();
   let plexo = usePlexoContext();
 
-  console.log("plexo auth cookie: ", plexo.authCookie);
-
   useEffect(() => {
     if (!plexo.authCookie) {
       router.push("/login");

@@ -1,6 +1,6 @@
 import { Menu, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
-import { Robot, Trash, X } from "tabler-icons-react";
+import { Trash } from "tabler-icons-react";
 import router from "next/router";
 
 import { useActions } from "lib/hooks/useActions";
@@ -43,9 +43,6 @@ export const TaskMenu = ({ children, task }: TaskMenuProps) => {
       <Menu.Target>{children}</Menu.Target>
 
       <Menu.Dropdown>
-        <Menu.Item py={7} icon={<Robot size={18} />}>
-          Auto Divide
-        </Menu.Item>
         <Menu.Item py={7} icon={<Trash size={16} />} onClick={openDeleteModal}>
           Delete
         </Menu.Item>

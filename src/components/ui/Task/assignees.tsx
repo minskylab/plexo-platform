@@ -18,7 +18,7 @@ import { useActions } from "lib/hooks/useActions";
 import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
-import { MemberPhoto } from "components/ui/Project/members";
+import { MemberInfo } from "components/ui/Project/members";
 
 export const assigneesId = (task: TaskById | Task | undefined) => {
   return task?.assignees.map(a => a.id);
@@ -67,7 +67,7 @@ export const MembersCheckboxGroup = ({
                 size="xs"
                 pb={15}
                 value={m.id}
-                label={MemberPhoto(m)}
+                label={MemberInfo(m)}
                 styles={{
                   body: {
                     alignItems: "center",
@@ -168,7 +168,7 @@ export const GenericAssigneesMenu = ({
         <Menu.Divider />
         <ScrollArea.Autosize mah={250}>
           {isLoadingMembers ? (
-            <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+            <Skeleton height={36} radius="sm" />
           ) : (
             <Checkbox.Group mt={10} value={labelValue} onChange={onChangeLabel}>
               {membersOptions.map(m => {
@@ -177,7 +177,7 @@ export const GenericAssigneesMenu = ({
                     <Checkbox
                       size="xs"
                       value={m.id}
-                      label={MemberPhoto(m)}
+                      label={MemberInfo(m)}
                       styles={{
                         body: {
                           alignItems: "center",

@@ -33,6 +33,7 @@ query Tasks {
     leader {
       id
       name
+      photoUrl
     }
   }
 }
@@ -62,6 +63,7 @@ query TaskById($taskId: UUID!) {
     leader {
       id
       name
+      photoUrl
     }
     project {
       id
@@ -136,6 +138,7 @@ mutation NewTask(
   $assignees: [UUID!]
   $dueDate: DateTime
   $subtasks: [CreateTaskInput!]
+  $parentId: UUID
 ) {
   createTask(
     title: $title
@@ -148,6 +151,7 @@ mutation NewTask(
     assignees: $assignees
     dueDate: $dueDate
     subtasks: $subtasks
+    parentId: $parentId
   ) {
     id
     title
@@ -193,6 +197,16 @@ mutation UpdateTask(
 
 query SuggestNewTask($taskSuggestion: TaskSuggestionInput!) {
   suggestNewTask(task: $taskSuggestion) {
+    title
+    description
+    status
+    priority
+    dueDate
+  }
+}
+
+query SubdivideTask($taskId: String!, $count: Int) {
+  subdivideTask(taskId: $taskId, subtasks: $count) {
     title
     description
     status

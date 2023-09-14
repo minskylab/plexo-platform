@@ -178,7 +178,7 @@ export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProject
           No project
         </Menu.Item>
         {isLoadingProjects ? (
-          <Skeleton height={36} radius="sm" sx={{ "&::after": { background: "#e8ebed" } }} />
+          <Skeleton height={36} radius="sm" />
         ) : (
           projectsOptions.map(p => {
             return (

@@ -30,6 +30,7 @@ import { priorityName, PrioritySelector } from "./priority";
 import { TaskStatus, TaskPriority } from "integration/graphql";
 import NewSubTasks from "./newSubtasks";
 import { useData } from "lib/hooks/useData";
+import { usePlexoContext } from "context/PlexoContext";
 
 type NewTaskProps = {
   newTaskOpened: boolean;
@@ -68,6 +69,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
   const { classes, theme } = useStyles();
   const [showSubtasks, toggleSubtasks] = useToggle([false, true]);
   const { createTask, fetchCreateTask } = useActions();
+  const { taskId, setTaskId } = usePlexoContext();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -118,6 +120,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       labels: selectedLabels,
       assignees: selectedAssignees,
       subtasks: parseSubtasks(subtasks),
+      parentId: taskId,
     });
 
     if (res.data) {
@@ -159,6 +162,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
     setDueDate(null);
     setSubtasks([]);
     toggleSubtasks(false);
+    setTaskId(undefined);
   };
 
   return (
