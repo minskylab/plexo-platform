@@ -16,6 +16,7 @@ import {
 import router from "next/router";
 import { useState } from "react";
 import { Affiliate, Edit, LayoutGrid, Plus, Bulb, Checkbox, Search } from "tabler-icons-react";
+import { useQuery } from "urql";
 
 import NewProject from "../Project/newProject";
 import NewTeam from "../Team/newTeam";
@@ -23,7 +24,6 @@ import { UserButton } from "../UserButton";
 import ProjectsList from "./projects";
 import TeamsList from "./teams";
 import { UserDocument } from "integration/graphql";
-import { useQuery } from "urql";
 
 const useStyles = createStyles(theme => ({
   navbar: {
@@ -37,15 +37,6 @@ const useStyles = createStyles(theme => ({
       }`,
     },
   },
-
-  /*  searchCode: {
-    fontWeight: 700,
-    fontSize: rem(10),
-    backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0],
-    border: `${rem(1)} solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[2]
-    }`,
-  }, */
 
   mainLink: {
     display: "flex",
@@ -165,12 +156,12 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
         </Navbar.Section>
 
         <Navbar.Section className={classes.section} p="sm">
-          <Group>
+          <Group mb={"md"}>
             <Button
               leftIcon={<Edit strokeWidth={1.5} />}
               size="sm"
               onClick={onNewTask}
-              styles={{ root: { flexGrow: 1 } }}
+              sx={{ flexGrow: 1 }}
             >
               New Task
             </Button>
@@ -178,8 +169,6 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
               <Search size={18} strokeWidth={1.5} />
             </ActionIcon>
           </Group>
-        </Navbar.Section>
-        <Navbar.Section className={classes.section} p="sm">
           <div>{mainLinks}</div>
         </Navbar.Section>
         <Navbar.Section className={classes.section} p="sm">
