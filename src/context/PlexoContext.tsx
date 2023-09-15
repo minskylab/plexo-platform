@@ -1,3 +1,4 @@
+import { Task } from "lib/types";
 import { createContext, ReactNode, useContext, useState, useEffect } from "react";
 
 type PlexoProviderProps = {
@@ -20,6 +21,8 @@ type FilterValues = {
 type PlexoContextProps = {
   taskId: string | undefined;
   setTaskId: (taskId: string | undefined) => void;
+  tasks: Task[] | undefined;
+  setTasks: (tasks: Task[] | undefined) => void;
   navBarOpened: boolean;
   setNavBarOpened: (navBarOpened: boolean) => void;
   newTaskOpened: boolean;
@@ -64,6 +67,8 @@ export const usePlexoContext = () => {
 
 const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProps) => {
   const [taskId, setTaskId] = useState<string | undefined>(undefined);
+  const [tasks, setTasks] = useState<Task[] | undefined>(undefined);
+
   const [navBarOpened, setNavBarOpened] = useState(false);
   const [newTaskOpened, setNewTaskOpened] = useState(false);
   const [createMoreTasks, setCreateMoreTasks] = useState(false);
@@ -162,6 +167,8 @@ const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProp
         authEmailURL,
         taskId,
         setTaskId,
+        tasks,
+        setTasks,
       }}
     >
       {children}

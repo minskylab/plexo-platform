@@ -10,6 +10,7 @@ import Fonts from "theming/fonts";
 import { URQLClient } from "lib/client";
 import { MyMantineProvider } from "theming/mantine";
 import PlexoProvider from "../context/PlexoContext";
+import MySpotlightProvider from "components/ui/NavBarWithSearch/searchPopup";
 
 export type NextPageWithLayout<T = {}> = NextPage<T> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -59,8 +60,10 @@ const PlexoApp = ({
       <URQLProvider value={client}>
         <PlexoProvider authCookie={authCookieState} authEmailURL={authEmailURL}>
           <MyMantineProvider colorScheme={colorScheme}>
-            <Fonts />
-            {getLayout(<Component {...pageProps} />)}
+            <MySpotlightProvider>
+              <Fonts />
+              {getLayout(<Component {...pageProps} />)}
+            </MySpotlightProvider>
           </MyMantineProvider>
         </PlexoProvider>
       </URQLProvider>

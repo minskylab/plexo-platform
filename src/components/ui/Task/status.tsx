@@ -46,7 +46,7 @@ export const StatusIcon = (
     case "BACKLOG":
       return <CircleDotted size={size} color={theme.colors.gray[6]} />;
     case "TO_DO":
-      return <Circle size={size} />;
+      return <Circle size={size} color={theme.colors.gray[6]} />;
     case "IN_PROGRESS":
       return <ChartPie2 size={size} color={theme.colors.yellow[6]} />;
     case "DONE":

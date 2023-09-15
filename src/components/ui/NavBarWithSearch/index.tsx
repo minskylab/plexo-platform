@@ -24,6 +24,7 @@ import { UserButton } from "../UserButton";
 import ProjectsList from "./projects";
 import TeamsList from "./teams";
 import { UserDocument } from "integration/graphql";
+import { spotlight } from "@mantine/spotlight";
 
 const useStyles = createStyles(theme => ({
   navbar: {
@@ -165,7 +166,7 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
             >
               New Task
             </Button>
-            <ActionIcon variant="default" size="lg">
+            <ActionIcon variant="default" size="lg" onClick={() => spotlight.open()}>
               <Search size={18} strokeWidth={1.5} />
             </ActionIcon>
           </Group>
