@@ -18,6 +18,11 @@ const ProjectsList = () => {
           label={p.name}
           icon={<Rocket size={16} color={theme.colors.brand[4]} />}
           onClick={() => router.push(`/projects/${p.id}`)}
+          styles={theme => ({
+            root: {
+              borderRadius: theme.radius.sm,
+            },
+          })}
         ></NavLink>
       );
     });

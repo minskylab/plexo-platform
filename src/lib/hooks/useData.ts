@@ -8,11 +8,10 @@ import {
   TaskByIdDocument,
   ProjectByIdDocument,
   TeamByIdDocument,
+  TaskStatus,
+  TaskPriority,
 } from "integration/graphql";
 import { useQuery } from "urql";
-
-import { TaskStatus, TaskPriority } from "integration/graphql";
-import { UserDocument } from "../../integration/graphql";
 
 interface UseDataProps {
   memberId?: string | undefined;
@@ -93,10 +92,6 @@ export const useData = ({ memberId, taskId, projectId, teamId, taskDetails }: Us
       },
     });
 
-  const [{ data: userData, fetching: isLoadingUser }] = useQuery({
-    query: UserDocument,
-  });
-
   return {
     projectsData,
     isLoadingProjects,
@@ -116,8 +111,6 @@ export const useData = ({ memberId, taskId, projectId, teamId, taskDetails }: Us
     isLoadingTeam,
     taskSuggestionData,
     isLoadingTaskSuggestion,
-    userData,
-    isLoadingUser,
     fetchTaskSuggestion,
   };
 };
