@@ -301,7 +301,7 @@ const TasksList = ({ taskData, fetching }: TasksProps) => {
 
 export const TasksPageContent = () => {
   const { classes, theme } = useStyles();
-  const { setNavBarOpened } = usePlexoContext();
+  const { setNavBarOpened, setTasks } = usePlexoContext();
   const [viewMode, setViewMode] = useState<"list" | "columns">("list");
 
   const {
@@ -328,6 +328,12 @@ export const TasksPageContent = () => {
   const [{ data: tasksData, fetching: isFetchingTasksData }] = useQuery({
     query: TasksDocument,
   });
+
+  useEffect(() => {
+    if (tasksData) {
+      setTasks(tasksData?.tasks);
+    }
+  }, [tasksData]);
 
   const filteredTasks = tasksData?.tasks.filter((task: Task) => {
     return (

@@ -21,6 +21,7 @@
     "@mantine/modals": "^6.0.15",
     "@mantine/next": "^6.0.15",
     "@mantine/notifications": "^6.0.15",
+    "@mantine/spotlight": "^6.0.20",
     "@tabler/icons": "^2.23.0",
     "@tabler/icons-react": "^2.23.0",
     "@urql/devtools": "2.0.3",
