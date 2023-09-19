@@ -15,7 +15,7 @@ import {
 
 import router from "next/router";
 import { useState } from "react";
-import { Affiliate, Edit, LayoutGrid, Plus, Bulb, Checkbox, Search } from "tabler-icons-react";
+import { Edit, Plus, Bulb, Checkbox, Search } from "tabler-icons-react";
 import { useQuery } from "urql";
 
 import NewProject from "../Project/newProject";
@@ -25,6 +25,8 @@ import ProjectsList from "./projects";
 import TeamsList from "./teams";
 import { UserDocument } from "integration/graphql";
 import { spotlight } from "@mantine/spotlight";
+import { ProjectIcon } from "../Task/project";
+import { TeamIcon } from "../Project/team";
 
 const useStyles = createStyles(theme => ({
   navbar: {
@@ -183,7 +185,7 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
                 {
                   label: (
                     <Center>
-                      <Affiliate size={16} />
+                      <TeamIcon />
                       <Text ml={6} size={"xs"}>
                         Teams
                       </Text>
@@ -194,7 +196,7 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
                 {
                   label: (
                     <Center>
-                      <LayoutGrid size={16} />
+                      <ProjectIcon />
                       <Text ml={6} size={"xs"}>
                         Projects
                       </Text>

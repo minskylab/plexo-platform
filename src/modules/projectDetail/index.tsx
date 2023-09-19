@@ -16,18 +16,17 @@ import {
 import { DateInput } from "@mantine/dates";
 import { useClickOutside } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { Affiliate, Copy, Dots, LayoutSidebar, Users } from "tabler-icons-react";
+import { Copy, Dots, LayoutSidebar } from "tabler-icons-react";
 
-import { GenericLeadProjectMenu, LeadName } from "components/ui/Project/lead";
-import { GenericMemberMenu } from "components/ui/Project/members";
-import { GenericTeamMenu } from "components/ui/Project/team";
+import { LeadSelectorByProject } from "components/ui/Project/lead";
+import { MemberSelectorByProject } from "components/ui/Project/members";
+import { TeamSelectorByProject } from "components/ui/Project/team";
 import { ProjectMenu } from "components/ui/Project/menu";
 import { usePlexoContext } from "context/PlexoContext";
 import { ProjectById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 import { validateDate } from "lib/utils";
-import { MemberPhoto } from "components/ui/MemberPhoto";
 
 type ProjectDetailProps = {
   project: ProjectById | undefined;
@@ -198,34 +197,9 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
                 </ProjectMenu>
               </Group>
               <Group spacing={5} className={classes.propsBar}>
-                <GenericLeadProjectMenu project={project}>
-                  <Button
-                    compact
-                    variant="light"
-                    color={"gray"}
-                    leftIcon={MemberPhoto(project?.leader?.photoUrl)}
-                  >
-                    <Text size={"xs"}>{LeadName(project?.leader)}</Text>
-                  </Button>
-                </GenericLeadProjectMenu>
-                <GenericMemberMenu project={project}>
-                  <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
-                    {project?.members.length ? (
-                      <Text size={"xs"}>{project?.members.length} Members</Text>
-                    ) : (
-                      <Text size={"xs"}>Members</Text>
-                    )}
-                  </Button>
-                </GenericMemberMenu>
-                <GenericTeamMenu project={project}>
-                  <Button compact variant="light" color={"gray"} leftIcon={<Affiliate size={16} />}>
-                    {project?.teams.length ? (
-                      <Text size={"xs"}>{project?.teams.length} Teams</Text>
-                    ) : (
-                      <Text size={"xs"}>Teams</Text>
-                    )}
-                  </Button>
-                </GenericTeamMenu>
+                <LeadSelectorByProject project={project} />
+                <MemberSelectorByProject project={project} />
+                <TeamSelectorByProject project={project} />
               </Group>
             </Stack>
 
@@ -283,44 +257,19 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Lead
             </Text>
-            <GenericLeadProjectMenu project={project}>
-              <Button
-                compact
-                variant="light"
-                color={"gray"}
-                leftIcon={MemberPhoto(project?.leader?.photoUrl)}
-              >
-                <Text size={"xs"}>{LeadName(project?.leader)}</Text>
-              </Button>
-            </GenericLeadProjectMenu>
+            <LeadSelectorByProject project={project} />
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Members
             </Text>
-            <GenericMemberMenu project={project}>
-              <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
-                {project?.members.length ? (
-                  <Text size={"xs"}>{project?.members.length} Members</Text>
-                ) : (
-                  <Text size={"xs"}>Members</Text>
-                )}
-              </Button>
-            </GenericMemberMenu>
+            <MemberSelectorByProject project={project} />
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Teams
             </Text>
-            <GenericTeamMenu project={project}>
-              <Button compact variant="light" color={"gray"} leftIcon={<Affiliate size={16} />}>
-                {project?.teams.length ? (
-                  <Text size={"xs"}>{project?.teams.length} Teams</Text>
-                ) : (
-                  <Text size={"xs"}>Teams</Text>
-                )}
-              </Button>
-            </GenericTeamMenu>
+            <TeamSelectorByProject project={project} />
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>

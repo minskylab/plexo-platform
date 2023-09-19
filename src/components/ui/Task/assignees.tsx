@@ -20,8 +20,16 @@ import { statusName } from "./status";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { MemberInfo } from "components/ui/Project/members";
 
+export const AssigneesIcon = () => {
+  return <Users size={16} />;
+};
+
 export const assigneesId = (task: TaskById | Task | undefined) => {
   return task?.assignees.map(a => a.id);
+};
+
+export const AssigneeName = (assignees: number | undefined) => {
+  return assignees && assignees >= 1 ? `${assignees} Assignees` : "Assignees";
 };
 
 type MembersCheckboxProps = {
@@ -212,12 +220,22 @@ export const AssigneesSelector = ({
       selectedAssignees={selectedAssignees}
       setSelectedAssignees={setSelectedAssignees}
     >
-      <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
-        {selectedAssignees.length ? (
-          <Text size={"xs"}>{selectedAssignees.length} Assignees</Text>
-        ) : (
-          <Text size={"xs"}>Assignees</Text>
-        )}
+      <Button compact variant="light" color={"gray"} leftIcon={<AssigneesIcon />}>
+        <Text size={"xs"}>{AssigneeName(selectedAssignees.length)}</Text>
+      </Button>
+    </GenericAssigneesMenu>
+  );
+};
+
+type AssigneesSelectorByTaskProps = {
+  task: TaskById | undefined;
+};
+
+export const AssigneesSelectorByTask = ({ task }: AssigneesSelectorByTaskProps) => {
+  return (
+    <GenericAssigneesMenu task={task}>
+      <Button compact variant="light" color={"gray"} leftIcon={<AssigneesIcon />}>
+        <Text size={"xs"}>{AssigneeName(task?.assignees.length)}</Text>
       </Button>
     </GenericAssigneesMenu>
   );

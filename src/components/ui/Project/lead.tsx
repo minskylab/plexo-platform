@@ -175,3 +175,22 @@ export const LeadProjectSelector = ({ lead, setLead }: LeadProjectSelectorProps)
     </GenericLeadProjectMenu>
   );
 };
+
+type LeadSelectorByProjectProps = {
+  project: ProjectById | undefined;
+};
+
+export const LeadSelectorByProject = ({ project }: LeadSelectorByProjectProps) => {
+  return (
+    <GenericLeadProjectMenu project={project}>
+      <Button
+        compact
+        variant="light"
+        color={"gray"}
+        leftIcon={MemberPhoto(project?.leader?.photoUrl)}
+      >
+        <Text size={"xs"}>{LeadName(project?.leader)}</Text>
+      </Button>
+    </GenericLeadProjectMenu>
+  );
+};

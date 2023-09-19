@@ -21,23 +21,22 @@ import {
 import { useClickOutside } from "@mantine/hooks";
 import { DateInput } from "@mantine/dates";
 import { IconSparkles } from "@tabler/icons-react";
-import { Copy, Dots, LayoutSidebar, Users, ChevronLeft, Plus, X } from "tabler-icons-react";
+import { Copy, Dots, LayoutSidebar, ChevronLeft, Plus, X } from "tabler-icons-react";
 import { useState, useEffect } from "react";
 import { useQuery } from "urql";
 import Link from "next/link";
 
-import { GenericLeadTaskMenu } from "components/ui/Task/lead";
+import { LeadSelectorByTask } from "components/ui/Task/lead";
+import { PriorityIcon, PrioritySelectorByTask, priorityName } from "components/ui/Task/priority";
+import { ProjectSelectorByTask } from "components/ui/Task/project";
 import {
-  GenericPriorityMenu,
-  PriorityIcon,
-  priorityLabel,
-  priorityName,
-} from "components/ui/Task/priority";
-import { GenericProjectsMenu, ProjectIcon, ProjectName } from "components/ui/Task/project";
-import { GenericStatusMenu, StatusIcon, statusLabel, statusName } from "components/ui/Task/status";
-import { GenericLabelsMenu, LabelColor, LabelNameBtn } from "components/ui/Task/labels";
-import { assigneesId, GenericAssigneesMenu } from "components/ui/Task/assignees";
-import { LeadName } from "components/ui/Project/lead";
+  StatusIcon,
+  StatusSelectorByTask,
+  statusLabel,
+  statusName,
+} from "components/ui/Task/status";
+import { LabelsSelectorBytask } from "components/ui/Task/labels";
+import { assigneesId, AssigneesSelectorByTask } from "components/ui/Task/assignees";
 import { TaskMenu } from "components/ui/Task/menu";
 import { Task, TaskById, TaskSuggestion } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
@@ -45,7 +44,6 @@ import { usePlexoContext } from "context/PlexoContext";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 import { TaskListElement } from "components/ui/Task/task";
 import { validateDate } from "lib/utils";
-import { MemberPhoto } from "components/ui/MemberPhoto";
 import { SubdivideTaskDocument } from "integration/graphql";
 
 type TaskDetailProps = {
@@ -362,62 +360,12 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                 </TaskMenu>
               </Group>
               <Group spacing={5} className={classes.propsBar}>
-                <GenericStatusMenu task={task}>
-                  <Button
-                    compact
-                    variant="light"
-                    color={"gray"}
-                    leftIcon={StatusIcon(theme, task?.status)}
-                  >
-                    <Text size={"xs"}>{statusLabel(task?.status)}</Text>
-                  </Button>
-                </GenericStatusMenu>
-                <GenericPriorityMenu task={task}>
-                  <Button
-                    compact
-                    variant="light"
-                    color={"gray"}
-                    leftIcon={PriorityIcon(task?.priority, 18)}
-                  >
-                    <Text size={"xs"}>{priorityLabel(task?.priority)}</Text>
-                  </Button>
-                </GenericPriorityMenu>
-                <GenericLeadTaskMenu task={task}>
-                  <Button
-                    compact
-                    variant="light"
-                    color={"gray"}
-                    leftIcon={MemberPhoto(task?.leader?.photoUrl)}
-                  >
-                    <Text size={"xs"}>{LeadName(task?.leader)}</Text>
-                  </Button>
-                </GenericLeadTaskMenu>
-                <GenericAssigneesMenu task={task}>
-                  <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
-                    {task?.assignees.length ? (
-                      <Text size={"xs"}>{task?.assignees.length} Assignees</Text>
-                    ) : (
-                      <Text size={"xs"}>Assignees</Text>
-                    )}
-                  </Button>
-                </GenericAssigneesMenu>
-                <GenericLabelsMenu task={task}>
-                  <Button
-                    compact
-                    variant="light"
-                    color={"gray"}
-                    leftIcon={LabelColor(task ? task?.labels.map(l => l.id as string) : [])}
-                  >
-                    <Text size={"xs"}>
-                      {LabelNameBtn(task ? task?.labels.map(l => l.id as string) : [])}
-                    </Text>
-                  </Button>
-                </GenericLabelsMenu>
-                <GenericProjectsMenu task={task}>
-                  <Button compact variant="light" color={"gray"} leftIcon={ProjectIcon()}>
-                    <Text size={"xs"}>{ProjectName(task?.project)}</Text>
-                  </Button>
-                </GenericProjectsMenu>
+                <StatusSelectorByTask task={task} type="button" />
+                <PrioritySelectorByTask task={task} type="button" />
+                <LeadSelectorByTask task={task} type="button" />
+                <AssigneesSelectorByTask task={task} />
+                <LabelsSelectorBytask task={task} />
+                <ProjectSelectorByTask task={task} />
               </Group>
             </Stack>
             <Divider />
@@ -476,87 +424,37 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Status
             </Text>
-            <GenericStatusMenu task={task}>
-              <Button
-                compact
-                variant="light"
-                color={"gray"}
-                leftIcon={StatusIcon(theme, task?.status)}
-              >
-                <Text size={"xs"}>{statusLabel(task?.status)}</Text>
-              </Button>
-            </GenericStatusMenu>
+            <StatusSelectorByTask task={task} type={"button"} />
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Priority
             </Text>
-            <GenericPriorityMenu task={task}>
-              <Button
-                compact
-                variant="light"
-                color={"gray"}
-                leftIcon={PriorityIcon(task?.priority, 18)}
-              >
-                <Text size={"xs"}>{priorityLabel(task?.priority)}</Text>
-              </Button>
-            </GenericPriorityMenu>
+            <PrioritySelectorByTask task={task} type="button" />
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Lead
             </Text>
-            <GenericLeadTaskMenu task={task}>
-              <Button
-                compact
-                variant="light"
-                color={"gray"}
-                leftIcon={MemberPhoto(task?.leader?.photoUrl)}
-              >
-                <Text size={"xs"}>{LeadName(task?.leader)}</Text>
-              </Button>
-            </GenericLeadTaskMenu>
+            <LeadSelectorByTask task={task} type="button" />
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Assignee
             </Text>
-            <GenericAssigneesMenu task={task}>
-              <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
-                {task?.assignees.length ? (
-                  <Text size={"xs"}>{task?.assignees.length} Assignees</Text>
-                ) : (
-                  <Text size={"xs"}>Assignees</Text>
-                )}
-              </Button>
-            </GenericAssigneesMenu>
+            <AssigneesSelectorByTask task={task} />
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Labels
             </Text>
-            <GenericLabelsMenu task={task}>
-              <Button
-                compact
-                variant="light"
-                color={"gray"}
-                leftIcon={LabelColor(task ? task?.labels.map(l => l.id as string) : [])}
-              >
-                <Text size={"xs"}>
-                  {LabelNameBtn(task ? task?.labels.map(l => l.id as string) : [])}
-                </Text>
-              </Button>
-            </GenericLabelsMenu>
+            <LabelsSelectorBytask task={task} />
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Project
             </Text>
-            <GenericProjectsMenu task={task}>
-              <Button compact variant="light" color={"gray"} leftIcon={ProjectIcon()}>
-                <Text size={"xs"}>{ProjectName(task?.project)}</Text>
-              </Button>
-            </GenericProjectsMenu>
+            <ProjectSelectorByTask task={task} />
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>

@@ -222,9 +222,9 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
           }}
         />
         <Group spacing={6} mb={"md"}>
-          <StatusSelector status={status} setStatus={setStatus} />
+          <StatusSelector status={status} setStatus={setStatus} type="button" />
           <PrioritySelector priority={priority} setPriority={setPriority} />
-          <LeadTaskSelector lead={lead} setLead={setLead} />
+          <LeadTaskSelector lead={lead} setLead={setLead} type="button" />
           <AssigneesSelector
             selectedAssignees={selectedAssignees}
             setSelectedAssignees={setSelectedAssignees}

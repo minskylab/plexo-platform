@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Button,
   Checkbox,
   createStyles,
@@ -47,6 +48,8 @@ export const PriorityIcon = (
       return <AntennaBars4 size={size} />;
     case "URGENT":
       return <AntennaBars5 size={size} />;
+    default:
+      return <></>;
   }
 };
 
@@ -63,6 +66,8 @@ export const priorityLabel = (priority: TaskPriority | undefined) => {
     case "URGENT":
       return "Urgent";
   }
+
+  return "No Priority";
 };
 
 export const priorityName = (priority: TaskPriority | undefined) => {
@@ -234,6 +239,32 @@ export const PrioritySelector = ({ priority, setPriority }: PrioritySelectorProp
       <Button compact variant="light" color={"gray"} leftIcon={PriorityIcon(priority, 18)}>
         <Text size={"xs"}>{priorityLabel(priority)}</Text>
       </Button>
+    </GenericPriorityMenu>
+  );
+};
+
+type PrioritySelectorByTaskProps = {
+  task: TaskById | Task | undefined;
+  type: "icon" | "button";
+  iconVariant?: "light";
+};
+
+export const PrioritySelectorByTask = ({
+  task,
+  type,
+  iconVariant,
+}: PrioritySelectorByTaskProps) => {
+  return (
+    <GenericPriorityMenu task={task}>
+      {type == "icon" ? (
+        <ActionIcon variant={iconVariant ? iconVariant : "transparent"} radius={"sm"}>
+          {PriorityIcon(task?.priority)}
+        </ActionIcon>
+      ) : (
+        <Button compact variant="light" color={"gray"} leftIcon={PriorityIcon(task?.priority, 18)}>
+          <Text size={"xs"}>{priorityLabel(task?.priority)}</Text>
+        </Button>
+      )}
     </GenericPriorityMenu>
   );
 };

@@ -30,8 +30,7 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-export const ProjectIcon = (project?: Project | null) => {
-  //insert project icon
+export const ProjectIcon = () => {
   return <LayoutGrid size={16} />;
 };
 
@@ -90,7 +89,7 @@ export const ProjectsCheckboxGroup = ({
                 value={p.id}
                 label={
                   <Group spacing={5}>
-                    {ProjectIcon(p)}
+                    {<ProjectIcon />}
                     {ProjectName(p)}
                   </Group>
                 }
@@ -169,7 +168,7 @@ export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProject
         ></TextInput>
         <Menu.Divider />
         <Menu.Item
-          icon={<LayoutGrid size={16} />}
+          icon={<ProjectIcon />}
           onClick={() => {
             onSelect && onSelect(null);
             task && onUpdateTaskProject(noMemberId);
@@ -184,7 +183,7 @@ export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProject
             return (
               <Menu.Item
                 key={p.id}
-                icon={ProjectIcon(p)}
+                icon={<ProjectIcon />}
                 onClick={() => {
                   onSelect && onSelect(p);
                   task && onUpdateTaskProject(p.id);
@@ -208,8 +207,22 @@ type ProjectSelectorProps = {
 export const ProjectSelector = ({ project, setProject }: ProjectSelectorProps) => {
   return (
     <GenericProjectsMenu onSelect={project => setProject(project)}>
-      <Button compact variant="light" color={"gray"} leftIcon={ProjectIcon(project)}>
+      <Button compact variant="light" color={"gray"} leftIcon={<ProjectIcon />}>
         <Text size={"xs"}>{ProjectName(project)}</Text>
+      </Button>
+    </GenericProjectsMenu>
+  );
+};
+
+type ProjectSelectorByTaskProps = {
+  task: TaskById | undefined;
+};
+
+export const ProjectSelectorByTask = ({ task }: ProjectSelectorByTaskProps) => {
+  return (
+    <GenericProjectsMenu task={task}>
+      <Button compact variant="light" color={"gray"} leftIcon={<ProjectIcon />}>
+        <Text size={"xs"}>{ProjectName(task?.project)}</Text>
       </Button>
     </GenericProjectsMenu>
   );

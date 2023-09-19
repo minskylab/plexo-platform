@@ -9,24 +9,14 @@ import {
   Group,
   Anchor,
 } from "@mantine/core";
-import {
-  Affiliate,
-  AntennaBars5,
-  CircleDashed,
-  Filter,
-  LayoutGrid,
-  Tag,
-  User,
-  UserCircle,
-  Users,
-} from "tabler-icons-react";
+import { AntennaBars5, CircleDashed, Filter, User, UserCircle } from "tabler-icons-react";
 
 import { usePlexoContext } from "context/PlexoContext";
-import { TeamCheckboxGroup } from "../Project/team";
-import { MembersCheckboxGroup } from "../Task/assignees";
-import { LabelCheckboxGroup } from "../Task/labels";
+import { TeamCheckboxGroup, TeamIcon } from "../Project/team";
+import { AssigneesIcon, MembersCheckboxGroup } from "../Task/assignees";
+import { LabelCheckboxGroup, LabelIcon } from "../Task/labels";
 import { PriorityCheckboxGroup } from "../Task/priority";
-import { ProjectsCheckboxGroup } from "../Task/project";
+import { ProjectIcon, ProjectsCheckboxGroup } from "../Task/project";
 import { StatusCheckboxGroup } from "../Task/status";
 
 const useStyles = createStyles(theme => ({
@@ -146,7 +136,7 @@ const FilterMenu = () => {
                 )}
               </Group>
             }
-            icon={<Users size={16} />}
+            icon={<AssigneesIcon />}
             classNames={{ root: classes.navlink, children: classes.navlinkChildren }}
           >
             <MembersCheckboxGroup
@@ -229,7 +219,7 @@ const FilterMenu = () => {
                 )}
               </Group>
             }
-            icon={<Tag size={16} />}
+            icon={<LabelIcon />}
             classNames={{ root: classes.navlink, children: classes.navlinkChildren }}
           >
             <LabelCheckboxGroup labelsFilters={labelsFilters} setLabelsFilters={setLabelsFilters} />
@@ -246,7 +236,7 @@ const FilterMenu = () => {
                 )}
               </Group>
             }
-            icon={<LayoutGrid size={16} />}
+            icon={<ProjectIcon />}
             classNames={{ root: classes.navlink, children: classes.navlinkChildren }}
           >
             <ProjectsCheckboxGroup
@@ -266,7 +256,7 @@ const FilterMenu = () => {
                 )}
               </Group>
             }
-            icon={<Affiliate size={16} />}
+            icon={<TeamIcon />}
             classNames={{ root: classes.navlink, children: classes.navlinkChildren }}
           >
             <TeamCheckboxGroup teamFilters={teamFilters} setTeamFilters={setTeamFilters} />
