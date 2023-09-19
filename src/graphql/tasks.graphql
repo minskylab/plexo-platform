@@ -214,3 +214,10 @@ query SubdivideTask($taskId: String!, $count: Int) {
     dueDate
   }
 }
+
+mutation CreateTasks($tasks: [CreateTaskInput!]!) {
+  createTasks(tasks: $tasks) {
+    id
+    title
+  }
+}
