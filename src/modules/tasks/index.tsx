@@ -167,21 +167,48 @@ const StatusCounter = ({ status, taskData }: StatusCounterProps) => {
 };
 
 const TasksBoard = ({ taskData, fetching }: TasksProps) => {
-  const TaskCard = ({ status }: TaskProps) => {
+  const TaskBoardData = ( status : TaskStatus) => {
     const data = taskData
       ? taskData
           ?.filter((t: { status: string }) => t.status == status)
           .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
       : [];
 
-    return <DndTaskBoard statusData={data} />;
+    return data;
   };
+
+  const TaskCard = ({ status }: TaskProps) => {
+    return <DndTaskBoard statusData={TaskBoardData(status)} />;
+  };
+
+
+
+  const BoardCounter = ({ status, fetching }: CounterProps) => {
+    return TaskBoardData(status).length || fetching ? (
+      <StatusCounter taskData={taskData} status={status} />
+    ) : (
+      <></>
+    );
+  };
+
+  //return true if there is at least one task in the status
+  const StatusBoardEnable = (status: TaskStatus) => {
+    const data = taskData
+      ? taskData
+          ?.filter((t: { status: string }) => t.status == status)
+          .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+      : [];
+    return data.length > 0;
+  };
+     
+
 
   return (
     <ScrollArea type="hover" offsetScrollbars style={{ height: "calc(100vh - 90px)" }}>
       <SimpleGrid cols={6} spacing={325}>
+        { StatusBoardEnable(TaskStatus.None) && (
         <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <StatusCounter taskData={taskData} status={TaskStatus.None} />
+          <BoardCounter status={TaskStatus.None} fetching={fetching} />
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
               <Skeleton height={36} radius="sm" />
@@ -190,8 +217,10 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
             )}
           </ScrollArea>
         </Stack>
+        )}
+        { StatusBoardEnable(TaskStatus.Backlog) && (
         <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <StatusCounter taskData={taskData} status={TaskStatus.Backlog} />
+        <BoardCounter status={TaskStatus.Backlog} fetching={fetching} />
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
               <Skeleton height={36} radius="sm" />
@@ -200,8 +229,10 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
             )}
           </ScrollArea>
         </Stack>
+        )}
+        { StatusBoardEnable(TaskStatus.ToDo) && (
         <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <StatusCounter taskData={taskData} status={TaskStatus.ToDo} />
+        <BoardCounter status={TaskStatus.ToDo} fetching={fetching} />
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
               <Skeleton height={36} radius="sm" />
@@ -210,8 +241,10 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
             )}
           </ScrollArea>
         </Stack>
+        )}
+        { StatusBoardEnable(TaskStatus.InProgress) && (
         <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <StatusCounter taskData={taskData} status={TaskStatus.InProgress} />
+        <BoardCounter status={TaskStatus.InProgress} fetching={fetching} />
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
               <Skeleton height={36} radius="sm" />
@@ -220,8 +253,10 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
             )}
           </ScrollArea>
         </Stack>
+        )}
+        { StatusBoardEnable(TaskStatus.Done) && (
         <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <StatusCounter taskData={taskData} status={TaskStatus.Done} />
+        <BoardCounter status={TaskStatus.Done} fetching={fetching} />
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
               <Skeleton height={36} radius="sm" />
@@ -230,8 +265,10 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
             )}
           </ScrollArea>
         </Stack>
+        )}
+        { StatusBoardEnable(TaskStatus.Canceled) && (
         <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <StatusCounter taskData={taskData} status={TaskStatus.Canceled} />
+        <BoardCounter status={TaskStatus.Canceled} fetching={fetching} />
           <ScrollArea style={{ height: 812 }} offsetScrollbars>
             {fetching ? (
               <Skeleton height={36} radius="sm" />
@@ -240,6 +277,7 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
             )}
           </ScrollArea>
         </Stack>
+        )}
       </SimpleGrid>
     </ScrollArea>
   );
