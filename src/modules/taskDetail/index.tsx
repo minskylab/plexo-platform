@@ -45,6 +45,7 @@ import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/n
 import { TaskListElement } from "components/ui/Task/task";
 import { validateDate } from "lib/utils";
 import { SubdivideTaskDocument } from "integration/graphql";
+import { ActivitiesTask } from "./Activities";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -451,6 +452,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
               })}
             />
             <SubTasks task={task} />
+            <ActivitiesTask task={task} />
           </Stack>
         </Box>
         <Divider orientation="vertical" className={classes.propsSection} />

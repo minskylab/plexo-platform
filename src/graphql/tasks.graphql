@@ -221,3 +221,14 @@ mutation CreateTasks($tasks: [CreateTaskInput!]!) {
     title
   }
 }
+
+query TaskActivity($resourceId: UUID, $resourceType: ActivityResourceType) {
+  activity(resourceId: $resourceId, resourceType: $resourceType) {
+    id
+    createdAt
+    memberId
+    resourceId
+    operation
+    resourceType
+  }
+}
