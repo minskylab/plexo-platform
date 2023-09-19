@@ -45,6 +45,7 @@ import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/n
 import { TaskListElement } from "components/ui/Task/task";
 import { validateDate } from "lib/utils";
 import { SubdivideTaskDocument } from "integration/graphql";
+import { DueDateGenericSelector } from "components/ui/Task/dueDate";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -366,6 +367,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                 <AssigneesSelectorByTask task={task} />
                 <LabelsSelectorBytask task={task} />
                 <ProjectSelectorByTask task={task} />
+                <DueDateGenericSelector dueDate={dueDate} onChange={handleDateChange} />
               </Group>
             </Stack>
             <Divider />
@@ -460,20 +462,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Due Date
             </Text>
-            <DateInput
-              size="xs"
-              placeholder="Set due date"
-              value={dueDate}
-              onChange={handleDateChange}
-              clearable
-              styles={{
-                input: {
-                  padding: "0px 8px",
-                  borderRadius: 4,
-                  backgroundColor: "transparent",
-                },
-              }}
-            />
+            <DueDateGenericSelector dueDate={dueDate} onChange={handleDateChange} />
           </Group>
         </Stack>
       </Group>
