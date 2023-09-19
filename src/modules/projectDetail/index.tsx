@@ -210,14 +210,12 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
               onChange={e => setTitle(e.target.value)}
               placeholder="Project Title"
               size="lg"
+              variant="filled"
               styles={theme => ({
                 input: {
                   fontSize: 22,
-                  backgroundColor: "transparent",
-                  borderColor: "transparent",
-                  "&:focus-within": {
-                    borderColor: theme.colors.brand[6],
-                  },
+                  backgroundColor:
+                    theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[1],
                 },
               })}
             />
@@ -228,14 +226,12 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
               placeholder="Add description..."
               size="sm"
               autosize
+              variant="filled"
               minRows={2}
               styles={theme => ({
                 input: {
-                  backgroundColor: "transparent",
-                  borderColor: "transparent",
-                  "&:focus-within": {
-                    borderColor: theme.colors.brand[6],
-                  },
+                  backgroundColor:
+                    theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[1],
                 },
               })}
             />
