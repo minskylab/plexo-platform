@@ -308,6 +308,7 @@ export type QueryRoot = {
 export type QueryRootActivityArgs = {
   memberId?: InputMaybe<Scalars["UUID"]["input"]>;
   operationType?: InputMaybe<ActivityOperationType>;
+  resourceId?: InputMaybe<Scalars["UUID"]["input"]>;
   resourceType?: InputMaybe<ActivityResourceType>;
 };
 
@@ -815,6 +816,24 @@ export type CreateTasksMutationVariables = Exact<{
 export type CreateTasksMutation = {
   __typename?: "MutationRoot";
   createTasks: Array<{ __typename?: "Task"; id: any; title: string }>;
+};
+
+export type TaskActivityQueryVariables = Exact<{
+  resourceId?: InputMaybe<Scalars["UUID"]["input"]>;
+  resourceType?: InputMaybe<ActivityResourceType>;
+}>;
+
+export type TaskActivityQuery = {
+  __typename?: "QueryRoot";
+  activity: Array<{
+    __typename?: "Activity";
+    id: any;
+    createdAt: any;
+    memberId: any;
+    resourceId: any;
+    operation: ActivityOperationType;
+    resourceType: ActivityResourceType;
+  }>;
 };
 
 export type TeamsQueryVariables = Exact<{ [key: string]: never }>;
@@ -2524,6 +2543,60 @@ export const CreateTasksDocument = {
     },
   ],
 } as unknown as DocumentNode<CreateTasksMutation, CreateTasksMutationVariables>;
+export const TaskActivityDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "TaskActivity" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "resourceId" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "resourceType" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "ActivityResourceType" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "activity" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "resourceId" },
+                value: { kind: "Variable", name: { kind: "Name", value: "resourceId" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "resourceType" },
+                value: { kind: "Variable", name: { kind: "Name", value: "resourceType" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                { kind: "Field", name: { kind: "Name", value: "memberId" } },
+                { kind: "Field", name: { kind: "Name", value: "resourceId" } },
+                { kind: "Field", name: { kind: "Name", value: "operation" } },
+                { kind: "Field", name: { kind: "Name", value: "resourceType" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TaskActivityQuery, TaskActivityQueryVariables>;
 export const TeamsDocument = {
   kind: "Document",
   definitions: [
