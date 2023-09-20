@@ -3,8 +3,6 @@ import {
   Group,
   Stack,
   Text,
-  TextInput,
-  Textarea,
   Divider,
   CopyButton,
   Tooltip,
@@ -18,7 +16,6 @@ import {
   Avatar,
   Center,
 } from "@mantine/core";
-import { useClickOutside } from "@mantine/hooks";
 import { DateInput } from "@mantine/dates";
 import { IconSparkles } from "@tabler/icons-react";
 import { Copy, Dots, LayoutSidebar, ChevronLeft, Plus, X } from "tabler-icons-react";
@@ -41,11 +38,12 @@ import { TaskMenu } from "components/ui/Task/menu";
 import { Task, TaskById, TaskSuggestion } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { usePlexoContext } from "context/PlexoContext";
-import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
+import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { TaskListElement } from "components/ui/Task/task";
 import { validateDate } from "lib/utils";
 import { SubdivideTaskDocument } from "integration/graphql";
 import { ActivitiesTask } from "./Activities";
+import { TitleForm } from "./Form";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -205,7 +203,7 @@ const SubTasks = ({ task }: { task: TaskById | undefined }) => {
   }, [subdivideTaskData]);
 
   return (
-    <>
+    <Stack mb={"xl"}>
       <Group position="apart">
         <Text lineClamp={1} size={"sm"} color={"dimmed"}>
           Subtasks
@@ -248,7 +246,7 @@ const SubTasks = ({ task }: { task: TaskById | undefined }) => {
         setTaskSuggestion={setTaskSuggestion}
         parentTask={task}
       />
-    </>
+    </Stack>
   );
 };
 
@@ -256,60 +254,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
   const { classes, theme } = useStyles();
   const { setNavBarOpened } = usePlexoContext();
   const { fetchUpdateTask } = useActions();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date | null>(null);
-
-  const onUpdateTaskTitle = async (title: string) => {
-    if (!title.length) {
-      AlertNotification(
-        "titleUpdateFailed",
-        "Update Failed",
-        "Please enter a title before submitting"
-      );
-      task?.title && setTitle(task.title);
-    } else {
-      const res = await fetchUpdateTask({
-        taskId: task?.id,
-        title: title,
-        description: task?.description,
-        status: statusName(task?.status),
-        priority: priorityName(task?.priority),
-        dueDate: task?.dueDate,
-        projectId: task?.project?.id,
-        leadId: task?.leader?.id,
-        assignees: assigneesId(task),
-      });
-
-      if (res.data) {
-        SuccessNotification("Title updated", res.data.updateTask.title);
-      }
-      if (res.error) {
-        ErrorNotification();
-      }
-    }
-  };
-
-  const onUpdateTaskDescription = async (desc: string) => {
-    const res = await fetchUpdateTask({
-      taskId: task?.id,
-      description: desc,
-      status: statusName(task?.status),
-      priority: priorityName(task?.priority),
-      title: task?.title,
-      dueDate: task?.dueDate,
-      projectId: task?.project?.id,
-      leadId: task?.leader?.id,
-      assignees: assigneesId(task),
-    });
-
-    if (res.data) {
-      SuccessNotification("Description updated", res.data.updateTask.title);
-    }
-    if (res.error) {
-      ErrorNotification();
-    }
-  };
 
   const onUpdateTaskDueDate = async (dueDate: Date | null) => {
     const res = await fetchUpdateTask({
@@ -332,34 +277,8 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
     }
   };
 
-  const refTitle = useClickOutside(() => {
-    if (isLoading) {
-      return null;
-    }
-
-    if (title !== task?.title) {
-      onUpdateTaskTitle(title);
-    }
-  });
-
-  const refDescription = useClickOutside(() => {
-    if (isLoading) {
-      return null;
-    }
-
-    if ((!task?.description || task?.description == "") && description == "") {
-      return null;
-    }
-
-    if (task?.description !== description) {
-      onUpdateTaskDescription(description);
-    }
-  });
-
   useEffect(() => {
     if (task) {
-      setTitle(task.title);
-      setDescription(task.description ? task.description : "");
       setDueDate(validateDate(task.dueDate));
     }
   }, [task]);
@@ -415,38 +334,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
               </Group>
             </Stack>
             <Divider />
-            <TextInput
-              ref={refTitle}
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              placeholder="Task Title"
-              size="lg"
-              variant="filled"
-              styles={theme => ({
-                input: {
-                  fontSize: 22,
-                  backgroundColor:
-                    theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[1],
-                },
-              })}
-            />
-
-            <Textarea
-              ref={refDescription}
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-              placeholder="Add description..."
-              size="sm"
-              autosize
-              minRows={2}
-              variant="filled"
-              styles={theme => ({
-                input: {
-                  backgroundColor:
-                    theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[1],
-                },
-              })}
-            />
+            <TitleForm task={task} isLoading={isLoading} />
             <SubTasks task={task} />
             <ActivitiesTask task={task} />
           </Stack>

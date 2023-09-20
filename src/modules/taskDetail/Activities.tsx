@@ -92,7 +92,7 @@ export const ActivitiesTask = ({ task }: { task: TaskById | undefined }) => {
     : null;
 
   return (
-    <Stack spacing={0} mt={"xl"}>
+    <Stack spacing={0}>
       <Text size={"sm"} color={"dimmed"}>
         Activity
       </Text>

@@ -4,9 +4,6 @@ import {
   Text,
   Divider,
   ActionIcon,
-  Button,
-  Textarea,
-  TextInput,
   MediaQuery,
   Box,
   createStyles,
@@ -14,7 +11,6 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { useClickOutside } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { Copy, Dots, LayoutSidebar } from "tabler-icons-react";
 
@@ -25,8 +21,9 @@ import { ProjectMenu } from "components/ui/Project/menu";
 import { usePlexoContext } from "context/PlexoContext";
 import { ProjectById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
-import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
+import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { validateDate } from "lib/utils";
+import { TitleForm } from "./Form";
 
 type ProjectDetailProps = {
   project: ProjectById | undefined;
@@ -52,8 +49,6 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
   const { fetchUpdateProject } = useActions();
   const { setNavBarOpened } = usePlexoContext();
 
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
 
@@ -83,72 +78,8 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
     }
   };
 
-  const onUpdateProjectTitle = async (title: string) => {
-    if (!title.length) {
-      AlertNotification(
-        "titleUpdateFailed",
-        "Update Failed",
-        "Please enter a title before submitting"
-      );
-      project?.name && setTitle(project?.name);
-    }
-
-    if (title.length) {
-      const res = await fetchUpdateProject({
-        projectId: project?.id,
-        name: title,
-      });
-
-      if (res.data) {
-        SuccessNotification("Title updated", res.data.updateProject.name);
-      }
-      if (res.error) {
-        ErrorNotification();
-      }
-    }
-  };
-
-  const onUpdateProjectDescription = async (desc: string) => {
-    const res = await fetchUpdateProject({
-      projectId: project?.id,
-      description: desc,
-    });
-
-    if (res.data) {
-      SuccessNotification("Description updated", res.data.updateProject.name);
-    }
-    if (res.error) {
-      ErrorNotification();
-    }
-  };
-
-  const refTitle = useClickOutside(() => {
-    if (isLoading) {
-      return null;
-    }
-    if (title !== project?.name) {
-      onUpdateProjectTitle(title);
-    }
-  });
-
-  const refDescription = useClickOutside(() => {
-    if (isLoading) {
-      return null;
-    }
-
-    if ((!project?.description || project?.description == "") && description == "") {
-      return null;
-    }
-
-    if (project?.description !== description) {
-      onUpdateProjectDescription(description);
-    }
-  });
-
   useEffect(() => {
     if (project) {
-      setTitle(project.name);
-      setDescription(project.description ? project.description : "");
       setDueDate(validateDate(project.dueDate));
       setStartDate(validateDate(project.startDate));
     }
@@ -204,37 +135,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
             </Stack>
 
             <Divider />
-            <TextInput
-              ref={refTitle}
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              placeholder="Project Title"
-              size="lg"
-              variant="filled"
-              styles={theme => ({
-                input: {
-                  fontSize: 22,
-                  backgroundColor:
-                    theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[1],
-                },
-              })}
-            />
-            <Textarea
-              ref={refDescription}
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-              placeholder="Add description..."
-              size="sm"
-              autosize
-              variant="filled"
-              minRows={2}
-              styles={theme => ({
-                input: {
-                  backgroundColor:
-                    theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[1],
-                },
-              })}
-            />
+            <TitleForm project={project} isLoading={isLoading} />
           </Stack>
         </Box>
         <Divider orientation="vertical" className={classes.propsSection} />
