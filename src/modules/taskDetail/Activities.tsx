@@ -69,7 +69,13 @@ const ActivitySkeleton = ({ rows }: { rows: number }) => {
   );
 };
 
-export const ActivitiesTask = ({ task }: { task: TaskById | undefined }) => {
+export const ActivitiesTask = ({
+  task,
+  isLoading,
+}: {
+  task: TaskById | undefined;
+  isLoading: boolean;
+}) => {
   const [{ data: activityData, fetching: isLoadingActivity }] = useQuery({
     pause: task ? false : true,
     query: TaskActivityDocument,
@@ -96,7 +102,7 @@ export const ActivitiesTask = ({ task }: { task: TaskById | undefined }) => {
       <Text size={"sm"} color={"dimmed"}>
         Activity
       </Text>
-      {isLoadingActivity ? (
+      {isLoadingActivity || isLoading ? (
         <ActivitySkeleton rows={4} />
       ) : (
         <Timeline
