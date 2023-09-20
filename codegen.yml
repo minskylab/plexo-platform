@@ -1,6 +1,6 @@
 overwrite: true
 schema:
-  "https://demo.plexo.app/graphql":
+  "https://latest.internal.plexo.app/graphql":
     headers:
       "Authorization": "Bearer xxx"
 documents: "src/graphql/**/*.graphql"
