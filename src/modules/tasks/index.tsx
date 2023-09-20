@@ -195,9 +195,20 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
     return data.length > 0;
   };
 
+  const StatusBoardCols = () => {
+    let colsCounter = 4;
+    StatusBoardEnable(TaskStatus.None) ? (colsCounter += 1) : (colsCounter += 0);
+    StatusBoardEnable(TaskStatus.Backlog) ? (colsCounter += 1) : (colsCounter += 0);
+    StatusBoardEnable(TaskStatus.ToDo) ? (colsCounter += 1) : (colsCounter += 0);
+    StatusBoardEnable(TaskStatus.InProgress) ? (colsCounter += 1) : (colsCounter += 0);
+    StatusBoardEnable(TaskStatus.Done) ? (colsCounter += 1) : (colsCounter += 0);
+    StatusBoardEnable(TaskStatus.Canceled) ? (colsCounter += 1) : (colsCounter += 0);
+    return colsCounter > 6 ? 6 : colsCounter ;
+  };
+
   return (
     <ScrollArea type="hover" offsetScrollbars style={{ height: "calc(100vh - 90px)" }}>
-      <SimpleGrid cols={6} spacing={325}>
+      <SimpleGrid cols={StatusBoardCols()} spacing={325}>
         {StatusBoardEnable(TaskStatus.None) && (
           <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
             <Counter status={TaskStatus.None} fetching={fetching} />
