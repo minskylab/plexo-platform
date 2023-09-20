@@ -14,6 +14,8 @@ import { Logout, Settings } from "tabler-icons-react";
 
 import { User } from "lib/types";
 import { useRouter } from "next/router";
+import { ErrorNotification } from "lib/notifications";
+import { usePlexoContext } from "context/PlexoContext";
 
 const useStyles = createStyles(theme => ({
   user: {
@@ -33,53 +35,39 @@ interface UserButtonProps extends UnstyledButtonProps {
   isLoadingUser: boolean;
 }
 
+const logoutURL = process.env.NEXT_PUBLIC_URL_LOGOUT || "/api/auth/logout";
 
 export function UserButton({ user, isLoadingUser }: UserButtonProps) {
   const { classes } = useStyles();
+  const plexo = usePlexoContext();
 
   const router = useRouter();
-  
-  const logout = async ({ logoutURL }: { logoutURL: string | undefined }) => {
+
+  const logout = async () => {
     try {
-      const res = await fetch(logoutURL || "/api/auth/logout", {
+      const res = await fetch(logoutURL, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          // Add any other headers you need
         },
-        credentials: "same-origin", // or "include" if you are doing cross-origin requests
       });
-  
+
       if (!res.ok) {
         const errorData = await res.json();
-        //push login page
-        router.replace("/login");
-        console.error("Error data:", errorData.error);
-        return {
-          error: true,
-          message: errorData.error,
-        };
-      } else {
-        // Handle successful logout
-        const jsonResult = await res.json();
-        return {
-          error: false,
-          message: jsonResult,
-        };
+        console.error("Error:", errorData);
+        return ErrorNotification();
       }
+
+      plexo.setAuthCookie("");
+      return router.replace("/login");
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   const handleLogout = async () => {
-    const result = await logout({ logoutURL:  process.env.NEXT_PUBLIC_URL_LOGOUT });
-    if (result !== undefined &&!result.error ) {
-      // Optionally navigate user to a different page after logout
-      router.push("/");
-    }
+    await logout();
   };
-
 
   return (
     <Group position="center">
@@ -122,7 +110,12 @@ export function UserButton({ user, isLoadingUser }: UserButtonProps) {
           >
             Settings
           </Menu.Item>
-          <Menu.Item color="red" onClick={handleLogout} component="button" icon={<Logout size={14} />}>
+          <Menu.Item
+            color="red"
+            onClick={handleLogout}
+            component="button"
+            icon={<Logout size={14} />}
+          >
             Log out
           </Menu.Item>
         </Menu.Dropdown>
