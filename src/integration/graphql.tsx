@@ -25,6 +25,7 @@ export type Activity = {
   __typename?: "Activity";
   createdAt: Scalars["DateTime"]["output"];
   id: Scalars["UUID"]["output"];
+  member: Member;
   memberId: Scalars["UUID"]["output"];
   operation: ActivityOperationType;
   resourceId: Scalars["UUID"]["output"];
@@ -833,6 +834,7 @@ export type TaskActivityQuery = {
     resourceId: any;
     operation: ActivityOperationType;
     resourceType: ActivityResourceType;
+    member: { __typename?: "Member"; name: string; photoUrl?: string | null };
   }>;
 };
 
@@ -2589,6 +2591,17 @@ export const TaskActivityDocument = {
                 { kind: "Field", name: { kind: "Name", value: "resourceId" } },
                 { kind: "Field", name: { kind: "Name", value: "operation" } },
                 { kind: "Field", name: { kind: "Name", value: "resourceType" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "member" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                      { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
+                    ],
+                  },
+                },
               ],
             },
           },

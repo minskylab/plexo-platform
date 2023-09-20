@@ -44,14 +44,24 @@ const ActivityIcon = ({ activity }: { activity: TaskActivity }) => {
   );
 };
 
-const activityDescription = (activity: TaskActivity | undefined) => {
-  return activity?.operation == "CREATE"
-    ? `Task created - ${formatDateDifference(activity.createdAt)}`
-    : activity?.operation == "UPDATE"
-    ? `Task updated - ${formatDateDifference(activity.createdAt)}`
-    : activity?.operation == "DELETE"
-    ? `Task deleted - ${formatDateDifference(activity.createdAt)}`
-    : `${activity?.operation}`;
+const ActivityDescription = ({ activity }: { activity: TaskActivity | undefined }) => {
+  const description =
+    activity?.operation == "CREATE"
+      ? ` created the task - ${formatDateDifference(activity.createdAt)}`
+      : activity?.operation == "UPDATE"
+      ? ` updated the task - ${formatDateDifference(activity.createdAt)}`
+      : activity?.operation == "DELETE"
+      ? ` deleted the task - ${formatDateDifference(activity.createdAt)}`
+      : `${activity?.operation}`;
+
+  return (
+    <Text color="dimmed" size="xs">
+      <Text span fw={700}>
+        {activity?.member.name}
+      </Text>
+      {description}
+    </Text>
+  );
 };
 
 const ActivitySkeleton = ({ rows }: { rows: number }) => {
@@ -83,9 +93,7 @@ export const ActivitiesTask = ({ task }: { task: TaskById | undefined }) => {
     ? activityData.activity.map(a => {
         return (
           <Timeline.Item key={a.id} bullet={<ActivityIcon activity={a} />}>
-            <Text color="dimmed" size="xs">
-              {activityDescription(a)}
-            </Text>
+            <ActivityDescription activity={a} />
           </Timeline.Item>
         );
       })
