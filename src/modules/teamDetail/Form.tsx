@@ -44,7 +44,8 @@ export const TitleForm = ({ team, isLoading }: TitleFormProps) => {
     }
   }, [team]);
 
-  const enableSaveButton = form.values.name !== team?.name ? false : true;
+  const enableSaveButton =
+    form.values.name === "" ? true : form.values.name !== team?.name ? false : true;
 
   return isLoading ? (
     <Stack>
