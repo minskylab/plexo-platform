@@ -1,28 +1,23 @@
 import {
   ActionIcon,
   Box,
-  Button,
   CopyButton,
   Divider,
   Group,
   MediaQuery,
   Stack,
   Text,
-  TextInput,
   Tooltip,
   createStyles,
 } from "@mantine/core";
-import { Copy, Dots, LayoutGrid, LayoutSidebar, Users } from "tabler-icons-react";
+import { Copy, Dots, LayoutSidebar } from "tabler-icons-react";
 
 import { TeamById } from "lib/types";
 import { usePlexoContext } from "context/PlexoContext";
 import { TeamMenu } from "components/ui/Team/menu";
-import { useState, useEffect } from "react";
-import { useClickOutside } from "@mantine/hooks";
-import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
-import { useActions } from "lib/hooks/useActions";
-import { GenericMemberMenu } from "components/ui/Project/members";
-import { GenericProjectsMenu } from "components/ui/Team/projects";
+import { MemberSelectorByTeam } from "components/ui/Project/members";
+import { ProjectsSelectorByTeam } from "components/ui/Team/projects";
+import { TitleForm } from "./Form";
 
 const useStyles = createStyles(theme => ({
   propsSection: {
@@ -46,47 +41,6 @@ type TeamDetailProps = {
 const TeamDetailPageContent = ({ team, isLoading }: TeamDetailProps) => {
   const { classes, theme } = useStyles();
   const { setNavBarOpened } = usePlexoContext();
-  const { fetchUpdateTeam } = useActions();
-
-  const [title, setTitle] = useState<string>("");
-
-  const onUpdateTeamTitle = async (title: string) => {
-    if (!title.length) {
-      AlertNotification(
-        "titleUpdateFailed",
-        "Update Failed",
-        "Please enter a title before submitting"
-      );
-      team?.name && setTitle(team?.name);
-    }
-
-    if (title.length) {
-      const res = await fetchUpdateTeam({
-        teamId: team?.id,
-        name: title,
-      });
-
-      if (res.data) {
-        SuccessNotification("Title updated", res.data.updateTeam.name);
-      }
-      if (res.error) {
-        ErrorNotification();
-      }
-    }
-  };
-
-  const refTitle = useClickOutside(() => {
-    if (isLoading) {
-      return null;
-    }
-    if (title !== team?.name) {
-      onUpdateTeamTitle(title);
-    }
-  });
-
-  useEffect(() => {
-    team?.name && setTitle(team?.name);
-  }, [team]);
 
   return (
     <Stack h={"100vh"}>
@@ -121,50 +75,13 @@ const TeamDetailPageContent = ({ team, isLoading }: TeamDetailProps) => {
                 </TeamMenu>
               </Group>
               <Group spacing={5} className={classes.propsBar}>
-                <GenericMemberMenu team={team}>
-                  <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
-                    {team?.members.length ? (
-                      <Text size={"xs"}>{team?.members.length} Members</Text>
-                    ) : (
-                      <Text size={"xs"}>Members</Text>
-                    )}
-                  </Button>
-                </GenericMemberMenu>
-                <GenericProjectsMenu team={team}>
-                  <Button
-                    compact
-                    variant="light"
-                    color={"gray"}
-                    leftIcon={<LayoutGrid size={16} />}
-                  >
-                    {team?.projects.length ? (
-                      <Text size={"xs"}>{team.projects.length} Projects</Text>
-                    ) : (
-                      <Text size={"xs"}>Projects</Text>
-                    )}
-                  </Button>
-                </GenericProjectsMenu>
+                <MemberSelectorByTeam team={team} />
+                <ProjectsSelectorByTeam team={team} />
               </Group>
             </Stack>
 
             <Divider />
-            <TextInput
-              ref={refTitle}
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              placeholder="Team Title"
-              size="lg"
-              styles={theme => ({
-                input: {
-                  fontSize: 22,
-                  backgroundColor: "transparent",
-                  borderColor: "transparent",
-                  "&:focus-within": {
-                    borderColor: theme.colors.brand[6],
-                  },
-                },
-              })}
-            />
+            <TitleForm team={team} isLoading={isLoading} />
           </Stack>
         </Box>
         <Divider orientation="vertical" className={classes.propsSection} />
@@ -184,29 +101,13 @@ const TeamDetailPageContent = ({ team, isLoading }: TeamDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Members
             </Text>
-            <GenericMemberMenu team={team}>
-              <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
-                {team?.members.length ? (
-                  <Text size={"xs"}>{team?.members.length} Members</Text>
-                ) : (
-                  <Text size={"xs"}>Members</Text>
-                )}
-              </Button>
-            </GenericMemberMenu>
+            <MemberSelectorByTeam team={team} />
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Projects
             </Text>
-            <GenericProjectsMenu team={team}>
-              <Button compact variant="light" color={"gray"} leftIcon={<LayoutGrid size={16} />}>
-                {team?.projects.length ? (
-                  <Text size={"xs"}>{team.projects.length} Projects</Text>
-                ) : (
-                  <Text size={"xs"}>Projects</Text>
-                )}
-              </Button>
-            </GenericProjectsMenu>
+            <ProjectsSelectorByTeam team={team} />
           </Group>
         </Stack>
       </Group>

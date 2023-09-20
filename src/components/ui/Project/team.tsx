@@ -26,7 +26,11 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-export const TeamIcon = (/* team: Team | undefined */) => {
+export const TeamLabel = (teams: number | undefined) => {
+  return teams && teams >= 1 ? `${teams} Teams` : "Teams";
+};
+
+export const TeamIcon = () => {
   return <Affiliate size={16} />;
 };
 
@@ -206,12 +210,22 @@ type TeamSelectorProps = {
 export const TeamSelector = ({ teams, setTeams }: TeamSelectorProps) => {
   return (
     <GenericTeamMenu selectedTeams={teams} setSelectedTeams={setTeams}>
-      <Button compact variant="light" color={"gray"} leftIcon={<Affiliate size={16} />}>
-        {teams.length ? (
-          <Text size={"xs"}>{teams.length} Teams</Text>
-        ) : (
-          <Text size={"xs"}>Teams</Text>
-        )}
+      <Button compact variant="light" color={"gray"} leftIcon={<TeamIcon />}>
+        <Text size={"xs"}>{TeamLabel(teams.length)}</Text>
+      </Button>
+    </GenericTeamMenu>
+  );
+};
+
+type TeamSelectorByProjectProps = {
+  project: ProjectById | undefined;
+};
+
+export const TeamSelectorByProject = ({ project }: TeamSelectorByProjectProps) => {
+  return (
+    <GenericTeamMenu project={project}>
+      <Button compact variant="light" color={"gray"} leftIcon={<TeamIcon />}>
+        <Text size={"xs"}>{TeamLabel(project?.teams.length)}</Text>
       </Button>
     </GenericTeamMenu>
   );

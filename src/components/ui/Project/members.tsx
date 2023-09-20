@@ -8,7 +8,6 @@ import {
   Group,
   Tooltip,
   ScrollArea,
-  Box,
   Center,
 } from "@mantine/core";
 import { Users } from "tabler-icons-react";
@@ -20,6 +19,14 @@ import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { useActions } from "lib/hooks/useActions";
 import { MemberPhoto } from "../MemberPhoto";
 
+export const MembersIcon = () => {
+  return <Users size={16} />;
+};
+
+export const MembersLabel = (members: number | undefined) => {
+  return members && members >= 1 ? `${members} Members` : "Members";
+};
+
 export const MemberInfo = (member: Member | undefined) => {
   return (
     <Group spacing={5}>
@@ -29,10 +36,6 @@ export const MemberInfo = (member: Member | undefined) => {
       {member?.name}
     </Group>
   );
-};
-
-export const MemberName = (member: Member | undefined) => {
-  return member ? member?.name : "Member";
 };
 
 type Payload = {
@@ -175,12 +178,36 @@ type MemberSelectorProps = {
 export const MemberSelector = ({ members, setMembers }: MemberSelectorProps) => {
   return (
     <GenericMemberMenu selectedMembers={members} setSelectedMembers={setMembers}>
-      <Button compact variant="light" color={"gray"} leftIcon={<Users size={16} />}>
-        {members.length ? (
-          <Text size={"xs"}>{members.length} Members</Text>
-        ) : (
-          <Text size={"xs"}>Members</Text>
-        )}
+      <Button compact variant="light" color={"gray"} leftIcon={<MembersIcon />}>
+        <Text size={"xs"}> {MembersLabel(members.length)}</Text>
+      </Button>
+    </GenericMemberMenu>
+  );
+};
+
+type MemberSelectorByProjectProps = {
+  project: ProjectById | undefined;
+};
+
+export const MemberSelectorByProject = ({ project }: MemberSelectorByProjectProps) => {
+  return (
+    <GenericMemberMenu project={project}>
+      <Button compact variant="light" color={"gray"} leftIcon={<MembersIcon />}>
+        <Text size={"xs"}> {MembersLabel(project?.members.length)}</Text>
+      </Button>
+    </GenericMemberMenu>
+  );
+};
+
+type MemberSelectorByTeamProps = {
+  team: TeamById | undefined;
+};
+
+export const MemberSelectorByTeam = ({ team }: MemberSelectorByTeamProps) => {
+  return (
+    <GenericMemberMenu team={team}>
+      <Button compact variant="light" color={"gray"} leftIcon={<MembersIcon />}>
+        <Text size={"xs"}>{MembersLabel(team?.members.length)}</Text>
       </Button>
     </GenericMemberMenu>
   );

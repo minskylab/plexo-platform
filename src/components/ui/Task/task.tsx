@@ -17,10 +17,9 @@ import router from "next/router";
 import { Task } from "lib/types";
 import { DateLabel } from "lib/utils";
 import { TaskMenu } from "./menu";
-import { GenericLeadTaskMenu } from "./lead";
-import { GenericStatusMenu, StatusIcon } from "./status";
-import { GenericPriorityMenu, PriorityIcon } from "./priority";
-import { MemberPhoto } from "../MemberPhoto";
+import { LeadSelectorByTask } from "./lead";
+import { StatusSelectorByTask } from "./status";
+import { PrioritySelectorByTask } from "./priority";
 
 type TaskProps = {
   task: Task;
@@ -76,16 +75,8 @@ export const TaskListElement = ({ task, active = false, checked = false }: TaskP
               },
             }}
           />
-          <GenericPriorityMenu task={task}>
-            <ActionIcon variant="transparent" radius={"sm"}>
-              {PriorityIcon(task.priority)}
-            </ActionIcon>
-          </GenericPriorityMenu>
-          <GenericStatusMenu task={task}>
-            <ActionIcon variant="transparent" radius={"sm"}>
-              {StatusIcon(theme, task.status)}
-            </ActionIcon>
-          </GenericStatusMenu>
+          <PrioritySelectorByTask task={task} type="icon" />
+          <StatusSelectorByTask task={task} type={"icon"} />
           <Text lineClamp={1} className={classes.MIN} size={"sm"} color={"dimmed"}>
             {`PLE-${task.count}`}
           </Text>
@@ -130,9 +121,7 @@ export const TaskListElement = ({ task, active = false, checked = false }: TaskP
           <Text lineClamp={1} className={classes.date} size={"sm"} color={"dimmed"}>
             {DateLabel(task.createdAt)}
           </Text>
-          <GenericLeadTaskMenu task={task}>
-            <ActionIcon variant="transparent">{MemberPhoto(task.leader?.photoUrl)}</ActionIcon>
-          </GenericLeadTaskMenu>
+          <LeadSelectorByTask task={task} type="icon" />
 
           <TaskMenu task={task}>
             <ActionIcon radius={"sm"} size={"xs"}>
@@ -146,9 +135,6 @@ export const TaskListElement = ({ task, active = false, checked = false }: TaskP
 };
 
 export const TaskCardElement = ({ task, active = false }: TaskProps) => {
-  const { classes } = useStyles();
-  const theme = useMantineTheme();
-
   return (
     <Paper px={6} py={4} mt={1} withBorder={active} style={{ marginTop: 10 }}>
       <Stack spacing={3}>
@@ -156,24 +142,14 @@ export const TaskCardElement = ({ task, active = false }: TaskProps) => {
           <Text size={"sm"} color={"dimmed"}>
             {`PLE-${task.count}`}
           </Text>
-          <GenericLeadTaskMenu task={task}>
-            <ActionIcon variant="transparent">{MemberPhoto(task.leader?.photoUrl)}</ActionIcon>
-          </GenericLeadTaskMenu>
+          <LeadSelectorByTask task={task} type="icon" />
         </Group>
         <Text size={"sm"} onClick={() => router.push(`/tasks/${task.id}`)}>
           {task.title}
         </Text>
         <Group spacing={8}>
-          <GenericPriorityMenu task={task}>
-            <ActionIcon variant="light" radius={"sm"}>
-              {PriorityIcon(task.priority)}
-            </ActionIcon>
-          </GenericPriorityMenu>
-          <GenericStatusMenu task={task}>
-            <ActionIcon variant="light" radius={"sm"}>
-              {StatusIcon(theme, task.status)}
-            </ActionIcon>
-          </GenericStatusMenu>
+          <PrioritySelectorByTask task={task} type="icon" iconVariant="light" />
+          <StatusSelectorByTask task={task} type="icon" iconVariant="light" />
           {task.project && <Badge>{task.project?.name}</Badge>}
         </Group>
       </Stack>

@@ -13,8 +13,8 @@ import {
 import { Plus, X } from "tabler-icons-react";
 import { useState } from "react";
 
-import { GenericLeadTaskMenu } from "./lead";
-import { GenericStatusMenu, StatusIcon, statusLabel } from "./status";
+import { LeadTaskSelector } from "./lead";
+import { StatusIcon, StatusSelector, statusLabel } from "./status";
 import { TaskStatus } from "integration/graphql";
 import { Member } from "lib/types";
 import { SubTask } from "./newTask";
@@ -91,14 +91,9 @@ const NewSubTasks = ({ subtasks, setSubtasks }: NewSubTasks) => {
         Sub-tasks
       </Text>
       <Group spacing={0} px={6} py={4}>
-        <GenericStatusMenu onSelect={s => setStatus(s)}>
-          <ActionIcon variant="transparent" radius={"sm"}>
-            {StatusIcon(theme, status)}
-          </ActionIcon>
-        </GenericStatusMenu>
-        <GenericLeadTaskMenu onSelect={member => setLead(member)} selectedLead={lead}>
-          <ActionIcon variant="transparent">{MemberPhoto(lead?.photoUrl)}</ActionIcon>
-        </GenericLeadTaskMenu>
+        <StatusSelector status={status} setStatus={setStatus} type="icon" />
+        <LeadTaskSelector lead={lead} setLead={setLead} type="icon" />
+
         <TextInput
           autoFocus
           placeholder="Task Title"

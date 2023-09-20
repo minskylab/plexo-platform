@@ -9,6 +9,7 @@ import {
   ProjectByIdQuery,
   TeamByIdQuery,
   SubdivideTaskQuery,
+  TaskActivityQuery,
 } from "integration/graphql";
 
 export type Task = TasksQuery["tasks"][number];
@@ -21,3 +22,4 @@ export type ProjectById = ProjectByIdQuery["projectById"];
 export type TeamById = TeamByIdQuery["teamById"];
 export type User = UserQuery["me"];
 export type TaskSuggestion = SubdivideTaskQuery["subdivideTask"][number];
+export type TaskActivity = TaskActivityQuery["activity"][number];

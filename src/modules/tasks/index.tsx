@@ -167,79 +167,120 @@ const StatusCounter = ({ status, taskData }: StatusCounterProps) => {
 };
 
 const TasksBoard = ({ taskData, fetching }: TasksProps) => {
-  const TaskCard = ({ status }: TaskProps) => {
+  const dataByStatus = (status: TaskStatus) => {
     const data = taskData
       ? taskData
           ?.filter((t: { status: string }) => t.status == status)
           .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
       : [];
 
-    return <DndTaskBoard statusData={data} />;
+    return data;
+  };
+
+  const TaskCard = ({ status }: TaskProps) => {
+    return <DndTaskBoard statusData={dataByStatus(status)} />;
+  };
+
+  const Counter = ({ status, fetching }: CounterProps) => {
+    return dataByStatus(status).length || fetching ? (
+      <StatusCounter taskData={taskData} status={status} />
+    ) : (
+      <></>
+    );
+  };
+
+  //return true if there is at least one task in the status
+  const StatusBoardEnable = (status: TaskStatus) => {
+    const data = taskData ? taskData?.filter((t: { status: string }) => t.status == status) : [];
+    return data.length > 0;
+  };
+
+  const StatusBoardCols = () => {
+    let colsCounter = 4;
+    StatusBoardEnable(TaskStatus.None) ? (colsCounter += 1) : (colsCounter += 0);
+    StatusBoardEnable(TaskStatus.Backlog) ? (colsCounter += 1) : (colsCounter += 0);
+    StatusBoardEnable(TaskStatus.ToDo) ? (colsCounter += 1) : (colsCounter += 0);
+    StatusBoardEnable(TaskStatus.InProgress) ? (colsCounter += 1) : (colsCounter += 0);
+    StatusBoardEnable(TaskStatus.Done) ? (colsCounter += 1) : (colsCounter += 0);
+    StatusBoardEnable(TaskStatus.Canceled) ? (colsCounter += 1) : (colsCounter += 0);
+    return colsCounter > 6 ? 6 : colsCounter ;
   };
 
   return (
     <ScrollArea type="hover" offsetScrollbars style={{ height: "calc(100vh - 90px)" }}>
-      <SimpleGrid cols={6} spacing={325}>
-        <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <StatusCounter taskData={taskData} status={TaskStatus.None} />
-          <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton height={36} radius="sm" />
-            ) : (
-              <TaskCard status={TaskStatus.None} />
-            )}
-          </ScrollArea>
-        </Stack>
-        <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <StatusCounter taskData={taskData} status={TaskStatus.Backlog} />
-          <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton height={36} radius="sm" />
-            ) : (
-              <TaskCard status={TaskStatus.Backlog} />
-            )}
-          </ScrollArea>
-        </Stack>
-        <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <StatusCounter taskData={taskData} status={TaskStatus.ToDo} />
-          <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton height={36} radius="sm" />
-            ) : (
-              <TaskCard status={TaskStatus.ToDo} />
-            )}
-          </ScrollArea>
-        </Stack>
-        <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <StatusCounter taskData={taskData} status={TaskStatus.InProgress} />
-          <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton height={36} radius="sm" />
-            ) : (
-              <TaskCard status={TaskStatus.InProgress} />
-            )}
-          </ScrollArea>
-        </Stack>
-        <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <StatusCounter taskData={taskData} status={TaskStatus.Done} />
-          <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton height={36} radius="sm" />
-            ) : (
-              <TaskCard status={TaskStatus.Done} />
-            )}
-          </ScrollArea>
-        </Stack>
-        <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <StatusCounter taskData={taskData} status={TaskStatus.Canceled} />
-          <ScrollArea style={{ height: 812 }} offsetScrollbars>
-            {fetching ? (
-              <Skeleton height={36} radius="sm" />
-            ) : (
-              <TaskCard status={TaskStatus.Canceled} />
-            )}
-          </ScrollArea>
-        </Stack>
+      <SimpleGrid cols={StatusBoardCols()} spacing={325}>
+        {StatusBoardEnable(TaskStatus.None) && (
+          <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
+            <Counter status={TaskStatus.None} fetching={fetching} />
+            <ScrollArea style={{ height: 812 }} offsetScrollbars>
+              {fetching ? (
+                <Skeleton height={36} radius="sm" />
+              ) : (
+                <TaskCard status={TaskStatus.None} />
+              )}
+            </ScrollArea>
+          </Stack>
+        )}
+        {StatusBoardEnable(TaskStatus.Backlog) && (
+          <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
+            <Counter status={TaskStatus.Backlog} fetching={fetching} />
+            <ScrollArea style={{ height: 812 }} offsetScrollbars>
+              {fetching ? (
+                <Skeleton height={36} radius="sm" />
+              ) : (
+                <TaskCard status={TaskStatus.Backlog} />
+              )}
+            </ScrollArea>
+          </Stack>
+        )}
+        {StatusBoardEnable(TaskStatus.ToDo) && (
+          <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
+            <Counter status={TaskStatus.ToDo} fetching={fetching} />
+            <ScrollArea style={{ height: 812 }} offsetScrollbars>
+              {fetching ? (
+                <Skeleton height={36} radius="sm" />
+              ) : (
+                <TaskCard status={TaskStatus.ToDo} />
+              )}
+            </ScrollArea>
+          </Stack>
+        )}
+        {StatusBoardEnable(TaskStatus.InProgress) && (
+          <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
+            <Counter status={TaskStatus.InProgress} fetching={fetching} />
+            <ScrollArea style={{ height: 812 }} offsetScrollbars>
+              {fetching ? (
+                <Skeleton height={36} radius="sm" />
+              ) : (
+                <TaskCard status={TaskStatus.InProgress} />
+              )}
+            </ScrollArea>
+          </Stack>
+        )}
+        {StatusBoardEnable(TaskStatus.Done) && (
+          <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
+            <Counter status={TaskStatus.Done} fetching={fetching} />
+            <ScrollArea style={{ height: 812 }} offsetScrollbars>
+              {fetching ? (
+                <Skeleton height={36} radius="sm" />
+              ) : (
+                <TaskCard status={TaskStatus.Done} />
+              )}
+            </ScrollArea>
+          </Stack>
+        )}
+        {StatusBoardEnable(TaskStatus.Canceled) && (
+          <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
+            <Counter status={TaskStatus.Canceled} fetching={fetching} />
+            <ScrollArea style={{ height: 812 }} offsetScrollbars>
+              {fetching ? (
+                <Skeleton height={36} radius="sm" />
+              ) : (
+                <TaskCard status={TaskStatus.Canceled} />
+              )}
+            </ScrollArea>
+          </Stack>
+        )}
       </SimpleGrid>
     </ScrollArea>
   );
@@ -254,6 +295,7 @@ const TasksList = ({ taskData, fetching }: TasksProps) => {
       : [];
     return data;
   };
+
   const TaskList = ({ status }: TaskProps) => {
     return <DndTaskList statusData={dataByStatus(status)} />;
   };
@@ -301,7 +343,7 @@ const TasksList = ({ taskData, fetching }: TasksProps) => {
 
 export const TasksPageContent = () => {
   const { classes, theme } = useStyles();
-  const { setNavBarOpened } = usePlexoContext();
+  const { setNavBarOpened, setTasks } = usePlexoContext();
   const [viewMode, setViewMode] = useState<"list" | "columns">("list");
 
   const {
@@ -328,6 +370,12 @@ export const TasksPageContent = () => {
   const [{ data: tasksData, fetching: isFetchingTasksData }] = useQuery({
     query: TasksDocument,
   });
+
+  useEffect(() => {
+    if (tasksData) {
+      setTasks(tasksData?.tasks);
+    }
+  }, [tasksData]);
 
   const filteredTasks = tasksData?.tasks.filter((task: Task) => {
     return (

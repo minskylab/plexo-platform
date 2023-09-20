@@ -1,14 +1,18 @@
 import { Button, Menu, Text, TextInput, Skeleton, Checkbox, Tooltip } from "@mantine/core";
-import { LayoutGrid } from "tabler-icons-react";
 
 import { useData } from "lib/hooks/useData";
 import { Project, TeamById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { useState, useEffect } from "react";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import { ProjectIcon } from "../Task/project";
 
 type Payload = {
   id: string;
+};
+
+export const ProjectLabel = (projects: number | undefined) => {
+  return projects && projects >= 1 ? `${projects} Projects` : "Projects";
 };
 
 export const ProjectName = (name: string | undefined) => {
@@ -132,12 +136,22 @@ type ProjectsSelectorProps = {
 export const ProjectsSelector = ({ projects, setProjects }: ProjectsSelectorProps) => {
   return (
     <GenericProjectsMenu selectedProjects={projects} setSelectedProjects={setProjects}>
-      <Button compact variant="light" color={"gray"} leftIcon={<LayoutGrid size={16} />}>
-        {projects.length ? (
-          <Text size={"xs"}>{projects.length} Projects</Text>
-        ) : (
-          <Text size={"xs"}>Projects</Text>
-        )}
+      <Button compact variant="light" color={"gray"} leftIcon={<ProjectIcon />}>
+        <Text size={"xs"}>{ProjectLabel(projects.length)}</Text>
+      </Button>
+    </GenericProjectsMenu>
+  );
+};
+
+type ProjectsSelectorByTeamProps = {
+  team: TeamById | undefined;
+};
+
+export const ProjectsSelectorByTeam = ({ team }: ProjectsSelectorByTeamProps) => {
+  return (
+    <GenericProjectsMenu team={team}>
+      <Button compact variant="light" color={"gray"} leftIcon={<ProjectIcon />}>
+        <Text size={"xs"}>{ProjectLabel(team?.projects.length)}</Text>
       </Button>
     </GenericProjectsMenu>
   );

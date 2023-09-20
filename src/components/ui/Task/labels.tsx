@@ -30,6 +30,10 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
+export const LabelIcon = () => {
+  return <Tag size={16} />;
+};
+
 type GenericLabelsMenuProps = {
   children: React.ReactNode;
   selectedLabels?: string[];
@@ -74,7 +78,7 @@ export const LabelColor = (labels: string[]) => {
 
   return (
     <Group>
-      <Tag size={16} />
+      <LabelIcon />
     </Group>
   );
 };
@@ -265,6 +269,18 @@ export const LabelsSelector = ({ selectedLabels, setSelectedLabels }: LabelsSele
     <GenericLabelsMenu selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels}>
       <Button compact variant="light" color={"gray"} leftIcon={LabelColor(selectedLabels)}>
         <Text size={"xs"}>{LabelNameBtn(selectedLabels)}</Text>
+      </Button>
+    </GenericLabelsMenu>
+  );
+};
+
+export const LabelsSelectorBytask = ({ task }: { task: TaskById | undefined }) => {
+  const labels = task ? task.labels.map(l => l.id as string) : [];
+
+  return (
+    <GenericLabelsMenu task={task}>
+      <Button compact variant="light" color={"gray"} leftIcon={LabelColor(labels)}>
+        <Text size={"xs"}>{LabelNameBtn(labels)}</Text>
       </Button>
     </GenericLabelsMenu>
   );

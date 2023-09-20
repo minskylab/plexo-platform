@@ -1,8 +1,6 @@
 import {
   createStyles,
   Navbar,
-  TextInput,
-  Code,
   UnstyledButton,
   Badge,
   Text,
@@ -17,14 +15,18 @@ import {
 
 import router from "next/router";
 import { useState } from "react";
-import { Affiliate, Edit, LayoutGrid, Plus, Bulb, Checkbox, Search } from "tabler-icons-react";
+import { Edit, Plus, Bulb, Checkbox, Search } from "tabler-icons-react";
+import { useQuery } from "urql";
 
 import NewProject from "../Project/newProject";
 import NewTeam from "../Team/newTeam";
 import { UserButton } from "../UserButton";
 import ProjectsList from "./projects";
 import TeamsList from "./teams";
-import { useData } from "lib/hooks/useData";
+import { UserDocument } from "integration/graphql";
+import { spotlight } from "@mantine/spotlight";
+import { ProjectIcon } from "../Task/project";
+import { TeamIcon } from "../Project/team";
 
 const useStyles = createStyles(theme => ({
   navbar: {
@@ -32,30 +34,11 @@ const useStyles = createStyles(theme => ({
   },
 
   section: {
-    // marginLeft: -theme.spacing.md,
-    // marginRight: -theme.spacing.md,
-    // marginBottom: theme.spacing.md,
-
     "&:not(:last-of-type)": {
       borderBottom: `${rem(1)} solid ${
         theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
       }`,
     },
-  },
-
-  searchCode: {
-    fontWeight: 700,
-    fontSize: rem(10),
-    backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0],
-    border: `${rem(1)} solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[2]
-    }`,
-  },
-
-  mainLinks: {
-    paddingLeft: `calc(${theme.spacing.md} - ${theme.spacing.xs})`,
-    paddingRight: `calc(${theme.spacing.md} - ${theme.spacing.xs})`,
-    paddingBottom: theme.spacing.md,
   },
 
   mainLink: {
@@ -134,11 +117,14 @@ type NavBarWithSearchProps = {
 };
 
 export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithSearchProps) {
-  const { classes, theme } = useStyles();
+  const { classes } = useStyles();
   const [section, setSection] = useState<"teams" | "projects">("teams");
   const [newProjectOpened, setNewProjectOpened] = useState(false);
   const [newTeamOpened, setNewTeamOpened] = useState(false);
-  const { userData, isLoadingUser } = useData({});
+
+  const [{ data: userData, fetching: isLoadingUser }] = useQuery({
+    query: UserDocument,
+  });
 
   const mainLinks = links.map(link => (
     <UnstyledButton
@@ -168,72 +154,70 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
         hidden={!openedNav}
         className={classes.navbar}
       >
-        <Navbar.Section className={classes.section} mb="sm">
+        <Navbar.Section className={classes.section}>
           <UserButton user={userData?.me} isLoadingUser={isLoadingUser} />
         </Navbar.Section>
 
-        <Navbar.Section className={classes.section} mb="sm">
-          <TextInput
-            mx={16}
-            placeholder="Search"
-            icon={<Search size={12} strokeWidth={1.5} />}
-            rightSectionWidth={70}
-            rightSection={<Code className={classes.searchCode}>Ctrl + K</Code>}
-            styles={{ rightSection: { pointerEvents: "none" } }}
-            mb="sm"
-          />
-
-          <Group mx={16} mb="sm" grow>
-            <Button leftIcon={<Edit strokeWidth={1.5} />} size="sm" onClick={onNewTask}>
+        <Navbar.Section className={classes.section} p="sm">
+          <Group mb={"md"}>
+            <Button
+              leftIcon={<Edit strokeWidth={1.5} />}
+              size="sm"
+              onClick={onNewTask}
+              sx={{ flexGrow: 1 }}
+            >
               New Task
             </Button>
-          </Group>
-        </Navbar.Section>
-        <Navbar.Section className={classes.section} mb="sm">
-          <div className={classes.mainLinks}>{mainLinks}</div>
-        </Navbar.Section>
-        <Group position="apart" mx="sm" mb="sm">
-          <SegmentedControl
-            size={"xs"}
-            value={section}
-            onChange={value => setSection(value as "teams" | "projects")}
-            transitionTimingFunction="ease"
-            data={[
-              {
-                label: (
-                  <Center>
-                    <Affiliate size={16} />
-                    <Text ml={6} size={"xs"}>
-                      Teams
-                    </Text>
-                  </Center>
-                ),
-                value: "teams",
-              },
-              {
-                label: (
-                  <Center>
-                    <LayoutGrid size={16} />
-                    <Text ml={6} size={"xs"}>
-                      Projects
-                    </Text>
-                  </Center>
-                ),
-                value: "projects",
-              },
-            ]}
-          />
-          <Tooltip label={section === "teams" ? "New team" : "New project"} position="top">
-            <ActionIcon
-              onClick={() =>
-                section === "teams" ? setNewTeamOpened(true) : setNewProjectOpened(true)
-              }
-            >
-              <Plus size={18} />
+            <ActionIcon variant="default" size="lg" onClick={() => spotlight.open()}>
+              <Search size={18} strokeWidth={1.5} />
             </ActionIcon>
-          </Tooltip>
-        </Group>
-        {section === "teams" ? <TeamsList /> : <ProjectsList />}
+          </Group>
+          <div>{mainLinks}</div>
+        </Navbar.Section>
+        <Navbar.Section className={classes.section} p="sm">
+          <Group position="apart" mb={"xs"}>
+            <SegmentedControl
+              size={"xs"}
+              value={section}
+              onChange={value => setSection(value as "teams" | "projects")}
+              transitionTimingFunction="ease"
+              data={[
+                {
+                  label: (
+                    <Center>
+                      <TeamIcon />
+                      <Text ml={6} size={"xs"}>
+                        Teams
+                      </Text>
+                    </Center>
+                  ),
+                  value: "teams",
+                },
+                {
+                  label: (
+                    <Center>
+                      <ProjectIcon />
+                      <Text ml={6} size={"xs"}>
+                        Projects
+                      </Text>
+                    </Center>
+                  ),
+                  value: "projects",
+                },
+              ]}
+            />
+            <Tooltip label={section === "teams" ? "New team" : "New project"} position="top">
+              <ActionIcon
+                onClick={() =>
+                  section === "teams" ? setNewTeamOpened(true) : setNewProjectOpened(true)
+                }
+              >
+                <Plus size={18} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+          {section === "teams" ? <TeamsList /> : <ProjectsList />}
+        </Navbar.Section>
       </Navbar>
     </>
   );

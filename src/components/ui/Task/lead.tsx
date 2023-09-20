@@ -8,6 +8,7 @@ import {
   Skeleton,
   Tooltip,
   ScrollArea,
+  ActionIcon,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 
@@ -134,18 +135,41 @@ export const GenericLeadTaskMenu = ({
 type LeadTaskSelectorProps = {
   lead: Member | null;
   setLead: (lead: Member | null) => void;
+  type: "icon" | "button";
 };
 
-export const LeadTaskSelector = ({ lead, setLead }: LeadTaskSelectorProps) => {
+export const LeadTaskSelector = ({ lead, setLead, type }: LeadTaskSelectorProps) => {
   return (
     <GenericLeadTaskMenu onSelect={member => setLead(member)} selectedLead={lead}>
-      {typeof lead === "undefined" ? (
-        <Button compact variant="light" color={"gray"}>
-          {MemberPhoto(undefined)}
-        </Button>
+      {type == "icon" ? (
+        <ActionIcon variant="transparent">{MemberPhoto(lead?.photoUrl)}</ActionIcon>
       ) : (
         <Button compact variant="light" color={"gray"} leftIcon={MemberPhoto(lead?.photoUrl)}>
           <Text size={"xs"}>{LeadName(lead)}</Text>
+        </Button>
+      )}
+    </GenericLeadTaskMenu>
+  );
+};
+
+type LeadSelectorByTaskProps = {
+  task: Task | TaskById | undefined;
+  type: "icon" | "button";
+};
+
+export const LeadSelectorByTask = ({ task, type }: LeadSelectorByTaskProps) => {
+  return (
+    <GenericLeadTaskMenu task={task}>
+      {type == "icon" ? (
+        <ActionIcon variant="transparent">{MemberPhoto(task?.leader?.photoUrl)}</ActionIcon>
+      ) : (
+        <Button
+          compact
+          variant="light"
+          color={"gray"}
+          leftIcon={MemberPhoto(task?.leader?.photoUrl)}
+        >
+          <Text size={"xs"}>{LeadName(task?.leader)}</Text>
         </Button>
       )}
     </GenericLeadTaskMenu>

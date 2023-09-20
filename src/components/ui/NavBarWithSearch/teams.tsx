@@ -18,6 +18,11 @@ const TeamsList = () => {
           label={t.name}
           icon={<Dna size={16} color={theme.colors.brand[6]} />}
           onClick={() => router.push(`/teams/${t.id}`)}
+          styles={theme => ({
+            root: {
+              borderRadius: theme.radius.sm,
+            },
+          })}
         ></NavLink>
       );
     });
