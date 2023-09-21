@@ -126,14 +126,10 @@ export const SettingsPageContent = () => {
 
   const { theme } = useStyles();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const { setNavBarOpened } = usePlexoContext();
-
-  const [{ data: membersData, fetching: isFetchingTasksData }] = useQuery({
-    query: MembersDocument,
-  });
+  const { setNavBarOpened, membersData, isLoadingMembers } = usePlexoContext();
 
   const membersParsedData =
-    membersData?.members.map(member => ({
+    membersData?.map(member => ({
       id: member.id as string,
       name: member.name,
       email: member.email,

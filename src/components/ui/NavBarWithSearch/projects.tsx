@@ -2,15 +2,15 @@ import { Navbar, NavLink, Skeleton, Stack, useMantineTheme } from "@mantine/core
 import { Rocket } from "tabler-icons-react";
 import router from "next/router";
 
-import { useData } from "lib/hooks/useData";
 import { Project } from "lib/types";
+import { usePlexoContext } from "context/PlexoContext";
 
 const ProjectsList = () => {
   const theme = useMantineTheme();
-  const { projectsData, isLoadingProjects } = useData();
+  const { projectsData, isLoadingProjects } = usePlexoContext();
 
-  const projects = projectsData?.projects
-    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+  const projects = projectsData
+    ?.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
     .map((p: Project, index: number) => {
       return (
         <NavLink

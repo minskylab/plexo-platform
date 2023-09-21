@@ -1,5 +1,13 @@
-import { Task } from "lib/types";
+import {
+  LabelsDocument,
+  MembersDocument,
+  ProjectsDocument,
+  TeamsDocument,
+} from "integration/graphql";
 import { createContext, ReactNode, useContext, useState, useEffect } from "react";
+import { useQuery } from "urql";
+
+import { Label, Member, Project, Task, Team } from "lib/types";
 
 type PlexoProviderProps = {
   children: ReactNode;
@@ -51,6 +59,14 @@ type PlexoContextProps = {
   authCookie: string | undefined;
   authEmailURL: string | undefined;
   setAuthCookie: (authCookie: string) => void;
+  projectsData: Project[] | undefined;
+  isLoadingProjects: boolean;
+  membersData: Member[] | undefined;
+  isLoadingMembers: boolean;
+  teamsData: Team[] | undefined;
+  isLoadingTeams: boolean;
+  labelsData: Label[] | undefined;
+  isLoadingLabels: boolean;
 };
 
 const STORAGE_KEY = "filterValues";
@@ -74,6 +90,53 @@ const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProp
   const [createMoreTasks, setCreateMoreTasks] = useState(false);
 
   const [authCookieState, setAuthCookie] = useState(authCookie);
+
+  const [projectsData, setProjectsData] = useState<Project[] | undefined>(undefined);
+  const [membersData, setMembersData] = useState<Member[] | undefined>(undefined);
+  const [teamsData, setTeamsData] = useState<Team[] | undefined>(undefined);
+  const [labelsData, setLabelsData] = useState<Label[] | undefined>(undefined);
+
+  //Queries
+
+  const [{ data: projects, fetching: isLoadingProjects }] = useQuery({
+    query: ProjectsDocument,
+  });
+
+  const [{ data: members, fetching: isLoadingMembers }] = useQuery({
+    query: MembersDocument,
+  });
+
+  const [{ data: teams, fetching: isLoadingTeams }] = useQuery({
+    query: TeamsDocument,
+  });
+
+  const [{ data: labels, fetching: isLoadingLabels }] = useQuery({
+    query: LabelsDocument,
+  });
+
+  useEffect(() => {
+    if (!isLoadingProjects && projects) {
+      setProjectsData(projects.projects);
+    }
+  }, [projects, isLoadingProjects]);
+
+  useEffect(() => {
+    if (!isLoadingMembers && members) {
+      setMembersData(members.members);
+    }
+  }, [members, isLoadingMembers]);
+
+  useEffect(() => {
+    if (!isLoadingTeams && teams) {
+      setTeamsData(teams.teams);
+    }
+  }, [teams, isLoadingTeams]);
+
+  useEffect(() => {
+    if (!isLoadingLabels && labels) {
+      setLabelsData(labels.labels);
+    }
+  }, [labels, isLoadingLabels]);
 
   //Filters
 
@@ -169,6 +232,14 @@ const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProp
         setTaskId,
         tasks,
         setTasks,
+        projectsData,
+        isLoadingProjects,
+        membersData,
+        isLoadingMembers,
+        teamsData,
+        isLoadingTeams,
+        labelsData,
+        isLoadingLabels,
       }}
     >
       {children}

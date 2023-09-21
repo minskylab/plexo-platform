@@ -13,7 +13,6 @@ import {
 import { useEffect, useState } from "react";
 
 import { Member, Task, TaskById } from "lib/types";
-import { useData } from "lib/hooks/useData";
 import { useActions } from "lib/hooks/useActions";
 import { priorityName } from "./priority";
 import { statusName } from "./status";
@@ -22,6 +21,7 @@ import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { LeadName } from "../Project/lead";
 import { noMemberId } from "../constant";
 import { MemberPhoto } from "../MemberPhoto";
+import { usePlexoContext } from "context/PlexoContext";
 
 type GenericLeadMenuProps = {
   children: React.ReactNode;
@@ -36,16 +36,16 @@ export const GenericLeadTaskMenu = ({
   task,
   selectedLead,
 }: GenericLeadMenuProps) => {
-  const { membersData, isLoadingMembers } = useData();
+  const { membersData, isLoadingMembers } = usePlexoContext();
   const { fetchUpdateTask } = useActions();
   const [searchValue, setSearchValue] = useState("");
   const [membersOptions, setMembersOptions] = useState<Member[]>([]);
   const leadName = task?.leader?.name ? task?.leader?.name : selectedLead?.name;
 
   useEffect(() => {
-    if (membersData?.members) {
+    if (membersData) {
       setMembersOptions(
-        membersData?.members.filter((item: Member) =>
+        membersData?.filter((item: Member) =>
           item.name.toLowerCase().includes(searchValue.toLowerCase())
         )
       );

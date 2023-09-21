@@ -16,13 +16,13 @@ import { LayoutGrid } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
 import { Project, TaskById } from "lib/types";
-import { useData } from "lib/hooks/useData";
 import { useActions } from "lib/hooks/useActions";
 import { statusName } from "./status";
 import { priorityName } from "./priority";
 import { assigneesId } from "./assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { noMemberId } from "../constant";
+import { usePlexoContext } from "context/PlexoContext";
 
 const useStyles = createStyles(theme => ({
   checkbox: {
@@ -55,14 +55,14 @@ export const ProjectsCheckboxGroup = ({
   setProjectFilters,
 }: ProjectsCheckboxProps) => {
   const { classes } = useStyles();
-  const { projectsData } = useData();
+  const { projectsData } = usePlexoContext();
   const [searchValue, setSearchValue] = useState("");
   const [projectsOptions, setProjectsOptions] = useState<Project[]>([]);
 
   useEffect(() => {
-    if (projectsData?.projects) {
+    if (projectsData) {
       setProjectsOptions(
-        projectsData?.projects.filter((item: Project) =>
+        projectsData?.filter((item: Project) =>
           item.name.toLowerCase().includes(searchValue.toLowerCase())
         )
       );
@@ -113,16 +113,16 @@ type GenericProjectsMenuProps = {
 };
 
 export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProjectsMenuProps) => {
-  const { projectsData, isLoadingProjects } = useData();
+  const { projectsData, isLoadingProjects } = usePlexoContext();
   const { fetchUpdateTask } = useActions();
 
   const [searchValue, setSearchValue] = useState("");
   const [projectsOptions, setProjectsOptions] = useState<Project[]>([]);
 
   useEffect(() => {
-    if (projectsData?.projects) {
+    if (projectsData) {
       setProjectsOptions(
-        projectsData?.projects.filter((item: Project) =>
+        projectsData?.filter((item: Project) =>
           item.name.toLowerCase().includes(searchValue.toLowerCase())
         )
       );
