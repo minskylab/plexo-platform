@@ -9,6 +9,7 @@ import {
   createStyles,
   CopyButton,
   Tooltip,
+  Skeleton,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useEffect, useState } from "react";
@@ -41,6 +42,9 @@ const useStyles = createStyles(theme => ({
     [theme.fn.smallerThan("lg")]: {
       display: "flex",
     },
+  },
+  headerSections: {
+    height: 22,
   },
 }));
 
@@ -114,102 +118,140 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
         <Text>Project</Text>
       </Group>
       <Group px={20} sx={{ alignItems: "baseline" }}>
-        <Box sx={{ flex: 1 }}>
-          <Stack maw={860} m="auto">
-            <Stack spacing={10}>
-              <Group position="apart">
+        <Stack maw={860} m="auto" h={"100%"} sx={{ flex: 1 }}>
+          <Stack spacing={10}>
+            <Group position="apart" className={classes.headerSections}>
+              {isLoading ? (
+                <Skeleton width={50} height={8} />
+              ) : (
                 <Text size={"sm"} color={"dimmed"}>
                   {project?.prefix ? project.prefix : "PR-001"}
                 </Text>
-                <ProjectMenu project={project}>
-                  <ActionIcon radius={"sm"} size={"xs"}>
-                    <Dots size={18} />
-                  </ActionIcon>
-                </ProjectMenu>
-              </Group>
+              )}
+
+              <ProjectMenu project={project}>
+                <ActionIcon radius={"sm"} size={"xs"} disabled={project?.id ? false : true}>
+                  <Dots size={18} />
+                </ActionIcon>
+              </ProjectMenu>
+            </Group>
+            {isLoading ? (
+              <Box className={classes.propsBar}>
+                <Skeleton height={20} />
+              </Box>
+            ) : (
               <Group spacing={5} className={classes.propsBar}>
                 <LeadSelectorByProject project={project} />
                 <MemberSelectorByProject project={project} />
                 <TeamSelectorByProject project={project} />
               </Group>
-            </Stack>
-
-            <Divider />
-            <TitleForm project={project} isLoading={isLoading} />
-          </Stack>
-        </Box>
-        <Divider orientation="vertical" className={classes.propsSection} />
-        <Stack miw={320} maw={400} className={classes.propsSection}>
-          <CopyButton value={project?.id} timeout={2000}>
-            {({ copied, copy }) => (
-              <Tooltip label={copied ? "Copied" : "Copy project ID"} position="top">
-                <ActionIcon onClick={copy}>
-                  <Copy size={16} />
-                </ActionIcon>
-              </Tooltip>
             )}
-          </CopyButton>
+          </Stack>
+
+          <Divider />
+          <TitleForm project={project} isLoading={isLoading} />
+        </Stack>
+
+        <Divider orientation="vertical" className={classes.propsSection} />
+
+        <Stack miw={320} maw={400} className={classes.propsSection}>
+          <Group className={classes.headerSections}>
+            <CopyButton value={project?.id} timeout={2000}>
+              {({ copied, copy }) => (
+                <Tooltip label={copied ? "Copied" : "Copy project ID"} position="top">
+                  <ActionIcon
+                    size={"xs"}
+                    radius={"sm"}
+                    onClick={copy}
+                    disabled={project?.id ? false : true}
+                  >
+                    <Copy size={18} />
+                  </ActionIcon>
+                </Tooltip>
+              )}
+            </CopyButton>
+          </Group>
           <Divider />
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Lead
             </Text>
-            <LeadSelectorByProject project={project} />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <LeadSelectorByProject project={project} />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Members
             </Text>
-            <MemberSelectorByProject project={project} />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <MemberSelectorByProject project={project} />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Teams
             </Text>
-            <TeamSelectorByProject project={project} />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <TeamSelectorByProject project={project} />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Start Date
             </Text>
-            <Tooltip label="Start Date" position="bottom">
-              <DateInput
-                clearable
-                size="xs"
-                placeholder="Set start date"
-                value={startDate}
-                onChange={handleStartDateChange}
-                styles={{
-                  input: {
-                    padding: "0px 8px",
-                    borderRadius: 4,
-                    backgroundColor: "transparent",
-                  },
-                }}
-              />
-            </Tooltip>
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <Tooltip label="Start Date" position="bottom">
+                <DateInput
+                  clearable
+                  size="xs"
+                  placeholder="Set start date"
+                  value={startDate}
+                  onChange={handleStartDateChange}
+                  styles={{
+                    input: {
+                      padding: "0px 8px",
+                      borderRadius: 4,
+                      backgroundColor: "transparent",
+                    },
+                  }}
+                />
+              </Tooltip>
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Due Date
             </Text>
 
-            <Tooltip label="Due Date" position="bottom">
-              <DateInput
-                clearable
-                size="xs"
-                placeholder="Set due date"
-                value={dueDate}
-                onChange={handleDueDateChange}
-                styles={{
-                  input: {
-                    padding: "0px 8px",
-                    borderRadius: 4,
-                    backgroundColor: "transparent",
-                  },
-                }}
-              />
-            </Tooltip>
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <Tooltip label="Due Date" position="bottom">
+                <DateInput
+                  clearable
+                  size="xs"
+                  placeholder="Set due date"
+                  value={dueDate}
+                  onChange={handleDueDateChange}
+                  styles={{
+                    input: {
+                      padding: "0px 8px",
+                      borderRadius: 4,
+                      backgroundColor: "transparent",
+                    },
+                  }}
+                />
+              </Tooltip>
+            )}
           </Group>
         </Stack>
       </Group>

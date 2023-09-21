@@ -51,8 +51,9 @@ export const TitleForm = ({ task, isLoading }: TitleFormProps) => {
   }, [task]);
 
   const enableSaveButton =
-    form.values.title !== task?.title ||
-    form.values.description !== validateDescription(task?.description)
+    form.values.title !== "" &&
+    (form.values.title !== task?.title ||
+      form.values.description !== validateDescription(task?.description))
       ? false
       : true;
 

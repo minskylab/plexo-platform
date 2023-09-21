@@ -10,7 +10,7 @@ import { usePlexoContext } from "context/PlexoContext";
 const TeamPage: NextPageWithLayout = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { teamData, isLoadingTeams } = useData({ teamId: id as string });
+  const { teamData, isLoadingTeam } = useData({ teamId: id as string });
 
   const plexo = usePlexoContext();
 
@@ -20,7 +20,7 @@ const TeamPage: NextPageWithLayout = () => {
     }
   }, [router, plexo.authCookie]);
 
-  return <TeamDetailPageContent team={teamData?.teamById} isLoading={isLoadingTeams} />;
+  return <TeamDetailPageContent team={teamData?.teamById} isLoading={isLoadingTeam} />;
 };
 
 TeamPage.getLayout = function getLayout(page: ReactElement) {
