@@ -21,7 +21,34 @@ export type Scalars = {
   UUID: { input: any; output: any };
 };
 
+export type Activity = {
+  __typename?: "Activity";
+  createdAt: Scalars["DateTime"]["output"];
+  id: Scalars["UUID"]["output"];
+  memberId: Scalars["UUID"]["output"];
+  operation: ActivityOperationType;
+  resourceId: Scalars["UUID"]["output"];
+  resourceType: ActivityResourceType;
+  updatedAt: Scalars["DateTime"]["output"];
+};
+
+export enum ActivityOperationType {
+  Create = "CREATE",
+  Delete = "DELETE",
+  Update = "UPDATE",
+}
+
+export enum ActivityResourceType {
+  Label = "LABEL",
+  Member = "MEMBER",
+  Organization = "ORGANIZATION",
+  Project = "PROJECT",
+  Task = "TASK",
+  Team = "TEAM",
+}
+
 export type CreateTaskInput = {
+  assignees?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
   description?: InputMaybe<Scalars["String"]["input"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
   labels?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
@@ -30,6 +57,7 @@ export type CreateTaskInput = {
   priority?: InputMaybe<Scalars["String"]["input"]>;
   projectId?: InputMaybe<Scalars["UUID"]["input"]>;
   status?: InputMaybe<Scalars["String"]["input"]>;
+  subtasks?: InputMaybe<Array<CreateTaskInput>>;
   title: Scalars["String"]["input"];
 };
 
@@ -87,6 +115,7 @@ export type MutationRoot = {
   createLabel: Label;
   createProject: Project;
   createTask: Task;
+  createTasks: Array<Task>;
   createTeam: Team;
   deleteLabel: Label;
   deleteProject: Project;
@@ -132,6 +161,10 @@ export type MutationRootCreateTaskArgs = {
   status?: InputMaybe<Scalars["String"]["input"]>;
   subtasks?: InputMaybe<Array<CreateTaskInput>>;
   title: Scalars["String"]["input"];
+};
+
+export type MutationRootCreateTasksArgs = {
+  tasks: Array<CreateTaskInput>;
 };
 
 export type MutationRootCreateTeamArgs = {
@@ -256,6 +289,7 @@ export type ProjectFilter = {
 
 export type QueryRoot = {
   __typename?: "QueryRoot";
+  activity: Array<Activity>;
   labels: Array<Label>;
   me: Member;
   memberByEmail: Member;
@@ -269,6 +303,13 @@ export type QueryRoot = {
   tasks: Array<Task>;
   teamById: Team;
   teams: Array<Team>;
+};
+
+export type QueryRootActivityArgs = {
+  memberId?: InputMaybe<Scalars["UUID"]["input"]>;
+  operationType?: InputMaybe<ActivityOperationType>;
+  resourceId?: InputMaybe<Scalars["UUID"]["input"]>;
+  resourceType?: InputMaybe<ActivityResourceType>;
 };
 
 export type QueryRootMemberByEmailArgs = {
@@ -765,6 +806,33 @@ export type SubdivideTaskQuery = {
     status: TaskStatus;
     priority: TaskPriority;
     dueDate: any;
+  }>;
+};
+
+export type CreateTasksMutationVariables = Exact<{
+  tasks: Array<CreateTaskInput> | CreateTaskInput;
+}>;
+
+export type CreateTasksMutation = {
+  __typename?: "MutationRoot";
+  createTasks: Array<{ __typename?: "Task"; id: any; title: string }>;
+};
+
+export type TaskActivityQueryVariables = Exact<{
+  resourceId?: InputMaybe<Scalars["UUID"]["input"]>;
+  resourceType?: InputMaybe<ActivityResourceType>;
+}>;
+
+export type TaskActivityQuery = {
+  __typename?: "QueryRoot";
+  activity: Array<{
+    __typename?: "Activity";
+    id: any;
+    createdAt: any;
+    memberId: any;
+    resourceId: any;
+    operation: ActivityOperationType;
+    resourceType: ActivityResourceType;
   }>;
 };
 
@@ -2426,6 +2494,109 @@ export const SubdivideTaskDocument = {
     },
   ],
 } as unknown as DocumentNode<SubdivideTaskQuery, SubdivideTaskQueryVariables>;
+export const CreateTasksDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "CreateTasks" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "tasks" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "ListType",
+              type: {
+                kind: "NonNullType",
+                type: { kind: "NamedType", name: { kind: "Name", value: "CreateTaskInput" } },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "createTasks" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "tasks" },
+                value: { kind: "Variable", name: { kind: "Name", value: "tasks" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CreateTasksMutation, CreateTasksMutationVariables>;
+export const TaskActivityDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "TaskActivity" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "resourceId" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "resourceType" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "ActivityResourceType" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "activity" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "resourceId" },
+                value: { kind: "Variable", name: { kind: "Name", value: "resourceId" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "resourceType" },
+                value: { kind: "Variable", name: { kind: "Name", value: "resourceType" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                { kind: "Field", name: { kind: "Name", value: "memberId" } },
+                { kind: "Field", name: { kind: "Name", value: "resourceId" } },
+                { kind: "Field", name: { kind: "Name", value: "operation" } },
+                { kind: "Field", name: { kind: "Name", value: "resourceType" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TaskActivityQuery, TaskActivityQueryVariables>;
 export const TeamsDocument = {
   kind: "Document",
   definitions: [

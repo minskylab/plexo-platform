@@ -8,6 +8,7 @@ import {
   UpdateProjectDocument,
   UpdateTeamDocument,
   UpdateTaskDocument,
+  CreateTasksDocument,
 } from "integration/graphql";
 import { useMutation } from "urql";
 
@@ -16,6 +17,7 @@ export const useActions = () => {
   const [createTask, fetchCreateTask] = useMutation(NewTaskDocument);
   const [deleteTask, fetchDeleteTask] = useMutation(DeleteTaskDocument);
   const [updateTask, fetchUpdateTask] = useMutation(UpdateTaskDocument);
+  const [createTasks, fetchCreateTasks] = useMutation(CreateTasksDocument);
   // Project
   const [createProject, fetchCreateProject] = useMutation(NewProjectDocument);
   const [deleteProject, fetchDeleteProject] = useMutation(DeleteProjectDocument);
@@ -44,5 +46,7 @@ export const useActions = () => {
     fetchDeleteTeam,
     updateTeam,
     fetchUpdateTeam,
+    createTasks,
+    fetchCreateTasks,
   };
 };

@@ -45,6 +45,7 @@ import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/n
 import { TaskListElement } from "components/ui/Task/task";
 import { validateDate } from "lib/utils";
 import { SubdivideTaskDocument } from "integration/graphql";
+import { ActivitiesTask } from "./Activities";
 import { DueDateGenericSelector } from "components/ui/Task/dueDate";
 
 type TaskDetailProps = {
@@ -66,8 +67,122 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-const SubTasks = ({ task }: { task: TaskById | undefined }) => {
+const parseSubtasks = (subtasks: TaskSuggestion[], parentTask: TaskById | undefined) => {
+  return subtasks.map(task => {
+    return {
+      title: task.title,
+      description: task.description,
+      status: statusName(task.status),
+      priority: priorityName(task.priority),
+      dueDate: task.dueDate,
+      parentId: parentTask?.id,
+    };
+  });
+};
+
+type SuggestionTasksProps = {
+  tasksSuggestion: TaskSuggestion[];
+  setTaskSuggestion: (tasksSuggestion: TaskSuggestion[]) => void;
+  parentTask: TaskById | undefined;
+};
+
+const SuggestionTasks = ({
+  tasksSuggestion,
+  setTaskSuggestion,
+  parentTask,
+}: SuggestionTasksProps) => {
   const theme = useMantineTheme();
+  const { createTasks, fetchCreateTasks } = useActions();
+
+  const onClearSuggestions = () => {
+    setTaskSuggestion([]);
+  };
+
+  const onDeleteTaskSuggestion = (task: TaskSuggestion) => {
+    setTaskSuggestion(tasksSuggestion.filter(t => t.title !== task.title));
+  };
+
+  const onCreateTasks = async () => {
+    const res = await fetchCreateTasks({
+      tasks: parseSubtasks(tasksSuggestion, parentTask),
+    });
+
+    if (res.data) {
+      SuccessNotification("Tasks created!", `${res.data.createTasks.length} tasks created`);
+      onClearSuggestions();
+    }
+    if (res.error) {
+      ErrorNotification();
+    }
+  };
+
+  return tasksSuggestion.length ? (
+    <Card
+      sx={{
+        backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[1],
+      }}
+    >
+      <Stack>
+        <Group spacing={"xs"}>
+          <Avatar
+            color="brand"
+            variant="outline"
+            size={"xs"}
+            styles={{
+              placeholder: {
+                border: "none",
+              },
+            }}
+          >
+            <IconSparkles size={16} />
+          </Avatar>
+
+          <Text lineClamp={1} size={"sm"}>
+            Suggestions
+          </Text>
+        </Group>
+        <Stack spacing={3}>
+          {tasksSuggestion.map(task => {
+            return (
+              <Paper key={task.title} px={6} py={4}>
+                <Group spacing={8} sx={{ borderRadius: 4 }}>
+                  <Tooltip label={priorityName(task.priority)} position="bottom">
+                    <Center w={28} h={28}>
+                      {PriorityIcon(task.priority)}
+                    </Center>
+                  </Tooltip>
+                  <Tooltip label={statusLabel(task.status)} position="bottom">
+                    <Center w={28} h={28}>
+                      {StatusIcon(theme, task.status)}
+                    </Center>
+                  </Tooltip>
+
+                  <Text size={"sm"} sx={{ flexGrow: 1 }}>
+                    {task.title}
+                  </Text>
+                  <ActionIcon size={"sm"} onClick={() => onDeleteTaskSuggestion(task)}>
+                    <X size={16} />
+                  </ActionIcon>
+                </Group>
+              </Paper>
+            );
+          })}
+        </Stack>
+        <Group position="right">
+          <Button compact variant="default" onClick={onClearSuggestions}>
+            Cancel
+          </Button>
+
+          <Button compact variant="filled" loading={createTasks.fetching} onClick={onCreateTasks}>
+            Add subtasks
+          </Button>
+        </Group>
+      </Stack>
+    </Card>
+  ) : null;
+};
+
+const SubTasks = ({ task }: { task: TaskById | undefined }) => {
   const { setNewTaskOpened, setTaskId } = usePlexoContext();
   const [tasksSuggestion, setTaskSuggestion] = useState<TaskSuggestion[]>([]);
 
@@ -82,14 +197,6 @@ const SubTasks = ({ task }: { task: TaskById | undefined }) => {
 
   const applyAiTaskSubdivide = async () => {
     fetchTaskSubdivide();
-  };
-
-  const onClearSuggestions = () => {
-    setTaskSuggestion([]);
-  };
-
-  const onDeleteTaskSuggestion = (task: TaskSuggestion) => {
-    setTaskSuggestion(tasksSuggestion.filter(t => t.title !== task.title));
   };
 
   useEffect(() => {
@@ -137,72 +244,11 @@ const SubTasks = ({ task }: { task: TaskById | undefined }) => {
             ))}
         </Stack>
       ) : null}
-
-      {tasksSuggestion.length ? (
-        <Card
-          sx={{
-            backgroundColor:
-              theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[1],
-          }}
-        >
-          <Stack>
-            <Group spacing={"xs"}>
-              <Avatar
-                color="brand"
-                variant="outline"
-                size={"xs"}
-                styles={{
-                  placeholder: {
-                    border: "none",
-                  },
-                }}
-              >
-                <IconSparkles size={16} />
-              </Avatar>
-
-              <Text lineClamp={1} size={"sm"}>
-                Suggestions
-              </Text>
-            </Group>
-            <Stack spacing={3}>
-              {tasksSuggestion.map(task => {
-                return (
-                  <Paper key={task.title} px={6} py={4}>
-                    <Group spacing={8} sx={{ borderRadius: 4 }}>
-                      <Tooltip label={priorityName(task.priority)} position="bottom">
-                        <Center w={28} h={28}>
-                          {PriorityIcon(task.priority)}
-                        </Center>
-                      </Tooltip>
-                      <Tooltip label={statusLabel(task.status)} position="bottom">
-                        <Center w={28} h={28}>
-                          {StatusIcon(theme, task.status)}
-                        </Center>
-                      </Tooltip>
-
-                      <Text size={"sm"} sx={{ flexGrow: 1 }}>
-                        {task.title}
-                      </Text>
-                      <ActionIcon size={"sm"} onClick={() => onDeleteTaskSuggestion(task)}>
-                        <X size={16} />
-                      </ActionIcon>
-                    </Group>
-                  </Paper>
-                );
-              })}
-            </Stack>
-            <Group position="right">
-              <Button compact variant="default" onClick={onClearSuggestions}>
-                Cancel
-              </Button>
-
-              <Button compact variant="filled" disabled>
-                Add subtasks
-              </Button>
-            </Group>
-          </Stack>
-        </Card>
-      ) : null}
+      <SuggestionTasks
+        tasksSuggestion={tasksSuggestion}
+        setTaskSuggestion={setTaskSuggestion}
+        parentTask={task}
+      />
     </>
   );
 };
@@ -377,14 +423,12 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
               onChange={e => setTitle(e.target.value)}
               placeholder="Task Title"
               size="lg"
+              variant="filled"
               styles={theme => ({
                 input: {
                   fontSize: 22,
-                  backgroundColor: "transparent",
-                  borderColor: "transparent",
-                  "&:focus-within": {
-                    borderColor: theme.colors.brand[6],
-                  },
+                  backgroundColor:
+                    theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[1],
                 },
               })}
             />
@@ -397,17 +441,16 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
               size="sm"
               autosize
               minRows={2}
+              variant="filled"
               styles={theme => ({
                 input: {
-                  backgroundColor: "transparent",
-                  borderColor: "transparent",
-                  "&:focus-within": {
-                    borderColor: theme.colors.brand[6],
-                  },
+                  backgroundColor:
+                    theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[1],
                 },
               })}
             />
             <SubTasks task={task} />
+            <ActivitiesTask task={task} />
           </Stack>
         </Box>
         <Divider orientation="vertical" className={classes.propsSection} />

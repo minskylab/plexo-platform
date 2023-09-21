@@ -214,3 +214,21 @@ query SubdivideTask($taskId: String!, $count: Int) {
     dueDate
   }
 }
+
+mutation CreateTasks($tasks: [CreateTaskInput!]!) {
+  createTasks(tasks: $tasks) {
+    id
+    title
+  }
+}
+
+query TaskActivity($resourceId: UUID, $resourceType: ActivityResourceType) {
+  activity(resourceId: $resourceId, resourceType: $resourceType) {
+    id
+    createdAt
+    memberId
+    resourceId
+    operation
+    resourceType
+  }
+}
