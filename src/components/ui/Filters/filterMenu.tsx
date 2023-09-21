@@ -11,8 +11,6 @@ import {
 } from "@mantine/core";
 import { AntennaBars5, CircleDashed, Filter, User, UserCircle } from "tabler-icons-react";
 
-import { usePlexoContext } from "context/PlexoContext";
-import { TeamCheckboxGroup, TeamIcon } from "../Project/team";
 import { AssigneesIcon, MembersCheckboxGroup } from "../Task/assignees";
 import { LabelCheckboxGroup, LabelIcon } from "../Task/labels";
 import { PriorityCheckboxGroup } from "../Task/priority";
@@ -36,27 +34,42 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-const FilterMenu = () => {
+type FilterMenuProps = {
+  statusFilters: string[];
+  setStatusFilters: (statusFilters: string[]) => void;
+  assigneeFilters: string[];
+  setAssigneeFilters: (assigneeFilters: string[]) => void;
+  leaderFilters: string[];
+  setLeaderFilters: (leaderFilters: string[]) => void;
+  creatorFilters: string[];
+  setCreatorFilters: (creatorFilters: string[]) => void;
+  priorityFilters: string[];
+  setPriorityFilters: (priorityFilters: string[]) => void;
+  labelsFilters: string[];
+  setLabelsFilters: (labelsFilters: string[]) => void;
+  projectFilters: string[];
+  setProjectFilters: (projectFilters: string[]) => void;
+  total: number;
+};
+
+const FilterMenu = ({
+  statusFilters,
+  setStatusFilters,
+  assigneeFilters,
+  setAssigneeFilters,
+  leaderFilters,
+  setLeaderFilters,
+  creatorFilters,
+  setCreatorFilters,
+  priorityFilters,
+  setPriorityFilters,
+  labelsFilters,
+  setLabelsFilters,
+  projectFilters,
+  setProjectFilters,
+  total,
+}: FilterMenuProps) => {
   const { classes, theme } = useStyles();
-  const {
-    statusFilters,
-    setStatusFilters,
-    assigneeFilters,
-    setAssigneeFilters,
-    leaderFilters,
-    setLeaderFilters,
-    creatorFilters,
-    setCreatorFilters,
-    priorityFilters,
-    setPriorityFilters,
-    labelsFilters,
-    setLabelsFilters,
-    projectFilters,
-    setProjectFilters,
-    teamFilters,
-    setTeamFilters,
-    total,
-  } = usePlexoContext();
 
   const handleClearFilters = () => {
     setStatusFilters([]);
@@ -66,7 +79,6 @@ const FilterMenu = () => {
     setPriorityFilters([]);
     setLabelsFilters([]);
     setProjectFilters([]);
-    setTeamFilters([]);
   };
 
   return (
@@ -86,11 +98,11 @@ const FilterMenu = () => {
           color={"gray"}
           leftIcon={<Filter size={16} color={theme.colors.brand[6]} />}
           rightIcon={
-            total != 0 && (
+            total != 0 ? (
               <Badge size="sm" variant="light">
                 {total}
               </Badge>
-            )
+            ) : null
           }
           className={classes.filterBtn}
         >
@@ -245,7 +257,7 @@ const FilterMenu = () => {
             />
           </NavLink>
 
-          <NavLink
+          {/*  <NavLink
             label={
               <Group>
                 <Text>Team</Text>
@@ -260,7 +272,7 @@ const FilterMenu = () => {
             classNames={{ root: classes.navlink, children: classes.navlinkChildren }}
           >
             <TeamCheckboxGroup teamFilters={teamFilters} setTeamFilters={setTeamFilters} />
-          </NavLink>
+          </NavLink> */}
         </Box>
       </Popover.Dropdown>
     </Popover>

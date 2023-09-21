@@ -15,17 +15,6 @@ type PlexoProviderProps = {
   authEmailURL?: string;
 };
 
-type FilterValues = {
-  status: string[];
-  assignees: string[];
-  leader: string[];
-  creator: string[];
-  priority: string[];
-  labels: string[];
-  project: string[];
-  team: string[];
-};
-
 type PlexoContextProps = {
   taskId: string | undefined;
   setTaskId: (taskId: string | undefined) => void;
@@ -37,25 +26,6 @@ type PlexoContextProps = {
   setNewTaskOpened: (newTaskOpened: boolean) => void;
   createMoreTasks: boolean;
   setCreateMoreTasks: (createMoreTasks: boolean) => void;
-  statusFilters: string[];
-  setStatusFilters: (statusFilters: string[]) => void;
-  assigneeFilters: string[];
-  setAssigneeFilters: (assigneeFilters: string[]) => void;
-  leaderFilters: string[];
-  setLeaderFilters: (leaderFilters: string[]) => void;
-  creatorFilters: string[];
-  setCreatorFilters: (creatorFilters: string[]) => void;
-  priorityFilters: string[];
-  setPriorityFilters: (priorityFilters: string[]) => void;
-  labelsFilters: string[];
-  setLabelsFilters: (labelsFilters: string[]) => void;
-  projectFilters: string[];
-  setProjectFilters: (projectFilters: string[]) => void;
-  teamFilters: string[];
-  setTeamFilters: (teamFilters: string[]) => void;
-  filterValues: FilterValues | null;
-  setFilterValues: (filterValues: FilterValues | null) => void;
-  total: number;
   authCookie: string | undefined;
   authEmailURL: string | undefined;
   setAuthCookie: (authCookie: string) => void;
@@ -68,8 +38,6 @@ type PlexoContextProps = {
   labelsData: Label[] | undefined;
   isLoadingLabels: boolean;
 };
-
-const STORAGE_KEY = "filterValues";
 
 export const PlexoContext = createContext<PlexoContextProps | null>(null);
 
@@ -95,8 +63,6 @@ const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProp
   const [membersData, setMembersData] = useState<Member[] | undefined>(undefined);
   const [teamsData, setTeamsData] = useState<Team[] | undefined>(undefined);
   const [labelsData, setLabelsData] = useState<Label[] | undefined>(undefined);
-
-  //Queries
 
   const [{ data: projects, fetching: isLoadingProjects }] = useQuery({
     query: ProjectsDocument,
@@ -138,65 +104,6 @@ const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProp
     }
   }, [labels, isLoadingLabels]);
 
-  //Filters
-
-  let storedFilterValues;
-
-  if (typeof window !== "undefined") {
-    storedFilterValues = localStorage.getItem(STORAGE_KEY);
-  }
-
-  const filterValuesStorage = storedFilterValues
-    ? JSON.parse(storedFilterValues)
-    : {
-        status: [],
-        assignee: [],
-        leader: [],
-        creator: [],
-        priority: [],
-        labels: [],
-        project: [],
-        team: [],
-      };
-
-  const [statusFilters, setStatusFilters] = useState<string[]>(filterValuesStorage.status ?? []);
-  const [assigneeFilters, setAssigneeFilters] = useState<string[]>(
-    filterValuesStorage.assignee ?? []
-  );
-  const [leaderFilters, setLeaderFilters] = useState<string[]>(filterValuesStorage.leader ?? []);
-  const [creatorFilters, setCreatorFilters] = useState<string[]>(filterValuesStorage.creator ?? []);
-  const [priorityFilters, setPriorityFilters] = useState<string[]>(
-    filterValuesStorage.priority ?? []
-  );
-  const [labelsFilters, setLabelsFilters] = useState<string[]>(filterValuesStorage.labels ?? []);
-  const [projectFilters, setProjectFilters] = useState<string[]>(filterValuesStorage.project ?? []);
-  const [teamFilters, setTeamFilters] = useState<string[]>(filterValuesStorage.team ?? []);
-  const [total, setTotal] = useState(0);
-  const [filterValues, setFilterValues] = useState<FilterValues | null>(null);
-
-  useEffect(() => {
-    const filterValues = {
-      status: statusFilters,
-      assignee: assigneeFilters,
-      leader: leaderFilters,
-      creator: creatorFilters,
-      priority: priorityFilters,
-      labels: labelsFilters,
-      project: projectFilters,
-    };
-    let filtrostotal = Object.values(filterValues).filter(value => value.length > 0);
-    setTotal(filtrostotal.length);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(filterValues));
-  }, [
-    statusFilters,
-    assigneeFilters,
-    leaderFilters,
-    creatorFilters,
-    priorityFilters,
-    labelsFilters,
-    projectFilters,
-  ]);
-
   return (
     <PlexoContext.Provider
       value={{
@@ -206,25 +113,6 @@ const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProp
         setNewTaskOpened,
         createMoreTasks,
         setCreateMoreTasks,
-        statusFilters,
-        setStatusFilters,
-        assigneeFilters,
-        setAssigneeFilters,
-        leaderFilters,
-        setLeaderFilters,
-        creatorFilters,
-        setCreatorFilters,
-        priorityFilters,
-        setPriorityFilters,
-        labelsFilters,
-        setLabelsFilters,
-        projectFilters,
-        setProjectFilters,
-        teamFilters,
-        setTeamFilters,
-        filterValues,
-        setFilterValues,
-        total,
         authCookie: authCookieState,
         setAuthCookie,
         authEmailURL,
