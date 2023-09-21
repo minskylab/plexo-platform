@@ -1,4 +1,4 @@
-import { Navbar, NavLink, useMantineTheme } from "@mantine/core";
+import { Navbar, NavLink, Skeleton, Stack, useMantineTheme } from "@mantine/core";
 import { Rocket } from "tabler-icons-react";
 import router from "next/router";
 
@@ -27,7 +27,19 @@ const ProjectsList = () => {
       );
     });
 
-  return <Navbar.Section>{projects}</Navbar.Section>;
+  return (
+    <Navbar.Section>
+      {isLoadingProjects ? (
+        <Stack>
+          <Skeleton height={20} />
+          <Skeleton height={20} />
+          <Skeleton height={20} />
+        </Stack>
+      ) : (
+        projects
+      )}
+    </Navbar.Section>
+  );
 };
 
 export default ProjectsList;

@@ -51,8 +51,9 @@ export const TitleForm = ({ project, isLoading }: TitleFormProps) => {
   }, [project]);
 
   const enableSaveButton =
-    form.values.name !== project?.name ||
-    form.values.description !== validateDescription(project?.description)
+    form.values.name !== "" &&
+    (form.values.name !== project?.name ||
+      form.values.description !== validateDescription(project?.description))
       ? false
       : true;
 

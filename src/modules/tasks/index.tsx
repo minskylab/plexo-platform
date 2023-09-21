@@ -203,7 +203,7 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
     StatusBoardEnable(TaskStatus.InProgress) ? (colsCounter += 1) : (colsCounter += 0);
     StatusBoardEnable(TaskStatus.Done) ? (colsCounter += 1) : (colsCounter += 0);
     StatusBoardEnable(TaskStatus.Canceled) ? (colsCounter += 1) : (colsCounter += 0);
-    return colsCounter > 6 ? 6 : colsCounter ;
+    return colsCounter > 6 ? 6 : colsCounter;
   };
 
   return (

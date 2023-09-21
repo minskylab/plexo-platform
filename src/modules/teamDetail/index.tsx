@@ -5,6 +5,7 @@ import {
   Divider,
   Group,
   MediaQuery,
+  Skeleton,
   Stack,
   Text,
   Tooltip,
@@ -63,22 +64,29 @@ const TeamDetailPageContent = ({ team, isLoading }: TeamDetailProps) => {
       <Group px={20} sx={{ alignItems: "baseline" }}>
         <Box sx={{ flex: 1 }}>
           <Stack maw={860} m="auto">
-            <Stack spacing={10}>
-              <Group position="apart">
-                <Text size={"sm"} color={"dimmed"}>
-                  {team?.prefix ? team.prefix : "TM-001"}
-                </Text>
-                <TeamMenu team={team}>
-                  <ActionIcon radius={"sm"} size={"xs"}>
-                    <Dots size={18} />
-                  </ActionIcon>
-                </TeamMenu>
-              </Group>
-              <Group spacing={5} className={classes.propsBar}>
-                <MemberSelectorByTeam team={team} />
-                <ProjectsSelectorByTeam team={team} />
-              </Group>
-            </Stack>
+            {isLoading ? (
+              <Stack spacing={10}>
+                <Skeleton height={30} />
+                <Skeleton height={20} />
+              </Stack>
+            ) : (
+              <Stack spacing={10}>
+                <Group position="apart">
+                  <Text size={"sm"} color={"dimmed"}>
+                    {team?.prefix ? team.prefix : "TM-001"}
+                  </Text>
+                  <TeamMenu team={team}>
+                    <ActionIcon radius={"sm"} size={"xs"}>
+                      <Dots size={18} />
+                    </ActionIcon>
+                  </TeamMenu>
+                </Group>
+                <Group spacing={5} className={classes.propsBar}>
+                  <MemberSelectorByTeam team={team} />
+                  <ProjectsSelectorByTeam team={team} />
+                </Group>
+              </Stack>
+            )}
 
             <Divider />
             <TitleForm team={team} isLoading={isLoading} />
@@ -87,27 +95,35 @@ const TeamDetailPageContent = ({ team, isLoading }: TeamDetailProps) => {
         <Divider orientation="vertical" className={classes.propsSection} />
 
         <Stack miw={320} maw={400} className={classes.propsSection}>
-          <CopyButton value={team?.id} timeout={2000}>
-            {({ copied, copy }) => (
-              <Tooltip label={copied ? "Copied" : "Copy project ID"} position="top">
-                <ActionIcon onClick={copy}>
-                  <Copy size={16} />
-                </ActionIcon>
-              </Tooltip>
-            )}
-          </CopyButton>
+          {isLoading ? (
+            <Skeleton height={25} width={40} />
+          ) : (
+            <CopyButton value={team?.id} timeout={2000}>
+              {({ copied, copy }) => (
+                <Tooltip label={copied ? "Copied" : "Copy project ID"} position="top">
+                  <ActionIcon onClick={copy}>
+                    <Copy size={16} />
+                  </ActionIcon>
+                </Tooltip>
+              )}
+            </CopyButton>
+          )}
           <Divider />
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Members
             </Text>
-            <MemberSelectorByTeam team={team} />
+            {isLoading ? <Skeleton height={25} width={40} /> : <MemberSelectorByTeam team={team} />}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Projects
             </Text>
-            <ProjectsSelectorByTeam team={team} />
+            {isLoading ? (
+              <Skeleton height={25} width={40} />
+            ) : (
+              <ProjectsSelectorByTeam team={team} />
+            )}
           </Group>
         </Stack>
       </Group>
