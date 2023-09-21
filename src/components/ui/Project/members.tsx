@@ -12,12 +12,12 @@ import {
 } from "@mantine/core";
 import { Users } from "tabler-icons-react";
 
-import { useData } from "lib/hooks/useData";
 import { Member, ProjectById, TeamById } from "lib/types";
 import { useEffect, useState } from "react";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { useActions } from "lib/hooks/useActions";
 import { MemberPhoto } from "../MemberPhoto";
+import { usePlexoContext } from "context/PlexoContext";
 
 export const MembersIcon = () => {
   return <Users size={16} />;
@@ -62,18 +62,18 @@ export const GenericMemberMenu = ({
   team,
 }: GenericMembersMenuProps) => {
   const { fetchUpdateProject, fetchUpdateTeam } = useActions();
-  const { membersData, isLoadingMembers } = useData({});
+  const { membersData, isLoadingMembers } = usePlexoContext();
 
   const [members, setMembers] = useState<string[] | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [membersOptions, setMembersOptions] = useState<Member[]>([]);
 
   useEffect(() => {
-    if (membersData?.members) {
+    if (membersData) {
       searchValue == ""
-        ? setMembersOptions(membersData?.members)
+        ? setMembersOptions(membersData)
         : setMembersOptions(
-            membersData?.members.filter((item: Member) =>
+            membersData?.filter((item: Member) =>
               item.name.toLowerCase().includes(searchValue.toLowerCase())
             )
           );

@@ -44,14 +44,24 @@ const ActivityIcon = ({ activity }: { activity: TaskActivity }) => {
   );
 };
 
-const activityDescription = (activity: TaskActivity | undefined) => {
-  return activity?.operation == "CREATE"
-    ? `Task created - ${formatDateDifference(activity.createdAt)}`
-    : activity?.operation == "UPDATE"
-    ? `Task updated - ${formatDateDifference(activity.createdAt)}`
-    : activity?.operation == "DELETE"
-    ? `Task deleted - ${formatDateDifference(activity.createdAt)}`
-    : `${activity?.operation}`;
+const ActivityDescription = ({ activity }: { activity: TaskActivity | undefined }) => {
+  const description =
+    activity?.operation == "CREATE"
+      ? ` created the task - ${formatDateDifference(activity.createdAt)}`
+      : activity?.operation == "UPDATE"
+      ? ` updated the task - ${formatDateDifference(activity.createdAt)}`
+      : activity?.operation == "DELETE"
+      ? ` deleted the task - ${formatDateDifference(activity.createdAt)}`
+      : `${activity?.operation}`;
+
+  return (
+    <Text color="dimmed" size="xs">
+      <Text span fw={700}>
+        {activity?.member.name}
+      </Text>
+      {description}
+    </Text>
+  );
 };
 
 const ActivitySkeleton = ({ rows }: { rows: number }) => {
@@ -69,7 +79,13 @@ const ActivitySkeleton = ({ rows }: { rows: number }) => {
   );
 };
 
-export const ActivitiesTask = ({ task }: { task: TaskById | undefined }) => {
+export const ActivitiesTask = ({
+  task,
+  isLoading,
+}: {
+  task: TaskById | undefined;
+  isLoading: boolean;
+}) => {
   const [{ data: activityData, fetching: isLoadingActivity }] = useQuery({
     pause: task ? false : true,
     query: TaskActivityDocument,
@@ -83,20 +99,18 @@ export const ActivitiesTask = ({ task }: { task: TaskById | undefined }) => {
     ? activityData.activity.map(a => {
         return (
           <Timeline.Item key={a.id} bullet={<ActivityIcon activity={a} />}>
-            <Text color="dimmed" size="xs">
-              {activityDescription(a)}
-            </Text>
+            <ActivityDescription activity={a} />
           </Timeline.Item>
         );
       })
     : null;
 
   return (
-    <Stack spacing={0} mt={"xl"}>
+    <Stack spacing={0}>
       <Text size={"sm"} color={"dimmed"}>
         Activity
       </Text>
-      {isLoadingActivity ? (
+      {isLoadingActivity || isLoading ? (
         <ActivitySkeleton rows={4} />
       ) : (
         <Timeline

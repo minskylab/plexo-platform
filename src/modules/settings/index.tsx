@@ -126,14 +126,12 @@ export const SettingsPageContent = () => {
 
   const { theme } = useStyles();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const { setNavBarOpened } = usePlexoContext();
-
-  const [{ data: membersData, fetching: isFetchingTasksData }] = useQuery({
-    query: MembersDocument,
-  });
+  const { setNavBarOpened, membersData, isLoadingMembers } = usePlexoContext();
+  const { pathname, query } = useRouter();
+  const tab = query.tab as string;
 
   const membersParsedData =
-    membersData?.members.map(member => ({
+    membersData?.map(member => ({
       id: member.id as string,
       name: member.name,
       email: member.email,
@@ -189,17 +187,33 @@ export const SettingsPageContent = () => {
           })}
           px={theme.spacing.md}
         >
-          <Tabs defaultValue="organization">
+          <Tabs defaultValue={tab}>
             <Tabs.List>
-              <Tabs.Tab value="organization" icon={<IconBuilding size="0.8rem" />}>
-                Organization
-              </Tabs.Tab>
-              <Tabs.Tab value="members" icon={<IconUsers size="0.8rem" />}>
-                Members
-              </Tabs.Tab>
-              <Tabs.Tab value="experimental" icon={<IconMicroscope size="0.8rem" />}>
-                Experimental
-              </Tabs.Tab>
+              <Link
+                href={{ pathname: pathname, query: { ...query, tab: "organization" } }}
+                style={{ textDecoration: "none" }}
+              >
+                <Tabs.Tab value="organization" icon={<IconBuilding size="0.8rem" />}>
+                  Organization
+                </Tabs.Tab>
+              </Link>
+              <Link
+                href={{ pathname: pathname, query: { ...query, tab: "members" } }}
+                style={{ textDecoration: "none" }}
+              >
+                <Tabs.Tab value="members" icon={<IconUsers size="0.8rem" />}>
+                  Members
+                </Tabs.Tab>
+              </Link>
+
+              <Link
+                href={{ pathname: pathname, query: { ...query, tab: "experimental" } }}
+                style={{ textDecoration: "none" }}
+              >
+                <Tabs.Tab value="experimental" icon={<IconMicroscope size="0.8rem" />}>
+                  Experimental
+                </Tabs.Tab>
+              </Link>
             </Tabs.List>
 
             <Tabs.Panel value="organization" pt="xs">
@@ -231,11 +245,13 @@ export const SettingsPageContent = () => {
 
 import { useState } from "react";
 import { Table, Checkbox, ScrollArea, Avatar, Text, rem } from "@mantine/core";
-import { useMutation, useQuery } from "urql";
-import { MembersDocument, RegisterDocument, UpdateMemberDocument } from "integration/graphql";
+import { useMutation } from "urql";
+import { RegisterDocument, UpdateMemberDocument } from "integration/graphql";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const useStyles = createStyles(theme => ({
   rowSelected: {

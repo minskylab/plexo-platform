@@ -230,5 +230,9 @@ query TaskActivity($resourceId: UUID, $resourceType: ActivityResourceType) {
     resourceId
     operation
     resourceType
+    member {
+      name
+      photoUrl
+    }
   }
 }

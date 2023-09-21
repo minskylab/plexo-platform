@@ -14,6 +14,8 @@ import { Logout, Settings } from "tabler-icons-react";
 
 import { User } from "lib/types";
 import { useRouter } from "next/router";
+import { ErrorNotification } from "lib/notifications";
+import { usePlexoContext } from "context/PlexoContext";
 
 const useStyles = createStyles(theme => ({
   user: {
@@ -33,10 +35,39 @@ interface UserButtonProps extends UnstyledButtonProps {
   isLoadingUser: boolean;
 }
 
+const logoutURL = process.env.NEXT_PUBLIC_URL_LOGOUT || "/api/auth/logout";
+
 export function UserButton({ user, isLoadingUser }: UserButtonProps) {
   const { classes } = useStyles();
+  const plexo = usePlexoContext();
 
   const router = useRouter();
+
+  const logout = async () => {
+    try {
+      const res = await fetch(logoutURL, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error("Error:", errorData);
+        return ErrorNotification();
+      }
+
+      plexo.setAuthCookie("");
+      return router.replace("/login");
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
     <Group position="center">
@@ -73,13 +104,21 @@ export function UserButton({ user, isLoadingUser }: UserButtonProps) {
         <Menu.Dropdown>
           <Menu.Item
             onClick={() => {
-              router.push("/settings");
+              router.push({
+                pathname: "/settings",
+                query: { tab: "organization" },
+              });
             }}
             icon={<Settings strokeWidth={1.5} size={14} />}
           >
             Settings
           </Menu.Item>
-          <Menu.Item color="red" component="button" icon={<Logout size={14} />}>
+          <Menu.Item
+            color="red"
+            onClick={handleLogout}
+            component="button"
+            icon={<Logout size={14} />}
+          >
             Log out
           </Menu.Item>
         </Menu.Dropdown>

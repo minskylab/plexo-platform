@@ -14,11 +14,11 @@ import { Check, X } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
 import { Member, Project } from "lib/types";
-import { useData } from "lib/hooks/useData";
 import { useActions } from "lib/hooks/useActions";
 import { ProjectById } from "lib/types";
 import { noMemberId } from "../constant";
 import { MemberPhoto } from "../MemberPhoto";
+import { usePlexoContext } from "context/PlexoContext";
 
 type Payload = {
   id: any;
@@ -44,15 +44,13 @@ export const GenericLeadProjectMenu = ({
   project,
   selectedLead,
 }: GenericLeadMenuProps) => {
-  const { membersData, isLoadingMembers, memberData } = useData({
-    memberId: project?.leadId == noMemberId ? null : project?.leadId,
-  });
+  const { membersData, isLoadingMembers } = usePlexoContext();
   const { fetchUpdateProject } = useActions();
 
   const [searchValue, setSearchValue] = useState("");
   const [leadOptions, setLeadOptions] = useState<Member[]>([]);
 
-  const memberName = memberData?.memberById.name ? memberData?.memberById.name : selectedLead?.name;
+  const memberName = project?.leader?.name ? project?.leader?.name : selectedLead?.name;
 
   const onUpdateProjectLead = async (leadId: string) => {
     const res = await fetchUpdateProject({
@@ -81,11 +79,11 @@ export const GenericLeadProjectMenu = ({
   };
 
   useEffect(() => {
-    if (membersData?.members) {
+    if (membersData) {
       searchValue == ""
-        ? setLeadOptions(membersData?.members)
+        ? setLeadOptions(membersData)
         : setLeadOptions(
-            membersData?.members.filter((item: Member) =>
+            membersData?.filter((item: Member) =>
               item.name.toLowerCase().includes(searchValue.toLowerCase())
             )
           );

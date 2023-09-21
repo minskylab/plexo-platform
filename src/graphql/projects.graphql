@@ -22,6 +22,11 @@ query Projects {
       id
       name
     }
+    leader {
+      id
+      name
+      photoUrl
+    }
   }
 }
 

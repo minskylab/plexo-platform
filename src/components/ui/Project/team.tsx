@@ -16,9 +16,9 @@ import { Affiliate } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
 import { ProjectById, Team } from "lib/types";
-import { useData } from "lib/hooks/useData";
 import { useActions } from "lib/hooks/useActions";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import { usePlexoContext } from "context/PlexoContext";
 
 const useStyles = createStyles(theme => ({
   checkbox: {
@@ -46,14 +46,14 @@ type TeamCheckboxProps = {
 
 export const TeamCheckboxGroup = ({ teamFilters, setTeamFilters }: TeamCheckboxProps) => {
   const { classes } = useStyles();
-  const { teamsData } = useData({});
+  const { teamsData } = usePlexoContext();
   const [searchValue, setSearchValue] = useState("");
   const [teamOptions, setTeamOptions] = useState<Team[]>([]);
 
   useEffect(() => {
-    if (teamsData?.teams) {
+    if (teamsData) {
       setTeamOptions(
-        teamsData?.teams.filter((item: Team) =>
+        teamsData?.filter((item: Team) =>
           item.name.toLowerCase().includes(searchValue.toLowerCase())
         )
       );
@@ -114,18 +114,18 @@ export const GenericTeamMenu = ({
   setSelectedTeams,
   project,
 }: GenericTeamsMenuProps) => {
-  const { teamsData, isLoadingTeams } = useData({});
+  const { teamsData, isLoadingTeams } = usePlexoContext();
   const [searchValue, setSearchValue] = useState("");
   const [teamsOptions, setTeamsOptions] = useState<Team[]>([]);
   const [teams, setTeams] = useState<string[] | null>(null);
   const { fetchUpdateProject } = useActions();
 
   useEffect(() => {
-    if (teamsData?.teams) {
+    if (teamsData) {
       searchValue == ""
-        ? setTeamsOptions(teamsData?.teams)
+        ? setTeamsOptions(teamsData)
         : setTeamsOptions(
-            teamsData?.teams.filter((item: Team) =>
+            teamsData?.filter((item: Team) =>
               item.name.toLowerCase().includes(searchValue.toLowerCase())
             )
           );

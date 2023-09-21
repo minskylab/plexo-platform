@@ -203,7 +203,7 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
     StatusBoardEnable(TaskStatus.InProgress) ? (colsCounter += 1) : (colsCounter += 0);
     StatusBoardEnable(TaskStatus.Done) ? (colsCounter += 1) : (colsCounter += 0);
     StatusBoardEnable(TaskStatus.Canceled) ? (colsCounter += 1) : (colsCounter += 0);
-    return colsCounter > 6 ? 6 : colsCounter ;
+    return colsCounter > 6 ? 6 : colsCounter;
   };
 
   return (
@@ -341,12 +341,63 @@ const TasksList = ({ taskData, fetching }: TasksProps) => {
   );
 };
 
+const STORAGE_KEY = "filterValues";
+
 export const TasksPageContent = () => {
   const { classes, theme } = useStyles();
   const { setNavBarOpened, setTasks } = usePlexoContext();
   const [viewMode, setViewMode] = useState<"list" | "columns">("list");
 
-  const {
+  const [{ data: tasksData, fetching: isFetchingTasksData }] = useQuery({
+    query: TasksDocument,
+  });
+
+  //Filters
+  let storedFilterValues;
+
+  if (typeof window !== "undefined") {
+    storedFilterValues = localStorage.getItem(STORAGE_KEY);
+  }
+
+  const filterValuesStorage = storedFilterValues
+    ? JSON.parse(storedFilterValues)
+    : {
+        status: [],
+        assignee: [],
+        leader: [],
+        creator: [],
+        priority: [],
+        labels: [],
+        project: [],
+      };
+
+  const [statusFilters, setStatusFilters] = useState<string[]>(filterValuesStorage.status ?? []);
+  const [assigneeFilters, setAssigneeFilters] = useState<string[]>(
+    filterValuesStorage.assignee ?? []
+  );
+  const [leaderFilters, setLeaderFilters] = useState<string[]>(filterValuesStorage.leader ?? []);
+  const [creatorFilters, setCreatorFilters] = useState<string[]>(filterValuesStorage.creator ?? []);
+  const [priorityFilters, setPriorityFilters] = useState<string[]>(
+    filterValuesStorage.priority ?? []
+  );
+  const [labelsFilters, setLabelsFilters] = useState<string[]>(filterValuesStorage.labels ?? []);
+  const [projectFilters, setProjectFilters] = useState<string[]>(filterValuesStorage.project ?? []);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    const filterValues = {
+      status: statusFilters,
+      assignee: assigneeFilters,
+      leader: leaderFilters,
+      creator: creatorFilters,
+      priority: priorityFilters,
+      labels: labelsFilters,
+      project: projectFilters,
+    };
+    let filtrosTotal = Object.values(filterValues).filter(value => value.length > 0);
+    setTotal(filtrosTotal.length);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(filterValues));
+  }, [
     statusFilters,
     assigneeFilters,
     leaderFilters,
@@ -354,8 +405,7 @@ export const TasksPageContent = () => {
     priorityFilters,
     labelsFilters,
     projectFilters,
-    teamFilters,
-  } = usePlexoContext();
+  ]);
 
   useEffect(() => {
     setViewMode(getCookie("viewMode") === "columns" ? "columns" : "list");
@@ -366,10 +416,6 @@ export const TasksPageContent = () => {
       maxAge: 30 * 24 * 60 * 60,
     });
   }, [viewMode]);
-
-  const [{ data: tasksData, fetching: isFetchingTasksData }] = useQuery({
-    query: TasksDocument,
-  });
 
   useEffect(() => {
     if (tasksData) {
@@ -388,7 +434,6 @@ export const TasksPageContent = () => {
       (!labelsFilters.length ||
         labelsFilters.every(filterLabel => task.labels.some(label => label.id === filterLabel))) &&
       (!projectFilters.length || projectFilters.includes(task.projectId))
-      //Team
     );
   });
 
@@ -414,7 +459,23 @@ export const TasksPageContent = () => {
               <LayoutSidebar size={16} />
             </ActionIcon>
           </MediaQuery>
-          <FilterMenu />
+          <FilterMenu
+            statusFilters={statusFilters}
+            setStatusFilters={setStatusFilters}
+            assigneeFilters={assigneeFilters}
+            setAssigneeFilters={setAssigneeFilters}
+            leaderFilters={leaderFilters}
+            setLeaderFilters={setLeaderFilters}
+            creatorFilters={creatorFilters}
+            setCreatorFilters={setCreatorFilters}
+            priorityFilters={priorityFilters}
+            setPriorityFilters={setPriorityFilters}
+            labelsFilters={labelsFilters}
+            setLabelsFilters={setLabelsFilters}
+            projectFilters={projectFilters}
+            setProjectFilters={setProjectFilters}
+            total={total}
+          />
         </Group>
 
         <Group>

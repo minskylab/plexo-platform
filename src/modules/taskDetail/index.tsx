@@ -3,8 +3,6 @@ import {
   Group,
   Stack,
   Text,
-  TextInput,
-  Textarea,
   Divider,
   CopyButton,
   Tooltip,
@@ -17,8 +15,8 @@ import {
   useMantineTheme,
   Avatar,
   Center,
+  Skeleton,
 } from "@mantine/core";
-import { useClickOutside } from "@mantine/hooks";
 import { DateInput } from "@mantine/dates";
 import { IconSparkles } from "@tabler/icons-react";
 import { Copy, Dots, LayoutSidebar, ChevronLeft, Plus, X } from "tabler-icons-react";
@@ -41,12 +39,13 @@ import { TaskMenu } from "components/ui/Task/menu";
 import { Task, TaskById, TaskSuggestion } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { usePlexoContext } from "context/PlexoContext";
-import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
+import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { TaskListElement } from "components/ui/Task/task";
 import { validateDate } from "lib/utils";
 import { SubdivideTaskDocument } from "integration/graphql";
 import { ActivitiesTask } from "./Activities";
 import { DueDateGenericSelector } from "components/ui/Task/dueDate";
+import { TitleForm } from "./Form";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -64,6 +63,9 @@ const useStyles = createStyles(theme => ({
     [theme.fn.smallerThan("lg")]: {
       display: "flex",
     },
+  },
+  headerSections: {
+    height: 22,
   },
 }));
 
@@ -206,7 +208,7 @@ const SubTasks = ({ task }: { task: TaskById | undefined }) => {
   }, [subdivideTaskData]);
 
   return (
-    <>
+    <Stack mb={"xl"}>
       <Group position="apart">
         <Text lineClamp={1} size={"sm"} color={"dimmed"}>
           Subtasks
@@ -249,7 +251,7 @@ const SubTasks = ({ task }: { task: TaskById | undefined }) => {
         setTaskSuggestion={setTaskSuggestion}
         parentTask={task}
       />
-    </>
+    </Stack>
   );
 };
 
@@ -257,60 +259,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
   const { classes, theme } = useStyles();
   const { setNavBarOpened } = usePlexoContext();
   const { fetchUpdateTask } = useActions();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date | null>(null);
-
-  const onUpdateTaskTitle = async (title: string) => {
-    if (!title.length) {
-      AlertNotification(
-        "titleUpdateFailed",
-        "Update Failed",
-        "Please enter a title before submitting"
-      );
-      task?.title && setTitle(task.title);
-    } else {
-      const res = await fetchUpdateTask({
-        taskId: task?.id,
-        title: title,
-        description: task?.description,
-        status: statusName(task?.status),
-        priority: priorityName(task?.priority),
-        dueDate: task?.dueDate,
-        projectId: task?.project?.id,
-        leadId: task?.leader?.id,
-        assignees: assigneesId(task),
-      });
-
-      if (res.data) {
-        SuccessNotification("Title updated", res.data.updateTask.title);
-      }
-      if (res.error) {
-        ErrorNotification();
-      }
-    }
-  };
-
-  const onUpdateTaskDescription = async (desc: string) => {
-    const res = await fetchUpdateTask({
-      taskId: task?.id,
-      description: desc,
-      status: statusName(task?.status),
-      priority: priorityName(task?.priority),
-      title: task?.title,
-      dueDate: task?.dueDate,
-      projectId: task?.project?.id,
-      leadId: task?.leader?.id,
-      assignees: assigneesId(task),
-    });
-
-    if (res.data) {
-      SuccessNotification("Description updated", res.data.updateTask.title);
-    }
-    if (res.error) {
-      ErrorNotification();
-    }
-  };
 
   const onUpdateTaskDueDate = async (dueDate: Date | null) => {
     const res = await fetchUpdateTask({
@@ -333,34 +282,8 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
     }
   };
 
-  const refTitle = useClickOutside(() => {
-    if (isLoading) {
-      return null;
-    }
-
-    if (title !== task?.title) {
-      onUpdateTaskTitle(title);
-    }
-  });
-
-  const refDescription = useClickOutside(() => {
-    if (isLoading) {
-      return null;
-    }
-
-    if ((!task?.description || task?.description == "") && description == "") {
-      return null;
-    }
-
-    if (task?.description !== description) {
-      onUpdateTaskDescription(description);
-    }
-  });
-
   useEffect(() => {
     if (task) {
-      setTitle(task.title);
-      setDescription(task.description ? task.description : "");
       setDueDate(validateDate(task.dueDate));
     }
   }, [task]);
@@ -393,19 +316,28 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
         </Link>
       </Group>
       <Group px={20} sx={{ alignItems: "baseline" }}>
-        <Box sx={{ flex: 1 }}>
-          <Stack maw={860} m="auto">
-            <Stack spacing={10}>
-              <Group position="apart">
+        <Stack maw={860} m="auto" h={"100%"} sx={{ flex: 1 }}>
+          <Stack spacing={10}>
+            <Group position="apart" className={classes.headerSections}>
+              {isLoading ? (
+                <Skeleton width={50} height={8} />
+              ) : (
                 <Text lineClamp={1} size={"sm"} color={"dimmed"}>
                   {`PLE-${task?.count}`}
                 </Text>
-                <TaskMenu task={task}>
-                  <ActionIcon radius={"sm"} size={"xs"}>
-                    <Dots size={18} />
-                  </ActionIcon>
-                </TaskMenu>
-              </Group>
+              )}
+
+              <TaskMenu task={task}>
+                <ActionIcon radius={"sm"} size={"xs"} disabled={task?.id ? false : true}>
+                  <Dots size={18} />
+                </ActionIcon>
+              </TaskMenu>
+            </Group>
+            {isLoading ? (
+              <Box className={classes.propsBar}>
+                <Skeleton height={20} />
+              </Box>
+            ) : (
               <Group spacing={5} className={classes.propsBar}>
                 <StatusSelectorByTask task={task} type="button" />
                 <PrioritySelectorByTask task={task} type="button" />
@@ -415,97 +347,104 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                 <ProjectSelectorByTask task={task} />
                 <DueDateGenericSelector dueDate={dueDate} onChange={handleDateChange} />
               </Group>
-            </Stack>
-            <Divider />
-            <TextInput
-              ref={refTitle}
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              placeholder="Task Title"
-              size="lg"
-              variant="filled"
-              styles={theme => ({
-                input: {
-                  fontSize: 22,
-                  backgroundColor:
-                    theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[1],
-                },
-              })}
-            />
-
-            <Textarea
-              ref={refDescription}
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-              placeholder="Add description..."
-              size="sm"
-              autosize
-              minRows={2}
-              variant="filled"
-              styles={theme => ({
-                input: {
-                  backgroundColor:
-                    theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[1],
-                },
-              })}
-            />
-            <SubTasks task={task} />
-            <ActivitiesTask task={task} />
+            )}
           </Stack>
-        </Box>
+
+          <Divider />
+          <TitleForm task={task} isLoading={isLoading} />
+          <SubTasks task={task} />
+          <ActivitiesTask task={task} isLoading={isLoading} />
+        </Stack>
+
         <Divider orientation="vertical" className={classes.propsSection} />
         <Stack miw={320} maw={400} className={classes.propsSection}>
-          <CopyButton value={task?.id} timeout={2000}>
-            {({ copied, copy }) => (
-              <Tooltip label={copied ? "Copied" : "Copy task ID"} position="top">
-                <ActionIcon onClick={copy}>
-                  <Copy size={16} />
-                </ActionIcon>
-              </Tooltip>
-            )}
-          </CopyButton>
+          <Group className={classes.headerSections}>
+            <CopyButton value={task?.id} timeout={2000}>
+              {({ copied, copy }) => (
+                <Tooltip label={copied ? "Copied" : "Copy task ID"} position="top">
+                  <ActionIcon
+                    size={"xs"}
+                    radius={"sm"}
+                    onClick={copy}
+                    disabled={task?.id ? false : true}
+                  >
+                    <Copy size={18} />
+                  </ActionIcon>
+                </Tooltip>
+              )}
+            </CopyButton>
+          </Group>
           <Divider />
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Status
             </Text>
-            <StatusSelectorByTask task={task} type={"button"} />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <StatusSelectorByTask task={task} type={"button"} />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Priority
             </Text>
-            <PrioritySelectorByTask task={task} type="button" />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <PrioritySelectorByTask task={task} type="button" />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Lead
             </Text>
-            <LeadSelectorByTask task={task} type="button" />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <LeadSelectorByTask task={task} type="button" />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Assignee
             </Text>
-            <AssigneesSelectorByTask task={task} />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <AssigneesSelectorByTask task={task} />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Labels
             </Text>
-            <LabelsSelectorBytask task={task} />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <LabelsSelectorBytask task={task} />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Project
             </Text>
-            <ProjectSelectorByTask task={task} />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <ProjectSelectorByTask task={task} />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Due Date
             </Text>
-            <DueDateGenericSelector dueDate={dueDate} onChange={handleDateChange} />
+
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <DueDateGenericSelector dueDate={dueDate} onChange={handleDateChange} />
+            )}
           </Group>
         </Stack>
       </Group>
