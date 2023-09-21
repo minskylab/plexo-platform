@@ -104,7 +104,10 @@ export function UserButton({ user, isLoadingUser }: UserButtonProps) {
         <Menu.Dropdown>
           <Menu.Item
             onClick={() => {
-              router.push("/settings");
+              router.push({
+                pathname: "/settings",
+                query: { tab: "organization" },
+              });
             }}
             icon={<Settings strokeWidth={1.5} size={14} />}
           >
