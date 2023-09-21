@@ -17,6 +17,7 @@ import { useToggle } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { CalendarTime, Check, Robot, Subtask, X } from "tabler-icons-react";
 import { useState, useEffect } from "react";
+import { useQuery } from "urql";
 
 import { DateLabel } from "lib/utils";
 import { useActions } from "lib/hooks/useActions";
@@ -27,9 +28,8 @@ import { AssigneesSelector } from "./assignees";
 import { statusName, StatusSelector } from "./status";
 import { Member, Project } from "lib/types";
 import { priorityName, PrioritySelector } from "./priority";
-import { TaskStatus, TaskPriority } from "integration/graphql";
+import { TaskStatus, TaskPriority, SuggestNewTaskDocument } from "integration/graphql";
 import NewSubTasks from "./newSubtasks";
-import { useData } from "lib/hooks/useData";
 import { usePlexoContext } from "context/PlexoContext";
 
 type NewTaskProps = {
@@ -82,15 +82,20 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [subtasks, setSubtasks] = useState<SubTask[]>([]);
 
-  const { taskSuggestionData, isLoadingTaskSuggestion, fetchTaskSuggestion } = useData({
-    taskDetails: {
-      title: title ? title : null,
-      description: description ? description : null,
-      status: status == TaskStatus.Backlog ? null : status,
-      priority: priority == TaskPriority.None ? null : priority,
-      dueDate: dueDate ? dueDate : null,
-    },
-  });
+  const [{ data: taskSuggestionData, fetching: isLoadingTaskSuggestion }, fetchTaskSuggestion] =
+    useQuery({
+      pause: true,
+      query: SuggestNewTaskDocument,
+      variables: {
+        taskSuggestion: {
+          title: title,
+          description: description,
+          dueDate: dueDate,
+          status: status,
+          priority: priority,
+        },
+      },
+    });
 
   useEffect(() => {
     if (taskSuggestionData) {
