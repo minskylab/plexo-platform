@@ -17,7 +17,6 @@ import {
   Center,
   Skeleton,
 } from "@mantine/core";
-import { DateInput } from "@mantine/dates";
 import { IconSparkles } from "@tabler/icons-react";
 import { Copy, Dots, LayoutSidebar, ChevronLeft, Plus, X } from "tabler-icons-react";
 import { useState, useEffect } from "react";
@@ -44,8 +43,8 @@ import { TaskListElement } from "components/ui/Task/task";
 import { validateDate } from "lib/utils";
 import { SubdivideTaskDocument } from "integration/graphql";
 import { ActivitiesTask } from "./Activities";
-import { DueDateGenericSelector } from "components/ui/Task/dueDate";
 import { TitleForm } from "./Form";
+import { DateGenericSelector } from "components/ui/DateGenericSelector";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -345,7 +344,11 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                 <AssigneesSelectorByTask task={task} />
                 <LabelsSelectorBytask task={task} />
                 <ProjectSelectorByTask task={task} />
-                <DueDateGenericSelector dueDate={dueDate} onChange={handleDateChange} />
+                <DateGenericSelector
+                  placeholder={"Set due date"}
+                  date={dueDate}
+                  onChange={handleDateChange}
+                />
               </Group>
             )}
           </Stack>
@@ -443,7 +446,11 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
             {isLoading ? (
               <Skeleton height={26} width={100} />
             ) : (
-              <DueDateGenericSelector dueDate={dueDate} onChange={handleDateChange} />
+              <DateGenericSelector
+                placeholder={"Set due date"}
+                date={dueDate}
+                onChange={handleDateChange}
+              />
             )}
           </Group>
         </Stack>

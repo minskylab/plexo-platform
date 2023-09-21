@@ -23,9 +23,8 @@ import { ProjectById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { validateDate } from "lib/utils";
-import { DueDateGenericSelector } from "components/ui/Project/dueDate";
-import { StartDateGenericSelector } from "components/ui/Project/startDate";
 import { TitleForm } from "./Form";
+import { DateGenericSelector } from "components/ui/DateGenericSelector";
 
 type ProjectDetailProps = {
   project: ProjectById | undefined;
@@ -145,8 +144,16 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
                 <LeadSelectorByProject project={project} />
                 <MemberSelectorByProject project={project} />
                 <TeamSelectorByProject project={project} />
-                <StartDateGenericSelector startDate={startDate} onChange={handleStartDateChange} />
-                <DueDateGenericSelector dueDate={dueDate} onChange={handleDueDateChange} />
+                <DateGenericSelector
+                  placeholder={"Set start date"}
+                  date={startDate}
+                  onChange={handleStartDateChange}
+                />
+                <DateGenericSelector
+                  placeholder={"Set due date"}
+                  date={dueDate}
+                  onChange={handleDueDateChange}
+                />
               </Group>
             )}
           </Stack>
@@ -214,7 +221,11 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
               <Skeleton height={26} width={100} />
             ) : (
               <Tooltip label="Start Date" position="bottom">
-                <StartDateGenericSelector startDate={startDate} onChange={handleStartDateChange} />
+                <DateGenericSelector
+                  placeholder={"Set start date"}
+                  date={startDate}
+                  onChange={handleStartDateChange}
+                />
               </Tooltip>
             )}
           </Group>
@@ -227,7 +238,11 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
               <Skeleton height={26} width={100} />
             ) : (
               <Tooltip label="Due Date" position="bottom">
-                <DueDateGenericSelector dueDate={dueDate} onChange={handleDueDateChange} />
+                <DateGenericSelector
+                  placeholder={"Set due date"}
+                  date={dueDate}
+                  onChange={handleDueDateChange}
+                />
               </Tooltip>
             )}
           </Group>
