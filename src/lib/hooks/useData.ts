@@ -3,28 +3,10 @@ import {
   MembersDocument,
   ProjectsDocument,
   TeamsDocument,
-  MemberByIdDocument,
-  TaskStatus,
-  TaskPriority,
 } from "integration/graphql";
 import { useQuery } from "urql";
 
-interface UseDataProps {
-  memberId?: string | undefined;
-  taskId?: string | undefined;
-  projectId?: string | undefined;
-  teamId?: string | undefined;
-  taskDetails?: {
-    title: string | null;
-    description: string | null;
-    dueDate: Date | null;
-    status: TaskStatus | null;
-    priority: TaskPriority | null;
-  };
-}
-
-export const useData = ({ memberId }: UseDataProps) => {
-  //Queries
+export const useData = () => {
   const [{ data: projectsData, fetching: isLoadingProjects }] = useQuery({
     query: ProjectsDocument,
   });
@@ -41,14 +23,6 @@ export const useData = ({ memberId }: UseDataProps) => {
     query: LabelsDocument,
   });
 
-  const [{ data: memberData, fetching: isLoadingMember }] = useQuery({
-    pause: memberId ? false : true,
-    query: MemberByIdDocument,
-    variables: {
-      memberId: memberId,
-    },
-  });
-
   return {
     projectsData,
     isLoadingProjects,
@@ -58,7 +32,5 @@ export const useData = ({ memberId }: UseDataProps) => {
     isLoadingTeams,
     labelsData,
     isLoadingLabels,
-    memberData,
-    isLoadingMember,
   };
 };

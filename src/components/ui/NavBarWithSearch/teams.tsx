@@ -7,7 +7,7 @@ import { Team } from "lib/types";
 
 const TeamsList = () => {
   const theme = useMantineTheme();
-  const { teamsData, isLoadingTeams } = useData({});
+  const { teamsData, isLoadingTeams } = useData();
 
   const teams = teamsData?.teams
     .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())

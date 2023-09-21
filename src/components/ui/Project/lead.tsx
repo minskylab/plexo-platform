@@ -44,15 +44,13 @@ export const GenericLeadProjectMenu = ({
   project,
   selectedLead,
 }: GenericLeadMenuProps) => {
-  const { membersData, isLoadingMembers, memberData } = useData({
-    memberId: project?.leadId == noMemberId ? null : project?.leadId,
-  });
+  const { membersData, isLoadingMembers } = useData();
   const { fetchUpdateProject } = useActions();
 
   const [searchValue, setSearchValue] = useState("");
   const [leadOptions, setLeadOptions] = useState<Member[]>([]);
 
-  const memberName = memberData?.memberById.name ? memberData?.memberById.name : selectedLead?.name;
+  const memberName = project?.leader?.name ? project?.leader?.name : selectedLead?.name;
 
   const onUpdateProjectLead = async (leadId: string) => {
     const res = await fetchUpdateProject({

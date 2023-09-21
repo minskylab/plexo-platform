@@ -42,7 +42,7 @@ type GenericLabelsMenuProps = {
 };
 
 export const LabelColor = (labels: string[]) => {
-  const { labelsData } = useData({});
+  const { labelsData } = useData();
 
   const colors: Label[] = labelsData
     ? labelsData?.labels.filter((label: Label) => labels.includes(label.id))
@@ -84,7 +84,7 @@ export const LabelColor = (labels: string[]) => {
 };
 
 export const LabelNameBtn = (labels: string[]) => {
-  const { labelsData } = useData({});
+  const { labelsData } = useData();
   const data = labelsData
     ? labelsData?.labels.filter((label: Label) => labels.includes(label.id))
     : [];
@@ -108,7 +108,7 @@ type LabelCheckboxProps = {
 
 export const LabelCheckboxGroup = ({ labelsFilters, setLabelsFilters }: LabelCheckboxProps) => {
   const { classes, theme } = useStyles();
-  const { labelsData } = useData({});
+  const { labelsData } = useData();
   const [searchValue, setSearchValue] = useState("");
   const [labelsOptions, setLabelsOptions] = useState<Label[]>([]);
 
@@ -161,7 +161,7 @@ export const GenericLabelsMenu = ({
   setSelectedLabels,
   task,
 }: GenericLabelsMenuProps) => {
-  const { labelsData } = useData({});
+  const { labelsData } = useData();
   const [labels, setLabels] = useState<string[] | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [labelsOptions, setLabelsOptions] = useState<Label[]>([]);

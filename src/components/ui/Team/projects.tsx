@@ -37,7 +37,7 @@ export const GenericProjectsMenu = ({
   team,
 }: GenericProjectsMenuProps) => {
   const { fetchUpdateTeam } = useActions();
-  const { projectsData, isLoadingProjects } = useData({});
+  const { projectsData, isLoadingProjects } = useData();
 
   const [projects, setProjects] = useState<string[] | null>(null);
   const [searchValue, setSearchValue] = useState("");

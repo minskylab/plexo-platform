@@ -515,15 +515,6 @@ export type MembersQuery = {
   }>;
 };
 
-export type MemberByIdQueryVariables = Exact<{
-  memberId: Scalars["UUID"]["input"];
-}>;
-
-export type MemberByIdQuery = {
-  __typename?: "QueryRoot";
-  memberById: { __typename?: "Member"; id: any; name: string };
-};
-
 export type UpdateMemberMutationVariables = Exact<{
   memberId: Scalars["UUID"]["input"];
   name?: InputMaybe<Scalars["String"]["input"]>;
@@ -555,6 +546,7 @@ export type ProjectsQuery = {
     owner?: { __typename?: "Member"; id: any } | null;
     tasks: Array<{ __typename?: "Task"; id: any; title: string }>;
     members: Array<{ __typename?: "Member"; id: any; name: string }>;
+    leader?: { __typename?: "Member"; id: any; name: string; photoUrl?: string | null } | null;
   }>;
 };
 
@@ -1114,49 +1106,6 @@ export const MembersDocument = {
     },
   ],
 } as unknown as DocumentNode<MembersQuery, MembersQueryVariables>;
-export const MemberByIdDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "MemberById" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "memberId" } },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "memberById" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "id" },
-                value: { kind: "Variable", name: { kind: "Name", value: "memberId" } },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<MemberByIdQuery, MemberByIdQueryVariables>;
 export const UpdateMemberDocument = {
   kind: "Document",
   definitions: [
@@ -1285,6 +1234,18 @@ export const ProjectsDocument = {
                     selections: [
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "leader" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                      { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
                     ],
                   },
                 },

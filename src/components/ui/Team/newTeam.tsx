@@ -16,7 +16,7 @@ type NewTeamProps = {
 
 const NewTeam = ({ newTeamOpened, setNewTeamOpened }: NewTeamProps) => {
   const theme = useMantineTheme();
-  const { teamsData } = useData({});
+  const { teamsData } = useData();
 
   const [name, setName] = useState("");
   const [visibility, setVisibility] = useState("");

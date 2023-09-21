@@ -43,7 +43,7 @@ export const MembersCheckboxGroup = ({
   setSelectedMembers,
   inputPlaceholder,
 }: MembersCheckboxProps) => {
-  const { membersData } = useData({});
+  const { membersData } = useData();
   const [searchValue, setSearchValue] = useState("");
   const [membersOptions, setMembersOptions] = useState<Member[]>([]);
 
@@ -106,7 +106,7 @@ export const GenericAssigneesMenu = ({
   setSelectedAssignees,
   task,
 }: GenericAssigneesMenuProps) => {
-  const { membersData, isLoadingMembers } = useData({});
+  const { membersData, isLoadingMembers } = useData();
   const { fetchUpdateTask } = useActions();
   const [assignees, setAssignees] = useState<string[] | null>(null);
   const [searchValue, setSearchValue] = useState("");

@@ -55,7 +55,7 @@ export const ProjectsCheckboxGroup = ({
   setProjectFilters,
 }: ProjectsCheckboxProps) => {
   const { classes } = useStyles();
-  const { projectsData } = useData({});
+  const { projectsData } = useData();
   const [searchValue, setSearchValue] = useState("");
   const [projectsOptions, setProjectsOptions] = useState<Project[]>([]);
 
@@ -113,7 +113,7 @@ type GenericProjectsMenuProps = {
 };
 
 export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProjectsMenuProps) => {
-  const { projectsData, isLoadingProjects } = useData({});
+  const { projectsData, isLoadingProjects } = useData();
   const { fetchUpdateTask } = useActions();
 
   const [searchValue, setSearchValue] = useState("");

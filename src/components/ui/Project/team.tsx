@@ -46,7 +46,7 @@ type TeamCheckboxProps = {
 
 export const TeamCheckboxGroup = ({ teamFilters, setTeamFilters }: TeamCheckboxProps) => {
   const { classes } = useStyles();
-  const { teamsData } = useData({});
+  const { teamsData } = useData();
   const [searchValue, setSearchValue] = useState("");
   const [teamOptions, setTeamOptions] = useState<Team[]>([]);
 
@@ -114,7 +114,7 @@ export const GenericTeamMenu = ({
   setSelectedTeams,
   project,
 }: GenericTeamsMenuProps) => {
-  const { teamsData, isLoadingTeams } = useData({});
+  const { teamsData, isLoadingTeams } = useData();
   const [searchValue, setSearchValue] = useState("");
   const [teamsOptions, setTeamsOptions] = useState<Team[]>([]);
   const [teams, setTeams] = useState<string[] | null>(null);

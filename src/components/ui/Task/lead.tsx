@@ -36,7 +36,7 @@ export const GenericLeadTaskMenu = ({
   task,
   selectedLead,
 }: GenericLeadMenuProps) => {
-  const { membersData, isLoadingMembers } = useData({});
+  const { membersData, isLoadingMembers } = useData();
   const { fetchUpdateTask } = useActions();
   const [searchValue, setSearchValue] = useState("");
   const [membersOptions, setMembersOptions] = useState<Member[]>([]);
