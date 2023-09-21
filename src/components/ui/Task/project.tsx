@@ -14,15 +14,16 @@ import {
 } from "@mantine/core";
 import { LayoutGrid } from "tabler-icons-react";
 import { useEffect, useState } from "react";
+import { useQuery } from "urql";
 
 import { Project, TaskById } from "lib/types";
-import { useData } from "lib/hooks/useData";
 import { useActions } from "lib/hooks/useActions";
 import { statusName } from "./status";
 import { priorityName } from "./priority";
 import { assigneesId } from "./assignees";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { noMemberId } from "../constant";
+import { ProjectsDocument } from "integration/graphql";
 
 const useStyles = createStyles(theme => ({
   checkbox: {
@@ -55,9 +56,12 @@ export const ProjectsCheckboxGroup = ({
   setProjectFilters,
 }: ProjectsCheckboxProps) => {
   const { classes } = useStyles();
-  const { projectsData } = useData({});
   const [searchValue, setSearchValue] = useState("");
   const [projectsOptions, setProjectsOptions] = useState<Project[]>([]);
+
+  const [{ data: projectsData, fetching: isLoadingProjects }] = useQuery({
+    query: ProjectsDocument,
+  });
 
   useEffect(() => {
     if (projectsData?.projects) {
@@ -67,7 +71,7 @@ export const ProjectsCheckboxGroup = ({
         )
       );
     }
-  }, [searchValue]);
+  }, [projectsData, searchValue]);
 
   return (
     <>
@@ -113,11 +117,13 @@ type GenericProjectsMenuProps = {
 };
 
 export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProjectsMenuProps) => {
-  const { projectsData, isLoadingProjects } = useData({});
   const { fetchUpdateTask } = useActions();
-
   const [searchValue, setSearchValue] = useState("");
   const [projectsOptions, setProjectsOptions] = useState<Project[]>([]);
+
+  const [{ data: projectsData, fetching: isLoadingProjects }] = useQuery({
+    query: ProjectsDocument,
+  });
 
   useEffect(() => {
     if (projectsData?.projects) {

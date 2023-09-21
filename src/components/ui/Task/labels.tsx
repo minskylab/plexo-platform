@@ -18,11 +18,12 @@ import { Tag } from "tabler-icons-react";
 
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { useActions } from "lib/hooks/useActions";
-import { useData } from "lib/hooks/useData";
 import { Label, TaskById } from "lib/types";
 import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
+import { useQuery } from "urql";
+import { LabelsDocument } from "integration/graphql";
 
 const useStyles = createStyles(theme => ({
   checkbox: {
@@ -42,7 +43,9 @@ type GenericLabelsMenuProps = {
 };
 
 export const LabelColor = (labels: string[]) => {
-  const { labelsData } = useData({});
+  const [{ data: labelsData }] = useQuery({
+    query: LabelsDocument,
+  });
 
   const colors: Label[] = labelsData
     ? labelsData?.labels.filter((label: Label) => labels.includes(label.id))
@@ -84,7 +87,10 @@ export const LabelColor = (labels: string[]) => {
 };
 
 export const LabelNameBtn = (labels: string[]) => {
-  const { labelsData } = useData({});
+  const [{ data: labelsData }] = useQuery({
+    query: LabelsDocument,
+  });
+
   const data = labelsData
     ? labelsData?.labels.filter((label: Label) => labels.includes(label.id))
     : [];
@@ -107,10 +113,13 @@ type LabelCheckboxProps = {
 };
 
 export const LabelCheckboxGroup = ({ labelsFilters, setLabelsFilters }: LabelCheckboxProps) => {
-  const { classes, theme } = useStyles();
-  const { labelsData } = useData({});
+  const { classes } = useStyles();
   const [searchValue, setSearchValue] = useState("");
   const [labelsOptions, setLabelsOptions] = useState<Label[]>([]);
+
+  const [{ data: labelsData }] = useQuery({
+    query: LabelsDocument,
+  });
 
   useEffect(() => {
     if (labelsData?.labels) {
@@ -161,11 +170,14 @@ export const GenericLabelsMenu = ({
   setSelectedLabels,
   task,
 }: GenericLabelsMenuProps) => {
-  const { labelsData } = useData({});
   const [labels, setLabels] = useState<string[] | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [labelsOptions, setLabelsOptions] = useState<Label[]>([]);
   const { fetchUpdateTask } = useActions();
+
+  const [{ data: labelsData }] = useQuery({
+    query: LabelsDocument,
+  });
 
   useEffect(() => {
     if (labelsData?.labels) {

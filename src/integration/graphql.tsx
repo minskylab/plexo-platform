@@ -718,16 +718,14 @@ export type TasksSubscriptionSubscription = {
   tasks: {
     __typename?: "Task";
     id: any;
-    status: TaskStatus;
-    title: string;
-    description?: string | null;
     createdAt: any;
     updatedAt: any;
+    title: string;
+    description?: string | null;
+    status: TaskStatus;
     priority: TaskPriority;
     ownerId: any;
-    leadId?: any | null;
-    projectId?: any | null;
-    labels: Array<{ __typename?: "Label"; id: any; name: string }>;
+    count: number;
   };
 };
 
@@ -2016,26 +2014,14 @@ export const TasksSubscriptionDocument = {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "status" } },
-                { kind: "Field", name: { kind: "Name", value: "title" } },
-                { kind: "Field", name: { kind: "Name", value: "description" } },
                 { kind: "Field", name: { kind: "Name", value: "createdAt" } },
                 { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "status" } },
                 { kind: "Field", name: { kind: "Name", value: "priority" } },
                 { kind: "Field", name: { kind: "Name", value: "ownerId" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "labels" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
-                { kind: "Field", name: { kind: "Name", value: "leadId" } },
-                { kind: "Field", name: { kind: "Name", value: "projectId" } },
+                { kind: "Field", name: { kind: "Name", value: "count" } },
               ],
             },
           },

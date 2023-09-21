@@ -2,15 +2,18 @@ import { Navbar, NavLink, useMantineTheme } from "@mantine/core";
 import { Dna } from "tabler-icons-react";
 import router from "next/router";
 
-import { useData } from "lib/hooks/useData";
 import { Team } from "lib/types";
 
-const TeamsList = () => {
-  const theme = useMantineTheme();
-  const { teamsData, isLoadingTeams } = useData({});
+type TeamsListProps = {
+  data: Team[] | undefined;
+  isLoading: boolean;
+};
 
-  const teams = teamsData?.teams
-    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+const TeamsList = ({ data, isLoading }: TeamsListProps) => {
+  const theme = useMantineTheme();
+
+  const teams = data
+    ?.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
     .map((t: Team, index: number) => {
       return (
         <NavLink

@@ -16,9 +16,10 @@ import { Affiliate } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
 import { ProjectById, Team } from "lib/types";
-import { useData } from "lib/hooks/useData";
 import { useActions } from "lib/hooks/useActions";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import { useQuery } from "urql";
+import { TeamsDocument } from "integration/graphql";
 
 const useStyles = createStyles(theme => ({
   checkbox: {
@@ -46,9 +47,12 @@ type TeamCheckboxProps = {
 
 export const TeamCheckboxGroup = ({ teamFilters, setTeamFilters }: TeamCheckboxProps) => {
   const { classes } = useStyles();
-  const { teamsData } = useData({});
   const [searchValue, setSearchValue] = useState("");
   const [teamOptions, setTeamOptions] = useState<Team[]>([]);
+
+  const [{ data: teamsData }] = useQuery({
+    query: TeamsDocument,
+  });
 
   useEffect(() => {
     if (teamsData?.teams) {
@@ -114,11 +118,14 @@ export const GenericTeamMenu = ({
   setSelectedTeams,
   project,
 }: GenericTeamsMenuProps) => {
-  const { teamsData, isLoadingTeams } = useData({});
   const [searchValue, setSearchValue] = useState("");
   const [teamsOptions, setTeamsOptions] = useState<Team[]>([]);
   const [teams, setTeams] = useState<string[] | null>(null);
   const { fetchUpdateProject } = useActions();
+
+  const [{ data: teamsData, fetching: isLoadingTeams }] = useQuery({
+    query: TeamsDocument,
+  });
 
   useEffect(() => {
     if (teamsData?.teams) {

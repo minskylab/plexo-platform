@@ -19,6 +19,8 @@ import { useActions } from "lib/hooks/useActions";
 import { ProjectById } from "lib/types";
 import { noMemberId } from "../constant";
 import { MemberPhoto } from "../MemberPhoto";
+import { MembersDocument } from "integration/graphql";
+import { useQuery } from "urql";
 
 type Payload = {
   id: any;
@@ -44,13 +46,16 @@ export const GenericLeadProjectMenu = ({
   project,
   selectedLead,
 }: GenericLeadMenuProps) => {
-  const { membersData, isLoadingMembers, memberData } = useData({
-    memberId: project?.leadId == noMemberId ? null : project?.leadId,
-  });
   const { fetchUpdateProject } = useActions();
-
   const [searchValue, setSearchValue] = useState("");
   const [leadOptions, setLeadOptions] = useState<Member[]>([]);
+
+  const { memberData } = useData({
+    memberId: project?.leadId == noMemberId ? null : project?.leadId,
+  });
+  const [{ data: membersData, fetching: isLoadingMembers }] = useQuery({
+    query: MembersDocument,
+  });
 
   const memberName = memberData?.memberById.name ? memberData?.memberById.name : selectedLead?.name;
 

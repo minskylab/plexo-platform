@@ -1,9 +1,5 @@
 import {
-  LabelsDocument,
-  MembersDocument,
-  ProjectsDocument,
   SuggestNewTaskDocument,
-  TeamsDocument,
   MemberByIdDocument,
   TaskByIdDocument,
   ProjectByIdDocument,
@@ -29,21 +25,6 @@ interface UseDataProps {
 
 export const useData = ({ memberId, taskId, projectId, teamId, taskDetails }: UseDataProps) => {
   //Queries
-  const [{ data: projectsData, fetching: isLoadingProjects }] = useQuery({
-    query: ProjectsDocument,
-  });
-
-  const [{ data: membersData, fetching: isLoadingMembers }] = useQuery({
-    query: MembersDocument,
-  });
-
-  const [{ data: teamsData, fetching: isLoadingTeams }] = useQuery({
-    query: TeamsDocument,
-  });
-
-  const [{ data: labelsData, fetching: isLoadingLabels }] = useQuery({
-    query: LabelsDocument,
-  });
 
   const [{ data: memberData, fetching: isLoadingMember }] = useQuery({
     pause: memberId ? false : true,
@@ -93,14 +74,6 @@ export const useData = ({ memberId, taskId, projectId, teamId, taskDetails }: Us
     });
 
   return {
-    projectsData,
-    isLoadingProjects,
-    membersData,
-    isLoadingMembers,
-    teamsData,
-    isLoadingTeams,
-    labelsData,
-    isLoadingLabels,
     memberData,
     isLoadingMember,
     taskData,

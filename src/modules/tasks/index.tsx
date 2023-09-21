@@ -19,9 +19,9 @@ import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { LayoutColumns, LayoutRows, LayoutSidebar } from "tabler-icons-react";
 import { getCookie, setCookie } from "cookies-next";
-import { useQuery } from "urql";
+import { useQuery, useSubscription } from "urql";
 
-import { TasksDocument, TaskStatus } from "integration/graphql";
+import { TasksDocument, TasksSubscriptionDocument, TaskStatus } from "integration/graphql";
 import { TaskCardElement, TaskListElement } from "components/ui/Task/task";
 import { StatusIcon, statusName } from "components/ui/Task/status";
 import { usePlexoContext } from "context/PlexoContext";
@@ -203,7 +203,7 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
     StatusBoardEnable(TaskStatus.InProgress) ? (colsCounter += 1) : (colsCounter += 0);
     StatusBoardEnable(TaskStatus.Done) ? (colsCounter += 1) : (colsCounter += 0);
     StatusBoardEnable(TaskStatus.Canceled) ? (colsCounter += 1) : (colsCounter += 0);
-    return colsCounter > 6 ? 6 : colsCounter ;
+    return colsCounter > 6 ? 6 : colsCounter;
   };
 
   return (
@@ -370,6 +370,8 @@ export const TasksPageContent = () => {
   const [{ data: tasksData, fetching: isFetchingTasksData }] = useQuery({
     query: TasksDocument,
   });
+
+  /*  useSubscription({ query: TasksSubscriptionDocument }); */
 
   useEffect(() => {
     if (tasksData) {

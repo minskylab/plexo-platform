@@ -12,7 +12,7 @@ import {
   Tooltip,
   rem,
 } from "@mantine/core";
-
+import { spotlight } from "@mantine/spotlight";
 import router from "next/router";
 import { useState } from "react";
 import { Edit, Plus, Bulb, Checkbox, Search } from "tabler-icons-react";
@@ -23,8 +23,7 @@ import NewTeam from "../Team/newTeam";
 import { UserButton } from "../UserButton";
 import ProjectsList from "./projects";
 import TeamsList from "./teams";
-import { UserDocument } from "integration/graphql";
-import { spotlight } from "@mantine/spotlight";
+import { ProjectsDocument, TeamsDocument, UserDocument } from "integration/graphql";
 import { ProjectIcon } from "../Task/project";
 import { TeamIcon } from "../Project/team";
 
@@ -126,6 +125,14 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
     query: UserDocument,
   });
 
+  const [{ data: teamsData, fetching: isLoadingTeams }] = useQuery({
+    query: TeamsDocument,
+  });
+
+  const [{ data: projectsData, fetching: isLoadingProjects }] = useQuery({
+    query: ProjectsDocument,
+  });
+
   const mainLinks = links.map(link => (
     <UnstyledButton
       key={link.label}
@@ -216,7 +223,11 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
               </ActionIcon>
             </Tooltip>
           </Group>
-          {section === "teams" ? <TeamsList /> : <ProjectsList />}
+          {section === "teams" ? (
+            <TeamsList data={teamsData?.teams} isLoading={isLoadingTeams} />
+          ) : (
+            <ProjectsList data={projectsData?.projects} isLoading={isLoadingProjects} />
+          )}
         </Navbar.Section>
       </Navbar>
     </>

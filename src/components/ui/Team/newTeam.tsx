@@ -4,10 +4,11 @@ import { useState } from "react";
 import { Check, X } from "tabler-icons-react";
 
 import { useActions } from "lib/hooks/useActions";
-import { useData } from "lib/hooks/useData";
 import { MemberSelector } from "../Project/members";
 import { ProjectsSelector } from "./projects";
 import { Team } from "lib/types";
+import { useQuery } from "urql";
+import { TeamsDocument } from "integration/graphql";
 
 type NewTeamProps = {
   newTeamOpened: boolean;
@@ -16,7 +17,9 @@ type NewTeamProps = {
 
 const NewTeam = ({ newTeamOpened, setNewTeamOpened }: NewTeamProps) => {
   const theme = useMantineTheme();
-  const { teamsData } = useData({});
+  const [{ data: teamsData }] = useQuery({
+    query: TeamsDocument,
+  });
 
   const [name, setName] = useState("");
   const [visibility, setVisibility] = useState("");

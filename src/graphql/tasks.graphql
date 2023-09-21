@@ -111,19 +111,14 @@ query TaskById($taskId: UUID!) {
 subscription TasksSubscription {
   tasks {
     id
-    status
-    title
-    description
     createdAt
     updatedAt
+    title
+    description
+    status
     priority
     ownerId
-    labels {
-      id
-      name
-    }
-    leadId
-    projectId
+    count
   }
 }
 

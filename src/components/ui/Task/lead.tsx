@@ -13,7 +13,6 @@ import {
 import { useEffect, useState } from "react";
 
 import { Member, Task, TaskById } from "lib/types";
-import { useData } from "lib/hooks/useData";
 import { useActions } from "lib/hooks/useActions";
 import { priorityName } from "./priority";
 import { statusName } from "./status";
@@ -22,6 +21,8 @@ import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { LeadName } from "../Project/lead";
 import { noMemberId } from "../constant";
 import { MemberPhoto } from "../MemberPhoto";
+import { useQuery } from "urql";
+import { MembersDocument } from "integration/graphql";
 
 type GenericLeadMenuProps = {
   children: React.ReactNode;
@@ -36,11 +37,14 @@ export const GenericLeadTaskMenu = ({
   task,
   selectedLead,
 }: GenericLeadMenuProps) => {
-  const { membersData, isLoadingMembers } = useData({});
   const { fetchUpdateTask } = useActions();
   const [searchValue, setSearchValue] = useState("");
   const [membersOptions, setMembersOptions] = useState<Member[]>([]);
   const leadName = task?.leader?.name ? task?.leader?.name : selectedLead?.name;
+
+  const [{ data: membersData, fetching: isLoadingMembers }] = useQuery({
+    query: MembersDocument,
+  });
 
   useEffect(() => {
     if (membersData?.members) {

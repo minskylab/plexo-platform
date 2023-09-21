@@ -11,14 +11,15 @@ import {
 } from "@mantine/core";
 import { Users } from "tabler-icons-react";
 import { useEffect, useState } from "react";
+import { useQuery } from "urql";
 
-import { useData } from "lib/hooks/useData";
 import { Member, Task, TaskById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { MemberInfo } from "components/ui/Project/members";
+import { MembersDocument } from "integration/graphql";
 
 export const AssigneesIcon = () => {
   return <Users size={16} />;
@@ -43,9 +44,12 @@ export const MembersCheckboxGroup = ({
   setSelectedMembers,
   inputPlaceholder,
 }: MembersCheckboxProps) => {
-  const { membersData } = useData({});
   const [searchValue, setSearchValue] = useState("");
   const [membersOptions, setMembersOptions] = useState<Member[]>([]);
+
+  const [{ data: membersData, fetching: isLoadingMembers }] = useQuery({
+    query: MembersDocument,
+  });
 
   useEffect(() => {
     if (membersData?.members) {
@@ -106,11 +110,14 @@ export const GenericAssigneesMenu = ({
   setSelectedAssignees,
   task,
 }: GenericAssigneesMenuProps) => {
-  const { membersData, isLoadingMembers } = useData({});
   const { fetchUpdateTask } = useActions();
   const [assignees, setAssignees] = useState<string[] | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [membersOptions, setMembersOptions] = useState<Member[]>([]);
+
+  const [{ data: membersData, fetching: isLoadingMembers }] = useQuery({
+    query: MembersDocument,
+  });
 
   useEffect(() => {
     if (membersData?.members) {
