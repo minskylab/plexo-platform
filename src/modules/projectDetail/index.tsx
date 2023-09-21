@@ -43,6 +43,9 @@ const useStyles = createStyles(theme => ({
       display: "flex",
     },
   },
+  headerSections: {
+    height: 22,
+  },
 }));
 
 const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
@@ -115,59 +118,66 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
         <Text>Project</Text>
       </Group>
       <Group px={20} sx={{ alignItems: "baseline" }}>
-        <Box sx={{ flex: 1 }}>
-          <Stack maw={860} m="auto">
-            {isLoading ? (
-              <Stack spacing={10}>
-                <Skeleton height={30} />
-                <Skeleton height={20} />
-              </Stack>
-            ) : (
-              <Stack spacing={10}>
-                <Group position="apart">
-                  <Text size={"sm"} color={"dimmed"}>
-                    {project?.prefix ? project.prefix : "PR-001"}
-                  </Text>
-                  <ProjectMenu project={project}>
-                    <ActionIcon radius={"sm"} size={"xs"}>
-                      <Dots size={18} />
-                    </ActionIcon>
-                  </ProjectMenu>
-                </Group>
-                <Group spacing={5} className={classes.propsBar}>
-                  <LeadSelectorByProject project={project} />
-                  <MemberSelectorByProject project={project} />
-                  <TeamSelectorByProject project={project} />
-                </Group>
-              </Stack>
-            )}
+        <Stack maw={860} m="auto" h={"100%"} sx={{ flex: 1 }}>
+          <Stack spacing={10}>
+            <Group position="apart" className={classes.headerSections}>
+              {isLoading ? (
+                <Skeleton width={50} height={8} />
+              ) : (
+                <Text size={"sm"} color={"dimmed"}>
+                  {project?.prefix ? project.prefix : "PR-001"}
+                </Text>
+              )}
 
-            <Divider />
-            <TitleForm project={project} isLoading={isLoading} />
+              <ProjectMenu project={project}>
+                <ActionIcon radius={"sm"} size={"xs"} disabled={project?.id ? false : true}>
+                  <Dots size={18} />
+                </ActionIcon>
+              </ProjectMenu>
+            </Group>
+            {isLoading ? (
+              <Box className={classes.propsBar}>
+                <Skeleton height={20} />
+              </Box>
+            ) : (
+              <Group spacing={5} className={classes.propsBar}>
+                <LeadSelectorByProject project={project} />
+                <MemberSelectorByProject project={project} />
+                <TeamSelectorByProject project={project} />
+              </Group>
+            )}
           </Stack>
-        </Box>
+
+          <Divider />
+          <TitleForm project={project} isLoading={isLoading} />
+        </Stack>
+
         <Divider orientation="vertical" className={classes.propsSection} />
+
         <Stack miw={320} maw={400} className={classes.propsSection}>
-          {isLoading ? (
-            <Skeleton height={25} width={40} />
-          ) : (
+          <Group className={classes.headerSections}>
             <CopyButton value={project?.id} timeout={2000}>
               {({ copied, copy }) => (
                 <Tooltip label={copied ? "Copied" : "Copy project ID"} position="top">
-                  <ActionIcon onClick={copy}>
-                    <Copy size={16} />
+                  <ActionIcon
+                    size={"xs"}
+                    radius={"sm"}
+                    onClick={copy}
+                    disabled={project?.id ? false : true}
+                  >
+                    <Copy size={18} />
                   </ActionIcon>
                 </Tooltip>
               )}
             </CopyButton>
-          )}
+          </Group>
           <Divider />
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Lead
             </Text>
             {isLoading ? (
-              <Skeleton height={25} width={40} />
+              <Skeleton height={26} width={100} />
             ) : (
               <LeadSelectorByProject project={project} />
             )}
@@ -177,7 +187,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
               Members
             </Text>
             {isLoading ? (
-              <Skeleton height={25} width={40} />
+              <Skeleton height={26} width={100} />
             ) : (
               <MemberSelectorByProject project={project} />
             )}
@@ -187,7 +197,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
               Teams
             </Text>
             {isLoading ? (
-              <Skeleton height={25} width={40} />
+              <Skeleton height={26} width={100} />
             ) : (
               <TeamSelectorByProject project={project} />
             )}
@@ -197,7 +207,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
               Start Date
             </Text>
             {isLoading ? (
-              <Skeleton height={25} width={40} />
+              <Skeleton height={26} width={100} />
             ) : (
               <Tooltip label="Start Date" position="bottom">
                 <DateInput
@@ -223,7 +233,7 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
             </Text>
 
             {isLoading ? (
-              <Skeleton height={25} width={40} />
+              <Skeleton height={26} width={100} />
             ) : (
               <Tooltip label="Due Date" position="bottom">
                 <DateInput

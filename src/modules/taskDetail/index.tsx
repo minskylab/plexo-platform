@@ -63,6 +63,9 @@ const useStyles = createStyles(theme => ({
       display: "flex",
     },
   },
+  headerSections: {
+    height: 22,
+  },
 }));
 
 const parseSubtasks = (subtasks: TaskSuggestion[], parentTask: TaskById | undefined) => {
@@ -312,63 +315,70 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
         </Link>
       </Group>
       <Group px={20} sx={{ alignItems: "baseline" }}>
-        <Box sx={{ flex: 1 }}>
-          <Stack maw={860} m="auto">
+        <Stack maw={860} m="auto" h={"100%"} sx={{ flex: 1 }}>
+          <Stack spacing={10}>
+            <Group position="apart" className={classes.headerSections}>
+              {isLoading ? (
+                <Skeleton width={50} height={8} />
+              ) : (
+                <Text lineClamp={1} size={"sm"} color={"dimmed"}>
+                  {`PLE-${task?.count}`}
+                </Text>
+              )}
+
+              <TaskMenu task={task}>
+                <ActionIcon radius={"sm"} size={"xs"} disabled={task?.id ? false : true}>
+                  <Dots size={18} />
+                </ActionIcon>
+              </TaskMenu>
+            </Group>
             {isLoading ? (
-              <Stack spacing={10}>
-                <Skeleton height={30} />
-                <Skeleton height={30} />
-              </Stack>
+              <Box className={classes.propsBar}>
+                <Skeleton height={20} />
+              </Box>
             ) : (
-              <Stack spacing={10}>
-                <Group position="apart">
-                  <Text lineClamp={1} size={"sm"} color={"dimmed"}>
-                    {`PLE-${task?.count}`}
-                  </Text>
-                  <TaskMenu task={task}>
-                    <ActionIcon radius={"sm"} size={"xs"}>
-                      <Dots size={18} />
-                    </ActionIcon>
-                  </TaskMenu>
-                </Group>
-                <Group spacing={5} className={classes.propsBar}>
-                  <StatusSelectorByTask task={task} type="button" />
-                  <PrioritySelectorByTask task={task} type="button" />
-                  <LeadSelectorByTask task={task} type="button" />
-                  <AssigneesSelectorByTask task={task} />
-                  <LabelsSelectorBytask task={task} />
-                  <ProjectSelectorByTask task={task} />
-                </Group>
-              </Stack>
+              <Group spacing={5} className={classes.propsBar}>
+                <StatusSelectorByTask task={task} type="button" />
+                <PrioritySelectorByTask task={task} type="button" />
+                <LeadSelectorByTask task={task} type="button" />
+                <AssigneesSelectorByTask task={task} />
+                <LabelsSelectorBytask task={task} />
+                <ProjectSelectorByTask task={task} />
+              </Group>
             )}
-            <Divider />
-            <TitleForm task={task} isLoading={isLoading} />
-            <SubTasks task={task} />
-            <ActivitiesTask task={task} isLoading={isLoading} />
           </Stack>
-        </Box>
+
+          <Divider />
+          <TitleForm task={task} isLoading={isLoading} />
+          <SubTasks task={task} />
+          <ActivitiesTask task={task} isLoading={isLoading} />
+        </Stack>
+
         <Divider orientation="vertical" className={classes.propsSection} />
         <Stack miw={320} maw={400} className={classes.propsSection}>
-          {isLoading ? (
-            <Skeleton height={25} width={40} />
-          ) : (
+          <Group className={classes.headerSections}>
             <CopyButton value={task?.id} timeout={2000}>
               {({ copied, copy }) => (
                 <Tooltip label={copied ? "Copied" : "Copy task ID"} position="top">
-                  <ActionIcon onClick={copy}>
-                    <Copy size={16} />
+                  <ActionIcon
+                    size={"xs"}
+                    radius={"sm"}
+                    onClick={copy}
+                    disabled={task?.id ? false : true}
+                  >
+                    <Copy size={18} />
                   </ActionIcon>
                 </Tooltip>
               )}
             </CopyButton>
-          )}
+          </Group>
           <Divider />
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Status
             </Text>
             {isLoading ? (
-              <Skeleton height={25} width={70} />
+              <Skeleton height={26} width={100} />
             ) : (
               <StatusSelectorByTask task={task} type={"button"} />
             )}
@@ -378,7 +388,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
               Priority
             </Text>
             {isLoading ? (
-              <Skeleton height={25} width={70} />
+              <Skeleton height={26} width={100} />
             ) : (
               <PrioritySelectorByTask task={task} type="button" />
             )}
@@ -388,7 +398,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
               Lead
             </Text>
             {isLoading ? (
-              <Skeleton height={25} width={70} />
+              <Skeleton height={26} width={100} />
             ) : (
               <LeadSelectorByTask task={task} type="button" />
             )}
@@ -398,7 +408,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
               Assignee
             </Text>
             {isLoading ? (
-              <Skeleton height={25} width={70} />
+              <Skeleton height={26} width={100} />
             ) : (
               <AssigneesSelectorByTask task={task} />
             )}
@@ -407,14 +417,18 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Labels
             </Text>
-            {isLoading ? <Skeleton height={25} width={70} /> : <LabelsSelectorBytask task={task} />}
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <LabelsSelectorBytask task={task} />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Project
             </Text>
             {isLoading ? (
-              <Skeleton height={25} width={70} />
+              <Skeleton height={26} width={100} />
             ) : (
               <ProjectSelectorByTask task={task} />
             )}
@@ -424,7 +438,7 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
               Due Date
             </Text>
             {isLoading ? (
-              <Skeleton height={25} width={70} />
+              <Skeleton height={26} width={100} />
             ) : (
               <DateInput
                 size="xs"

@@ -30,10 +30,9 @@ const TeamsList = () => {
   return (
     <Navbar.Section>
       {isLoadingTeams ? (
-        <Stack>
-          <Skeleton height={20} />
-          <Skeleton height={20} />
-          <Skeleton height={20} />
+        <Stack spacing={5}>
+          <Skeleton height={38} />
+          <Skeleton height={38} />
         </Stack>
       ) : (
         teams
