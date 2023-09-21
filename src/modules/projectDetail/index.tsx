@@ -27,6 +27,8 @@ import { ProjectById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { AlertNotification, ErrorNotification, SuccessNotification } from "lib/notifications";
 import { validateDate } from "lib/utils";
+import { DueDateGenericSelector } from "components/ui/Project/dueDate";
+import { StartDateGenericSelector } from "components/ui/Project/startDate";
 
 type ProjectDetailProps = {
   project: ProjectById | undefined;
@@ -200,6 +202,8 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
                 <LeadSelectorByProject project={project} />
                 <MemberSelectorByProject project={project} />
                 <TeamSelectorByProject project={project} />
+                <StartDateGenericSelector startDate={startDate} onChange={handleStartDateChange} />
+                <DueDateGenericSelector dueDate={dueDate} onChange={handleDueDateChange} />
               </Group>
             </Stack>
 
@@ -272,20 +276,8 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
               Start Date
             </Text>
             <Tooltip label="Start Date" position="bottom">
-              <DateInput
-                clearable
-                size="xs"
-                placeholder="Set start date"
-                value={startDate}
-                onChange={handleStartDateChange}
-                styles={{
-                  input: {
-                    padding: "0px 8px",
-                    borderRadius: 4,
-                    backgroundColor: "transparent",
-                  },
-                }}
-              />
+            <StartDateGenericSelector startDate={startDate} onChange={handleStartDateChange} />
+              
             </Tooltip>
           </Group>
           <Group>
@@ -294,20 +286,8 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
             </Text>
 
             <Tooltip label="Due Date" position="bottom">
-              <DateInput
-                clearable
-                size="xs"
-                placeholder="Set due date"
-                value={dueDate}
-                onChange={handleDueDateChange}
-                styles={{
-                  input: {
-                    padding: "0px 8px",
-                    borderRadius: 4,
-                    backgroundColor: "transparent",
-                  },
-                }}
-              />
+            <DueDateGenericSelector dueDate={dueDate} onChange={handleDueDateChange} />
+             
             </Tooltip>
           </Group>
         </Stack>
