@@ -17,7 +17,6 @@ import {
   Center,
   Skeleton,
 } from "@mantine/core";
-import { DateInput } from "@mantine/dates";
 import { IconSparkles } from "@tabler/icons-react";
 import { Copy, Dots, LayoutSidebar, ChevronLeft, Plus, X } from "tabler-icons-react";
 import { useState, useEffect } from "react";
@@ -45,6 +44,7 @@ import { validateDate } from "lib/utils";
 import { SubdivideTaskDocument } from "integration/graphql";
 import { ActivitiesTask } from "./Activities";
 import { TitleForm } from "./Form";
+import { DateGenericSelector } from "components/ui/DateGenericSelector";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -344,6 +344,11 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                 <AssigneesSelectorByTask task={task} />
                 <LabelsSelectorBytask task={task} />
                 <ProjectSelectorByTask task={task} />
+                <DateGenericSelector
+                  placeholder={"Set due date"}
+                  date={dueDate}
+                  onChange={handleDateChange}
+                />
               </Group>
             )}
           </Stack>
@@ -437,22 +442,14 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Due Date
             </Text>
+
             {isLoading ? (
               <Skeleton height={26} width={100} />
             ) : (
-              <DateInput
-                size="xs"
-                placeholder="Set due date"
-                value={dueDate}
+              <DateGenericSelector
+                placeholder={"Set due date"}
+                date={dueDate}
                 onChange={handleDateChange}
-                clearable
-                styles={{
-                  input: {
-                    padding: "0px 8px",
-                    borderRadius: 4,
-                    backgroundColor: "transparent",
-                  },
-                }}
               />
             )}
           </Group>

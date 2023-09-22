@@ -11,7 +11,6 @@ import {
   Tooltip,
   Skeleton,
 } from "@mantine/core";
-import { DateInput } from "@mantine/dates";
 import { useEffect, useState } from "react";
 import { Copy, Dots, LayoutSidebar } from "tabler-icons-react";
 
@@ -25,6 +24,7 @@ import { useActions } from "lib/hooks/useActions";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { validateDate } from "lib/utils";
 import { TitleForm } from "./Form";
+import { DateGenericSelector } from "components/ui/DateGenericSelector";
 
 type ProjectDetailProps = {
   project: ProjectById | undefined;
@@ -144,6 +144,16 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
                 <LeadSelectorByProject project={project} />
                 <MemberSelectorByProject project={project} />
                 <TeamSelectorByProject project={project} />
+                <DateGenericSelector
+                  placeholder={"Set start date"}
+                  date={startDate}
+                  onChange={handleStartDateChange}
+                />
+                <DateGenericSelector
+                  placeholder={"Set due date"}
+                  date={dueDate}
+                  onChange={handleDueDateChange}
+                />
               </Group>
             )}
           </Stack>
@@ -206,23 +216,15 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Start Date
             </Text>
+
             {isLoading ? (
               <Skeleton height={26} width={100} />
             ) : (
               <Tooltip label="Start Date" position="bottom">
-                <DateInput
-                  clearable
-                  size="xs"
-                  placeholder="Set start date"
-                  value={startDate}
+                <DateGenericSelector
+                  placeholder={"Set start date"}
+                  date={startDate}
                   onChange={handleStartDateChange}
-                  styles={{
-                    input: {
-                      padding: "0px 8px",
-                      borderRadius: 4,
-                      backgroundColor: "transparent",
-                    },
-                  }}
                 />
               </Tooltip>
             )}
@@ -236,19 +238,10 @@ const ProjectDetailContent = ({ project, isLoading }: ProjectDetailProps) => {
               <Skeleton height={26} width={100} />
             ) : (
               <Tooltip label="Due Date" position="bottom">
-                <DateInput
-                  clearable
-                  size="xs"
-                  placeholder="Set due date"
-                  value={dueDate}
+                <DateGenericSelector
+                  placeholder={"Set due date"}
+                  date={dueDate}
                   onChange={handleDueDateChange}
-                  styles={{
-                    input: {
-                      padding: "0px 8px",
-                      borderRadius: 4,
-                      backgroundColor: "transparent",
-                    },
-                  }}
                 />
               </Tooltip>
             )}
