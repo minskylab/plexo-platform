@@ -3,11 +3,12 @@ import {
   MembersDocument,
   ProjectsDocument,
   TeamsDocument,
+  UserDocument,
 } from "integration/graphql";
 import { createContext, ReactNode, useContext, useState, useEffect } from "react";
 import { useQuery } from "urql";
 
-import { Label, Member, Project, Task, Team } from "lib/types";
+import { Label, Member, Project, Task, Team, User } from "lib/types";
 
 type PlexoProviderProps = {
   children: ReactNode;
@@ -29,6 +30,8 @@ type PlexoContextProps = {
   authCookie: string | undefined;
   authEmailURL: string | undefined;
   setAuthCookie: (authCookie: string) => void;
+  userData: User | undefined;
+  isLoadingUser: boolean;
   projectsData: Project[] | undefined;
   isLoadingProjects: boolean;
   membersData: Member[] | undefined;
@@ -59,10 +62,15 @@ const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProp
 
   const [authCookieState, setAuthCookie] = useState(authCookie);
 
+  const [userData, setUserData] = useState<User | undefined>(undefined);
   const [projectsData, setProjectsData] = useState<Project[] | undefined>(undefined);
   const [membersData, setMembersData] = useState<Member[] | undefined>(undefined);
   const [teamsData, setTeamsData] = useState<Team[] | undefined>(undefined);
   const [labelsData, setLabelsData] = useState<Label[] | undefined>(undefined);
+
+  const [{ data: user, fetching: isLoadingUser }] = useQuery({
+    query: UserDocument,
+  });
 
   const [{ data: projects, fetching: isLoadingProjects }] = useQuery({
     query: ProjectsDocument,
@@ -104,6 +112,12 @@ const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProp
     }
   }, [labels, isLoadingLabels]);
 
+  useEffect(() => {
+    if (!isLoadingUser && user) {
+      setUserData(user.me);
+    }
+  }, [user, isLoadingUser]);
+
   return (
     <PlexoContext.Provider
       value={{
@@ -120,6 +134,8 @@ const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProp
         setTaskId,
         tasks,
         setTasks,
+        userData,
+        isLoadingUser,
         projectsData,
         isLoadingProjects,
         membersData,
