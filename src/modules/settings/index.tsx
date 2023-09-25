@@ -13,10 +13,12 @@ import {
   Switch,
   useMantineColorScheme,
   Select,
+  Title,
+  Divider,
 } from "@mantine/core";
 import { IconBuilding, IconMicroscope, IconUsers } from "@tabler/icons-react";
 import { Edit, LayoutSidebar, Moon, Sun } from "tabler-icons-react";
-
+import { Label } from "lib/types";
 import { usePlexoContext } from "context/PlexoContext";
 
 const NewMemberModal = ({ opened, close }: { opened: boolean; close: () => void }) => {
@@ -33,6 +35,8 @@ const NewMemberModal = ({ opened, close }: { opened: boolean; close: () => void 
       password: val => (val.length <= 6 ? "Password should include at least 6 characters" : null),
     },
   });
+
+
 
   const onCreateMember = async (values: typeof form.values) => {
     const res = await registerNewMember({
@@ -126,9 +130,19 @@ export const SettingsPageContent = () => {
 
   const { theme } = useStyles();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const { setNavBarOpened, membersData, isLoadingMembers } = usePlexoContext();
+  const { setNavBarOpened, membersData, isLoadingMembers, labelsData, isLoadingLabels } = usePlexoContext();
+  const [newLabelOpened, setNewLabelOpened] = useState(false);
   const { pathname, query } = useRouter();
   const tab = query.tab as string;
+
+  const labelsParsedData =
+    labelsData?.map(label => ({
+      id: label.id as string,
+      name: label.name,
+      color: label.color,
+      createdAt: label.createdAt,
+      description: label.description,
+    })) ?? [];
 
   const membersParsedData =
     membersData?.map(member => ({
@@ -145,6 +159,8 @@ export const SettingsPageContent = () => {
 
   return (
     <>
+      <NewLabel newLabelOpened={newLabelOpened} setNewLabelOpened={setNewLabelOpened} />
+      <UpdateLabel  label={} updateLabelOpened={updateLabelOpened} setUpdateLabelOpened={setUpdateLabelOpened} />
       <NewMemberModal opened={opened} close={close} />
       <Stack>
         <Group
@@ -221,6 +237,32 @@ export const SettingsPageContent = () => {
                 <Stack spacing="sm">
                   <TextInput label="Organization Name" defaultValue={"Plexo"} />
                 </Stack>
+                <Divider my="sm" />
+                <Stack spacing="ls">
+                  
+                  <Group mb={"md"}>
+                    <Stack spacing="sm">
+                  <Text>  Labels </Text>
+                </Stack>
+                    <Button
+                      size="sm"
+                      onClick={() => setNewLabelOpened(true)}
+                    >
+                      New Label
+                    </Button>
+                  </Group>
+                  {labelsParsedData.length ? (
+                    <Stack spacing={2}>
+                        {labelsParsedData
+                          .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+                          .map((t: Label) => (
+                    <LabelListElement key={t.id} label={t} />
+                          ))
+                        }
+                    </Stack>
+                  ) : null}
+                  
+                </Stack>
               </Container>
             </Tabs.Panel>
 
@@ -252,6 +294,9 @@ import { useForm } from "@mantine/form";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { LabelListElement } from "components/ui/Label/Label";
+import NewLabel from "components/ui/Label/newLabel";
+import UpdateLabel from "components/ui/Label/updateLabel";
 
 const useStyles = createStyles(theme => ({
   rowSelected: {
