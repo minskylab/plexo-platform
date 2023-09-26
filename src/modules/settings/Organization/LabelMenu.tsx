@@ -1,11 +1,12 @@
 import { Menu, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
-import { Edit, Settings2, Trash } from "tabler-icons-react";
-import router from "next/router";
+import { useDisclosure } from "@mantine/hooks";
+import { Edit, Trash } from "tabler-icons-react";
 
 import { useActions } from "lib/hooks/useActions";
-import { Label, TaskById } from "lib/types";
+import { Label } from "lib/types";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+import { UpdateLabel } from "modules/settings/Organization/UpdateLabel";
 
 type LabelMenuProps = {
   children: React.ReactNode;
@@ -14,6 +15,7 @@ type LabelMenuProps = {
 
 export const LabelMenu = ({ children, label }: LabelMenuProps) => {
   const { fetchDeleteLabel } = useActions();
+  const [opened, { open, close }] = useDisclosure(false);
 
   const onDeleteLabel = async () => {
     const res = await fetchDeleteLabel({
@@ -21,7 +23,6 @@ export const LabelMenu = ({ children, label }: LabelMenuProps) => {
     });
 
     if (res.data) {
-      
       SuccessNotification("Label deleted", res.data.deleteLabel.name);
     }
     if (res.error) {
@@ -39,18 +40,20 @@ export const LabelMenu = ({ children, label }: LabelMenuProps) => {
     });
 
   return (
-    
-    <Menu shadow="md" width={180} position="left-start">
-      <Menu.Target>{children}</Menu.Target>
+    <>
+      <UpdateLabel label={label} opened={opened} close={close} />
+      <Menu shadow="md" width={180} position="left-start">
+        <Menu.Target>{children}</Menu.Target>
 
-      <Menu.Dropdown>
-        <Menu.Item py={7} icon={<Edit size={16} />} onClick={openDeleteModal}>
-          Modify
-        </Menu.Item>
-        <Menu.Item py={7} icon={<Trash size={16} />} onClick={openDeleteModal}>
-          Delete
-        </Menu.Item>
-      </Menu.Dropdown>
-    </Menu>
+        <Menu.Dropdown>
+          <Menu.Item py={7} icon={<Edit size={16} />} onClick={open}>
+            Edit
+          </Menu.Item>
+          <Menu.Item py={7} icon={<Trash size={16} />} onClick={openDeleteModal}>
+            Delete
+          </Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
+    </>
   );
 };
