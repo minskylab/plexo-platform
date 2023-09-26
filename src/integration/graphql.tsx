@@ -491,7 +491,64 @@ export type LabelsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type LabelsQuery = {
   __typename?: "QueryRoot";
-  labels: Array<{ __typename?: "Label"; id: any; name: string; color?: string | null }>;
+  labels: Array<{
+    __typename?: "Label";
+    id: any;
+    name: string;
+    description?: string | null;
+    color?: string | null;
+    createdAt: any;
+  }>;
+};
+
+export type CreateLabelMutationVariables = Exact<{
+  name: Scalars["String"]["input"];
+  color?: InputMaybe<Scalars["String"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+}>;
+
+export type CreateLabelMutation = {
+  __typename?: "MutationRoot";
+  createLabel: {
+    __typename?: "Label";
+    id: any;
+    name: string;
+    color?: string | null;
+    description?: string | null;
+  };
+};
+
+export type UpdateLabelMutationVariables = Exact<{
+  labelId: Scalars["UUID"]["input"];
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  color?: InputMaybe<Scalars["String"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+}>;
+
+export type UpdateLabelMutation = {
+  __typename?: "MutationRoot";
+  updateLabel: {
+    __typename?: "Label";
+    id: any;
+    name: string;
+    color?: string | null;
+    description?: string | null;
+  };
+};
+
+export type DeleteLabelMutationVariables = Exact<{
+  labelId: Scalars["UUID"]["input"];
+}>;
+
+export type DeleteLabelMutation = {
+  __typename?: "MutationRoot";
+  deleteLabel: {
+    __typename?: "Label";
+    id: any;
+    name: string;
+    color?: string | null;
+    description?: string | null;
+  };
 };
 
 export type MembersQueryVariables = Exact<{ [key: string]: never }>;
@@ -1061,7 +1118,9 @@ export const LabelsDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
                 { kind: "Field", name: { kind: "Name", value: "color" } },
+                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
               ],
             },
           },
@@ -1070,6 +1129,191 @@ export const LabelsDocument = {
     },
   ],
 } as unknown as DocumentNode<LabelsQuery, LabelsQueryVariables>;
+export const CreateLabelDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "CreateLabel" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "color" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "createLabel" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "name" },
+                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "color" },
+                value: { kind: "Variable", name: { kind: "Name", value: "color" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "description" },
+                value: { kind: "Variable", name: { kind: "Name", value: "description" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "color" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CreateLabelMutation, CreateLabelMutationVariables>;
+export const UpdateLabelDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateLabel" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "labelId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "color" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateLabel" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "labelId" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "name" },
+                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "color" },
+                value: { kind: "Variable", name: { kind: "Name", value: "color" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "description" },
+                value: { kind: "Variable", name: { kind: "Name", value: "description" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "color" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UpdateLabelMutation, UpdateLabelMutationVariables>;
+export const DeleteLabelDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "DeleteLabel" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "labelId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "deleteLabel" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "labelId" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "color" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DeleteLabelMutation, DeleteLabelMutationVariables>;
 export const MembersDocument = {
   kind: "Document",
   definitions: [
