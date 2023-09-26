@@ -4,6 +4,7 @@ import { useForm } from "@mantine/form";
 import { useActions } from "lib/hooks/useActions";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { Label } from "lib/types";
+import { useEffect } from "react";
 
 export const UpdateLabel = ({
   label,
@@ -18,9 +19,9 @@ export const UpdateLabel = ({
 
   const form = useForm({
     initialValues: {
-      name: label?.name || "",
-      description: label?.description || "",
-      color: label?.color || "",
+      name: "",
+      description: "",
+      color: "",
     },
     validate: {
       name: val => (val.length <= 2 ? "Name should include at least 2 characters" : null),
@@ -44,6 +45,14 @@ export const UpdateLabel = ({
       ErrorNotification();
     }
   };
+
+  useEffect(() => {
+    form.setValues({
+      name: label?.name || "",
+      description: label?.description || "",
+      color: label?.color || "",
+    });
+  }, [label]);
 
   return (
     <Modal opened={opened} onClose={close} title="Edit Label">
