@@ -1,11 +1,11 @@
 import { Button, Menu, Text, TextInput, Skeleton, Checkbox, Tooltip } from "@mantine/core";
+import { useState, useEffect } from "react";
 
-import { useData } from "lib/hooks/useData";
 import { Project, TeamById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
-import { useState, useEffect } from "react";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { ProjectIcon } from "../Task/project";
+import { usePlexoContext } from "context/PlexoContext";
 
 type Payload = {
   id: string;
@@ -37,18 +37,18 @@ export const GenericProjectsMenu = ({
   team,
 }: GenericProjectsMenuProps) => {
   const { fetchUpdateTeam } = useActions();
-  const { projectsData, isLoadingProjects } = useData({});
+  const { projectsData, isLoadingProjects } = usePlexoContext();
 
   const [projects, setProjects] = useState<string[] | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [projectOptions, setProjectOptions] = useState<Project[]>([]);
 
   useEffect(() => {
-    if (projectsData?.projects) {
+    if (projectsData) {
       searchValue == ""
-        ? setProjectOptions(projectsData?.projects)
+        ? setProjectOptions(projectsData)
         : setProjectOptions(
-            projectsData?.projects.filter((item: Project) =>
+            projectsData?.filter((item: Project) =>
               item.name.toLowerCase().includes(searchValue.toLowerCase())
             )
           );

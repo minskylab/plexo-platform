@@ -16,17 +16,16 @@ import {
 import router from "next/router";
 import { useState } from "react";
 import { Edit, Plus, Bulb, Checkbox, Search } from "tabler-icons-react";
-import { useQuery } from "urql";
 
 import NewProject from "../Project/newProject";
 import NewTeam from "../Team/newTeam";
 import { UserButton } from "../UserButton";
 import ProjectsList from "./projects";
 import TeamsList from "./teams";
-import { UserDocument } from "integration/graphql";
 import { spotlight } from "@mantine/spotlight";
 import { ProjectIcon } from "../Task/project";
 import { TeamIcon } from "../Project/team";
+import { usePlexoContext } from "context/PlexoContext";
 
 const useStyles = createStyles(theme => ({
   navbar: {
@@ -122,9 +121,7 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
   const [newProjectOpened, setNewProjectOpened] = useState(false);
   const [newTeamOpened, setNewTeamOpened] = useState(false);
 
-  const [{ data: userData, fetching: isLoadingUser }] = useQuery({
-    query: UserDocument,
-  });
+  const { userData, isLoadingUser } = usePlexoContext();
 
   const mainLinks = links.map(link => (
     <UnstyledButton
@@ -155,7 +152,7 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
         className={classes.navbar}
       >
         <Navbar.Section className={classes.section}>
-          <UserButton user={userData?.me} isLoadingUser={isLoadingUser} />
+          <UserButton user={userData} isLoadingUser={isLoadingUser} />
         </Navbar.Section>
 
         <Navbar.Section className={classes.section} p="sm">

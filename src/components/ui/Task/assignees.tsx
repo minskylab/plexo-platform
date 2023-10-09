@@ -12,13 +12,13 @@ import {
 import { Users } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
-import { useData } from "lib/hooks/useData";
 import { Member, Task, TaskById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
 import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { MemberInfo } from "components/ui/Project/members";
+import { usePlexoContext } from "context/PlexoContext";
 
 export const AssigneesIcon = () => {
   return <Users size={16} />;
@@ -43,14 +43,14 @@ export const MembersCheckboxGroup = ({
   setSelectedMembers,
   inputPlaceholder,
 }: MembersCheckboxProps) => {
-  const { membersData } = useData({});
+  const { membersData } = usePlexoContext();
   const [searchValue, setSearchValue] = useState("");
   const [membersOptions, setMembersOptions] = useState<Member[]>([]);
 
   useEffect(() => {
-    if (membersData?.members) {
+    if (membersData) {
       setMembersOptions(
-        membersData?.members.filter((item: Member) =>
+        membersData?.filter((item: Member) =>
           item.name.toLowerCase().includes(searchValue.toLowerCase())
         )
       );
@@ -106,18 +106,18 @@ export const GenericAssigneesMenu = ({
   setSelectedAssignees,
   task,
 }: GenericAssigneesMenuProps) => {
-  const { membersData, isLoadingMembers } = useData({});
+  const { membersData, isLoadingMembers } = usePlexoContext();
   const { fetchUpdateTask } = useActions();
   const [assignees, setAssignees] = useState<string[] | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [membersOptions, setMembersOptions] = useState<Member[]>([]);
 
   useEffect(() => {
-    if (membersData?.members) {
+    if (membersData) {
       searchValue == ""
-        ? setMembersOptions(membersData?.members)
+        ? setMembersOptions(membersData)
         : setMembersOptions(
-            membersData?.members.filter((item: Member) =>
+            membersData?.filter((item: Member) =>
               item.name.toLowerCase().includes(searchValue.toLowerCase())
             )
           );

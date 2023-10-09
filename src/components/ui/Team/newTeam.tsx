@@ -4,10 +4,10 @@ import { useState } from "react";
 import { Check, X } from "tabler-icons-react";
 
 import { useActions } from "lib/hooks/useActions";
-import { useData } from "lib/hooks/useData";
 import { MemberSelector } from "../Project/members";
 import { ProjectsSelector } from "./projects";
 import { Team } from "lib/types";
+import { usePlexoContext } from "context/PlexoContext";
 
 type NewTeamProps = {
   newTeamOpened: boolean;
@@ -16,7 +16,7 @@ type NewTeamProps = {
 
 const NewTeam = ({ newTeamOpened, setNewTeamOpened }: NewTeamProps) => {
   const theme = useMantineTheme();
-  const { teamsData } = useData({});
+  const { teamsData } = usePlexoContext();
 
   const [name, setName] = useState("");
   const [visibility, setVisibility] = useState("");
@@ -69,7 +69,7 @@ const NewTeam = ({ newTeamOpened, setNewTeamOpened }: NewTeamProps) => {
   const handleTeamName = (value: string) => {
     setName(value);
     const evalName =
-      teamsData?.teams.some((t: Team) => t.name.toLowerCase() == value.toLowerCase()) || false;
+      teamsData?.some((t: Team) => t.name.toLowerCase() == value.toLowerCase()) || false;
     setTeamExists(evalName);
   };
 

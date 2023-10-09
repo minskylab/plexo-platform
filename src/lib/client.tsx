@@ -18,15 +18,10 @@ export const URQLClient = ({ graphQLEndpoint }: { graphQLEndpoint?: string }) =>
 
   const WS_ENDPOINT = process.env.NEXT_PUBLIC_WS_ENDPOINT || "/graphql/ws";
 
-  const wsClient =
-    typeof window === "undefined"
-      ? null
-      : createWSClient({
-          url: WS_ENDPOINT,
-          connectionParams: {
-            Authorization: "",
-          },
-        });
+  // const wsClient =
+  //   typeof window === "undefined"
+  //     ? null
+  //     : ;
 
   // console.log(GRAPHQL_ENDPOINT);
 
@@ -40,7 +35,7 @@ export const URQLClient = ({ graphQLEndpoint }: { graphQLEndpoint?: string }) =>
     },
     exchanges: [
       devtoolsExchange,
-      dedupExchange,
+      // dedupExchange,
       cacheExchange,
       errorExchange({
         onError: (error: CombinedError) => {
@@ -53,7 +48,12 @@ export const URQLClient = ({ graphQLEndpoint }: { graphQLEndpoint?: string }) =>
           return {
             subscribe(sink) {
               return {
-                unsubscribe: wsClient!.subscribe(input, sink),
+                unsubscribe: createWSClient({
+                  url: WS_ENDPOINT,
+                  connectionParams: {
+                    Authorization: "",
+                  },
+                }).subscribe(input, sink),
               };
             },
           };

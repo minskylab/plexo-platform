@@ -6,3 +6,15 @@ query User {
     photoUrl
   }
 }
+
+mutation UpdateProfile($name: String, $email: String, $photoUrl: String) {
+  updateProfile(name: $name, email: $email, photoUrl: $photoUrl) {
+    name
+  }
+}
+
+mutation UpdatePassword($currentPassword: String!, $newPassword: String!) {
+  updatePassword(currentPassword: $currentPassword, newPassword: $newPassword) {
+    name
+  }
+}

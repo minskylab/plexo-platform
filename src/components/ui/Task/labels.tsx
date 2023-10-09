@@ -18,11 +18,11 @@ import { Tag } from "tabler-icons-react";
 
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { useActions } from "lib/hooks/useActions";
-import { useData } from "lib/hooks/useData";
 import { Label, TaskById } from "lib/types";
 import { priorityName } from "./priority";
 import { statusName } from "./status";
 import { assigneesId } from "components/ui/Task/assignees";
+import { usePlexoContext } from "context/PlexoContext";
 
 const useStyles = createStyles(theme => ({
   checkbox: {
@@ -42,10 +42,10 @@ type GenericLabelsMenuProps = {
 };
 
 export const LabelColor = (labels: string[]) => {
-  const { labelsData } = useData({});
+  const { labelsData } = usePlexoContext();
 
   const colors: Label[] = labelsData
-    ? labelsData?.labels.filter((label: Label) => labels.includes(label.id))
+    ? labelsData?.filter((label: Label) => labels.includes(label.id))
     : [];
 
   if (labels.length) {
@@ -84,10 +84,8 @@ export const LabelColor = (labels: string[]) => {
 };
 
 export const LabelNameBtn = (labels: string[]) => {
-  const { labelsData } = useData({});
-  const data = labelsData
-    ? labelsData?.labels.filter((label: Label) => labels.includes(label.id))
-    : [];
+  const { labelsData } = usePlexoContext();
+  const data = labelsData ? labelsData?.filter((label: Label) => labels.includes(label.id)) : [];
 
   if (labels.length == 1) {
     const labelName = data.filter((label: Label) => labels.includes(label.id));
@@ -108,14 +106,14 @@ type LabelCheckboxProps = {
 
 export const LabelCheckboxGroup = ({ labelsFilters, setLabelsFilters }: LabelCheckboxProps) => {
   const { classes, theme } = useStyles();
-  const { labelsData } = useData({});
+  const { labelsData } = usePlexoContext();
   const [searchValue, setSearchValue] = useState("");
   const [labelsOptions, setLabelsOptions] = useState<Label[]>([]);
 
   useEffect(() => {
-    if (labelsData?.labels) {
+    if (labelsData) {
       setLabelsOptions(
-        labelsData?.labels.filter((item: Label) =>
+        labelsData?.filter((item: Label) =>
           item.name.toLowerCase().includes(searchValue.toLowerCase())
         )
       );
@@ -161,16 +159,16 @@ export const GenericLabelsMenu = ({
   setSelectedLabels,
   task,
 }: GenericLabelsMenuProps) => {
-  const { labelsData } = useData({});
+  const { labelsData } = usePlexoContext();
   const [labels, setLabels] = useState<string[] | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [labelsOptions, setLabelsOptions] = useState<Label[]>([]);
   const { fetchUpdateTask } = useActions();
 
   useEffect(() => {
-    if (labelsData?.labels) {
+    if (labelsData) {
       setLabelsOptions(
-        labelsData?.labels.filter((item: Label) =>
+        labelsData?.filter((item: Label) =>
           item.name.toLowerCase().includes(searchValue.toLowerCase())
         )
       );

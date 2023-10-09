@@ -1,7 +1,36 @@
 query Labels {
-  labels {
+  labels{
+    id
+    name
+    description
+    color
+    createdAt
+  }
+}
+
+mutation CreateLabel($name: String!, $color: String, $description: String) {
+  createLabel(name: $name, color: $color, description: $description) {
     id
     name
     color
+    description
+  }
+}
+
+mutation UpdateLabel($labelId: UUID!, $name: String, $color: String, $description: String) {
+  updateLabel(id: $labelId, name: $name, color: $color, description: $description) {
+    id
+    name
+    color
+    description
+  }
+}
+
+mutation DeleteLabel($labelId: UUID!) {
+  deleteLabel(id: $labelId) {
+    id
+    name
+    color
+    description
   }
 }

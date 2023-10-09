@@ -1,16 +1,16 @@
-import { Navbar, NavLink, useMantineTheme } from "@mantine/core";
+import { Navbar, NavLink, Skeleton, Stack, useMantineTheme } from "@mantine/core";
 import { Dna } from "tabler-icons-react";
 import router from "next/router";
 
-import { useData } from "lib/hooks/useData";
 import { Team } from "lib/types";
+import { usePlexoContext } from "context/PlexoContext";
 
 const TeamsList = () => {
   const theme = useMantineTheme();
-  const { teamsData, isLoadingTeams } = useData({});
+  const { teamsData, isLoadingTeams } = usePlexoContext();
 
-  const teams = teamsData?.teams
-    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+  const teams = teamsData
+    ?.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
     .map((t: Team, index: number) => {
       return (
         <NavLink
@@ -27,7 +27,18 @@ const TeamsList = () => {
       );
     });
 
-  return <Navbar.Section>{teams}</Navbar.Section>;
+  return (
+    <Navbar.Section>
+      {isLoadingTeams ? (
+        <Stack spacing={5}>
+          <Skeleton height={38} />
+          <Skeleton height={38} />
+        </Stack>
+      ) : (
+        teams
+      )}
+    </Navbar.Section>
+  );
 };
 
 export default TeamsList;

@@ -15,8 +15,8 @@ import {
   useMantineTheme,
   Avatar,
   Center,
+  Skeleton,
 } from "@mantine/core";
-import { DateInput } from "@mantine/dates";
 import { IconSparkles } from "@tabler/icons-react";
 import { Copy, Dots, LayoutSidebar, ChevronLeft, Plus, X } from "tabler-icons-react";
 import { useState, useEffect } from "react";
@@ -44,6 +44,7 @@ import { validateDate } from "lib/utils";
 import { SubdivideTaskDocument } from "integration/graphql";
 import { ActivitiesTask } from "./Activities";
 import { TitleForm } from "./Form";
+import { DateGenericSelector } from "components/ui/DateGenericSelector";
 
 type TaskDetailProps = {
   task: TaskById | undefined;
@@ -61,6 +62,9 @@ const useStyles = createStyles(theme => ({
     [theme.fn.smallerThan("lg")]: {
       display: "flex",
     },
+  },
+  headerSections: {
+    height: 22,
   },
 }));
 
@@ -311,19 +315,28 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
         </Link>
       </Group>
       <Group px={20} sx={{ alignItems: "baseline" }}>
-        <Box sx={{ flex: 1 }}>
-          <Stack maw={860} m="auto">
-            <Stack spacing={10}>
-              <Group position="apart">
+        <Stack maw={860} m="auto" h={"100%"} sx={{ flex: 1 }}>
+          <Stack spacing={10}>
+            <Group position="apart" className={classes.headerSections}>
+              {isLoading ? (
+                <Skeleton width={50} height={8} />
+              ) : (
                 <Text lineClamp={1} size={"sm"} color={"dimmed"}>
                   {`PLE-${task?.count}`}
                 </Text>
-                <TaskMenu task={task}>
-                  <ActionIcon radius={"sm"} size={"xs"}>
-                    <Dots size={18} />
-                  </ActionIcon>
-                </TaskMenu>
-              </Group>
+              )}
+
+              <TaskMenu task={task}>
+                <ActionIcon radius={"sm"} size={"xs"} disabled={task?.id ? false : true}>
+                  <Dots size={18} />
+                </ActionIcon>
+              </TaskMenu>
+            </Group>
+            {isLoading ? (
+              <Box className={classes.propsBar}>
+                <Skeleton height={20} />
+              </Box>
+            ) : (
               <Group spacing={5} className={classes.propsBar}>
                 <StatusSelectorByTask task={task} type="button" />
                 <PrioritySelectorByTask task={task} type="button" />
@@ -331,80 +344,114 @@ const TaskDetailPageContent = ({ task, isLoading }: TaskDetailProps) => {
                 <AssigneesSelectorByTask task={task} />
                 <LabelsSelectorBytask task={task} />
                 <ProjectSelectorByTask task={task} />
+                <DateGenericSelector
+                  placeholder={"Set due date"}
+                  date={dueDate}
+                  onChange={handleDateChange}
+                />
               </Group>
-            </Stack>
-            <Divider />
-            <TitleForm task={task} isLoading={isLoading} />
-            <SubTasks task={task} />
-            <ActivitiesTask task={task} />
+            )}
           </Stack>
-        </Box>
+
+          <Divider />
+          <TitleForm task={task} isLoading={isLoading} />
+          <SubTasks task={task} />
+          <ActivitiesTask task={task} isLoading={isLoading} />
+        </Stack>
+
         <Divider orientation="vertical" className={classes.propsSection} />
         <Stack miw={320} maw={400} className={classes.propsSection}>
-          <CopyButton value={task?.id} timeout={2000}>
-            {({ copied, copy }) => (
-              <Tooltip label={copied ? "Copied" : "Copy task ID"} position="top">
-                <ActionIcon onClick={copy}>
-                  <Copy size={16} />
-                </ActionIcon>
-              </Tooltip>
-            )}
-          </CopyButton>
+          <Group className={classes.headerSections}>
+            <CopyButton value={task?.id} timeout={2000}>
+              {({ copied, copy }) => (
+                <Tooltip label={copied ? "Copied" : "Copy task ID"} position="top">
+                  <ActionIcon
+                    size={"xs"}
+                    radius={"sm"}
+                    onClick={copy}
+                    disabled={task?.id ? false : true}
+                  >
+                    <Copy size={18} />
+                  </ActionIcon>
+                </Tooltip>
+              )}
+            </CopyButton>
+          </Group>
           <Divider />
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Status
             </Text>
-            <StatusSelectorByTask task={task} type={"button"} />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <StatusSelectorByTask task={task} type={"button"} />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Priority
             </Text>
-            <PrioritySelectorByTask task={task} type="button" />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <PrioritySelectorByTask task={task} type="button" />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Lead
             </Text>
-            <LeadSelectorByTask task={task} type="button" />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <LeadSelectorByTask task={task} type="button" />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Assignee
             </Text>
-            <AssigneesSelectorByTask task={task} />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <AssigneesSelectorByTask task={task} />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Labels
             </Text>
-            <LabelsSelectorBytask task={task} />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <LabelsSelectorBytask task={task} />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Project
             </Text>
-            <ProjectSelectorByTask task={task} />
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <ProjectSelectorByTask task={task} />
+            )}
           </Group>
           <Group>
             <Text w={90} lineClamp={1} size={"sm"} color={"dimmed"}>
               Due Date
             </Text>
-            <DateInput
-              size="xs"
-              placeholder="Set due date"
-              value={dueDate}
-              onChange={handleDateChange}
-              clearable
-              styles={{
-                input: {
-                  padding: "0px 8px",
-                  borderRadius: 4,
-                  backgroundColor: "transparent",
-                },
-              }}
-            />
+
+            {isLoading ? (
+              <Skeleton height={26} width={100} />
+            ) : (
+              <DateGenericSelector
+                placeholder={"Set due date"}
+                date={dueDate}
+                onChange={handleDateChange}
+              />
+            )}
           </Group>
         </Stack>
       </Group>

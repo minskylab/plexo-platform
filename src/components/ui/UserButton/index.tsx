@@ -2,7 +2,6 @@ import {
   UnstyledButton,
   UnstyledButtonProps,
   Group,
-  Avatar,
   Text,
   createStyles,
   Menu,
@@ -10,12 +9,13 @@ import {
   Stack,
 } from "@mantine/core";
 
-import { Logout, Settings } from "tabler-icons-react";
+import { Logout, Settings, UserCircle } from "tabler-icons-react";
 
 import { User } from "lib/types";
 import { useRouter } from "next/router";
 import { ErrorNotification } from "lib/notifications";
 import { usePlexoContext } from "context/PlexoContext";
+import { UserPhoto } from "modules/profile";
 
 const useStyles = createStyles(theme => ({
   user: {
@@ -85,9 +85,7 @@ export function UserButton({ user, isLoadingUser }: UserButtonProps) {
               </Group>
             ) : (
               <Group>
-                <Avatar color="brand" radius="xl">
-                  {user?.name[0]}
-                </Avatar>
+                <UserPhoto user={user} size="md" />
                 <Stack spacing={0}>
                   <Text size="sm" weight={500}>
                     {user?.name}
@@ -104,7 +102,18 @@ export function UserButton({ user, isLoadingUser }: UserButtonProps) {
         <Menu.Dropdown>
           <Menu.Item
             onClick={() => {
-              router.push("/settings");
+              router.push("/profile");
+            }}
+            icon={<UserCircle strokeWidth={1.5} size={14} />}
+          >
+            Profile
+          </Menu.Item>
+          <Menu.Item
+            onClick={() => {
+              router.push({
+                pathname: "/settings",
+                query: { tab: "organization" },
+              });
             }}
             icon={<Settings strokeWidth={1.5} size={14} />}
           >
