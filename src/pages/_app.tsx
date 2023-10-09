@@ -29,26 +29,17 @@ type PlexoPlatformAppProps = {
   authEmailURL: string | undefined;
 };
 
+const client = URQLClient({
+  graphQLEndpoint: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
+});
+
 const PlexoApp = ({
   Component,
   pageProps,
   colorScheme,
   authCookie,
-  graphQLEndpoint,
-  authEmailURL,
 }: AppPropsWithLayout<PlexoPlatformAppProps> & PlexoPlatformAppProps) => {
   const getLayout = Component.getLayout ?? (page => page);
-
-  // console.log("authCookie: ", authCookie);
-  // console.log("graphQLEndpoint: ", graphQLEndpoint);
-
-  const [client, setClient] = useState(
-    URQLClient({
-      graphQLEndpoint: graphQLEndpoint,
-    })
-  );
-
-  let [authCookieState, setAuthCookie] = useState(authCookie);
 
   return (
     <>
@@ -58,7 +49,7 @@ const PlexoApp = ({
         <link rel="icon" type="image/png" sizes="5x5" href="/plexo.png" />
       </Head>
       <URQLProvider value={client}>
-        <PlexoProvider authCookie={authCookieState} authEmailURL={authEmailURL}>
+        <PlexoProvider authCookie={authCookie}>
           <MyMantineProvider colorScheme={colorScheme}>
             <MySpotlightProvider>
               <Fonts />
@@ -72,18 +63,10 @@ const PlexoApp = ({
 };
 
 PlexoApp.getInitialProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => {
-  // console.log("GET INITIAL PROPS");
-  // console.log(process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT);
-  // console.log(process.env.NEXT_PUBLIC_URL_EMAIL_AUTH);
-
   return {
-    // get color scheme from cookie
     colorScheme: getCookie("mantine-color-scheme", ctx) || "light",
     viewMode: getCookie("viewMode", ctx) || "list",
-
     authCookie: getCookie("plexo-session-token", ctx) || "",
-    graphQLEndpoint: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
-    authEmailURL: process.env.NEXT_PUBLIC_URL_EMAIL_AUTH,
   };
 };
 

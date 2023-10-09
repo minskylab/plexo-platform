@@ -106,7 +106,7 @@ export function UserButton({ user, isLoadingUser }: UserButtonProps) {
             }}
             icon={<UserCircle strokeWidth={1.5} size={14} />}
           >
-            My profile
+            Profile
           </Menu.Item>
           <Menu.Item
             onClick={() => {

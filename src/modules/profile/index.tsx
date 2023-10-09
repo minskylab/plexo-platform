@@ -78,7 +78,7 @@ export const ProfilePageContent = () => {
                 <LayoutSidebar size={16} />
               </ActionIcon>
             </MediaQuery>
-            My profile
+            Profile
           </Group>
         </Group>
         <Container size="xl" miw={600} fluid className={classes.container}>
