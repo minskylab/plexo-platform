@@ -13,7 +13,6 @@ import { Label, Member, Project, Task, Team, User } from "lib/types";
 type PlexoProviderProps = {
   children: ReactNode;
   authCookie?: string;
-  authEmailURL?: string;
 };
 
 type PlexoContextProps = {
@@ -28,7 +27,6 @@ type PlexoContextProps = {
   createMoreTasks: boolean;
   setCreateMoreTasks: (createMoreTasks: boolean) => void;
   authCookie: string | undefined;
-  authEmailURL: string | undefined;
   setAuthCookie: (authCookie: string) => void;
   userData: User | undefined;
   isLoadingUser: boolean;
@@ -52,7 +50,7 @@ export const usePlexoContext = () => {
   return context;
 };
 
-const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProps) => {
+const PlexoProvider = ({ authCookie, children }: PlexoProviderProps) => {
   const [taskId, setTaskId] = useState<string | undefined>(undefined);
   const [tasks, setTasks] = useState<Task[] | undefined>(undefined);
 
@@ -129,7 +127,6 @@ const PlexoProvider = ({ authCookie, authEmailURL, children }: PlexoProviderProp
         setCreateMoreTasks,
         authCookie: authCookieState,
         setAuthCookie,
-        authEmailURL,
         taskId,
         setTaskId,
         tasks,

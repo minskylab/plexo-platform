@@ -1,7 +1,7 @@
 import { ColorScheme } from "@mantine/core";
 import type { AppProps } from "next/app";
 import { getCookie } from "cookies-next";
-import { ReactElement, ReactNode, useState } from "react";
+import { ReactElement, ReactNode } from "react";
 import { Provider as URQLProvider } from "urql";
 import { GetServerSidePropsContext, NextPage } from "next";
 import Head from "next/head";
@@ -24,14 +24,9 @@ type PlexoPlatformAppProps = {
   colorScheme: ColorScheme;
   viewMode: "list" | "grid";
   authCookie: string;
-  //
-  graphQLEndpoint: string | undefined;
-  authEmailURL: string | undefined;
 };
 
-const client = URQLClient({
-  graphQLEndpoint: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
-});
+const client = URQLClient();
 
 const PlexoApp = ({
   Component,

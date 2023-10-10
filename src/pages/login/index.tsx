@@ -59,7 +59,6 @@ const LoginPage = () => {
     setAuthResponse(undefined);
 
     const response = await loginWithEmail({
-      authEmailURL: plexo.authEmailURL,
       email: values.email,
       password: values.password,
     });
