@@ -1,20 +1,19 @@
-import { devtoolsExchange } from "@urql/devtools";
+// import { devtoolsExchange } from "@urql/devtools";
 import {
   cacheExchange,
   CombinedError,
   createClient,
-  dedupExchange,
+  // dedupExchange,
   errorExchange,
   fetchExchange,
   subscriptionExchange,
 } from "urql";
 import { createClient as createWSClient } from "graphql-ws";
 
-export const URQLClient = ({ graphQLEndpoint }: { graphQLEndpoint?: string }) => {
+export const URQLClient = () => {
   // console.log("CREATING URQL CLIENT");
 
-  const GRAPHQL_ENDPOINT =
-    process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || graphQLEndpoint || "/graphql";
+  const GRAPHQL_ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "/graphql";
 
   const WS_ENDPOINT = process.env.NEXT_PUBLIC_WS_ENDPOINT || "/graphql/ws";
 
@@ -34,7 +33,7 @@ export const URQLClient = ({ graphQLEndpoint }: { graphQLEndpoint?: string }) =>
       },
     },
     exchanges: [
-      devtoolsExchange,
+      // devtoolsExchange,
       // dedupExchange,
       cacheExchange,
       errorExchange({

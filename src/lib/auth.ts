@@ -1,14 +1,8 @@
-export const loginWithEmail = async ({
-  authEmailURL,
-  email,
-  password,
-}: {
-  authEmailURL: string | undefined;
-  email: string;
-  password: string;
-}) => {
+const loginURL = process.env.NEXT_PUBLIC_URL_EMAIL_AUTH || "/api/auth/email/login";
+
+export const loginWithEmail = async ({ email, password }: { email: string; password: string }) => {
   try {
-    const res = await fetch(authEmailURL || "/api/auth/email/login", {
+    const res = await fetch(loginURL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
