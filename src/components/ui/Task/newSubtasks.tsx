@@ -31,7 +31,8 @@ const NewSubTasks = ({ subtasks, setSubtasks }: NewSubTasks) => {
   const [status, setStatus] = useState<TaskStatus>(TaskStatus.Backlog);
   const [lead, setLead] = useState<Member | null>(null);
 
-  const handleAddSubtask = () => {
+  const handleAddSubtask = (event: { preventDefault: () => void; }) => {
+    event.preventDefault();
     setSubtasks([
       ...subtasks,
       {
@@ -90,34 +91,37 @@ const NewSubTasks = ({ subtasks, setSubtasks }: NewSubTasks) => {
       <Text p={"xs"} size={"xs"}>
         Sub-tasks
       </Text>
-      <Group spacing={0} px={6} py={4}>
-        <StatusSelector status={status} setStatus={setStatus} type="icon" />
-        <LeadTaskSelector lead={lead} setLead={setLead} type="icon" />
+      <form onSubmit={handleAddSubtask}>
+        <Group spacing={0} px={6} py={4}>
+          <StatusSelector status={status} setStatus={setStatus} type="icon" />
+          <LeadTaskSelector lead={lead} setLead={setLead} type="icon" />
 
-        <TextInput
-          autoFocus
-          placeholder="Task Title"
-          variant="unstyled"
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-          styles={{
-            root: {
-              flexGrow: 1,
-            },
-          }}
-        />
+          <TextInput
+            autoFocus
+            placeholder="Task Title"
+            variant="unstyled"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            styles={{
+              root: {
+                flexGrow: 1,
+              },
+            }}
+          />
 
-        <Button
-          compact
-          disabled={title.length ? false : true}
-          variant="light"
-          color={"brand"}
-          leftIcon={<Plus size={16} />}
-          onClick={handleAddSubtask}
-        >
-          <Text size={"xs"}>Add subtask</Text>
-        </Button>
-      </Group>
+          <Button
+            compact
+            disabled={title.length ? false : true}
+            variant="light"
+            color={"brand"}
+            leftIcon={<Plus size={16} />}
+            type="submit"
+            
+          >
+            <Text size={"xs"}>Add subtask</Text>
+          </Button>
+        </Group>
+      </form>
       <Stack spacing={1}>{tasks.length ? tasks : null}</Stack>
     </Stack>
   );
