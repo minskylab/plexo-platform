@@ -23,10 +23,11 @@ import { useQuery } from "urql";
 
 import { TasksDocument, TaskStatus } from "integration/graphql";
 import { TaskCardElement, TaskListElement } from "components/ui/Task/task";
-import { StatusIcon, statusName } from "components/ui/Task/status";
+import { ChangeTaskStatus, StatusIcon, statusName } from "components/ui/Task/status";
 import { usePlexoContext } from "context/PlexoContext";
 import { Task } from "lib/types";
 import FilterMenu from "components/ui/Filters/filterMenu";
+import { useActions } from "lib/hooks/useActions";
 
 const useStyles = createStyles(theme => ({
   burger: {
@@ -68,16 +69,46 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-const DndTaskBoard = ({ statusData }: { statusData: Task[] }) => {
+type TaskBoardProps = {
+  statusData: Task[] ;
+  currentStatus: TaskStatus;
+};
+
+
+// const DndTaskBoard = ({ statusData, currentStatus }:TaskBoardProps ) => {
+//   const [state, handlers] = useListState([...statusData]);
+
+//   return (
+
+//       <Droppable droppableId={currentStatus} direction="vertical">
+//         {provided => (
+//           <div ref={provided.innerRef} {...provided.droppableProps}>
+//             {state.map((t: Task, index: number) => (
+//               <Draggable key={t.id} draggableId={t.id} index={index}>
+//                 {provided => (
+//                   <div
+//                     ref={provided.innerRef}
+//                     {...provided.draggableProps}
+//                     {...provided.dragHandleProps}
+//                   >
+//                     <TaskCardElement key={t.id} task={{ ...t, status: t.status }} />
+//                   </div>
+//                 )}
+//               </Draggable>
+//             ))}
+//             {provided.placeholder}
+//           </div>
+//         )}
+//       </Droppable>
+//   );
+// };
+
+const DndTaskBoard = ({ statusData, currentStatus }:TaskBoardProps ) => {
   const [state, handlers] = useListState([...statusData]);
 
   return (
-    <DragDropContext
-      onDragEnd={({ destination, source }) => {
-        handlers.reorder({ from: source.index, to: destination?.index || 0 });
-      }}
-    >
-      <Droppable droppableId="task-list" direction="vertical">
+
+      <Droppable droppableId={currentStatus} direction="vertical">
         {provided => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
             {state.map((t: Task, index: number) => (
@@ -97,19 +128,13 @@ const DndTaskBoard = ({ statusData }: { statusData: Task[] }) => {
           </div>
         )}
       </Droppable>
-    </DragDropContext>
   );
 };
-
 const DndTaskList = ({ statusData }: { statusData: Task[] }) => {
   const [state, handlers] = useListState([...statusData]);
 
   return (
-    <DragDropContext
-      onDragEnd={({ destination, source }) => {
-        handlers.reorder({ from: source.index, to: destination?.index || 0 });
-      }}
-    >
+
       <Droppable droppableId="task-list" direction="vertical">
         {provided => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
@@ -130,9 +155,10 @@ const DndTaskList = ({ statusData }: { statusData: Task[] }) => {
           </div>
         )}
       </Droppable>
-    </DragDropContext>
+
   );
 };
+
 
 type StatusCounterProps = {
   status: TaskStatus;
@@ -178,7 +204,7 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
   };
 
   const TaskCard = ({ status }: TaskProps) => {
-    return <DndTaskBoard statusData={dataByStatus(status)} />;
+    return <DndTaskBoard statusData={dataByStatus(status)} currentStatus={status} />;
   };
 
   const Counter = ({ status, fetching }: CounterProps) => {
@@ -206,9 +232,35 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
     return colsCounter > 6 ? 6 : colsCounter;
   };
 
+  const { fetchUpdateTask } = useActions();
+  
   return (
     <ScrollArea type="hover" offsetScrollbars style={{ height: "calc(100vh - 90px)" }}>
       <SimpleGrid cols={StatusBoardCols()} spacing={325}>
+      <DragDropContext
+        onDragEnd={({ destination, source, draggableId }) => {
+          
+
+          //handlers.reorder({ from: source.index, to: destination?.index || 0 });
+          // If there's no destination (e.g., item was dropped outside the list), do nothing
+          if (!destination) {
+            console.log("no destination");
+            return;
+          }
+
+          // If the item was dropped in the same place, do nothing
+          if (destination.droppableId === source.droppableId ) {
+            console.log("same place");
+            return;
+          }
+          console.log("destination", destination);
+          // Determine the new status based on the destination
+          const newStatus = destination.droppableId; // You'll need to implement this function
+
+          // Update the task's status
+          ChangeTaskStatus(newStatus as TaskStatus, draggableId, fetchUpdateTask);
+        }}
+      >
         {StatusBoardEnable(TaskStatus.None) && (
           <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
             <Counter status={TaskStatus.None} fetching={fetching} />
@@ -216,7 +268,7 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
               {fetching ? (
                 <Skeleton height={36} radius="sm" />
               ) : (
-                <TaskCard status={TaskStatus.None} />
+                <DndTaskBoard statusData={dataByStatus(TaskStatus.None)} currentStatus={TaskStatus.None} />
               )}
             </ScrollArea>
           </Stack>
@@ -228,7 +280,7 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
               {fetching ? (
                 <Skeleton height={36} radius="sm" />
               ) : (
-                <TaskCard status={TaskStatus.Backlog} />
+                <DndTaskBoard statusData={dataByStatus(TaskStatus.Backlog)} currentStatus={TaskStatus.Backlog} />
               )}
             </ScrollArea>
           </Stack>
@@ -240,7 +292,7 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
               {fetching ? (
                 <Skeleton height={36} radius="sm" />
               ) : (
-                <TaskCard status={TaskStatus.ToDo} />
+                <DndTaskBoard statusData={dataByStatus(TaskStatus.ToDo)} currentStatus={TaskStatus.ToDo} />
               )}
             </ScrollArea>
           </Stack>
@@ -252,7 +304,7 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
               {fetching ? (
                 <Skeleton height={36} radius="sm" />
               ) : (
-                <TaskCard status={TaskStatus.InProgress} />
+                <DndTaskBoard statusData={dataByStatus(TaskStatus.InProgress)} currentStatus={TaskStatus.InProgress} />
               )}
             </ScrollArea>
           </Stack>
@@ -264,7 +316,7 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
               {fetching ? (
                 <Skeleton height={36} radius="sm" />
               ) : (
-                <TaskCard status={TaskStatus.Done} />
+                <DndTaskBoard statusData={dataByStatus(TaskStatus.Done)} currentStatus={TaskStatus.Done} />
               )}
             </ScrollArea>
           </Stack>
@@ -276,11 +328,12 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
               {fetching ? (
                 <Skeleton height={36} radius="sm" />
               ) : (
-                <TaskCard status={TaskStatus.Canceled} />
+                <DndTaskBoard statusData={dataByStatus(TaskStatus.Canceled)} currentStatus={TaskStatus.Canceled} />
               )}
             </ScrollArea>
           </Stack>
         )}
+        </DragDropContext>
       </SimpleGrid>
     </ScrollArea>
   );
@@ -311,6 +364,11 @@ const TasksList = ({ taskData, fetching }: TasksProps) => {
   return (
     <ScrollArea type="hover" offsetScrollbars style={{ height: "calc(100vh - 90px)" }}>
       <Container>
+      <DragDropContext
+          onDragEnd={({ destination, source }) => {
+            // handlers.reorder({ from: source.index, to: destination?.index || 0 });
+          }}
+        >
         <Counter status={TaskStatus.None} fetching={fetching} />
         {fetching ? <Skeleton height={36} radius="sm" /> : <TaskList status={TaskStatus.None} />}
 
@@ -336,6 +394,7 @@ const TasksList = ({ taskData, fetching }: TasksProps) => {
         ) : (
           <TaskList status={TaskStatus.Canceled} />
         )}
+        </DragDropContext>
       </Container>
     </ScrollArea>
   );

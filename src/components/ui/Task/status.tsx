@@ -287,3 +287,23 @@ export const StatusSelectorByTask = ({ task, type, iconVariant }: StatusSelector
     </GenericStatusMenu>
   );
 };
+
+
+export const ChangeTaskStatus = (status: TaskStatus, taskId: String, fetchUpdateTask: any) => {
+  const onUpdateTaskStatus = async (status: TaskStatus) => {
+    const res = await fetchUpdateTask({
+      taskId: taskId,
+      status: statusName(status),
+    });
+
+    if (res.data) {
+      SuccessNotification("Status updated", res.data.updateTask.title);
+    }
+    if (res.error) {
+      ErrorNotification();
+    }
+  };
+  onUpdateTaskStatus(status);
+  return <></>;
+};
+
