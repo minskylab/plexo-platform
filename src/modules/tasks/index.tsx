@@ -16,18 +16,19 @@ import {
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 import { LayoutColumns, LayoutRows, LayoutSidebar } from "tabler-icons-react";
 import { getCookie, setCookie } from "cookies-next";
 import { useQuery } from "urql";
 
 import { TasksDocument, TaskStatus } from "integration/graphql";
 import { TaskCardElement, TaskListElement } from "components/ui/Task/task";
-import { ChangeTaskStatus, StatusIcon, statusName } from "components/ui/Task/status";
+import { StatusIcon, statusName } from "components/ui/Task/status";
 import { usePlexoContext } from "context/PlexoContext";
 import { Task } from "lib/types";
 import FilterMenu from "components/ui/Filters/filterMenu";
 import { useActions } from "lib/hooks/useActions";
+import { ErrorNotification, SuccessNotification } from "lib/notifications";
 
 const useStyles = createStyles(theme => ({
   burger: {
@@ -75,51 +76,23 @@ type TaskBoardProps = {
 };
 
 
-// const DndTaskBoard = ({ statusData, currentStatus }:TaskBoardProps ) => {
-//   const [state, handlers] = useListState([...statusData]);
-
-//   return (
-
-//       <Droppable droppableId={currentStatus} direction="vertical">
-//         {provided => (
-//           <div ref={provided.innerRef} {...provided.droppableProps}>
-//             {state.map((t: Task, index: number) => (
-//               <Draggable key={t.id} draggableId={t.id} index={index}>
-//                 {provided => (
-//                   <div
-//                     ref={provided.innerRef}
-//                     {...provided.draggableProps}
-//                     {...provided.dragHandleProps}
-//                   >
-//                     <TaskCardElement key={t.id} task={{ ...t, status: t.status }} />
-//                   </div>
-//                 )}
-//               </Draggable>
-//             ))}
-//             {provided.placeholder}
-//           </div>
-//         )}
-//       </Droppable>
-//   );
-// };
-
 const DndTaskBoard = ({ statusData, currentStatus }:TaskBoardProps ) => {
-  const [state, handlers] = useListState([...statusData]);
+  
 
   return (
 
-      <Droppable droppableId={currentStatus} direction="vertical">
+      <Droppable droppableId={currentStatus} >
         {provided => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
-            {state.map((t: Task, index: number) => (
-              <Draggable key={t.id} draggableId={t.id} index={index}>
+            {statusData.map((task: Task, index: number) => (
+              <Draggable key={task.id} draggableId={task.id} index={index}>
                 {provided => (
                   <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                   >
-                    <TaskCardElement key={t.id} task={{ ...t, status: t.status }} />
+                    <TaskCardElement key={task.id} task={{ ...task, status: task.status }} />
                   </div>
                 )}
               </Draggable>
@@ -233,110 +206,150 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
   };
 
   const { fetchUpdateTask } = useActions();
+  const ChangeTaskStatus = async (status: TaskStatus, taskId: String, fetchUpdateTask: any) => {
+
+      const res = await fetchUpdateTask({
+        taskId: taskId,
+        status: statusName(status),
+      });
   
+      if (res.data) {
+        SuccessNotification("Status updated", res.data.updateTask.title);
+        return true;
+
+        //move visually droppable element from one column to another
+
+      }
+      if (res.error) {
+        ErrorNotification();
+        return false;
+      }
+    
+  };
+
+  const initialStatusMap: StatusMap = {
+    [TaskStatus.None]: dataByStatus(TaskStatus.None),
+    [TaskStatus.Backlog]: dataByStatus(TaskStatus.Backlog),
+    [TaskStatus.ToDo]: dataByStatus(TaskStatus.ToDo),
+    [TaskStatus.InProgress]: dataByStatus(TaskStatus.InProgress),
+    [TaskStatus.Done]: dataByStatus(TaskStatus.Done),
+    [TaskStatus.Canceled]: dataByStatus(TaskStatus.Canceled),
+  };
+  
+  type StatusMap = {
+    [status in TaskStatus]: Task[];
+  };
+  
+  const [columns, setColumns] = useState<StatusMap>(initialStatusMap);
+  const [ordered, setOrdered] = useState<TaskStatus[]>(Object.keys(initialStatusMap) as TaskStatus[]);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
+  const onDragEnd = async (result: DropResult) => {
+    const { destination, source, draggableId } = result;
+  
+    // If there's no destination (e.g., item was dropped outside the list), do nothing
+    if (!destination) {
+      return;
+    }
+  
+    // If the item was dropped in the same place, do nothing
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+  
+    // We update the UI
+  
+    // Create a shallow copy of the current columns
+    const newColumns = { ...columns };
+
+    // Remove the task from the source column
+    const sourceTasks = [...newColumns[source.droppableId as TaskStatus]];
+    const [movedTask] = sourceTasks.splice(source.index, 1);
+    newColumns[source.droppableId as TaskStatus] = sourceTasks;
+    
+    // Add the task to the destination column
+    const destinationTasks = [...newColumns[destination.droppableId as TaskStatus]];
+
+    //update the task status visual locally
+    movedTask.status = destination.droppableId as TaskStatus;
+
+    // Add the task to the destination column pt2
+    destinationTasks.splice(destination.index, 0, movedTask);
+    newColumns[destination.droppableId as TaskStatus] = destinationTasks;
+
+    //update the task status visual locally
+
+
+    
+
+    // Update the state with the new columns
+    setColumns(newColumns);
+    setLastUpdated(new Date());
+
+
+
+    // Update the task's status in the backend
+    const newStatus = destination.droppableId as TaskStatus;
+    const wasSuccessful = await ChangeTaskStatus(newStatus, draggableId, fetchUpdateTask);
+
+    // If the backend update was unsuccessful, update the UI to return to the previous position
+    if (!wasSuccessful) {
+      // Create a shallow copy of the modified columns
+      const revertedColumns = { ...newColumns };
+
+      // Remove the task from the destination column
+      const currentDestinationTasks = [...revertedColumns[destination.droppableId as TaskStatus]];
+      currentDestinationTasks.splice(destination.index, 1);
+      revertedColumns[destination.droppableId as TaskStatus] = currentDestinationTasks;
+
+      // Add the task back to the source column at its original position
+      const currentSourceTasks = [...revertedColumns[source.droppableId as TaskStatus]];
+
+      //update the task status visual locally
+      movedTask.status = source.droppableId as TaskStatus;
+      
+      // Add the task back to the source column at its original position pt2
+      currentSourceTasks.splice(source.index, 0, movedTask);
+      revertedColumns[source.droppableId as TaskStatus] = currentSourceTasks;
+
+
+      // Update the state with the reverted columns
+      setColumns(revertedColumns);
+      
+    } else {
+      //we need to reload the whole column
+      
+    }
+    setOrdered(Object.keys(newColumns) as TaskStatus[]);
+  };
+
   return (
     <ScrollArea type="hover" offsetScrollbars style={{ height: "calc(100vh - 90px)" }}>
       <SimpleGrid cols={StatusBoardCols()} spacing={325}>
-      <DragDropContext
-        onDragEnd={({ destination, source, draggableId }) => {
-          
-
-          //handlers.reorder({ from: source.index, to: destination?.index || 0 });
-          // If there's no destination (e.g., item was dropped outside the list), do nothing
-          if (!destination) {
-            console.log("no destination");
-            return;
-          }
-
-          // If the item was dropped in the same place, do nothing
-          if (destination.droppableId === source.droppableId ) {
-            console.log("same place");
-            return;
-          }
-          console.log("destination", destination);
-          // Determine the new status based on the destination
-          const newStatus = destination.droppableId; // You'll need to implement this function
-
-          // Update the task's status
-          ChangeTaskStatus(newStatus as TaskStatus, draggableId, fetchUpdateTask);
-        }}
-      >
-        {StatusBoardEnable(TaskStatus.None) && (
-          <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-            <Counter status={TaskStatus.None} fetching={fetching} />
-            <ScrollArea style={{ height: 812 }} offsetScrollbars>
-              {fetching ? (
-                <Skeleton height={36} radius="sm" />
-              ) : (
-                <DndTaskBoard statusData={dataByStatus(TaskStatus.None)} currentStatus={TaskStatus.None} />
-              )}
-            </ScrollArea>
-          </Stack>
-        )}
-        {StatusBoardEnable(TaskStatus.Backlog) && (
-          <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-            <Counter status={TaskStatus.Backlog} fetching={fetching} />
-            <ScrollArea style={{ height: 812 }} offsetScrollbars>
-              {fetching ? (
-                <Skeleton height={36} radius="sm" />
-              ) : (
-                <DndTaskBoard statusData={dataByStatus(TaskStatus.Backlog)} currentStatus={TaskStatus.Backlog} />
-              )}
-            </ScrollArea>
-          </Stack>
-        )}
-        {StatusBoardEnable(TaskStatus.ToDo) && (
-          <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-            <Counter status={TaskStatus.ToDo} fetching={fetching} />
-            <ScrollArea style={{ height: 812 }} offsetScrollbars>
-              {fetching ? (
-                <Skeleton height={36} radius="sm" />
-              ) : (
-                <DndTaskBoard statusData={dataByStatus(TaskStatus.ToDo)} currentStatus={TaskStatus.ToDo} />
-              )}
-            </ScrollArea>
-          </Stack>
-        )}
-        {StatusBoardEnable(TaskStatus.InProgress) && (
-          <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-            <Counter status={TaskStatus.InProgress} fetching={fetching} />
-            <ScrollArea style={{ height: 812 }} offsetScrollbars>
-              {fetching ? (
-                <Skeleton height={36} radius="sm" />
-              ) : (
-                <DndTaskBoard statusData={dataByStatus(TaskStatus.InProgress)} currentStatus={TaskStatus.InProgress} />
-              )}
-            </ScrollArea>
-          </Stack>
-        )}
-        {StatusBoardEnable(TaskStatus.Done) && (
-          <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-            <Counter status={TaskStatus.Done} fetching={fetching} />
-            <ScrollArea style={{ height: 812 }} offsetScrollbars>
-              {fetching ? (
-                <Skeleton height={36} radius="sm" />
-              ) : (
-                <DndTaskBoard statusData={dataByStatus(TaskStatus.Done)} currentStatus={TaskStatus.Done} />
-              )}
-            </ScrollArea>
-          </Stack>
-        )}
-        {StatusBoardEnable(TaskStatus.Canceled) && (
-          <Stack spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-            <Counter status={TaskStatus.Canceled} fetching={fetching} />
-            <ScrollArea style={{ height: 812 }} offsetScrollbars>
-              {fetching ? (
-                <Skeleton height={36} radius="sm" />
-              ) : (
-                <DndTaskBoard statusData={dataByStatus(TaskStatus.Canceled)} currentStatus={TaskStatus.Canceled} />
-              )}
-            </ScrollArea>
-          </Stack>
-        )}
+        <DragDropContext onDragEnd={onDragEnd}>
+          {ordered.map((key, index) => (
+             StatusBoardEnable(key as TaskStatus) && (
+            <Stack key={key} spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
+              <Counter status={key as TaskStatus} fetching={fetching} />
+              <ScrollArea style={{ height: 812 }} offsetScrollbars>
+                {fetching ? (
+                  <Skeleton height={36} radius="sm" />
+                ) : (
+                  <DndTaskBoard statusData={columns[key]} currentStatus={key as TaskStatus} />
+                )}
+              </ScrollArea>
+            </Stack>
+            )
+          ))}
         </DragDropContext>
       </SimpleGrid>
     </ScrollArea>
   );
+
+  
 };
 
 const TasksList = ({ taskData, fetching }: TasksProps) => {
