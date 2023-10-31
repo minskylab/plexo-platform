@@ -14,7 +14,6 @@ import {
   ActionIcon,
   useMantineTheme,
 } from "@mantine/core";
-import { useListState } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 import { LayoutColumns, LayoutRows, LayoutSidebar } from "tabler-icons-react";
@@ -71,79 +70,68 @@ const useStyles = createStyles(theme => ({
 }));
 
 type TaskBoardProps = {
-  statusData: Task[] ;
+  statusData: Task[];
   currentStatus: TaskStatus;
 };
 
-
-const DndTaskBoard = ({ statusData, currentStatus }:TaskBoardProps ) => {
-  
-
+const DndTaskBoard = ({ statusData, currentStatus }: TaskBoardProps) => {
   return (
-      <Droppable droppableId={currentStatus} >
-        {provided => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
-            {statusData.map((task: Task, index: number) => (
-              <Draggable key={task.id} draggableId={task.id} index={index}>
-                {provided => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    <TaskCardElement key={task.id} task={{ ...task, status: task.status }} />
-                  </div>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
+    <Droppable droppableId={currentStatus}>
+      {provided => (
+        <div ref={provided.innerRef} {...provided.droppableProps}>
+          {statusData.map((task: Task, index: number) => (
+            <Draggable key={task.id} draggableId={task.id} index={index}>
+              {provided => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                >
+                  <TaskCardElement key={task.id} task={{ ...task, status: task.status }} />
+                </div>
+              )}
+            </Draggable>
+          ))}
+          {provided.placeholder}
+        </div>
+      )}
+    </Droppable>
   );
 };
 
 type TaskListProps = {
-  statusData: Task[] ;
+  statusData: Task[];
   currentStatus: TaskStatus;
 };
 
-const DndTaskList = ({ statusData, currentStatus }:TaskListProps) => {
-
-
+const DndTaskList = ({ statusData, currentStatus }: TaskListProps) => {
   return (
-      <Droppable droppableId={currentStatus} >
-        {provided => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
-            {statusData.map((task: Task, index: number) => (
-              <Draggable key={task.id} draggableId={task.id} index={index}>
-                {provided => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    <TaskListElement key={task.id} task={{ ...task, status: task.status }} />
-                  </div>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-
+    <Droppable droppableId={currentStatus}>
+      {provided => (
+        <div ref={provided.innerRef} {...provided.droppableProps}>
+          {statusData.map((task: Task, index: number) => (
+            <Draggable key={task.id} draggableId={task.id} index={index}>
+              {provided => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                >
+                  <TaskListElement key={task.id} task={{ ...task, status: task.status }} />
+                </div>
+              )}
+            </Draggable>
+          ))}
+          {provided.placeholder}
+        </div>
+      )}
+    </Droppable>
   );
 };
-
 
 type StatusCounterProps = {
   status: TaskStatus;
   taskData: Task[] | undefined;
-};
-
-type TaskProps = {
-  status: TaskStatus;
 };
 
 type TasksProps = {
@@ -180,7 +168,6 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
     return data;
   };
 
-
   const Counter = ({ status, fetching }: CounterProps) => {
     return dataByStatus(status).length || fetching ? (
       <StatusCounter taskData={taskData} status={status} />
@@ -208,24 +195,21 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
 
   const { fetchUpdateTask } = useActions();
   const ChangeTaskStatus = async (status: TaskStatus, taskId: String, fetchUpdateTask: any) => {
+    const res = await fetchUpdateTask({
+      taskId: taskId,
+      status: statusName(status),
+    });
 
-      const res = await fetchUpdateTask({
-        taskId: taskId,
-        status: statusName(status),
-      });
-  
-      if (res.data) {
-        SuccessNotification("Status updated", res.data.updateTask.title);
-        return true;
+    if (res.data) {
+      SuccessNotification("Status updated", res.data.updateTask.title);
+      return true;
 
-        //move visually droppable element from one column to another
-
-      }
-      if (res.error) {
-        ErrorNotification();
-        return false;
-      }
-    
+      //move visually droppable element from one column to another
+    }
+    if (res.error) {
+      ErrorNotification();
+      return false;
+    }
   };
 
   const initialStatusMap: StatusMap = {
@@ -236,33 +220,32 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
     [TaskStatus.Done]: dataByStatus(TaskStatus.Done),
     [TaskStatus.Canceled]: dataByStatus(TaskStatus.Canceled),
   };
-  
+
   type StatusMap = {
     [status in TaskStatus]: Task[];
   };
-  
+
   const [columns, setColumns] = useState<StatusMap>(initialStatusMap);
-  const [ordered, setOrdered] = useState<TaskStatus[]>(Object.keys(initialStatusMap) as TaskStatus[]);
+  const [ordered, setOrdered] = useState<TaskStatus[]>(
+    Object.keys(initialStatusMap) as TaskStatus[]
+  );
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const onDragEnd = async (result: DropResult) => {
     const { destination, source, draggableId } = result;
-  
+
     // If there's no destination (e.g., item was dropped outside the list), do nothing
     if (!destination) {
       return;
     }
-  
+
     // If the item was dropped in the same place, do nothing
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
+    if (destination.droppableId === source.droppableId && destination.index === source.index) {
       return;
     }
-  
+
     // We update the UI
-  
+
     // Create a shallow copy of the current columns
     const newColumns = { ...columns };
 
@@ -270,7 +253,7 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
     const sourceTasks = [...newColumns[source.droppableId as TaskStatus]];
     const [movedTask] = sourceTasks.splice(source.index, 1);
     newColumns[source.droppableId as TaskStatus] = sourceTasks;
-    
+
     // Add the task to the destination column
     const destinationTasks = [...newColumns[destination.droppableId as TaskStatus]];
 
@@ -283,14 +266,9 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
 
     //update the task status visual locally
 
-
-    
-
     // Update the state with the new columns
     setColumns(newColumns);
     setLastUpdated(new Date());
-
-
 
     // Update the task's status in the backend
     const newStatus = destination.droppableId as TaskStatus;
@@ -316,13 +294,10 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
       currentSourceTasks.splice(source.index, 0, movedTask);
       revertedColumns[source.droppableId as TaskStatus] = currentSourceTasks;
 
-
       // Update the state with the reverted columns
       setColumns(revertedColumns);
-      
     } else {
       //we need to reload the whole column
-      
     }
     setOrdered(Object.keys(newColumns) as TaskStatus[]);
   };
@@ -331,26 +306,29 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
     <ScrollArea type="hover" offsetScrollbars style={{ height: "calc(100vh - 90px)" }}>
       <SimpleGrid cols={StatusBoardCols()} spacing={325}>
         <DragDropContext onDragEnd={onDragEnd}>
-          {ordered.map((key, index) => (
-             StatusBoardEnable(key as TaskStatus) && (
-            <Stack key={key} spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-              <Counter status={key as TaskStatus} fetching={fetching} />
-              <ScrollArea style={{ height: 812 }} offsetScrollbars>
-                {fetching ? (
-                  <Skeleton height={36} radius="sm" />
-                ) : (
-                  <DndTaskBoard statusData={columns[key]} currentStatus={key as TaskStatus} />
-                )}
-              </ScrollArea>
-            </Stack>
-            )
-          ))}
+          {ordered.map(
+            (key, index) =>
+              StatusBoardEnable(key as TaskStatus) && (
+                <Stack key={key} spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
+                  <Counter status={key as TaskStatus} fetching={fetching} />
+                  <ScrollArea style={{ height: 812 }} offsetScrollbars>
+                    {fetching ? (
+                      <Skeleton height={36} radius="sm" />
+                    ) : (
+                      <DndTaskBoard statusData={columns[key]} currentStatus={key as TaskStatus} />
+                    )}
+                  </ScrollArea>
+                </Stack>
+              )
+          )}
         </DragDropContext>
       </SimpleGrid>
     </ScrollArea>
   );
+};
 
-  
+type StatusMap = {
+  [status in TaskStatus]: Task[];
 };
 
 const TasksList = ({ taskData, fetching }: TasksProps) => {
@@ -363,8 +341,6 @@ const TasksList = ({ taskData, fetching }: TasksProps) => {
     return data;
   };
 
-
-
   const Counter = ({ status, fetching }: CounterProps) => {
     return dataByStatus(status).length || fetching ? (
       <StatusCounter taskData={taskData} status={status} />
@@ -374,25 +350,23 @@ const TasksList = ({ taskData, fetching }: TasksProps) => {
   };
 
   const { fetchUpdateTask } = useActions();
+
   const ChangeTaskStatus = async (status: TaskStatus, taskId: String, fetchUpdateTask: any) => {
+    const res = await fetchUpdateTask({
+      taskId: taskId,
+      status: statusName(status),
+    });
 
-      const res = await fetchUpdateTask({
-        taskId: taskId,
-        status: statusName(status),
-      });
-  
-      if (res.data) {
-        SuccessNotification("Status updated", res.data.updateTask.title);
-        return true;
+    if (res.data) {
+      SuccessNotification("Status updated", res.data.updateTask.title);
+      return true;
 
-        //move visually droppable element from one column to another
-
-      }
-      if (res.error) {
-        ErrorNotification();
-        return false;
-      }
-    
+      //move visually droppable element from one column to another
+    }
+    if (res.error) {
+      ErrorNotification();
+      return false;
+    }
   };
 
   const initialStatusMap: StatusMap = {
@@ -403,33 +377,32 @@ const TasksList = ({ taskData, fetching }: TasksProps) => {
     [TaskStatus.Done]: dataByStatus(TaskStatus.Done),
     [TaskStatus.Canceled]: dataByStatus(TaskStatus.Canceled),
   };
-  
-  type StatusMap = {
-    [status in TaskStatus]: Task[];
-  };
-  
+
+  useEffect(() => {
+    setColumns(initialStatusMap);
+  }, [taskData]);
+
   const [columns, setColumns] = useState<StatusMap>(initialStatusMap);
-  const [ordered, setOrdered] = useState<TaskStatus[]>(Object.keys(initialStatusMap) as TaskStatus[]);
+  const [ordered, setOrdered] = useState<TaskStatus[]>(
+    Object.keys(initialStatusMap) as TaskStatus[]
+  );
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const onDragEnd = async (result: DropResult) => {
     const { destination, source, draggableId } = result;
-  
+
     // If there's no destination (e.g., item was dropped outside the list), do nothing
     if (!destination) {
       return;
     }
-  
+
     // If the item was dropped in the same place, do nothing
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
+    if (destination.droppableId === source.droppableId && destination.index === source.index) {
       return;
     }
-  
+
     // We update the UI
-  
+
     // Create a shallow copy of the current columns
     const newColumns = { ...columns };
 
@@ -437,7 +410,7 @@ const TasksList = ({ taskData, fetching }: TasksProps) => {
     const sourceTasks = [...newColumns[source.droppableId as TaskStatus]];
     const [movedTask] = sourceTasks.splice(source.index, 1);
     newColumns[source.droppableId as TaskStatus] = sourceTasks;
-    
+
     // Add the task to the destination column
     const destinationTasks = [...newColumns[destination.droppableId as TaskStatus]];
 
@@ -476,30 +449,27 @@ const TasksList = ({ taskData, fetching }: TasksProps) => {
       currentSourceTasks.splice(source.index, 0, movedTask);
       revertedColumns[source.droppableId as TaskStatus] = currentSourceTasks;
 
-
       // Update the state with the reverted columns
       setColumns(revertedColumns);
-      
     } else {
       //we need to reload the whole column
-      
     }
     setOrdered(Object.keys(newColumns) as TaskStatus[]);
   };
-  
+
   return (
     <ScrollArea type="hover" offsetScrollbars style={{ height: "calc(100vh - 90px)" }}>
       <Container>
         <DragDropContext onDragEnd={onDragEnd}>
           {ordered.map((key, index) => (
-           <Stack key={key} spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
-          <Counter status={key as TaskStatus} fetching={fetching} />
-          {
-           fetching ? <Skeleton height={36} radius="sm" /> 
-           : 
-           <DndTaskList statusData={columns[key]} currentStatus={key as TaskStatus} /> 
-          }
-          </Stack>
+            <Stack key={key} spacing={0} sx={{ minWidth: 312, marginLeft: 20 }}>
+              <Counter status={key as TaskStatus} fetching={fetching} />
+              {fetching ? (
+                <Skeleton height={36} radius="sm" />
+              ) : (
+                <DndTaskList statusData={columns[key]} currentStatus={key as TaskStatus} />
+              )}
+            </Stack>
           ))}
         </DragDropContext>
       </Container>
@@ -560,8 +530,8 @@ export const TasksPageContent = () => {
       labels: labelsFilters,
       project: projectFilters,
     };
-    let filtrosTotal = Object.values(filterValues).filter(value => value.length > 0);
-    setTotal(filtrosTotal.length);
+    let totalFilters = Object.values(filterValues).filter(value => value.length > 0);
+    setTotal(totalFilters.length);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filterValues));
   }, [
     statusFilters,
