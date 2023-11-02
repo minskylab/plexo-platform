@@ -117,7 +117,7 @@ type NavBarWithSearchProps = {
 
 export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithSearchProps) {
   const { classes } = useStyles();
-  const [section, setSection] = useState<"teams" | "projects">("teams");
+  const [section, setSection] = useState<"teams" | "projects">("projects");
   const [newProjectOpened, setNewProjectOpened] = useState(false);
   const [newTeamOpened, setNewTeamOpened] = useState(false);
 
@@ -182,17 +182,6 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
                 {
                   label: (
                     <Center>
-                      <TeamIcon />
-                      <Text ml={6} size={"xs"}>
-                        Teams
-                      </Text>
-                    </Center>
-                  ),
-                  value: "teams",
-                },
-                {
-                  label: (
-                    <Center>
                       <ProjectIcon />
                       <Text ml={6} size={"xs"}>
                         Projects
@@ -200,6 +189,17 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
                     </Center>
                   ),
                   value: "projects",
+                },
+                {
+                  label: (
+                    <Center>
+                      <TeamIcon />
+                      <Text ml={6} size={"xs"}>
+                        Teams
+                      </Text>
+                    </Center>
+                  ),
+                  value: "teams",
                 },
               ]}
             />
