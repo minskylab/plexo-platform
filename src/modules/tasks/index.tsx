@@ -221,6 +221,10 @@ const TasksBoard = ({ taskData, fetching }: TasksProps) => {
     [TaskStatus.Canceled]: dataByStatus(TaskStatus.Canceled),
   };
 
+  useEffect(() => {
+    setColumns(initialStatusMap);
+  }, [taskData]);
+
   type StatusMap = {
     [status in TaskStatus]: Task[];
   };
