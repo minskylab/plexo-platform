@@ -87,10 +87,14 @@ const PlexoProvider = ({ authCookie, children }: PlexoProviderProps) => {
   });
 
   useEffect(() => {
-    if (!isLoadingProjects && projects) {
-      setProjectsData(projects.projects);
+    if (!isLoadingProjects && projects && user) {
+      const filterProjects = projects.projects.filter(project =>
+        project.members.some(member => member.id === user.me.id)
+      );
+
+      setProjectsData(filterProjects);
     }
-  }, [projects, isLoadingProjects]);
+  }, [projects, isLoadingProjects, user]);
 
   useEffect(() => {
     if (!isLoadingMembers && members) {
@@ -99,10 +103,14 @@ const PlexoProvider = ({ authCookie, children }: PlexoProviderProps) => {
   }, [members, isLoadingMembers]);
 
   useEffect(() => {
-    if (!isLoadingTeams && teams) {
-      setTeamsData(teams.teams);
+    if (!isLoadingTeams && teams && user) {
+      const filterTeams = teams.teams.filter(team =>
+        team.members.some(member => member.id === user.me.id)
+      );
+
+      setTeamsData(filterTeams);
     }
-  }, [teams, isLoadingTeams]);
+  }, [teams, isLoadingTeams, user]);
 
   useEffect(() => {
     if (!isLoadingLabels && labels) {

@@ -345,10 +345,11 @@ const STORAGE_KEY = "filterValues";
 
 export const TasksPageContent = () => {
   const { classes, theme } = useStyles();
-  const { setNavBarOpened, setTasks } = usePlexoContext();
+  const { setNavBarOpened, setTasks, tasks, projectsData, isLoadingProjects } = usePlexoContext();
   const [viewMode, setViewMode] = useState<"list" | "columns">("list");
 
   const [{ data: tasksData, fetching: isFetchingTasksData }] = useQuery({
+    pause: isLoadingProjects,
     query: TasksDocument,
   });
 
@@ -418,12 +419,16 @@ export const TasksPageContent = () => {
   }, [viewMode]);
 
   useEffect(() => {
-    if (tasksData) {
-      setTasks(tasksData?.tasks);
-    }
-  }, [tasksData]);
+    if (!isFetchingTasksData && !isLoadingProjects && tasksData && projectsData) {
+      const filterTasks = tasksData.tasks.filter(task =>
+        projectsData.some(project => project.id === task.projectId)
+      );
 
-  const filteredTasks = tasksData?.tasks.filter((task: Task) => {
+      setTasks(filterTasks);
+    }
+  }, [tasksData, projectsData, isFetchingTasksData, isLoadingProjects]);
+
+  const filteredTasks = tasks?.filter((task: Task) => {
     return (
       (!statusFilters.length || statusFilters.includes(task.status)) &&
       (!assigneeFilters.length ||
