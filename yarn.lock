@@ -1479,10 +1479,15 @@
     "@tabler/icons" "2.23.0"
     prop-types "^15.7.2"
 
-"@tabler/icons@2.23.0", "@tabler/icons@^2.23.0":
+"@tabler/icons@2.23.0":
   version "2.23.0"
   resolved "https://registry.yarnpkg.com/@tabler/icons/-/icons-2.23.0.tgz#8741d0bb6bd40696266489c3eb59f4c0c8c92f8d"
   integrity sha512-dU54aBwaxG0H+jQ4BdrqtYFN5L7PZevvlnzyL6XeOZgfDS3+sVNCtuG3JmpTEqQSwGLYC1IEwogPGA/Iit2bOA==
+
+"@tabler/icons@^2.23.0":
+  version "2.47.0"
+  resolved "https://registry.yarnpkg.com/@tabler/icons/-/icons-2.47.0.tgz#c41c680d1947e3ab2d60af3febc4132287c60596"
+  integrity sha512-4w5evLh+7FUUiA1GucvGj2ReX2TvOjEr4ejXdwL/bsjoSkof6r1gQmzqI+VHrE2CpJpB3al7bCTulOkFa/RcyA==
 
 "@types/cookie@^0.4.1":
   version "0.4.1"
