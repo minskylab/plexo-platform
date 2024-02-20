@@ -1,4 +1,5 @@
 query Projects {
+  #UPDATED
   projects {
     id
     createdAt
@@ -10,43 +11,12 @@ query Projects {
     leadId
     startDate
     dueDate
-
-    owner {
-      id
-    }
-    tasks {
-      id
-      title
-    }
-    members {
-      id
-      name
-    }
-    leader {
-      id
-      name
-      photoUrl
-    }
-  }
-}
-
-subscription ProjectsSubscription {
-  projects {
-    id
-    name
-    prefix
-    description
-    createdAt
-    updatedAt
-    startDate
-    dueDate
-    ownerId
-    leadId
   }
 }
 
 query ProjectById($projectId: UUID!) {
-  projectById(id: $projectId) {
+  #UPDATED
+  project(id: $projectId) {
     id
     name
     prefix
@@ -54,50 +24,12 @@ query ProjectById($projectId: UUID!) {
     leadId
     startDate
     dueDate
-    owner {
-      id
-      name
-    }
-    leader {
-      id
-      name
-      photoUrl
-    }
-    members {
-      id
-      name
-    }
-    tasks {
-      id
-      title
-    }
-    teams {
-      id
-      name
-    }
   }
 }
 
-mutation NewProject(
-  $name: String!
-  $prefix: String
-  $description: String
-  $leadId: UUID
-  $startDate: DateTime
-  $dueDate: DateTime
-  $members: [UUID!]
-  $teams: [UUID!]
-) {
-  createProject(
-    name: $name
-    prefix: $prefix
-    description: $description
-    leadId: $leadId
-    startDate: $startDate
-    dueDate: $dueDate
-    members: $members
-    teams: $teams
-  ) {
+mutation NewProject($input: CreateProjectInput!) {
+  #UPDATED
+  createProject(input: $input) {
     id
     name
   }
@@ -110,26 +42,8 @@ mutation DeleteProject($projectId: UUID!) {
   }
 }
 
-mutation UpdateProject(
-  $projectId: UUID!
-  $name: String
-  $description: String
-  $startDate: DateTime
-  $dueDate: DateTime
-  $leadId: UUID
-  $members: [UUID!]
-  $teams: [UUID!]
-) {
-  updateProject(
-    id: $projectId
-    name: $name
-    description: $description
-    startDate: $startDate
-    dueDate: $dueDate
-    leadId: $leadId
-    members: $members
-    teams: $teams
-  ) {
+mutation UpdateProject($id: UUID!, $input: UpdateProjectInput!) {
+  updateProject(id: $id, input: $input) {
     id
     name
   }

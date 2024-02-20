@@ -1,4 +1,5 @@
 query Tasks {
+  #UPDATED
   tasks {
     id
     createdAt
@@ -9,37 +10,15 @@ query Tasks {
     priority
     ownerId
     count
-    labels {
-      id
-      name
-      color
-    }
     leadId
     projectId
     dueDate
-
-    owner {
-      id
-    }
-    assignees {
-      id
-      name
-    }
-    project {
-      id
-      name
-    }
-
-    leader {
-      id
-      name
-      photoUrl
-    }
   }
 }
 
 query TaskById($taskId: UUID!) {
-  taskById(id: $taskId) {
+  #UPDATED
+  task(id: $taskId) {
     id
     title
     description
@@ -48,111 +27,12 @@ query TaskById($taskId: UUID!) {
     priority
     dueDate
     count
-    parent {
-      id
-      count
-    }
-    labels {
-      id
-      name
-    }
-    assignees {
-      id
-      name
-    }
-    leader {
-      id
-      name
-      photoUrl
-    }
-    project {
-      id
-      name
-    }
-    subtasks {
-      id
-      createdAt
-      updatedAt
-      title
-      description
-      status
-      priority
-      ownerId
-      count
-      labels {
-        id
-        name
-        color
-      }
-      leadId
-      projectId
-      dueDate
-
-      owner {
-        id
-      }
-      assignees {
-        id
-        name
-      }
-      project {
-        id
-        name
-      }
-
-      leader {
-        id
-        name
-      }
-    }
   }
 }
 
-subscription TasksSubscription {
-  tasks {
-    id
-    status
-    title
-    description
-    createdAt
-    updatedAt
-    priority
-    ownerId
-    labels {
-      id
-      name
-    }
-    leadId
-    projectId
-  }
-}
-
-mutation NewTask(
-  $title: String!
-  $description: String
-  $status: String
-  $priority: String
-  $projectId: UUID
-  $leadId: UUID
-  $labels: [UUID!]
-  $assignees: [UUID!]
-  $dueDate: DateTime
-  $subtasks: [CreateTaskInput!]
-  $parentId: UUID
-) {
-  createTask(
-    title: $title
-    description: $description
-    status: $status
-    priority: $priority
-    projectId: $projectId
-    leadId: $leadId
-    labels: $labels
-    assignees: $assignees
-    dueDate: $dueDate
-    subtasks: $subtasks
-    parentId: $parentId
-  ) {
+mutation NewTask($input: CreateTaskInput!) {
+  #UPDATED
+  createTask(input: $input) {
     id
     title
     status
@@ -165,38 +45,17 @@ mutation DeleteTask($taskId: UUID!) {
     title
   }
 }
-
-mutation UpdateTask(
-  $taskId: UUID!
-  $status: String
-  $priority: String
-  $title: String
-  $description: String
-  $dueDate: DateTime
-  $projectId: UUID
-  $leadId: UUID
-  $labels: [UUID!]
-  $assignees: [UUID!]
-) {
-  updateTask(
-    id: $taskId
-    status: $status
-    title: $title
-    priority: $priority
-    description: $description
-    dueDate: $dueDate
-    projectId: $projectId
-    leadId: $leadId
-    labels: $labels
-    assignees: $assignees
-  ) {
+mutation UpdateTask($id: UUID!, $input: UpdateTaskInput!) {
+  #UPDATED
+  updateTask(id: $id, input: $input) {
     id
     title
   }
 }
 
-query SuggestNewTask($taskSuggestion: TaskSuggestionInput!) {
-  suggestNewTask(task: $taskSuggestion) {
+query SuggestNewTask($input: TaskSuggestionInput!) {
+  #UPDATED
+  suggestNextTask(input: $input) {
     title
     description
     status
@@ -205,8 +64,9 @@ query SuggestNewTask($taskSuggestion: TaskSuggestionInput!) {
   }
 }
 
-query SubdivideTask($taskId: String!, $count: Int) {
-  subdivideTask(taskId: $taskId, subtasks: $count) {
+query SubdivideTask($input: SubdivideTaskInput!) {
+  #UPDATED
+  subdivideTask(input: $input) {
     title
     description
     status
@@ -215,24 +75,20 @@ query SubdivideTask($taskId: String!, $count: Int) {
   }
 }
 
-mutation CreateTasks($tasks: [CreateTaskInput!]!) {
-  createTasks(tasks: $tasks) {
-    id
-    title
-  }
-}
+# mutation CreateTasks($tasks: [CreateTaskInput!]!) {
+#createTasks(tasks: $tasks) {
+#id
+#title
+#}
+#}
 
-query TaskActivity($resourceId: UUID, $resourceType: ActivityResourceType) {
-  activity(resourceId: $resourceId, resourceType: $resourceType) {
+query TaskChanges($input: GetChangesInput) {
+  #UPDATED TASKACTIVITY
+  changes(input: $input) {
     id
     createdAt
-    memberId
     resourceId
     operation
     resourceType
-    member {
-      name
-      photoUrl
-    }
   }
 }

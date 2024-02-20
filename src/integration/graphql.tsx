@@ -21,45 +21,230 @@ export type Scalars = {
   UUID: { input: any; output: any };
 };
 
-export type Activity = {
-  __typename?: "Activity";
+export type Asset = {
+  __typename?: "Asset";
   createdAt: Scalars["DateTime"]["output"];
   id: Scalars["UUID"]["output"];
-  member: Member;
-  memberId: Scalars["UUID"]["output"];
-  operation: ActivityOperationType;
-  resourceId: Scalars["UUID"]["output"];
-  resourceType: ActivityResourceType;
+  kind: AssetKind;
+  name: Scalars["String"]["output"];
+  ownerId: Scalars["UUID"]["output"];
+  projectId?: Maybe<Scalars["UUID"]["output"]>;
   updatedAt: Scalars["DateTime"]["output"];
 };
 
-export enum ActivityOperationType {
+export enum AssetKind {
+  Audio = "AUDIO",
+  Image = "IMAGE",
+  Pdf = "PDF",
+  Text = "TEXT",
+  Unknown = "UNKNOWN",
+  Video = "VIDEO",
+  Website = "WEBSITE",
+}
+
+export type Change = {
+  __typename?: "Change";
+  createdAt: Scalars["DateTime"]["output"];
+  diffJson: Scalars["String"]["output"];
+  id: Scalars["UUID"]["output"];
+  operation: ChangeOperation;
+  ownerId: Scalars["UUID"]["output"];
+  resourceId: Scalars["UUID"]["output"];
+  resourceType: ChangeResourceType;
+  updatedAt: Scalars["DateTime"]["output"];
+};
+
+export enum ChangeOperation {
   Create = "CREATE",
   Delete = "DELETE",
   Update = "UPDATE",
 }
 
-export enum ActivityResourceType {
+export enum ChangeResourceType {
+  Asset = "ASSET",
+  Change = "CHANGE",
   Label = "LABEL",
   Member = "MEMBER",
-  Organization = "ORGANIZATION",
   Project = "PROJECT",
   Task = "TASK",
   Team = "TEAM",
 }
 
-export type CreateTaskInput = {
-  assignees?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
+export type CreateAssetInput = {
+  kind?: InputMaybe<AssetKind>;
+  name: Scalars["String"]["input"];
+  projectId?: InputMaybe<Scalars["UUID"]["input"]>;
+};
+
+export type CreateLabelInput = {
+  color?: InputMaybe<Scalars["String"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  name: Scalars["String"]["input"];
+};
+
+export type CreateMemberInput = {
+  email: Scalars["String"]["input"];
+  githubId?: InputMaybe<Scalars["String"]["input"]>;
+  googleId?: InputMaybe<Scalars["String"]["input"]>;
+  name: Scalars["String"]["input"];
+  passwordHash?: InputMaybe<Scalars["String"]["input"]>;
+  photoUrl?: InputMaybe<Scalars["String"]["input"]>;
+  role: MemberRole;
+};
+
+export type CreateProjectInput = {
   description?: InputMaybe<Scalars["String"]["input"]>;
   dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
-  labels?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
+  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
+  name: Scalars["String"]["input"];
+  prefix?: InputMaybe<Scalars["String"]["input"]>;
+  startDate?: InputMaybe<Scalars["DateTime"]["input"]>;
+  status?: InputMaybe<ProjectStatus>;
+};
+
+export type CreateTaskInput = {
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
   leadId?: InputMaybe<Scalars["UUID"]["input"]>;
   parentId?: InputMaybe<Scalars["UUID"]["input"]>;
-  priority?: InputMaybe<Scalars["String"]["input"]>;
+  priority?: InputMaybe<TaskPriority>;
   projectId?: InputMaybe<Scalars["UUID"]["input"]>;
-  status?: InputMaybe<Scalars["String"]["input"]>;
-  subtasks?: InputMaybe<Array<CreateTaskInput>>;
+  status?: InputMaybe<TaskStatus>;
   title: Scalars["String"]["input"];
+};
+
+export type CreateTeamInput = {
+  name: Scalars["String"]["input"];
+  prefix?: InputMaybe<Scalars["String"]["input"]>;
+  visibility: TeamVisibility;
+};
+
+export type GetAssetsInput = {
+  filter?: InputMaybe<GetAssetsWhere>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  sortBy?: InputMaybe<Scalars["String"]["input"]>;
+  sortOrder?: InputMaybe<SortOrder>;
+};
+
+export type GetAssetsWhere = {
+  and?: InputMaybe<Array<GetAssetsWhere>>;
+  kind?: InputMaybe<AssetKind>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  or?: InputMaybe<Array<GetAssetsWhere>>;
+  ownerId?: InputMaybe<Scalars["UUID"]["input"]>;
+  projectId?: InputMaybe<Scalars["UUID"]["input"]>;
+};
+
+export type GetChangesInput = {
+  filter?: InputMaybe<GetChangesWhere>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  sortBy?: InputMaybe<Scalars["String"]["input"]>;
+  sortOrder?: InputMaybe<SortOrder>;
+};
+
+export type GetChangesWhere = {
+  and?: InputMaybe<Array<GetChangesWhere>>;
+  operation?: InputMaybe<ChangeOperation>;
+  or?: InputMaybe<Array<GetChangesWhere>>;
+  ownerId?: InputMaybe<Scalars["UUID"]["input"]>;
+  resourceId?: InputMaybe<Scalars["UUID"]["input"]>;
+  resourceType?: InputMaybe<ChangeResourceType>;
+};
+
+export type GetLabelsInput = {
+  filter?: InputMaybe<GetLabelsWhere>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  sortBy?: InputMaybe<Scalars["String"]["input"]>;
+  sortOrder?: InputMaybe<SortOrder>;
+};
+
+export type GetLabelsWhere = {
+  and?: InputMaybe<Array<GetLabelsWhere>>;
+  color?: InputMaybe<Scalars["String"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  or?: InputMaybe<Array<GetLabelsWhere>>;
+};
+
+export type GetMembersInput = {
+  filter?: InputMaybe<GetMembersWhere>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  sortBy?: InputMaybe<Scalars["String"]["input"]>;
+  sortOrder?: InputMaybe<SortOrder>;
+};
+
+export type GetMembersWhere = {
+  and?: InputMaybe<Array<GetMembersWhere>>;
+  email?: InputMaybe<Scalars["String"]["input"]>;
+  githubId?: InputMaybe<Scalars["String"]["input"]>;
+  googleId?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  or?: InputMaybe<Array<GetMembersWhere>>;
+  photoUrl?: InputMaybe<Scalars["String"]["input"]>;
+  role?: InputMaybe<MemberRole>;
+};
+
+export type GetProjectsInput = {
+  filter?: InputMaybe<GetProjectsWhere>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  sortBy?: InputMaybe<Scalars["String"]["input"]>;
+  sortOrder?: InputMaybe<SortOrder>;
+};
+
+export type GetProjectsWhere = {
+  and?: InputMaybe<Array<GetProjectsWhere>>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
+  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  or?: InputMaybe<Array<GetProjectsWhere>>;
+  ownerId?: InputMaybe<Scalars["UUID"]["input"]>;
+  prefix?: InputMaybe<Scalars["String"]["input"]>;
+  startDate?: InputMaybe<Scalars["DateTime"]["input"]>;
+};
+
+export type GetTasksInput = {
+  filter?: InputMaybe<GetTasksWhere>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  sortBy?: InputMaybe<Scalars["String"]["input"]>;
+  sortOrder?: InputMaybe<SortOrder>;
+};
+
+export type GetTasksWhere = {
+  and?: InputMaybe<Array<GetTasksWhere>>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
+  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
+  or?: InputMaybe<Array<GetTasksWhere>>;
+  ownerId?: InputMaybe<Scalars["UUID"]["input"]>;
+  parentId?: InputMaybe<Scalars["UUID"]["input"]>;
+  priority?: InputMaybe<TaskPriority>;
+  projectId?: InputMaybe<Scalars["UUID"]["input"]>;
+  status?: InputMaybe<TaskStatus>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+export type GetTeamsInput = {
+  filter?: InputMaybe<GetTeamsWhere>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  sortBy?: InputMaybe<Scalars["String"]["input"]>;
+  sortOrder?: InputMaybe<SortOrder>;
+};
+
+export type GetTeamsWhere = {
+  and?: InputMaybe<Array<GetTeamsWhere>>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  or?: InputMaybe<Array<GetTeamsWhere>>;
+  ownerId?: InputMaybe<Scalars["UUID"]["input"]>;
+  prefix?: InputMaybe<Scalars["String"]["input"]>;
+  visibility?: InputMaybe<TeamVisibility>;
 };
 
 export type Label = {
@@ -69,7 +254,7 @@ export type Label = {
   description?: Maybe<Scalars["String"]["output"]>;
   id: Scalars["UUID"]["output"];
   name: Scalars["String"]["output"];
-  tasks: Array<Task>;
+  ownerId: Scalars["UUID"]["output"];
   updatedAt: Scalars["DateTime"]["output"];
 };
 
@@ -86,23 +271,10 @@ export type Member = {
   githubId?: Maybe<Scalars["String"]["output"]>;
   googleId?: Maybe<Scalars["String"]["output"]>;
   id: Scalars["UUID"]["output"];
-  leadingTasks: Array<Task>;
   name: Scalars["String"]["output"];
-  ownedProjects: Array<Project>;
-  ownedTasks: Array<Task>;
   photoUrl?: Maybe<Scalars["String"]["output"]>;
-  projects: Array<Project>;
   role: MemberRole;
-  tasks: Array<Task>;
-  teams: Array<Team>;
   updatedAt: Scalars["DateTime"]["output"];
-};
-
-export type MemberFilter = {
-  email?: InputMaybe<Scalars["String"]["input"]>;
-  githubId?: InputMaybe<Scalars["String"]["input"]>;
-  name?: InputMaybe<Scalars["String"]["input"]>;
-  role?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export enum MemberRole {
@@ -113,70 +285,61 @@ export enum MemberRole {
 
 export type MutationRoot = {
   __typename?: "MutationRoot";
+  createAsset: Asset;
   createLabel: Label;
+  createMember: Member;
   createProject: Project;
   createTask: Task;
-  createTasks: Array<Task>;
   createTeam: Team;
+  deleteAsset: Asset;
   deleteLabel: Label;
+  deleteMember: Member;
   deleteProject: Project;
   deleteTask: Task;
   deleteTeam: Team;
   login: LoginResponse;
   register: LoginResponse;
+  updateAsset: Asset;
   updateLabel: Label;
   updateMember: Member;
-  updatePassword: Member;
-  updateProfile: Member;
   updateProject: Project;
   updateTask: Task;
   updateTeam: Team;
 };
 
+export type MutationRootCreateAssetArgs = {
+  input: CreateAssetInput;
+};
+
 export type MutationRootCreateLabelArgs = {
-  color?: InputMaybe<Scalars["String"]["input"]>;
-  description?: InputMaybe<Scalars["String"]["input"]>;
-  name: Scalars["String"]["input"];
+  input: CreateLabelInput;
+};
+
+export type MutationRootCreateMemberArgs = {
+  input: CreateMemberInput;
 };
 
 export type MutationRootCreateProjectArgs = {
-  description?: InputMaybe<Scalars["String"]["input"]>;
-  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
-  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
-  members?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
-  name: Scalars["String"]["input"];
-  prefix?: InputMaybe<Scalars["String"]["input"]>;
-  startDate?: InputMaybe<Scalars["DateTime"]["input"]>;
-  teams?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
+  input: CreateProjectInput;
 };
 
 export type MutationRootCreateTaskArgs = {
-  assignees?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
-  description?: InputMaybe<Scalars["String"]["input"]>;
-  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
-  labels?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
-  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
-  parentId?: InputMaybe<Scalars["UUID"]["input"]>;
-  priority?: InputMaybe<Scalars["String"]["input"]>;
-  projectId?: InputMaybe<Scalars["UUID"]["input"]>;
-  status?: InputMaybe<Scalars["String"]["input"]>;
-  subtasks?: InputMaybe<Array<CreateTaskInput>>;
-  title: Scalars["String"]["input"];
-};
-
-export type MutationRootCreateTasksArgs = {
-  tasks: Array<CreateTaskInput>;
+  input: CreateTaskInput;
 };
 
 export type MutationRootCreateTeamArgs = {
-  members?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
-  name: Scalars["String"]["input"];
-  prefix?: InputMaybe<Scalars["String"]["input"]>;
-  projects?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
-  visibility?: InputMaybe<Scalars["String"]["input"]>;
+  input: CreateTeamInput;
+};
+
+export type MutationRootDeleteAssetArgs = {
+  id: Scalars["UUID"]["input"];
 };
 
 export type MutationRootDeleteLabelArgs = {
+  id: Scalars["UUID"]["input"];
+};
+
+export type MutationRootDeleteMemberArgs = {
   id: Scalars["UUID"]["input"];
 };
 
@@ -203,65 +366,34 @@ export type MutationRootRegisterArgs = {
   password: Scalars["String"]["input"];
 };
 
-export type MutationRootUpdateLabelArgs = {
-  color?: InputMaybe<Scalars["String"]["input"]>;
-  description?: InputMaybe<Scalars["String"]["input"]>;
+export type MutationRootUpdateAssetArgs = {
   id: Scalars["UUID"]["input"];
-  name?: InputMaybe<Scalars["String"]["input"]>;
+  input: UpdateAssetInput;
+};
+
+export type MutationRootUpdateLabelArgs = {
+  id: Scalars["UUID"]["input"];
+  input: UpdateLabelInput;
 };
 
 export type MutationRootUpdateMemberArgs = {
-  email?: InputMaybe<Scalars["String"]["input"]>;
   id: Scalars["UUID"]["input"];
-  name?: InputMaybe<Scalars["String"]["input"]>;
-  role?: InputMaybe<Scalars["String"]["input"]>;
-};
-
-export type MutationRootUpdatePasswordArgs = {
-  currentPassword: Scalars["String"]["input"];
-  newPassword: Scalars["String"]["input"];
-};
-
-export type MutationRootUpdateProfileArgs = {
-  email?: InputMaybe<Scalars["String"]["input"]>;
-  name?: InputMaybe<Scalars["String"]["input"]>;
-  photoUrl?: InputMaybe<Scalars["String"]["input"]>;
+  input: UpdateMemberInput;
 };
 
 export type MutationRootUpdateProjectArgs = {
-  description?: InputMaybe<Scalars["String"]["input"]>;
-  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
   id: Scalars["UUID"]["input"];
-  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
-  members?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
-  name?: InputMaybe<Scalars["String"]["input"]>;
-  ownerId?: InputMaybe<Scalars["UUID"]["input"]>;
-  prefix?: InputMaybe<Scalars["String"]["input"]>;
-  startDate?: InputMaybe<Scalars["DateTime"]["input"]>;
-  teams?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
+  input: UpdateProjectInput;
 };
 
 export type MutationRootUpdateTaskArgs = {
-  assignees?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
-  description?: InputMaybe<Scalars["String"]["input"]>;
-  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
   id: Scalars["UUID"]["input"];
-  labels?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
-  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
-  priority?: InputMaybe<Scalars["String"]["input"]>;
-  projectId?: InputMaybe<Scalars["UUID"]["input"]>;
-  status?: InputMaybe<Scalars["String"]["input"]>;
-  title?: InputMaybe<Scalars["String"]["input"]>;
+  input: UpdateTaskInput;
 };
 
 export type MutationRootUpdateTeamArgs = {
   id: Scalars["UUID"]["input"];
-  members?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
-  name?: InputMaybe<Scalars["String"]["input"]>;
-  ownerId?: InputMaybe<Scalars["UUID"]["input"]>;
-  prefix?: InputMaybe<Scalars["String"]["input"]>;
-  projects?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
-  visibility?: InputMaybe<Scalars["String"]["input"]>;
+  input: UpdateTeamInput;
 };
 
 export type Project = {
@@ -271,139 +403,145 @@ export type Project = {
   dueDate?: Maybe<Scalars["DateTime"]["output"]>;
   id: Scalars["UUID"]["output"];
   leadId?: Maybe<Scalars["UUID"]["output"]>;
-  leader?: Maybe<Member>;
-  members: Array<Member>;
   name: Scalars["String"]["output"];
-  owner?: Maybe<Member>;
   ownerId: Scalars["UUID"]["output"];
   prefix?: Maybe<Scalars["String"]["output"]>;
   startDate?: Maybe<Scalars["DateTime"]["output"]>;
-  tasks: Array<Task>;
-  teams: Array<Team>;
+  status: ProjectStatus;
   updatedAt: Scalars["DateTime"]["output"];
+  visibility: ProjectVisibility;
 };
 
-export type ProjectFilter = {
-  description?: InputMaybe<Scalars["String"]["input"]>;
-  title?: InputMaybe<Scalars["String"]["input"]>;
-};
+export enum ProjectStatus {
+  Backlog = "BACKLOG",
+  Canceled = "CANCELED",
+  Done = "DONE",
+  InProgress = "IN_PROGRESS",
+  None = "NONE",
+  ToDo = "TO_DO",
+}
+
+export enum ProjectVisibility {
+  Internal = "INTERNAL",
+  None = "NONE",
+  Private = "PRIVATE",
+  Public = "PUBLIC",
+}
 
 export type QueryRoot = {
   __typename?: "QueryRoot";
-  activity: Array<Activity>;
+  asset: Asset;
+  assets: Array<Asset>;
+  change: Change;
+  changes: Array<Change>;
+  label: Label;
   labels: Array<Label>;
-  me: Member;
-  memberByEmail: Member;
-  memberById: Member;
+  member: Member;
   members: Array<Member>;
-  projectById: Project;
+  project: Project;
   projects: Array<Project>;
-  subdivideTask: Array<TaskSuggestionResult>;
-  suggestNewTask: TaskSuggestionResult;
-  taskById: Task;
+  subdivideTask: Array<TaskSuggestion>;
+  suggestNextTask: TaskSuggestion;
+  task: Task;
   tasks: Array<Task>;
-  teamById: Team;
+  team: Team;
   teams: Array<Team>;
 };
 
-export type QueryRootActivityArgs = {
-  memberId?: InputMaybe<Scalars["UUID"]["input"]>;
-  operationType?: InputMaybe<ActivityOperationType>;
-  resourceId?: InputMaybe<Scalars["UUID"]["input"]>;
-  resourceType?: InputMaybe<ActivityResourceType>;
+export type QueryRootAssetArgs = {
+  id: Scalars["UUID"]["input"];
 };
 
-export type QueryRootMemberByEmailArgs = {
-  email: Scalars["String"]["input"];
+export type QueryRootAssetsArgs = {
+  input?: InputMaybe<GetAssetsInput>;
 };
 
-export type QueryRootMemberByIdArgs = {
+export type QueryRootChangeArgs = {
+  id: Scalars["UUID"]["input"];
+};
+
+export type QueryRootChangesArgs = {
+  input?: InputMaybe<GetChangesInput>;
+};
+
+export type QueryRootLabelArgs = {
+  id: Scalars["UUID"]["input"];
+};
+
+export type QueryRootLabelsArgs = {
+  input?: InputMaybe<GetLabelsInput>;
+};
+
+export type QueryRootMemberArgs = {
   id: Scalars["UUID"]["input"];
 };
 
 export type QueryRootMembersArgs = {
-  filter?: InputMaybe<MemberFilter>;
+  input?: InputMaybe<GetMembersInput>;
 };
 
-export type QueryRootProjectByIdArgs = {
+export type QueryRootProjectArgs = {
   id: Scalars["UUID"]["input"];
 };
 
 export type QueryRootProjectsArgs = {
-  filter?: InputMaybe<ProjectFilter>;
+  input?: InputMaybe<GetProjectsInput>;
 };
 
 export type QueryRootSubdivideTaskArgs = {
-  subtasks?: Scalars["Int"]["input"];
-  taskId: Scalars["String"]["input"];
+  input: SubdivideTaskInput;
 };
 
-export type QueryRootSuggestNewTaskArgs = {
-  task: TaskSuggestionInput;
+export type QueryRootSuggestNextTaskArgs = {
+  input: TaskSuggestionInput;
 };
 
-export type QueryRootTaskByIdArgs = {
+export type QueryRootTaskArgs = {
   id: Scalars["UUID"]["input"];
 };
 
 export type QueryRootTasksArgs = {
-  filter?: InputMaybe<TaskFilter>;
+  input?: InputMaybe<GetTasksInput>;
 };
 
-export type QueryRootTeamByIdArgs = {
+export type QueryRootTeamArgs = {
   id: Scalars["UUID"]["input"];
 };
 
 export type QueryRootTeamsArgs = {
-  filter?: InputMaybe<TeamFilter>;
+  input?: InputMaybe<GetTeamsInput>;
+};
+
+export enum SortOrder {
+  Asc = "ASC",
+  Desc = "DESC",
+}
+
+export type SubdivideTaskInput = {
+  subtasks: Scalars["Int"]["input"];
+  taskId: Scalars["UUID"]["input"];
 };
 
 export type SubscriptionRoot = {
   __typename?: "SubscriptionRoot";
-  projects: Project;
-  subscribeProject?: Maybe<Project>;
-  subscribeTask?: Maybe<Task>;
-  subscribeTeam?: Maybe<Team>;
-  taskById: Task;
-  tasks: Task;
-  teams: Team;
-};
-
-export type SubscriptionRootTaskByIdArgs = {
-  id: Scalars["UUID"]["input"];
+  events1: Scalars["Int"]["output"];
 };
 
 export type Task = {
   __typename?: "Task";
-  assignees: Array<Member>;
   count: Scalars["Int"]["output"];
   createdAt: Scalars["DateTime"]["output"];
   description?: Maybe<Scalars["String"]["output"]>;
   dueDate?: Maybe<Scalars["DateTime"]["output"]>;
   id: Scalars["UUID"]["output"];
-  labels: Array<Label>;
   leadId?: Maybe<Scalars["UUID"]["output"]>;
-  leader?: Maybe<Member>;
-  owner?: Maybe<Member>;
   ownerId: Scalars["UUID"]["output"];
-  parent?: Maybe<Task>;
   parentId?: Maybe<Scalars["UUID"]["output"]>;
   priority: TaskPriority;
-  project?: Maybe<Project>;
   projectId?: Maybe<Scalars["UUID"]["output"]>;
   status: TaskStatus;
-  subtasks: Array<Task>;
   title: Scalars["String"]["output"];
   updatedAt: Scalars["DateTime"]["output"];
-};
-
-export type TaskFilter = {
-  dueDateFrom?: InputMaybe<Scalars["DateTime"]["input"]>;
-  dueDateTo?: InputMaybe<Scalars["DateTime"]["input"]>;
-  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
-  priority?: InputMaybe<TaskPriority>;
-  projectId?: InputMaybe<Scalars["UUID"]["input"]>;
-  status?: InputMaybe<TaskStatus>;
 };
 
 export enum TaskPriority {
@@ -418,21 +556,14 @@ export enum TaskStatus {
   Backlog = "BACKLOG",
   Canceled = "CANCELED",
   Done = "DONE",
+  Draft = "DRAFT",
   InProgress = "IN_PROGRESS",
   None = "NONE",
   ToDo = "TO_DO",
 }
 
-export type TaskSuggestionInput = {
-  description?: InputMaybe<Scalars["String"]["input"]>;
-  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
-  priority?: InputMaybe<TaskPriority>;
-  status?: InputMaybe<TaskStatus>;
-  title?: InputMaybe<Scalars["String"]["input"]>;
-};
-
-export type TaskSuggestionResult = {
-  __typename?: "TaskSuggestionResult";
+export type TaskSuggestion = {
+  __typename?: "TaskSuggestion";
   description: Scalars["String"]["output"];
   dueDate: Scalars["DateTime"]["output"];
   priority: TaskPriority;
@@ -440,23 +571,24 @@ export type TaskSuggestionResult = {
   title: Scalars["String"]["output"];
 };
 
+export type TaskSuggestionInput = {
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
+  priority?: InputMaybe<TaskPriority>;
+  projectId?: InputMaybe<Scalars["UUID"]["input"]>;
+  status?: InputMaybe<TaskStatus>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+};
+
 export type Team = {
   __typename?: "Team";
   createdAt: Scalars["DateTime"]["output"];
   id: Scalars["UUID"]["output"];
-  members: Array<Member>;
   name: Scalars["String"]["output"];
-  owner?: Maybe<Member>;
   ownerId: Scalars["UUID"]["output"];
   prefix?: Maybe<Scalars["String"]["output"]>;
-  projects: Array<Project>;
   updatedAt: Scalars["DateTime"]["output"];
   visibility: TeamVisibility;
-};
-
-export type TeamFilter = {
-  name?: InputMaybe<Scalars["String"]["input"]>;
-  visibility?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export enum TeamVisibility {
@@ -465,6 +597,55 @@ export enum TeamVisibility {
   Private = "PRIVATE",
   Public = "PUBLIC",
 }
+
+export type UpdateAssetInput = {
+  kind?: InputMaybe<AssetKind>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  projectId?: InputMaybe<Scalars["UUID"]["input"]>;
+};
+
+export type UpdateLabelInput = {
+  color?: InputMaybe<Scalars["String"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+export type UpdateMemberInput = {
+  email?: InputMaybe<Scalars["String"]["input"]>;
+  githubId?: InputMaybe<Scalars["String"]["input"]>;
+  googleId?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  passwordHash?: InputMaybe<Scalars["String"]["input"]>;
+  photoUrl?: InputMaybe<Scalars["String"]["input"]>;
+  role?: InputMaybe<MemberRole>;
+};
+
+export type UpdateProjectInput = {
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
+  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  prefix?: InputMaybe<Scalars["String"]["input"]>;
+  startDate?: InputMaybe<Scalars["DateTime"]["input"]>;
+};
+
+export type UpdateTaskInput = {
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
+  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
+  parentId?: InputMaybe<Scalars["UUID"]["input"]>;
+  priority?: InputMaybe<TaskPriority>;
+  projectId?: InputMaybe<Scalars["UUID"]["input"]>;
+  status?: InputMaybe<TaskStatus>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+export type UpdateTeamInput = {
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  ownerId?: InputMaybe<Scalars["UUID"]["input"]>;
+  prefix?: InputMaybe<Scalars["String"]["input"]>;
+  visibility?: InputMaybe<TeamVisibility>;
+};
 
 export type RegisterMutationVariables = Exact<{
   name: Scalars["String"]["input"];
@@ -502,9 +683,7 @@ export type LabelsQuery = {
 };
 
 export type CreateLabelMutationVariables = Exact<{
-  name: Scalars["String"]["input"];
-  color?: InputMaybe<Scalars["String"]["input"]>;
-  description?: InputMaybe<Scalars["String"]["input"]>;
+  input: CreateLabelInput;
 }>;
 
 export type CreateLabelMutation = {
@@ -519,10 +698,8 @@ export type CreateLabelMutation = {
 };
 
 export type UpdateLabelMutationVariables = Exact<{
-  labelId: Scalars["UUID"]["input"];
-  name?: InputMaybe<Scalars["String"]["input"]>;
-  color?: InputMaybe<Scalars["String"]["input"]>;
-  description?: InputMaybe<Scalars["String"]["input"]>;
+  id: Scalars["UUID"]["input"];
+  input: UpdateLabelInput;
 }>;
 
 export type UpdateLabelMutation = {
@@ -562,21 +739,16 @@ export type MembersQuery = {
     updatedAt: any;
     name: string;
     email: string;
+    role: MemberRole;
     githubId?: string | null;
     googleId?: string | null;
     photoUrl?: string | null;
-    role: MemberRole;
-    ownedTasks: Array<{ __typename?: "Task"; id: any }>;
-    leadingTasks: Array<{ __typename?: "Task"; id: any }>;
-    ownedProjects: Array<{ __typename?: "Project"; id: any }>;
   }>;
 };
 
 export type UpdateMemberMutationVariables = Exact<{
-  memberId: Scalars["UUID"]["input"];
-  name?: InputMaybe<Scalars["String"]["input"]>;
-  email?: InputMaybe<Scalars["String"]["input"]>;
-  role?: InputMaybe<Scalars["String"]["input"]>;
+  id: Scalars["UUID"]["input"];
+  input: UpdateMemberInput;
 }>;
 
 export type UpdateMemberMutation = {
@@ -600,30 +772,7 @@ export type ProjectsQuery = {
     leadId?: any | null;
     startDate?: any | null;
     dueDate?: any | null;
-    owner?: { __typename?: "Member"; id: any } | null;
-    tasks: Array<{ __typename?: "Task"; id: any; title: string }>;
-    members: Array<{ __typename?: "Member"; id: any; name: string }>;
-    leader?: { __typename?: "Member"; id: any; name: string; photoUrl?: string | null } | null;
   }>;
-};
-
-export type ProjectsSubscriptionSubscriptionVariables = Exact<{ [key: string]: never }>;
-
-export type ProjectsSubscriptionSubscription = {
-  __typename?: "SubscriptionRoot";
-  projects: {
-    __typename?: "Project";
-    id: any;
-    name: string;
-    prefix?: string | null;
-    description?: string | null;
-    createdAt: any;
-    updatedAt: any;
-    startDate?: any | null;
-    dueDate?: any | null;
-    ownerId: any;
-    leadId?: any | null;
-  };
 };
 
 export type ProjectByIdQueryVariables = Exact<{
@@ -632,7 +781,7 @@ export type ProjectByIdQueryVariables = Exact<{
 
 export type ProjectByIdQuery = {
   __typename?: "QueryRoot";
-  projectById: {
+  project: {
     __typename?: "Project";
     id: any;
     name: string;
@@ -641,23 +790,11 @@ export type ProjectByIdQuery = {
     leadId?: any | null;
     startDate?: any | null;
     dueDate?: any | null;
-    owner?: { __typename?: "Member"; id: any; name: string } | null;
-    leader?: { __typename?: "Member"; id: any; name: string; photoUrl?: string | null } | null;
-    members: Array<{ __typename?: "Member"; id: any; name: string }>;
-    tasks: Array<{ __typename?: "Task"; id: any; title: string }>;
-    teams: Array<{ __typename?: "Team"; id: any; name: string }>;
   };
 };
 
 export type NewProjectMutationVariables = Exact<{
-  name: Scalars["String"]["input"];
-  prefix?: InputMaybe<Scalars["String"]["input"]>;
-  description?: InputMaybe<Scalars["String"]["input"]>;
-  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
-  startDate?: InputMaybe<Scalars["DateTime"]["input"]>;
-  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
-  members?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
-  teams?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
+  input: CreateProjectInput;
 }>;
 
 export type NewProjectMutation = {
@@ -675,14 +812,8 @@ export type DeleteProjectMutation = {
 };
 
 export type UpdateProjectMutationVariables = Exact<{
-  projectId: Scalars["UUID"]["input"];
-  name?: InputMaybe<Scalars["String"]["input"]>;
-  description?: InputMaybe<Scalars["String"]["input"]>;
-  startDate?: InputMaybe<Scalars["DateTime"]["input"]>;
-  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
-  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
-  members?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
-  teams?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
+  id: Scalars["UUID"]["input"];
+  input: UpdateProjectInput;
 }>;
 
 export type UpdateProjectMutation = {
@@ -708,11 +839,6 @@ export type TasksQuery = {
     leadId?: any | null;
     projectId?: any | null;
     dueDate?: any | null;
-    labels: Array<{ __typename?: "Label"; id: any; name: string; color?: string | null }>;
-    owner?: { __typename?: "Member"; id: any } | null;
-    assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
-    project?: { __typename?: "Project"; id: any; name: string } | null;
-    leader?: { __typename?: "Member"; id: any; name: string; photoUrl?: string | null } | null;
   }>;
 };
 
@@ -722,7 +848,7 @@ export type TaskByIdQueryVariables = Exact<{
 
 export type TaskByIdQuery = {
   __typename?: "QueryRoot";
-  taskById: {
+  task: {
     __typename?: "Task";
     id: any;
     title: string;
@@ -732,66 +858,11 @@ export type TaskByIdQuery = {
     priority: TaskPriority;
     dueDate?: any | null;
     count: number;
-    parent?: { __typename?: "Task"; id: any; count: number } | null;
-    labels: Array<{ __typename?: "Label"; id: any; name: string }>;
-    assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
-    leader?: { __typename?: "Member"; id: any; name: string; photoUrl?: string | null } | null;
-    project?: { __typename?: "Project"; id: any; name: string } | null;
-    subtasks: Array<{
-      __typename?: "Task";
-      id: any;
-      createdAt: any;
-      updatedAt: any;
-      title: string;
-      description?: string | null;
-      status: TaskStatus;
-      priority: TaskPriority;
-      ownerId: any;
-      count: number;
-      leadId?: any | null;
-      projectId?: any | null;
-      dueDate?: any | null;
-      labels: Array<{ __typename?: "Label"; id: any; name: string; color?: string | null }>;
-      owner?: { __typename?: "Member"; id: any } | null;
-      assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
-      project?: { __typename?: "Project"; id: any; name: string } | null;
-      leader?: { __typename?: "Member"; id: any; name: string } | null;
-    }>;
-  };
-};
-
-export type TasksSubscriptionSubscriptionVariables = Exact<{ [key: string]: never }>;
-
-export type TasksSubscriptionSubscription = {
-  __typename?: "SubscriptionRoot";
-  tasks: {
-    __typename?: "Task";
-    id: any;
-    status: TaskStatus;
-    title: string;
-    description?: string | null;
-    createdAt: any;
-    updatedAt: any;
-    priority: TaskPriority;
-    ownerId: any;
-    leadId?: any | null;
-    projectId?: any | null;
-    labels: Array<{ __typename?: "Label"; id: any; name: string }>;
   };
 };
 
 export type NewTaskMutationVariables = Exact<{
-  title: Scalars["String"]["input"];
-  description?: InputMaybe<Scalars["String"]["input"]>;
-  status?: InputMaybe<Scalars["String"]["input"]>;
-  priority?: InputMaybe<Scalars["String"]["input"]>;
-  projectId?: InputMaybe<Scalars["UUID"]["input"]>;
-  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
-  labels?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
-  assignees?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
-  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
-  subtasks?: InputMaybe<Array<CreateTaskInput> | CreateTaskInput>;
-  parentId?: InputMaybe<Scalars["UUID"]["input"]>;
+  input: CreateTaskInput;
 }>;
 
 export type NewTaskMutation = {
@@ -809,16 +880,8 @@ export type DeleteTaskMutation = {
 };
 
 export type UpdateTaskMutationVariables = Exact<{
-  taskId: Scalars["UUID"]["input"];
-  status?: InputMaybe<Scalars["String"]["input"]>;
-  priority?: InputMaybe<Scalars["String"]["input"]>;
-  title?: InputMaybe<Scalars["String"]["input"]>;
-  description?: InputMaybe<Scalars["String"]["input"]>;
-  dueDate?: InputMaybe<Scalars["DateTime"]["input"]>;
-  projectId?: InputMaybe<Scalars["UUID"]["input"]>;
-  leadId?: InputMaybe<Scalars["UUID"]["input"]>;
-  labels?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
-  assignees?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
+  id: Scalars["UUID"]["input"];
+  input: UpdateTaskInput;
 }>;
 
 export type UpdateTaskMutation = {
@@ -827,13 +890,13 @@ export type UpdateTaskMutation = {
 };
 
 export type SuggestNewTaskQueryVariables = Exact<{
-  taskSuggestion: TaskSuggestionInput;
+  input: TaskSuggestionInput;
 }>;
 
 export type SuggestNewTaskQuery = {
   __typename?: "QueryRoot";
-  suggestNewTask: {
-    __typename?: "TaskSuggestionResult";
+  suggestNextTask: {
+    __typename?: "TaskSuggestion";
     title: string;
     description: string;
     status: TaskStatus;
@@ -843,14 +906,13 @@ export type SuggestNewTaskQuery = {
 };
 
 export type SubdivideTaskQueryVariables = Exact<{
-  taskId: Scalars["String"]["input"];
-  count?: InputMaybe<Scalars["Int"]["input"]>;
+  input: SubdivideTaskInput;
 }>;
 
 export type SubdivideTaskQuery = {
   __typename?: "QueryRoot";
   subdivideTask: Array<{
-    __typename?: "TaskSuggestionResult";
+    __typename?: "TaskSuggestion";
     title: string;
     description: string;
     status: TaskStatus;
@@ -859,31 +921,19 @@ export type SubdivideTaskQuery = {
   }>;
 };
 
-export type CreateTasksMutationVariables = Exact<{
-  tasks: Array<CreateTaskInput> | CreateTaskInput;
+export type TaskChangesQueryVariables = Exact<{
+  input?: InputMaybe<GetChangesInput>;
 }>;
 
-export type CreateTasksMutation = {
-  __typename?: "MutationRoot";
-  createTasks: Array<{ __typename?: "Task"; id: any; title: string }>;
-};
-
-export type TaskActivityQueryVariables = Exact<{
-  resourceId?: InputMaybe<Scalars["UUID"]["input"]>;
-  resourceType?: InputMaybe<ActivityResourceType>;
-}>;
-
-export type TaskActivityQuery = {
+export type TaskChangesQuery = {
   __typename?: "QueryRoot";
-  activity: Array<{
-    __typename?: "Activity";
+  changes: Array<{
+    __typename?: "Change";
     id: any;
     createdAt: any;
-    memberId: any;
     resourceId: any;
-    operation: ActivityOperationType;
-    resourceType: ActivityResourceType;
-    member: { __typename?: "Member"; name: string; photoUrl?: string | null };
+    operation: ChangeOperation;
+    resourceType: ChangeResourceType;
   }>;
 };
 
@@ -899,8 +949,6 @@ export type TeamsQuery = {
     name: string;
     ownerId: any;
     visibility: TeamVisibility;
-    owner?: { __typename?: "Member"; id: any } | null;
-    members: Array<{ __typename?: "Member"; id: any }>;
   }>;
 };
 
@@ -910,21 +958,11 @@ export type TeamByIdQueryVariables = Exact<{
 
 export type TeamByIdQuery = {
   __typename?: "QueryRoot";
-  teamById: {
-    __typename?: "Team";
-    id: any;
-    name: string;
-    prefix?: string | null;
-    members: Array<{ __typename?: "Member"; id: any; name: string }>;
-    projects: Array<{ __typename?: "Project"; id: any; name: string }>;
-  };
+  team: { __typename?: "Team"; id: any; name: string; prefix?: string | null };
 };
 
 export type NewTeamMutationVariables = Exact<{
-  name: Scalars["String"]["input"];
-  prefix?: InputMaybe<Scalars["String"]["input"]>;
-  members?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
-  projects?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
+  input: CreateTeamInput;
 }>;
 
 export type NewTeamMutation = {
@@ -942,43 +980,13 @@ export type DeleteTeamMutation = {
 };
 
 export type UpdateTeamMutationVariables = Exact<{
-  teamId: Scalars["UUID"]["input"];
-  name?: InputMaybe<Scalars["String"]["input"]>;
-  members?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
-  projects?: InputMaybe<Array<Scalars["UUID"]["input"]> | Scalars["UUID"]["input"]>;
+  id: Scalars["UUID"]["input"];
+  input: UpdateTeamInput;
 }>;
 
 export type UpdateTeamMutation = {
   __typename?: "MutationRoot";
   updateTeam: { __typename?: "Team"; id: any; name: string };
-};
-
-export type UserQueryVariables = Exact<{ [key: string]: never }>;
-
-export type UserQuery = {
-  __typename?: "QueryRoot";
-  me: { __typename?: "Member"; id: any; name: string; email: string; photoUrl?: string | null };
-};
-
-export type UpdateProfileMutationVariables = Exact<{
-  name?: InputMaybe<Scalars["String"]["input"]>;
-  email?: InputMaybe<Scalars["String"]["input"]>;
-  photoUrl?: InputMaybe<Scalars["String"]["input"]>;
-}>;
-
-export type UpdateProfileMutation = {
-  __typename?: "MutationRoot";
-  updateProfile: { __typename?: "Member"; name: string };
-};
-
-export type UpdatePasswordMutationVariables = Exact<{
-  currentPassword: Scalars["String"]["input"];
-  newPassword: Scalars["String"]["input"];
-}>;
-
-export type UpdatePasswordMutation = {
-  __typename?: "MutationRoot";
-  updatePassword: { __typename?: "Member"; name: string };
 };
 
 export const RegisterDocument = {
@@ -1139,21 +1147,11 @@ export const CreateLabelDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "input" } },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+            type: { kind: "NamedType", name: { kind: "Name", value: "CreateLabelInput" } },
           },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "color" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
       ],
       selectionSet: {
@@ -1165,18 +1163,8 @@ export const CreateLabelDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "name" },
-                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "color" },
-                value: { kind: "Variable", name: { kind: "Name", value: "color" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "description" },
-                value: { kind: "Variable", name: { kind: "Name", value: "description" } },
+                name: { kind: "Name", value: "input" },
+                value: { kind: "Variable", name: { kind: "Name", value: "input" } },
               },
             ],
             selectionSet: {
@@ -1204,7 +1192,7 @@ export const UpdateLabelDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "labelId" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
           type: {
             kind: "NonNullType",
             type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
@@ -1212,18 +1200,11 @@ export const UpdateLabelDocument = {
         },
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "color" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "input" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UpdateLabelInput" } },
+          },
         },
       ],
       selectionSet: {
@@ -1236,22 +1217,12 @@ export const UpdateLabelDocument = {
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "id" },
-                value: { kind: "Variable", name: { kind: "Name", value: "labelId" } },
+                value: { kind: "Variable", name: { kind: "Name", value: "id" } },
               },
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "name" },
-                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "color" },
-                value: { kind: "Variable", name: { kind: "Name", value: "color" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "description" },
-                value: { kind: "Variable", name: { kind: "Name", value: "description" } },
+                name: { kind: "Name", value: "input" },
+                value: { kind: "Variable", name: { kind: "Name", value: "input" } },
               },
             ],
             selectionSet: {
@@ -1335,34 +1306,10 @@ export const MembersDocument = {
                 { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
                 { kind: "Field", name: { kind: "Name", value: "email" } },
+                { kind: "Field", name: { kind: "Name", value: "role" } },
                 { kind: "Field", name: { kind: "Name", value: "githubId" } },
                 { kind: "Field", name: { kind: "Name", value: "googleId" } },
                 { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
-                { kind: "Field", name: { kind: "Name", value: "role" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "ownedTasks" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "leadingTasks" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "ownedProjects" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
-                  },
-                },
               ],
             },
           },
@@ -1381,7 +1328,7 @@ export const UpdateMemberDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "memberId" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
           type: {
             kind: "NonNullType",
             type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
@@ -1389,18 +1336,11 @@ export const UpdateMemberDocument = {
         },
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "email" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "role" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "input" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UpdateMemberInput" } },
+          },
         },
       ],
       selectionSet: {
@@ -1413,22 +1353,12 @@ export const UpdateMemberDocument = {
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "id" },
-                value: { kind: "Variable", name: { kind: "Name", value: "memberId" } },
+                value: { kind: "Variable", name: { kind: "Name", value: "id" } },
               },
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "name" },
-                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "email" },
-                value: { kind: "Variable", name: { kind: "Name", value: "email" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "role" },
-                value: { kind: "Variable", name: { kind: "Name", value: "role" } },
+                name: { kind: "Name", value: "input" },
+                value: { kind: "Variable", name: { kind: "Name", value: "input" } },
               },
             ],
             selectionSet: {
@@ -1472,48 +1402,6 @@ export const ProjectsDocument = {
                 { kind: "Field", name: { kind: "Name", value: "leadId" } },
                 { kind: "Field", name: { kind: "Name", value: "startDate" } },
                 { kind: "Field", name: { kind: "Name", value: "dueDate" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "owner" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "tasks" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "title" } },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "members" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "leader" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
-                    ],
-                  },
-                },
               ],
             },
           },
@@ -1522,43 +1410,6 @@ export const ProjectsDocument = {
     },
   ],
 } as unknown as DocumentNode<ProjectsQuery, ProjectsQueryVariables>;
-export const ProjectsSubscriptionDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "subscription",
-      name: { kind: "Name", value: "ProjectsSubscription" },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "projects" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-                { kind: "Field", name: { kind: "Name", value: "prefix" } },
-                { kind: "Field", name: { kind: "Name", value: "description" } },
-                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
-                { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
-                { kind: "Field", name: { kind: "Name", value: "startDate" } },
-                { kind: "Field", name: { kind: "Name", value: "dueDate" } },
-                { kind: "Field", name: { kind: "Name", value: "ownerId" } },
-                { kind: "Field", name: { kind: "Name", value: "leadId" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  ProjectsSubscriptionSubscription,
-  ProjectsSubscriptionSubscriptionVariables
->;
 export const ProjectByIdDocument = {
   kind: "Document",
   definitions: [
@@ -1581,7 +1432,7 @@ export const ProjectByIdDocument = {
         selections: [
           {
             kind: "Field",
-            name: { kind: "Name", value: "projectById" },
+            name: { kind: "Name", value: "project" },
             arguments: [
               {
                 kind: "Argument",
@@ -1599,62 +1450,6 @@ export const ProjectByIdDocument = {
                 { kind: "Field", name: { kind: "Name", value: "leadId" } },
                 { kind: "Field", name: { kind: "Name", value: "startDate" } },
                 { kind: "Field", name: { kind: "Name", value: "dueDate" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "owner" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "leader" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "members" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "tasks" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "title" } },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "teams" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
               ],
             },
           },
@@ -1673,57 +1468,10 @@ export const NewProjectDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "input" } },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "prefix" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "leadId" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "startDate" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "DateTime" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "DateTime" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "members" } },
-          type: {
-            kind: "ListType",
-            type: {
-              kind: "NonNullType",
-              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "teams" } },
-          type: {
-            kind: "ListType",
-            type: {
-              kind: "NonNullType",
-              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-            },
+            type: { kind: "NamedType", name: { kind: "Name", value: "CreateProjectInput" } },
           },
         },
       ],
@@ -1736,43 +1484,8 @@ export const NewProjectDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "name" },
-                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "prefix" },
-                value: { kind: "Variable", name: { kind: "Name", value: "prefix" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "description" },
-                value: { kind: "Variable", name: { kind: "Name", value: "description" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "leadId" },
-                value: { kind: "Variable", name: { kind: "Name", value: "leadId" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "startDate" },
-                value: { kind: "Variable", name: { kind: "Name", value: "startDate" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "dueDate" },
-                value: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "members" },
-                value: { kind: "Variable", name: { kind: "Name", value: "members" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "teams" },
-                value: { kind: "Variable", name: { kind: "Name", value: "teams" } },
+                name: { kind: "Name", value: "input" },
+                value: { kind: "Variable", name: { kind: "Name", value: "input" } },
               },
             ],
             selectionSet: {
@@ -1841,7 +1554,7 @@ export const UpdateProjectDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "projectId" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
           type: {
             kind: "NonNullType",
             type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
@@ -1849,49 +1562,10 @@ export const UpdateProjectDocument = {
         },
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "startDate" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "DateTime" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "DateTime" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "leadId" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "members" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "input" } },
           type: {
-            kind: "ListType",
-            type: {
-              kind: "NonNullType",
-              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "teams" } },
-          type: {
-            kind: "ListType",
-            type: {
-              kind: "NonNullType",
-              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-            },
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UpdateProjectInput" } },
           },
         },
       ],
@@ -1905,42 +1579,12 @@ export const UpdateProjectDocument = {
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "id" },
-                value: { kind: "Variable", name: { kind: "Name", value: "projectId" } },
+                value: { kind: "Variable", name: { kind: "Name", value: "id" } },
               },
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "name" },
-                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "description" },
-                value: { kind: "Variable", name: { kind: "Name", value: "description" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "startDate" },
-                value: { kind: "Variable", name: { kind: "Name", value: "startDate" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "dueDate" },
-                value: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "leadId" },
-                value: { kind: "Variable", name: { kind: "Name", value: "leadId" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "members" },
-                value: { kind: "Variable", name: { kind: "Name", value: "members" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "teams" },
-                value: { kind: "Variable", name: { kind: "Name", value: "teams" } },
+                name: { kind: "Name", value: "input" },
+                value: { kind: "Variable", name: { kind: "Name", value: "input" } },
               },
             ],
             selectionSet: {
@@ -1981,63 +1625,9 @@ export const TasksDocument = {
                 { kind: "Field", name: { kind: "Name", value: "priority" } },
                 { kind: "Field", name: { kind: "Name", value: "ownerId" } },
                 { kind: "Field", name: { kind: "Name", value: "count" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "labels" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "color" } },
-                    ],
-                  },
-                },
                 { kind: "Field", name: { kind: "Name", value: "leadId" } },
                 { kind: "Field", name: { kind: "Name", value: "projectId" } },
                 { kind: "Field", name: { kind: "Name", value: "dueDate" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "owner" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "assignees" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "project" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "leader" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
-                    ],
-                  },
-                },
               ],
             },
           },
@@ -2068,7 +1658,7 @@ export const TaskByIdDocument = {
         selections: [
           {
             kind: "Field",
-            name: { kind: "Name", value: "taskById" },
+            name: { kind: "Name", value: "task" },
             arguments: [
               {
                 kind: "Argument",
@@ -2087,136 +1677,6 @@ export const TaskByIdDocument = {
                 { kind: "Field", name: { kind: "Name", value: "priority" } },
                 { kind: "Field", name: { kind: "Name", value: "dueDate" } },
                 { kind: "Field", name: { kind: "Name", value: "count" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "parent" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "count" } },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "labels" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "assignees" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "leader" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "project" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "subtasks" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "createdAt" } },
-                      { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
-                      { kind: "Field", name: { kind: "Name", value: "title" } },
-                      { kind: "Field", name: { kind: "Name", value: "description" } },
-                      { kind: "Field", name: { kind: "Name", value: "status" } },
-                      { kind: "Field", name: { kind: "Name", value: "priority" } },
-                      { kind: "Field", name: { kind: "Name", value: "ownerId" } },
-                      { kind: "Field", name: { kind: "Name", value: "count" } },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "labels" },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            { kind: "Field", name: { kind: "Name", value: "id" } },
-                            { kind: "Field", name: { kind: "Name", value: "name" } },
-                            { kind: "Field", name: { kind: "Name", value: "color" } },
-                          ],
-                        },
-                      },
-                      { kind: "Field", name: { kind: "Name", value: "leadId" } },
-                      { kind: "Field", name: { kind: "Name", value: "projectId" } },
-                      { kind: "Field", name: { kind: "Name", value: "dueDate" } },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "owner" },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
-                        },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "assignees" },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            { kind: "Field", name: { kind: "Name", value: "id" } },
-                            { kind: "Field", name: { kind: "Name", value: "name" } },
-                          ],
-                        },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "project" },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            { kind: "Field", name: { kind: "Name", value: "id" } },
-                            { kind: "Field", name: { kind: "Name", value: "name" } },
-                          ],
-                        },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "leader" },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            { kind: "Field", name: { kind: "Name", value: "id" } },
-                            { kind: "Field", name: { kind: "Name", value: "name" } },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
               ],
             },
           },
@@ -2225,51 +1685,6 @@ export const TaskByIdDocument = {
     },
   ],
 } as unknown as DocumentNode<TaskByIdQuery, TaskByIdQueryVariables>;
-export const TasksSubscriptionDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "subscription",
-      name: { kind: "Name", value: "TasksSubscription" },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "tasks" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "status" } },
-                { kind: "Field", name: { kind: "Name", value: "title" } },
-                { kind: "Field", name: { kind: "Name", value: "description" } },
-                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
-                { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
-                { kind: "Field", name: { kind: "Name", value: "priority" } },
-                { kind: "Field", name: { kind: "Name", value: "ownerId" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "labels" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
-                { kind: "Field", name: { kind: "Name", value: "leadId" } },
-                { kind: "Field", name: { kind: "Name", value: "projectId" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<TasksSubscriptionSubscription, TasksSubscriptionSubscriptionVariables>;
 export const NewTaskDocument = {
   kind: "Document",
   definitions: [
@@ -2280,79 +1695,11 @@ export const NewTaskDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "title" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "input" } },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+            type: { kind: "NamedType", name: { kind: "Name", value: "CreateTaskInput" } },
           },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "status" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "priority" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "projectId" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "leadId" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "labels" } },
-          type: {
-            kind: "ListType",
-            type: {
-              kind: "NonNullType",
-              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "assignees" } },
-          type: {
-            kind: "ListType",
-            type: {
-              kind: "NonNullType",
-              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "DateTime" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "subtasks" } },
-          type: {
-            kind: "ListType",
-            type: {
-              kind: "NonNullType",
-              type: { kind: "NamedType", name: { kind: "Name", value: "CreateTaskInput" } },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "parentId" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
         },
       ],
       selectionSet: {
@@ -2364,58 +1711,8 @@ export const NewTaskDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "title" },
-                value: { kind: "Variable", name: { kind: "Name", value: "title" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "description" },
-                value: { kind: "Variable", name: { kind: "Name", value: "description" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "status" },
-                value: { kind: "Variable", name: { kind: "Name", value: "status" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "priority" },
-                value: { kind: "Variable", name: { kind: "Name", value: "priority" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "projectId" },
-                value: { kind: "Variable", name: { kind: "Name", value: "projectId" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "leadId" },
-                value: { kind: "Variable", name: { kind: "Name", value: "leadId" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "labels" },
-                value: { kind: "Variable", name: { kind: "Name", value: "labels" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "assignees" },
-                value: { kind: "Variable", name: { kind: "Name", value: "assignees" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "dueDate" },
-                value: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "subtasks" },
-                value: { kind: "Variable", name: { kind: "Name", value: "subtasks" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "parentId" },
-                value: { kind: "Variable", name: { kind: "Name", value: "parentId" } },
+                name: { kind: "Name", value: "input" },
+                value: { kind: "Variable", name: { kind: "Name", value: "input" } },
               },
             ],
             selectionSet: {
@@ -2485,7 +1782,7 @@ export const UpdateTaskDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "taskId" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
           type: {
             kind: "NonNullType",
             type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
@@ -2493,59 +1790,10 @@ export const UpdateTaskDocument = {
         },
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "status" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "priority" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "title" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "DateTime" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "projectId" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "leadId" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "labels" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "input" } },
           type: {
-            kind: "ListType",
-            type: {
-              kind: "NonNullType",
-              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "assignees" } },
-          type: {
-            kind: "ListType",
-            type: {
-              kind: "NonNullType",
-              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-            },
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UpdateTaskInput" } },
           },
         },
       ],
@@ -2559,52 +1807,12 @@ export const UpdateTaskDocument = {
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "id" },
-                value: { kind: "Variable", name: { kind: "Name", value: "taskId" } },
+                value: { kind: "Variable", name: { kind: "Name", value: "id" } },
               },
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "status" },
-                value: { kind: "Variable", name: { kind: "Name", value: "status" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "title" },
-                value: { kind: "Variable", name: { kind: "Name", value: "title" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "priority" },
-                value: { kind: "Variable", name: { kind: "Name", value: "priority" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "description" },
-                value: { kind: "Variable", name: { kind: "Name", value: "description" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "dueDate" },
-                value: { kind: "Variable", name: { kind: "Name", value: "dueDate" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "projectId" },
-                value: { kind: "Variable", name: { kind: "Name", value: "projectId" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "leadId" },
-                value: { kind: "Variable", name: { kind: "Name", value: "leadId" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "labels" },
-                value: { kind: "Variable", name: { kind: "Name", value: "labels" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "assignees" },
-                value: { kind: "Variable", name: { kind: "Name", value: "assignees" } },
+                name: { kind: "Name", value: "input" },
+                value: { kind: "Variable", name: { kind: "Name", value: "input" } },
               },
             ],
             selectionSet: {
@@ -2630,7 +1838,7 @@ export const SuggestNewTaskDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "taskSuggestion" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "input" } },
           type: {
             kind: "NonNullType",
             type: { kind: "NamedType", name: { kind: "Name", value: "TaskSuggestionInput" } },
@@ -2642,12 +1850,12 @@ export const SuggestNewTaskDocument = {
         selections: [
           {
             kind: "Field",
-            name: { kind: "Name", value: "suggestNewTask" },
+            name: { kind: "Name", value: "suggestNextTask" },
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "task" },
-                value: { kind: "Variable", name: { kind: "Name", value: "taskSuggestion" } },
+                name: { kind: "Name", value: "input" },
+                value: { kind: "Variable", name: { kind: "Name", value: "input" } },
               },
             ],
             selectionSet: {
@@ -2676,16 +1884,11 @@ export const SubdivideTaskDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "taskId" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "input" } },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+            type: { kind: "NamedType", name: { kind: "Name", value: "SubdivideTaskInput" } },
           },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "count" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
         },
       ],
       selectionSet: {
@@ -2697,13 +1900,8 @@ export const SubdivideTaskDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "taskId" },
-                value: { kind: "Variable", name: { kind: "Name", value: "taskId" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "subtasks" },
-                value: { kind: "Variable", name: { kind: "Name", value: "count" } },
+                name: { kind: "Name", value: "input" },
+                value: { kind: "Variable", name: { kind: "Name", value: "input" } },
               },
             ],
             selectionSet: {
@@ -2722,72 +1920,18 @@ export const SubdivideTaskDocument = {
     },
   ],
 } as unknown as DocumentNode<SubdivideTaskQuery, SubdivideTaskQueryVariables>;
-export const CreateTasksDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "CreateTasks" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "tasks" } },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "ListType",
-              type: {
-                kind: "NonNullType",
-                type: { kind: "NamedType", name: { kind: "Name", value: "CreateTaskInput" } },
-              },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "createTasks" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "tasks" },
-                value: { kind: "Variable", name: { kind: "Name", value: "tasks" } },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "title" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<CreateTasksMutation, CreateTasksMutationVariables>;
-export const TaskActivityDocument = {
+export const TaskChangesDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "TaskActivity" },
+      name: { kind: "Name", value: "TaskChanges" },
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "resourceId" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "resourceType" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "ActivityResourceType" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "input" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "GetChangesInput" } },
         },
       ],
       selectionSet: {
@@ -2795,17 +1939,12 @@ export const TaskActivityDocument = {
         selections: [
           {
             kind: "Field",
-            name: { kind: "Name", value: "activity" },
+            name: { kind: "Name", value: "changes" },
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "resourceId" },
-                value: { kind: "Variable", name: { kind: "Name", value: "resourceId" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "resourceType" },
-                value: { kind: "Variable", name: { kind: "Name", value: "resourceType" } },
+                name: { kind: "Name", value: "input" },
+                value: { kind: "Variable", name: { kind: "Name", value: "input" } },
               },
             ],
             selectionSet: {
@@ -2813,21 +1952,9 @@ export const TaskActivityDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "createdAt" } },
-                { kind: "Field", name: { kind: "Name", value: "memberId" } },
                 { kind: "Field", name: { kind: "Name", value: "resourceId" } },
                 { kind: "Field", name: { kind: "Name", value: "operation" } },
                 { kind: "Field", name: { kind: "Name", value: "resourceType" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "member" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
-                    ],
-                  },
-                },
               ],
             },
           },
@@ -2835,7 +1962,7 @@ export const TaskActivityDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<TaskActivityQuery, TaskActivityQueryVariables>;
+} as unknown as DocumentNode<TaskChangesQuery, TaskChangesQueryVariables>;
 export const TeamsDocument = {
   kind: "Document",
   definitions: [
@@ -2858,22 +1985,6 @@ export const TeamsDocument = {
                 { kind: "Field", name: { kind: "Name", value: "name" } },
                 { kind: "Field", name: { kind: "Name", value: "ownerId" } },
                 { kind: "Field", name: { kind: "Name", value: "visibility" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "owner" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "members" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
-                  },
-                },
               ],
             },
           },
@@ -2904,7 +2015,7 @@ export const TeamByIdDocument = {
         selections: [
           {
             kind: "Field",
-            name: { kind: "Name", value: "teamById" },
+            name: { kind: "Name", value: "team" },
             arguments: [
               {
                 kind: "Argument",
@@ -2918,28 +2029,6 @@ export const TeamByIdDocument = {
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
                 { kind: "Field", name: { kind: "Name", value: "prefix" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "members" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "projects" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
               ],
             },
           },
@@ -2958,37 +2047,10 @@ export const NewTeamDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "input" } },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "prefix" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "members" } },
-          type: {
-            kind: "ListType",
-            type: {
-              kind: "NonNullType",
-              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "projects" } },
-          type: {
-            kind: "ListType",
-            type: {
-              kind: "NonNullType",
-              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-            },
+            type: { kind: "NamedType", name: { kind: "Name", value: "CreateTeamInput" } },
           },
         },
       ],
@@ -3001,23 +2063,8 @@ export const NewTeamDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "name" },
-                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "prefix" },
-                value: { kind: "Variable", name: { kind: "Name", value: "prefix" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "members" },
-                value: { kind: "Variable", name: { kind: "Name", value: "members" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "projects" },
-                value: { kind: "Variable", name: { kind: "Name", value: "projects" } },
+                name: { kind: "Name", value: "input" },
+                value: { kind: "Variable", name: { kind: "Name", value: "input" } },
               },
             ],
             selectionSet: {
@@ -3086,7 +2133,7 @@ export const UpdateTeamDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "teamId" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
           type: {
             kind: "NonNullType",
             type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
@@ -3094,29 +2141,10 @@ export const UpdateTeamDocument = {
         },
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "members" } },
+          variable: { kind: "Variable", name: { kind: "Name", value: "input" } },
           type: {
-            kind: "ListType",
-            type: {
-              kind: "NonNullType",
-              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "projects" } },
-          type: {
-            kind: "ListType",
-            type: {
-              kind: "NonNullType",
-              type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } },
-            },
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UpdateTeamInput" } },
           },
         },
       ],
@@ -3130,22 +2158,12 @@ export const UpdateTeamDocument = {
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "id" },
-                value: { kind: "Variable", name: { kind: "Name", value: "teamId" } },
+                value: { kind: "Variable", name: { kind: "Name", value: "id" } },
               },
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "name" },
-                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "members" },
-                value: { kind: "Variable", name: { kind: "Name", value: "members" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "projects" },
-                value: { kind: "Variable", name: { kind: "Name", value: "projects" } },
+                name: { kind: "Name", value: "input" },
+                value: { kind: "Variable", name: { kind: "Name", value: "input" } },
               },
             ],
             selectionSet: {
@@ -3161,141 +2179,3 @@ export const UpdateTeamDocument = {
     },
   ],
 } as unknown as DocumentNode<UpdateTeamMutation, UpdateTeamMutationVariables>;
-export const UserDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "User" },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "me" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-                { kind: "Field", name: { kind: "Name", value: "email" } },
-                { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<UserQuery, UserQueryVariables>;
-export const UpdateProfileDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "UpdateProfile" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "email" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "photoUrl" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "updateProfile" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "name" },
-                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "email" },
-                value: { kind: "Variable", name: { kind: "Name", value: "email" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "photoUrl" },
-                value: { kind: "Variable", name: { kind: "Name", value: "photoUrl" } },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [{ kind: "Field", name: { kind: "Name", value: "name" } }],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<UpdateProfileMutation, UpdateProfileMutationVariables>;
-export const UpdatePasswordDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "UpdatePassword" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "currentPassword" } },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "newPassword" } },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "updatePassword" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "currentPassword" },
-                value: { kind: "Variable", name: { kind: "Name", value: "currentPassword" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "newPassword" },
-                value: { kind: "Variable", name: { kind: "Name", value: "newPassword" } },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [{ kind: "Field", name: { kind: "Name", value: "name" } }],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
