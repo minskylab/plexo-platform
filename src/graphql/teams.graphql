@@ -7,6 +7,13 @@ query Teams {
     name
     ownerId
     visibility
+    owner {
+      id
+    }
+
+    members {
+      id
+    }
   }
 }
 query TeamById($teamId: UUID!) {
@@ -15,6 +22,14 @@ query TeamById($teamId: UUID!) {
     id
     name
     prefix
+    members {
+      id
+      name
+    }
+    projects {
+      id
+      name
+    }
   }
 }
 mutation NewTeam($input: CreateTeamInput!) {

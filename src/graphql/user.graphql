@@ -1,0 +1,20 @@
+query User {
+  me {
+    id
+    name
+    email
+    photoUrl
+  }
+}
+
+mutation UpdateProfile($input: UpdateProfileInput!) {
+  updateProfile(input: $input) {
+    name
+  }
+}
+
+mutation UpdatePassword($input: UpdatePasswordInput!) {
+  updatePassword(input: $input) {
+    name
+  }
+}

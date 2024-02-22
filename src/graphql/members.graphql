@@ -1,5 +1,4 @@
 query Members {
-  #UPDATE
   members {
     id
     createdAt
@@ -14,7 +13,6 @@ query Members {
 }
 
 mutation UpdateMember($id: UUID!, $input: UpdateMemberInput!) {
-  #UPDATE
   updateMember(id: $id, input: $input) {
     id
     name

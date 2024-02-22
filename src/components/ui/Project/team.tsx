@@ -137,8 +137,10 @@ export const GenericTeamMenu = ({
 
   const onUpdateProjectTeams = async (members: string[]) => {
     const res = await fetchUpdateProject({
-      projectId: project?.id,
-      teams: teams,
+      id: project?.id,
+      input: {
+        /* teams: teams, */
+      },
     });
 
     if (res.data) {

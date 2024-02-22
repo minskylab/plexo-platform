@@ -1,5 +1,4 @@
 query Tasks {
-  #UPDATED
   tasks {
     id
     createdAt
@@ -10,14 +9,36 @@ query Tasks {
     priority
     ownerId
     count
+    labels {
+      id
+      name
+      color
+    }
     leadId
     projectId
     dueDate
+
+    owner {
+      id
+    }
+    assignees {
+      id
+      name
+    }
+    project {
+      id
+      name
+    }
+
+    lead {
+      id
+      name
+      photoUrl
+    }
   }
 }
 
 query TaskById($taskId: UUID!) {
-  #UPDATED
   task(id: $taskId) {
     id
     title
@@ -27,11 +48,67 @@ query TaskById($taskId: UUID!) {
     priority
     dueDate
     count
+    parent {
+      id
+      count
+    }
+    labels {
+      id
+      name
+    }
+    assignees {
+      id
+      name
+    }
+    lead {
+      id
+      name
+      photoUrl
+    }
+    project {
+      id
+      name
+    }
+    subtasks {
+      id
+      createdAt
+      updatedAt
+      title
+      description
+      status
+      priority
+      ownerId
+      count
+      labels {
+        id
+        name
+        color
+      }
+      leadId
+      projectId
+      dueDate
+
+      owner {
+        id
+      }
+      assignees {
+        id
+        name
+      }
+      project {
+        id
+        name
+      }
+
+      lead {
+        id
+        name
+      }
+    }
   }
 }
 
 mutation NewTask($input: CreateTaskInput!) {
-  #UPDATED
   createTask(input: $input) {
     id
     title
@@ -46,7 +123,6 @@ mutation DeleteTask($taskId: UUID!) {
   }
 }
 mutation UpdateTask($id: UUID!, $input: UpdateTaskInput!) {
-  #UPDATED
   updateTask(id: $id, input: $input) {
     id
     title
@@ -54,7 +130,6 @@ mutation UpdateTask($id: UUID!, $input: UpdateTaskInput!) {
 }
 
 query SuggestNewTask($input: TaskSuggestionInput!) {
-  #UPDATED
   suggestNextTask(input: $input) {
     title
     description
@@ -75,20 +150,23 @@ query SubdivideTask($input: SubdivideTaskInput!) {
   }
 }
 
-# mutation CreateTasks($tasks: [CreateTaskInput!]!) {
-#createTasks(tasks: $tasks) {
-#id
-#title
-#}
-#}
+mutation CreateTasks($input: CreateTasksInput!) {
+  createTasks(input: $input) {
+    id
+    title
+  }
+}
 
 query TaskChanges($input: GetChangesInput) {
-  #UPDATED TASKACTIVITY
   changes(input: $input) {
     id
     createdAt
     resourceId
     operation
     resourceType
+    owner {
+      name
+      photoUrl
+    }
   }
 }

@@ -53,14 +53,16 @@ const NewProject = ({ newProjectOpened, setNewProjectOpened }: NewProjectProps) 
 
   const onCreateProject = async () => {
     const res = await fetchCreateProject({
-      name: name,
-      prefix: prefix,
-      description: description.length ? description : null,
-      leadId: lead?.id,
-      dueDate: dueDate,
-      startDate: startDate,
-      members: members,
-      teams: teams,
+      input: {
+        name: name,
+        prefix: prefix,
+        description: description.length ? description : null,
+        leadId: lead?.id,
+        startDate: startDate,
+        dueDate: dueDate,
+        /*  members: members, */
+        /* teams: teams, */
+      },
     });
 
     if (res.data) {

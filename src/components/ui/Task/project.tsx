@@ -131,15 +131,17 @@ export const GenericProjectsMenu = ({ children, onSelect, task }: GenericProject
 
   const onUpdateTaskProject = async (projectId: string) => {
     const res = await fetchUpdateTask({
-      taskId: task?.id,
-      projectId: projectId,
-      priority: priorityName(task?.priority),
-      status: statusName(task?.status),
-      title: task?.title,
-      description: task?.description,
-      dueDate: task?.dueDate,
-      leadId: task?.leader?.id,
-      assignees: assigneesId(task),
+      id: task?.id,
+      input: {
+        projectId: projectId,
+        priority: priorityName(task?.priority),
+        status: statusName(task?.status),
+        title: task?.title,
+        description: task?.description,
+        dueDate: task?.dueDate,
+        leadId: task?.lead?.id,
+        /* assignees: assigneesId(task), */
+      },
     });
 
     if (res.data) {

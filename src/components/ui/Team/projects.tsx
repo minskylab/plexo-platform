@@ -64,8 +64,10 @@ export const GenericProjectsMenu = ({
 
   const onUpdateTeamProjects = async (projects: string[]) => {
     const res = await fetchUpdateTeam({
-      teamId: team?.id,
-      projects: projects,
+      id: team?.id,
+      input: {
+        /* projects: projects, */
+      },
     });
 
     if (res.data) {

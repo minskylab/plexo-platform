@@ -73,15 +73,15 @@ export const priorityLabel = (priority: TaskPriority | undefined) => {
 export const priorityName = (priority: TaskPriority | undefined) => {
   switch (priority) {
     case "NONE":
-      return "None";
+      return TaskPriority.None;
     case "LOW":
-      return "Low";
+      return TaskPriority.Low;
     case "MEDIUM":
-      return "Medium";
+      return TaskPriority.Medium;
     case "HIGH":
-      return "High";
+      return TaskPriority.High;
     case "URGENT":
-      return "Urgent";
+      return TaskPriority.Urgent;
   }
 };
 
@@ -175,15 +175,17 @@ export const GenericPriorityMenu = ({ children, onSelect, task }: GenericPriorit
 
   const onUpdateTaskPriority = async (priority: TaskPriority) => {
     const res = await fetchUpdateTask({
-      taskId: task?.id,
-      priority: priorityName(priority),
-      status: statusName(task?.status),
-      title: task?.title,
-      description: task?.description,
-      dueDate: task?.dueDate,
-      projectId: task?.project?.id,
-      leadId: task?.leader?.id,
-      assignees: assigneesId(task),
+      id: task?.id,
+      input: {
+        priority: priorityName(priority),
+        status: statusName(task?.status),
+        title: task?.title,
+        description: task?.description,
+        dueDate: task?.dueDate,
+        projectId: task?.project?.id,
+        leadId: task?.lead?.id,
+        /* assignees: assigneesId(task), */
+      },
     });
 
     if (res.data) {

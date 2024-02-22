@@ -81,19 +81,19 @@ export const statusLabel = (status?: TaskStatus) => {
 export const statusName = (status: TaskStatus | undefined) => {
   switch (status) {
     case "NONE":
-      return "None";
+      return TaskStatus.None;
     case "BACKLOG":
-      return "Backlog";
+      return TaskStatus.Backlog;
     case "TO_DO":
-      return "ToDo";
+      return TaskStatus.ToDo;
     case "IN_PROGRESS":
-      return "InProgress";
+      return TaskStatus.InProgress;
     /* case "in-review":
       return "In Review"; */
     case "DONE":
-      return "Done";
+      return TaskStatus.Done;
     case "CANCELED":
-      return "Canceled";
+      return TaskStatus.Canceled;
   }
 };
 
@@ -186,15 +186,17 @@ export const GenericStatusMenu = ({ children, onSelect, task }: GenericStatusMen
 
   const onUpdateTaskStatus = async (status: TaskStatus) => {
     const res = await fetchUpdateTask({
-      taskId: task?.id,
-      status: statusName(status),
-      title: task?.title,
-      description: task?.description,
-      priority: priorityName(task?.priority),
-      dueDate: task?.dueDate,
-      projectId: task?.project?.id,
-      leadId: task?.leader?.id,
-      assignees: assigneesId(task),
+      id: task?.id,
+      input: {
+        status: statusName(status),
+        title: task?.title,
+        description: task?.description,
+        priority: priorityName(task?.priority),
+        dueDate: task?.dueDate,
+        projectId: task?.project?.id,
+        leadId: task?.lead?.id,
+        /* assignees: assigneesId(task), */
+      },
     });
 
     if (res.data) {

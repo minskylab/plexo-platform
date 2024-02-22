@@ -89,8 +89,10 @@ export const GenericMemberMenu = ({
 
   const onUpdateProjectMembers = async (members: string[]) => {
     const res = await fetchUpdateProject({
-      projectId: project?.id,
-      members: members,
+      id: project?.id,
+      input: {
+        /* members: members, */
+      },
     });
 
     if (res.data) {
@@ -103,8 +105,10 @@ export const GenericMemberMenu = ({
 
   const onUpdateTeamMembers = async (members: string[]) => {
     const res = await fetchUpdateTeam({
-      teamId: team?.id,
-      members: members,
+      id: team?.id,
+      input: {
+        /* members: members, */
+      },
     });
 
     if (res.data) {

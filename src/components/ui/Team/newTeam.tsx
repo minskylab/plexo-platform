@@ -8,6 +8,7 @@ import { MemberSelector } from "../Project/members";
 import { ProjectsSelector } from "./projects";
 import { Team } from "lib/types";
 import { usePlexoContext } from "context/PlexoContext";
+import { TeamVisibility } from "integration/graphql";
 
 type NewTeamProps = {
   newTeamOpened: boolean;
@@ -29,10 +30,13 @@ const NewTeam = ({ newTeamOpened, setNewTeamOpened }: NewTeamProps) => {
 
   const onCreateTeam = async () => {
     const res = await fetchCreateTeam({
-      name: name,
-      prefix: name,
-      members: members,
-      projects: projects,
+      input: {
+        name: name,
+        visibility: TeamVisibility.Public, //Harcoded
+        prefix: name,
+        /*  members: members, */
+        /* projects: projects, */
+      },
     });
 
     if (res.data) {

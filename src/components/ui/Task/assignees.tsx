@@ -133,15 +133,17 @@ export const GenericAssigneesMenu = ({
 
   const onUpdateTaskAssignees = async (assignees: string[]) => {
     const res = await fetchUpdateTask({
-      taskId: task?.id,
-      assignees: assignees,
-      leadId: task?.leader?.id,
-      priority: priorityName(task?.priority),
-      status: statusName(task?.status),
-      title: task?.title,
-      description: task?.description,
-      dueDate: task?.dueDate,
-      projectId: task?.project?.id,
+      id: task?.id,
+      input: {
+        /* assignees: assignees, */
+        leadId: task?.lead?.id,
+        priority: priorityName(task?.priority),
+        status: statusName(task?.status),
+        title: task?.title,
+        description: task?.description,
+        dueDate: task?.dueDate,
+        projectId: task?.project?.id,
+      },
     });
 
     if (res.data) {

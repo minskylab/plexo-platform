@@ -1,5 +1,4 @@
 query Projects {
-  #UPDATED
   projects {
     id
     createdAt
@@ -11,11 +10,27 @@ query Projects {
     leadId
     startDate
     dueDate
+
+    owner {
+      id
+    }
+    tasks {
+      id
+      title
+    }
+    members {
+      id
+      name
+    }
+    lead {
+      id
+      name
+      photoUrl
+    }
   }
 }
 
 query ProjectById($projectId: UUID!) {
-  #UPDATED
   project(id: $projectId) {
     id
     name
@@ -24,11 +39,31 @@ query ProjectById($projectId: UUID!) {
     leadId
     startDate
     dueDate
+    owner {
+      id
+      name
+    }
+    lead {
+      id
+      name
+      photoUrl
+    }
+    members {
+      id
+      name
+    }
+    tasks {
+      id
+      title
+    }
+    teams {
+      id
+      name
+    }
   }
 }
 
 mutation NewProject($input: CreateProjectInput!) {
-  #UPDATED
   createProject(input: $input) {
     id
     name

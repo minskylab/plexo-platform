@@ -9,7 +9,6 @@ query Labels {
 }
 
 mutation CreateLabel($input: CreateLabelInput!) {
-  #UPDATED
   createLabel(input: $input) {
     id
     name
@@ -19,7 +18,6 @@ mutation CreateLabel($input: CreateLabelInput!) {
 }
 
 mutation UpdateLabel($id: UUID!, $input: UpdateLabelInput!) {
-  #UPDATED
   updateLabel(id: $id, input: $input) {
     id
     name

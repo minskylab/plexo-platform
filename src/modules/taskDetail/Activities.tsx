@@ -2,8 +2,8 @@ import { Group, Skeleton, Stack, Text, ThemeIcon, Timeline } from "@mantine/core
 import { Pencil, Trash, UserCircle } from "tabler-icons-react";
 import { useQuery } from "urql";
 
-import { TaskActivity, TaskById } from "lib/types";
-import { TaskActivityDocument, ActivityResourceType } from "integration/graphql";
+import { TaskChanges, TaskById } from "lib/types";
+import { TaskChangesDocument, ChangeResourceType } from "integration/graphql";
 
 const formatDateDifference = (date: string) => {
   const currentDate = new Date();
@@ -27,7 +27,7 @@ const formatDateDifference = (date: string) => {
   }
 };
 
-const ActivityIcon = ({ activity }: { activity: TaskActivity }) => {
+const ActivityIcon = ({ activity }: { activity: TaskChanges }) => {
   const color = activity.operation == "DELETE" ? "red" : "gray";
   return (
     <ThemeIcon size={16} color={color} variant="light" radius="xl">
@@ -44,7 +44,7 @@ const ActivityIcon = ({ activity }: { activity: TaskActivity }) => {
   );
 };
 
-const ActivityDescription = ({ activity }: { activity: TaskActivity | undefined }) => {
+const ActivityDescription = ({ activity }: { activity: TaskChanges | undefined }) => {
   const description =
     activity?.operation == "CREATE"
       ? ` created the task - ${formatDateDifference(activity.createdAt)}`
@@ -57,7 +57,7 @@ const ActivityDescription = ({ activity }: { activity: TaskActivity | undefined 
   return (
     <Text color="dimmed" size="xs">
       <Text span fw={700}>
-        {activity?.member.name}
+        {activity?.owner.name}
       </Text>
       {description}
     </Text>
@@ -88,15 +88,19 @@ export const ActivitiesTask = ({
 }) => {
   const [{ data: activityData, fetching: isLoadingActivity }] = useQuery({
     pause: task ? false : true,
-    query: TaskActivityDocument,
+    query: TaskChangesDocument,
     variables: {
-      resourceId: task?.id,
-      resourceType: ActivityResourceType.Task,
+      input: {
+        filter: {
+          resourceId: task?.id,
+          resourceType: ChangeResourceType.Task,
+        },
+      },
     },
   });
 
   const activityItems = activityData
-    ? activityData.activity.map(a => {
+    ? activityData.changes.map(a => {
         return (
           <Timeline.Item key={a.id} bullet={<ActivityIcon activity={a} />}>
             <ActivityDescription activity={a} />
