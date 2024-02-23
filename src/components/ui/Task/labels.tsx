@@ -19,9 +19,7 @@ import { Tag } from "tabler-icons-react";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { useActions } from "lib/hooks/useActions";
 import { Label, TaskById } from "lib/types";
-import { priorityName } from "./priority";
-import { statusName } from "./status";
-import { assigneesId } from "components/ui/Task/assignees";
+
 import { usePlexoContext } from "context/PlexoContext";
 
 const useStyles = createStyles(theme => ({
@@ -186,14 +184,6 @@ export const GenericLabelsMenu = ({
       id: task?.id,
       input: {
         /* labels: labels, //TODO: verify if this is correct, and why does this work without a map to send only the id's / to send multiple labels */
-        leadId: task?.lead?.id,
-        priority: priorityName(task?.priority),
-        status: statusName(task?.status),
-        title: task?.title,
-        description: task?.description,
-        dueDate: task?.dueDate,
-        projectId: task?.project?.id,
-        /* assignees: assigneesId(task), */
       },
     });
 

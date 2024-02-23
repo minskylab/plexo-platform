@@ -858,6 +858,7 @@ export type ProjectsQuery = {
     leadId?: any | null;
     startDate?: any | null;
     dueDate?: any | null;
+    status: ProjectStatus;
     owner: { __typename?: "Member"; id: any };
     tasks: Array<{ __typename?: "Task"; id: any; title: string }>;
     members: Array<{ __typename?: "Member"; id: any; name: string }>;
@@ -880,6 +881,7 @@ export type ProjectByIdQuery = {
     leadId?: any | null;
     startDate?: any | null;
     dueDate?: any | null;
+    status: ProjectStatus;
     owner: { __typename?: "Member"; id: any; name: string };
     lead: { __typename?: "Member"; id: any; name: string; photoUrl?: string | null };
     members: Array<{ __typename?: "Member"; id: any; name: string }>;
@@ -923,22 +925,18 @@ export type TasksQuery = {
   tasks: Array<{
     __typename?: "Task";
     id: any;
-    createdAt: any;
-    updatedAt: any;
-    title: string;
-    description?: string | null;
-    status: TaskStatus;
     priority: TaskPriority;
-    ownerId: any;
+    status: TaskStatus;
     count: number;
+    title: string;
+    createdAt: any;
     leadId?: any | null;
+    ownerId: any;
     projectId?: any | null;
-    dueDate?: any | null;
     labels: Array<{ __typename?: "Label"; id: any; name: string; color?: string | null }>;
-    owner: { __typename?: "Member"; id: any };
-    assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
     project?: { __typename?: "Project"; id: any; name: string } | null;
     lead?: { __typename?: "Member"; id: any; name: string; photoUrl?: string | null } | null;
+    assignees: Array<{ __typename?: "Member"; id: any; name: string }>;
   }>;
 };
 
@@ -1100,6 +1098,7 @@ export type TeamByIdQuery = {
     id: any;
     name: string;
     prefix?: string | null;
+    visibility: TeamVisibility;
     members: Array<{ __typename?: "Member"; id: any; name: string }>;
     projects: Array<{ __typename?: "Project"; id: any; name: string }>;
   };
@@ -1571,6 +1570,7 @@ export const ProjectsDocument = {
                 { kind: "Field", name: { kind: "Name", value: "leadId" } },
                 { kind: "Field", name: { kind: "Name", value: "startDate" } },
                 { kind: "Field", name: { kind: "Name", value: "dueDate" } },
+                { kind: "Field", name: { kind: "Name", value: "status" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "owner" },
@@ -1661,6 +1661,7 @@ export const ProjectByIdDocument = {
                 { kind: "Field", name: { kind: "Name", value: "leadId" } },
                 { kind: "Field", name: { kind: "Name", value: "startDate" } },
                 { kind: "Field", name: { kind: "Name", value: "dueDate" } },
+                { kind: "Field", name: { kind: "Name", value: "status" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "owner" },
@@ -1884,14 +1885,14 @@ export const TasksDocument = {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
-                { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
-                { kind: "Field", name: { kind: "Name", value: "title" } },
-                { kind: "Field", name: { kind: "Name", value: "description" } },
-                { kind: "Field", name: { kind: "Name", value: "status" } },
                 { kind: "Field", name: { kind: "Name", value: "priority" } },
-                { kind: "Field", name: { kind: "Name", value: "ownerId" } },
+                { kind: "Field", name: { kind: "Name", value: "status" } },
                 { kind: "Field", name: { kind: "Name", value: "count" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                { kind: "Field", name: { kind: "Name", value: "leadId" } },
+                { kind: "Field", name: { kind: "Name", value: "ownerId" } },
+                { kind: "Field", name: { kind: "Name", value: "projectId" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "labels" },
@@ -1901,28 +1902,6 @@ export const TasksDocument = {
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       { kind: "Field", name: { kind: "Name", value: "name" } },
                       { kind: "Field", name: { kind: "Name", value: "color" } },
-                    ],
-                  },
-                },
-                { kind: "Field", name: { kind: "Name", value: "leadId" } },
-                { kind: "Field", name: { kind: "Name", value: "projectId" } },
-                { kind: "Field", name: { kind: "Name", value: "dueDate" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "owner" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "assignees" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
                     ],
                   },
                 },
@@ -1946,6 +1925,17 @@ export const TasksDocument = {
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       { kind: "Field", name: { kind: "Name", value: "name" } },
                       { kind: "Field", name: { kind: "Name", value: "photoUrl" } },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "assignees" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
                     ],
                   },
                 },
@@ -2550,6 +2540,7 @@ export const TeamByIdDocument = {
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
                 { kind: "Field", name: { kind: "Name", value: "prefix" } },
+                { kind: "Field", name: { kind: "Name", value: "visibility" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "members" },

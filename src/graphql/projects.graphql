@@ -10,7 +10,7 @@ query Projects {
     leadId
     startDate
     dueDate
-
+    status
     owner {
       id
     }
@@ -39,6 +39,7 @@ query ProjectById($projectId: UUID!) {
     leadId
     startDate
     dueDate
+    status
     owner {
       id
       name

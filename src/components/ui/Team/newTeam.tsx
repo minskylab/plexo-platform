@@ -9,6 +9,7 @@ import { ProjectsSelector } from "./projects";
 import { Team } from "lib/types";
 import { usePlexoContext } from "context/PlexoContext";
 import { TeamVisibility } from "integration/graphql";
+import { VisibilitySelector } from "./visibility";
 
 type NewTeamProps = {
   newTeamOpened: boolean;
@@ -20,7 +21,7 @@ const NewTeam = ({ newTeamOpened, setNewTeamOpened }: NewTeamProps) => {
   const { teamsData } = usePlexoContext();
 
   const [name, setName] = useState("");
-  const [visibility, setVisibility] = useState("");
+  const [visibility, setVisibility] = useState<TeamVisibility>(TeamVisibility.None);
   const [prefix, setPrefix] = useState("");
   const [members, setMembers] = useState<string[]>([]);
   const [projects, setProjects] = useState<string[]>([]);
@@ -32,10 +33,10 @@ const NewTeam = ({ newTeamOpened, setNewTeamOpened }: NewTeamProps) => {
     const res = await fetchCreateTeam({
       input: {
         name: name,
-        visibility: TeamVisibility.Public, //Harcoded
+        visibility: visibility,
         prefix: name,
-        /*  members: members, */
-        /* projects: projects, */
+        members: members,
+        projects: projects,
       },
     });
 
@@ -63,7 +64,7 @@ const NewTeam = ({ newTeamOpened, setNewTeamOpened }: NewTeamProps) => {
 
   const resetInitialValues = () => {
     setName("");
-    setVisibility("");
+    setVisibility(TeamVisibility.None);
     setPrefix("");
     setMembers([]);
     setProjects([]);
@@ -117,6 +118,7 @@ const NewTeam = ({ newTeamOpened, setNewTeamOpened }: NewTeamProps) => {
       <Group spacing={6} mb={"md"}>
         <MemberSelector members={members} setMembers={setMembers} />
         <ProjectsSelector projects={projects} setProjects={setProjects} />
+        <VisibilitySelector visibility={visibility} setVisibility={setVisibility} type="button" />
       </Group>
       <Group
         pt={"md"}

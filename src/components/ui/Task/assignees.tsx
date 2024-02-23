@@ -12,11 +12,10 @@ import {
 import { Users } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
-import { Member, Task, TaskById } from "lib/types";
+import { Member, TaskById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
-import { priorityName } from "./priority";
-import { statusName } from "./status";
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
+
 import { MemberInfo } from "components/ui/Project/members";
 import { usePlexoContext } from "context/PlexoContext";
 
@@ -24,7 +23,7 @@ export const AssigneesIcon = () => {
   return <Users size={16} />;
 };
 
-export const assigneesId = (task: TaskById | Task | undefined) => {
+export const assigneesId = (task: TaskById | undefined) => {
   return task?.assignees.map(a => a.id);
 };
 
@@ -136,13 +135,6 @@ export const GenericAssigneesMenu = ({
       id: task?.id,
       input: {
         /* assignees: assignees, */
-        leadId: task?.lead?.id,
-        priority: priorityName(task?.priority),
-        status: statusName(task?.status),
-        title: task?.title,
-        description: task?.description,
-        dueDate: task?.dueDate,
-        projectId: task?.project?.id,
       },
     });
 
@@ -196,6 +188,7 @@ export const GenericAssigneesMenu = ({
                           paddingLeft: 5,
                         },
                       }}
+                      onChange={e => console.log(e)}
                     />
                   </Menu.Item>
                 );

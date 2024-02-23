@@ -1,30 +1,20 @@
 query Tasks {
   tasks {
     id
-    createdAt
-    updatedAt
-    title
-    description
-    status
     priority
-    ownerId
+    status
     count
+    title
+    createdAt
+    leadId #remove
+    ownerId #remove
+    projectId #remove
     labels {
       id
       name
       color
     }
-    leadId
-    projectId
-    dueDate
 
-    owner {
-      id
-    }
-    assignees {
-      id
-      name
-    }
     project {
       id
       name
@@ -34,6 +24,11 @@ query Tasks {
       id
       name
       photoUrl
+    }
+    assignees {
+      #remove
+      id
+      name
     }
   }
 }

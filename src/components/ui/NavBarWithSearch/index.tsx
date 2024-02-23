@@ -117,7 +117,7 @@ type NavBarWithSearchProps = {
 
 export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithSearchProps) {
   const { classes } = useStyles();
-  const [section, setSection] = useState<"teams" | "projects">("teams");
+  const [section, setSection] = useState<"projects" | "teams">("projects");
   const [newProjectOpened, setNewProjectOpened] = useState(false);
   const [newTeamOpened, setNewTeamOpened] = useState(false);
 
@@ -176,20 +176,9 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
             <SegmentedControl
               size={"xs"}
               value={section}
-              onChange={value => setSection(value as "teams" | "projects")}
+              onChange={value => setSection(value as "projects" | "teams")}
               transitionTimingFunction="ease"
               data={[
-                {
-                  label: (
-                    <Center>
-                      <TeamIcon />
-                      <Text ml={6} size={"xs"}>
-                        Teams
-                      </Text>
-                    </Center>
-                  ),
-                  value: "teams",
-                },
                 {
                   label: (
                     <Center>
@@ -200,6 +189,17 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
                     </Center>
                   ),
                   value: "projects",
+                },
+                {
+                  label: (
+                    <Center>
+                      <TeamIcon />
+                      <Text ml={6} size={"xs"}>
+                        Teams
+                      </Text>
+                    </Center>
+                  ),
+                  value: "teams",
                 },
               ]}
             />

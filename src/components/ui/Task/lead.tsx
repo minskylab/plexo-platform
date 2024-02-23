@@ -14,9 +14,7 @@ import { useEffect, useState } from "react";
 
 import { Member, Task, TaskById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
-import { priorityName } from "./priority";
-import { statusName } from "./status";
-import { assigneesId } from "components/ui/Task/assignees";
+
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { LeadName } from "../Project/lead";
 import { noMemberId } from "../constant";
@@ -57,13 +55,6 @@ export const GenericLeadTaskMenu = ({
       id: task?.id,
       input: {
         leadId: leadId,
-        priority: priorityName(task?.priority),
-        status: statusName(task?.status),
-        title: task?.title,
-        description: task?.description,
-        dueDate: task?.dueDate,
-        projectId: task?.project?.id,
-        /* assignees: assigneesId(task), */
       },
     });
     if (res.data) {

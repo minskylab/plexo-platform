@@ -22,6 +22,7 @@ query TeamById($teamId: UUID!) {
     id
     name
     prefix
+    visibility
     members {
       id
       name

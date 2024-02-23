@@ -123,9 +123,9 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
         dueDate: dueDate,
         projectId: project?.id,
         leadId: lead?.id,
-        /* labels: selectedLabels, */
-        /*  assignees: selectedAssignees, */
-        /* subtasks: parseSubtasks(subtasks), */
+        labels: selectedLabels,
+        assignees: selectedAssignees,
+        subtasks: parseSubtasks(subtasks),
         parentId: taskId,
       },
     });

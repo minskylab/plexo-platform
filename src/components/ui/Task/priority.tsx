@@ -23,8 +23,7 @@ import {
 import { TaskPriority } from "integration/graphql";
 import { useActions } from "lib/hooks/useActions";
 import { Task, TaskById } from "lib/types";
-import { statusName } from "./status";
-import { assigneesId } from "components/ui/Task/assignees";
+
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 
 const useStyles = createStyles(theme => ({
@@ -178,13 +177,6 @@ export const GenericPriorityMenu = ({ children, onSelect, task }: GenericPriorit
       id: task?.id,
       input: {
         priority: priorityName(priority),
-        status: statusName(task?.status),
-        title: task?.title,
-        description: task?.description,
-        dueDate: task?.dueDate,
-        projectId: task?.project?.id,
-        leadId: task?.lead?.id,
-        /* assignees: assigneesId(task), */
       },
     });
 
