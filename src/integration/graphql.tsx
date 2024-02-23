@@ -446,7 +446,7 @@ export type Project = {
   description?: Maybe<Scalars["String"]["output"]>;
   dueDate?: Maybe<Scalars["DateTime"]["output"]>;
   id: Scalars["UUID"]["output"];
-  lead: Member;
+  lead?: Maybe<Member>;
   leadId?: Maybe<Scalars["UUID"]["output"]>;
   members: Array<Member>;
   name: Scalars["String"]["output"];
@@ -862,7 +862,7 @@ export type ProjectsQuery = {
     owner: { __typename?: "Member"; id: any };
     tasks: Array<{ __typename?: "Task"; id: any; title: string }>;
     members: Array<{ __typename?: "Member"; id: any; name: string }>;
-    lead: { __typename?: "Member"; id: any; name: string; photoUrl?: string | null };
+    lead?: { __typename?: "Member"; id: any; name: string; photoUrl?: string | null } | null;
   }>;
 };
 
@@ -883,7 +883,7 @@ export type ProjectByIdQuery = {
     dueDate?: any | null;
     status: ProjectStatus;
     owner: { __typename?: "Member"; id: any; name: string };
-    lead: { __typename?: "Member"; id: any; name: string; photoUrl?: string | null };
+    lead?: { __typename?: "Member"; id: any; name: string; photoUrl?: string | null } | null;
     members: Array<{ __typename?: "Member"; id: any; name: string }>;
     tasks: Array<{ __typename?: "Task"; id: any; title: string }>;
     teams: Array<{ __typename?: "Team"; id: any; name: string }>;
@@ -947,7 +947,7 @@ export type TaskByIdQueryVariables = Exact<{
 export type TaskByIdQuery = {
   __typename?: "QueryRoot";
   task: {
-    __typename?: "Task";
+    __typename: "Task";
     id: any;
     title: string;
     description?: string | null;
@@ -1009,7 +1009,7 @@ export type UpdateTaskMutationVariables = Exact<{
 
 export type UpdateTaskMutation = {
   __typename?: "MutationRoot";
-  updateTask: { __typename?: "Task"; id: any; title: string };
+  updateTask: { __typename: "Task"; id: any; title: string };
 };
 
 export type SuggestNewTaskQueryVariables = Exact<{
@@ -1980,6 +1980,7 @@ export const TaskByIdDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "title" } },
                 { kind: "Field", name: { kind: "Name", value: "description" } },
@@ -2259,6 +2260,7 @@ export const UpdateTaskDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "title" } },
               ],

@@ -8,9 +8,11 @@ import {
   Tooltip,
   Divider,
   ScrollArea,
+  Box,
+  createStyles,
 } from "@mantine/core";
 import { Users } from "tabler-icons-react";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 import { Member, TaskById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
@@ -19,15 +21,29 @@ import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { MemberInfo } from "components/ui/Project/members";
 import { usePlexoContext } from "context/PlexoContext";
 
+const useStyles = createStyles(theme => ({
+  checkboxBody: {
+    alignItems: "center",
+  },
+  checkboxLabel: {
+    fontSize: 14,
+    paddingLeft: 5,
+  },
+  checkboxInner: {
+    width: 20,
+    height: 20,
+  },
+  checkboxInput: {
+    width: "100%",
+    height: "100%",
+  },
+}));
+
 export const AssigneesIcon = () => {
   return <Users size={16} />;
 };
 
-export const assigneesId = (task: TaskById | undefined) => {
-  return task?.assignees.map(a => a.id);
-};
-
-export const AssigneeName = (assignees: number | undefined) => {
+const AssigneeName = (assignees: number | undefined) => {
   return assignees && assignees >= 1 ? `${assignees} Assignees` : "Assignees";
 };
 
@@ -96,18 +112,14 @@ type GenericAssigneesMenuProps = {
   children: React.ReactNode;
   selectedAssignees?: string[];
   setSelectedAssignees?: (selectedAssignees: string[]) => void;
-  task?: TaskById;
 };
 
-export const GenericAssigneesMenu = ({
+const GenericAssigneesMenu = ({
   children,
   selectedAssignees,
   setSelectedAssignees,
-  task,
 }: GenericAssigneesMenuProps) => {
   const { membersData, isLoadingMembers } = usePlexoContext();
-  const { fetchUpdateTask } = useActions();
-  const [assignees, setAssignees] = useState<string[] | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [membersOptions, setMembersOptions] = useState<Member[]>([]);
 
@@ -122,35 +134,6 @@ export const GenericAssigneesMenu = ({
           );
     }
   }, [membersData, searchValue]);
-
-  const labelValue = selectedAssignees
-    ? selectedAssignees
-    : assignees
-    ? assignees
-    : assigneesId(task);
-  const onChangeLabel = selectedAssignees ? setSelectedAssignees : setAssignees;
-
-  const onUpdateTaskAssignees = async (assignees: string[]) => {
-    const res = await fetchUpdateTask({
-      id: task?.id,
-      input: {
-        /* assignees: assignees, */
-      },
-    });
-
-    if (res.data) {
-      SuccessNotification("Assigness updated", res.data.updateTask.title);
-    }
-    if (res.error) {
-      ErrorNotification();
-    }
-  };
-
-  useEffect(() => {
-    if (assignees) {
-      onUpdateTaskAssignees(assignees);
-    }
-  }, [assignees]);
 
   return (
     <Menu shadow="md" closeOnItemClick={false} position="bottom-start" withinPortal>
@@ -172,7 +155,7 @@ export const GenericAssigneesMenu = ({
           {isLoadingMembers ? (
             <Skeleton height={36} radius="sm" />
           ) : (
-            <Checkbox.Group mt={10} value={labelValue} onChange={onChangeLabel}>
+            <Checkbox.Group mt={10} value={selectedAssignees} onChange={setSelectedAssignees}>
               {membersOptions.map(m => {
                 return (
                   <Menu.Item key={m.id}>
@@ -188,12 +171,116 @@ export const GenericAssigneesMenu = ({
                           paddingLeft: 5,
                         },
                       }}
-                      onChange={e => console.log(e)}
                     />
                   </Menu.Item>
                 );
               })}
             </Checkbox.Group>
+          )}
+        </ScrollArea.Autosize>
+      </Menu.Dropdown>
+    </Menu>
+  );
+};
+
+type AssigneesByTaskMenuProps = {
+  children: React.ReactNode;
+  task?: TaskById;
+};
+
+const AssigneesByTaskMenu = ({ children, task }: AssigneesByTaskMenuProps) => {
+  const { classes } = useStyles();
+  const { membersData, isLoadingMembers } = usePlexoContext();
+  const { fetchUpdateTask } = useActions();
+  const [searchValue, setSearchValue] = useState("");
+  const [membersOptions, setMembersOptions] = useState<Member[]>([]);
+  const [selectedAssignees, setSelectedAssignees] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (membersData) {
+      searchValue == ""
+        ? setMembersOptions(membersData)
+        : setMembersOptions(
+            membersData?.filter((item: Member) =>
+              item.name.toLowerCase().includes(searchValue.toLowerCase())
+            )
+          );
+    }
+  }, [membersData, searchValue]);
+
+  useEffect(() => {
+    if (task && task.assignees) {
+      const assigneeIds = task.assignees.map(a => a.id as string);
+
+      setSelectedAssignees(assigneeIds);
+    }
+  }, [task]);
+
+  const onUpdateTaskAssignees = async (event: ChangeEvent<HTMLInputElement>) => {
+    const { checked, value } = event.currentTarget;
+    setSelectedAssignees(
+      checked ? [...selectedAssignees, value] : selectedAssignees.filter(a => a !== value)
+    );
+
+    const res = await fetchUpdateTask({
+      id: task?.id,
+      input: {
+        assignees: {
+          add: checked ? [value] : [],
+          remove: checked ? [] : [value],
+        },
+      },
+    });
+
+    if (res.data) {
+      SuccessNotification("Assigness updated", res.data.updateTask.title);
+    }
+    if (res.error) {
+      ErrorNotification();
+    }
+  };
+
+  return (
+    <Menu shadow="md" closeOnItemClick={false} position="bottom-start" withinPortal>
+      <Menu.Target>
+        <Tooltip label="Assignees" position="bottom">
+          {children}
+        </Tooltip>
+      </Menu.Target>
+
+      <Menu.Dropdown>
+        <TextInput
+          placeholder="Change assigness"
+          variant="filled"
+          value={searchValue}
+          onChange={event => setSearchValue(event.currentTarget.value)}
+        ></TextInput>
+        <Menu.Divider />
+        <ScrollArea.Autosize mah={250}>
+          {isLoadingMembers ? (
+            <Skeleton height={36} radius="sm" />
+          ) : (
+            <Box mt={10}>
+              {membersOptions.map(m => {
+                return (
+                  <Menu.Item key={m.id}>
+                    <Checkbox
+                      size="xs"
+                      value={m.id}
+                      label={MemberInfo(m)}
+                      checked={selectedAssignees.includes(m.id)}
+                      onChange={event => onUpdateTaskAssignees(event)}
+                      classNames={{
+                        body: classes.checkboxBody,
+                        label: classes.checkboxLabel,
+                        inner: classes.checkboxInner,
+                        input: classes.checkboxInput,
+                      }}
+                    />
+                  </Menu.Item>
+                );
+              })}
+            </Box>
           )}
         </ScrollArea.Autosize>
       </Menu.Dropdown>
@@ -228,10 +315,10 @@ type AssigneesSelectorByTaskProps = {
 
 export const AssigneesSelectorByTask = ({ task }: AssigneesSelectorByTaskProps) => {
   return (
-    <GenericAssigneesMenu task={task}>
+    <AssigneesByTaskMenu task={task}>
       <Button compact variant="light" color={"gray"} leftIcon={<AssigneesIcon />}>
         <Text size={"xs"}>{AssigneeName(task?.assignees.length)}</Text>
       </Button>
-    </GenericAssigneesMenu>
+    </AssigneesByTaskMenu>
   );
 };

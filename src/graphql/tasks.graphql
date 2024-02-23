@@ -35,6 +35,7 @@ query Tasks {
 
 query TaskById($taskId: UUID!) {
   task(id: $taskId) {
+    __typename
     id
     title
     description
@@ -119,6 +120,7 @@ mutation DeleteTask($taskId: UUID!) {
 }
 mutation UpdateTask($id: UUID!, $input: UpdateTaskInput!) {
   updateTask(id: $id, input: $input) {
+    __typename
     id
     title
   }
