@@ -57,15 +57,16 @@ const LoginPage = () => {
     },
   });
 
+  const loginEmailEndpoint = `${plexo.plexoAPIEndpoint}/auth/email/login`;
+  const loginGithubEndpoint = `${plexo.plexoAPIEndpoint}/auth/github`;
+
   const onLogin = async (values: typeof form.values) => {
     setLoading(true);
     setAuthResponse(undefined);
 
     console.log(plexo.plexoAPIEndpoint);
 
-    let loginEndpoint = `${plexo.plexoAPIEndpoint}/auth/email/login`;
-
-    const response = await loginWithEmail(loginEndpoint, {
+    const response = await loginWithEmail(loginEmailEndpoint, {
       email: values.email,
       password: values.password,
     });
@@ -126,7 +127,7 @@ const LoginPage = () => {
 
             <Button
               component="a"
-              href={process.env.NEXT_PUBLIC_URL_AUTH || "/auth/github"}
+              href={loginGithubEndpoint}
               leftIcon={<BrandGithub />}
               color="dark"
             >

@@ -1,5 +1,3 @@
-// const loginURL = process.env.NEXT_PUBLIC_URL_EMAIL_AUTH || "/api/auth/email/login";
-
 export const loginWithEmail = async (
   loginURL: string,
   { email, password }: { email: string; password: string }
