@@ -36,8 +36,6 @@ interface UserButtonProps extends UnstyledButtonProps {
   user: User | undefined;
 }
 
-// const logoutURL = process.env.NEXT_PUBLIC_URL_LOGOUT || "/api/auth/logout";
-
 export function UserButton({ logoutURL, user, isLoadingUser }: UserButtonProps) {
   const { classes } = useStyles();
   const plexo = usePlexoContext();
