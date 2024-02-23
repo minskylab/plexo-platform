@@ -42,9 +42,6 @@ const PlexoApp = ({
 
   const client = URQLClientSingleton.getClient(graphQLEndpoint, graphQLWsEndpoint);
 
-  console.log("client created");
-  console.log(graphQLEndpoint);
-
   return (
     <>
       <Head>
@@ -67,7 +64,6 @@ const PlexoApp = ({
 };
 
 PlexoApp.getInitialProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => {
-  console.log("get initial props");
   return {
     colorScheme: getCookie("mantine-color-scheme", ctx) || "light",
     viewMode: getCookie("viewMode", ctx) || "list",

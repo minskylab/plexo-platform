@@ -64,8 +64,6 @@ const LoginPage = () => {
     setLoading(true);
     setAuthResponse(undefined);
 
-    console.log(plexo.plexoAPIEndpoint);
-
     const response = await loginWithEmail(loginEmailEndpoint, {
       email: values.email,
       password: values.password,
@@ -76,11 +74,7 @@ const LoginPage = () => {
 
     //Login successful
     if (response && !response.error) {
-      // console.log("response: ", response.message);
       plexo.setAuthCookie(response.message.access_token);
-
-      // router.replace("/", undefined, { shallow: true });
-      // router.reload();
     }
   };
 
