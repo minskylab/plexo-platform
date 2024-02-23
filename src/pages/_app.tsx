@@ -7,10 +7,11 @@ import { GetServerSidePropsContext, NextPage } from "next";
 import Head from "next/head";
 
 import Fonts from "theming/fonts";
-import { URQLClient } from "lib/client";
+import URQLClientSingleton from "lib/client";
 import { MyMantineProvider } from "theming/mantine";
 import PlexoProvider from "../context/PlexoContext";
 import MySpotlightProvider from "components/ui/NavBarWithSearch/searchPopup";
+// import { unstable_noStore as noStore } from "next/cache";
 
 export type NextPageWithLayout<T = {}> = NextPage<T> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -24,17 +25,25 @@ type PlexoPlatformAppProps = {
   colorScheme: ColorScheme;
   viewMode: "list" | "grid";
   authCookie: string;
+  plexoAPIEndpoint: string;
 };
-
-const client = URQLClient();
 
 const PlexoApp = ({
   Component,
   pageProps,
   colorScheme,
   authCookie,
+  plexoAPIEndpoint,
 }: AppPropsWithLayout<PlexoPlatformAppProps> & PlexoPlatformAppProps) => {
   const getLayout = Component.getLayout ?? (page => page);
+
+  let graphQLEndpoint = `${plexoAPIEndpoint}/graphql`;
+  let graphQLWsEndpoint = `${plexoAPIEndpoint}/graphql/ws`;
+
+  const client = URQLClientSingleton.getClient(graphQLEndpoint, graphQLWsEndpoint);
+
+  console.log("client created");
+  console.log(graphQLEndpoint);
 
   return (
     <>
@@ -44,7 +53,7 @@ const PlexoApp = ({
         <link rel="icon" type="image/png" sizes="5x5" href="/plexo.png" />
       </Head>
       <URQLProvider value={client}>
-        <PlexoProvider authCookie={authCookie}>
+        <PlexoProvider authCookie={authCookie} plexoAPIEndpoint={plexoAPIEndpoint}>
           <MyMantineProvider colorScheme={colorScheme}>
             <MySpotlightProvider>
               <Fonts />
@@ -58,10 +67,12 @@ const PlexoApp = ({
 };
 
 PlexoApp.getInitialProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => {
+  console.log("get initial props");
   return {
     colorScheme: getCookie("mantine-color-scheme", ctx) || "light",
     viewMode: getCookie("viewMode", ctx) || "list",
     authCookie: getCookie("plexo-session-token", ctx) || "",
+    plexoAPIEndpoint: process.env.PLEXO_API_ENDPOINT || "",
   };
 };
 

@@ -18,13 +18,16 @@ import { useForm } from "@mantine/form";
 import { loginWithEmail } from "lib/auth";
 import { useEffect, useState } from "react";
 import { usePlexoContext } from "context/PlexoContext";
-
-// import Cookies from 'cookies'
+// import { InferGetServerSidePropsType } from "next";
 
 type AuthResponse = {
   error: boolean;
   message: any;
 };
+
+// {
+//   plexoAPIEndpoint,
+// }: InferGetServerSidePropsType<typeof getServerSideProps>
 
 const LoginPage = () => {
   const { colorScheme } = useMantineColorScheme();
@@ -58,7 +61,11 @@ const LoginPage = () => {
     setLoading(true);
     setAuthResponse(undefined);
 
-    const response = await loginWithEmail({
+    console.log(plexo.plexoAPIEndpoint);
+
+    let loginEndpoint = `${plexo.plexoAPIEndpoint}/auth/email/login`;
+
+    const response = await loginWithEmail(loginEndpoint, {
       email: values.email,
       password: values.password,
     });
@@ -131,5 +138,16 @@ const LoginPage = () => {
     </Center>
   );
 };
+
+// export const getServerSideProps = async () => {
+//   console.log("getServerSideProps");
+//   console.log(process.env.PLEXO_API_ENDPOINT);
+
+//   return {
+//     props: {
+//       plexoAPIEndpoint: process.env.PLEXO_API_ENDPOINT,
+//     },
+//   };
+// };
 
 export default LoginPage;

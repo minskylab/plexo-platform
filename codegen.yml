@@ -1,6 +1,6 @@
 overwrite: true
 schema:
-  "http://localhost:8081":
+  "https://api.self.plexo.app/graphql":
     headers:
       "Authorization": "Bearer xxx"
 documents: "src/graphql/**/*.graphql"
