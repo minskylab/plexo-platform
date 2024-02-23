@@ -121,7 +121,7 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
   const [newProjectOpened, setNewProjectOpened] = useState(false);
   const [newTeamOpened, setNewTeamOpened] = useState(false);
 
-  const { userData, isLoadingUser } = usePlexoContext();
+  const { userData, isLoadingUser, plexoAPIEndpoint } = usePlexoContext();
 
   const mainLinks = links.map(link => (
     <UnstyledButton
@@ -152,7 +152,11 @@ export function NavbarSearch({ onNewTask, openedNav, setOpenedNav }: NavBarWithS
         className={classes.navbar}
       >
         <Navbar.Section className={classes.section}>
-          <UserButton user={userData} isLoadingUser={isLoadingUser} />
+          <UserButton
+            logoutURL={`${plexoAPIEndpoint}/auth/logout`}
+            user={userData}
+            isLoadingUser={isLoadingUser}
+          />
         </Navbar.Section>
 
         <Navbar.Section className={classes.section} p="sm">
