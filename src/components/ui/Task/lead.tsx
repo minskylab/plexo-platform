@@ -14,9 +14,7 @@ import { useEffect, useState } from "react";
 
 import { Member, Task, TaskById } from "lib/types";
 import { useActions } from "lib/hooks/useActions";
-import { priorityName } from "./priority";
-import { statusName } from "./status";
-import { assigneesId } from "components/ui/Task/assignees";
+
 import { ErrorNotification, SuccessNotification } from "lib/notifications";
 import { LeadName } from "../Project/lead";
 import { noMemberId } from "../constant";
@@ -40,7 +38,7 @@ export const GenericLeadTaskMenu = ({
   const { fetchUpdateTask } = useActions();
   const [searchValue, setSearchValue] = useState("");
   const [membersOptions, setMembersOptions] = useState<Member[]>([]);
-  const leadName = task?.leader?.name ? task?.leader?.name : selectedLead?.name;
+  const leadName = task?.lead?.name ? task?.lead?.name : selectedLead?.name;
 
   useEffect(() => {
     if (membersData) {
@@ -54,15 +52,10 @@ export const GenericLeadTaskMenu = ({
 
   const onUpdateTaskLead = async (leadId: string) => {
     const res = await fetchUpdateTask({
-      taskId: task?.id,
-      leadId: leadId,
-      priority: priorityName(task?.priority),
-      status: statusName(task?.status),
-      title: task?.title,
-      description: task?.description,
-      dueDate: task?.dueDate,
-      projectId: task?.project?.id,
-      assignees: assigneesId(task),
+      id: task?.id,
+      input: {
+        leadId: leadId,
+      },
     });
     if (res.data) {
       SuccessNotification("Lead updated", res.data.updateTask.title);
@@ -161,15 +154,10 @@ export const LeadSelectorByTask = ({ task, type }: LeadSelectorByTaskProps) => {
   return (
     <GenericLeadTaskMenu task={task}>
       {type == "icon" ? (
-        <ActionIcon variant="transparent">{MemberPhoto(task?.leader?.photoUrl)}</ActionIcon>
+        <ActionIcon variant="transparent">{MemberPhoto(task?.lead?.photoUrl)}</ActionIcon>
       ) : (
-        <Button
-          compact
-          variant="light"
-          color={"gray"}
-          leftIcon={MemberPhoto(task?.leader?.photoUrl)}
-        >
-          <Text size={"xs"}>{LeadName(task?.leader)}</Text>
+        <Button compact variant="light" color={"gray"} leftIcon={MemberPhoto(task?.lead?.photoUrl)}>
+          <Text size={"xs"}>{LeadName(task?.lead)}</Text>
         </Button>
       )}
     </GenericLeadTaskMenu>

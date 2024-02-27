@@ -12,10 +12,12 @@ import { Label, Member, Project, Task, Team, User } from "lib/types";
 
 type PlexoProviderProps = {
   children: ReactNode;
+  plexoAPIEndpoint: string;
   authCookie?: string;
 };
 
 type PlexoContextProps = {
+  plexoAPIEndpoint: string;
   taskId: string | undefined;
   setTaskId: (taskId: string | undefined) => void;
   tasks: Task[] | undefined;
@@ -50,7 +52,11 @@ export const usePlexoContext = () => {
   return context;
 };
 
-const PlexoProvider = ({ authCookie, children }: PlexoProviderProps) => {
+const PlexoProvider = ({
+  authCookie: initialAuthCookie,
+  plexoAPIEndpoint: initialPlexoAPIEndpoint,
+  children,
+}: PlexoProviderProps) => {
   const [taskId, setTaskId] = useState<string | undefined>(undefined);
   const [tasks, setTasks] = useState<Task[] | undefined>(undefined);
 
@@ -58,7 +64,7 @@ const PlexoProvider = ({ authCookie, children }: PlexoProviderProps) => {
   const [newTaskOpened, setNewTaskOpened] = useState(false);
   const [createMoreTasks, setCreateMoreTasks] = useState(false);
 
-  const [authCookieState, setAuthCookie] = useState(authCookie);
+  const [authCookie, setAuthCookie] = useState(initialAuthCookie);
 
   const [userData, setUserData] = useState<User | undefined>(undefined);
   const [projectsData, setProjectsData] = useState<Project[] | undefined>(undefined);
@@ -116,16 +122,19 @@ const PlexoProvider = ({ authCookie, children }: PlexoProviderProps) => {
     }
   }, [user, isLoadingUser]);
 
+  const [plexoAPIEndpoint, _] = useState(initialPlexoAPIEndpoint);
+
   return (
     <PlexoContext.Provider
       value={{
+        plexoAPIEndpoint,
         navBarOpened,
         setNavBarOpened,
         newTaskOpened,
         setNewTaskOpened,
         createMoreTasks,
         setCreateMoreTasks,
-        authCookie: authCookieState,
+        authCookie,
         setAuthCookie,
         taskId,
         setTaskId,

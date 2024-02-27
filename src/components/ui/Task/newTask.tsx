@@ -87,7 +87,7 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
       pause: true,
       query: SuggestNewTaskDocument,
       variables: {
-        taskSuggestion: {
+        input: {
           title: title,
           description: description,
           dueDate: dueDate,
@@ -101,11 +101,11 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
     if (taskSuggestionData) {
       const res = taskSuggestionData;
 
-      setTitle(res?.suggestNewTask.title || title);
-      setDescription(res?.suggestNewTask.description || description);
-      setStatus(res?.suggestNewTask.status || status);
-      setPriority(res?.suggestNewTask.priority || priority);
-      setDueDate(res?.suggestNewTask.dueDate || dueDate);
+      setTitle(res?.suggestNextTask.title || title);
+      setDescription(res?.suggestNextTask.description || description);
+      setStatus(res?.suggestNextTask.status || status);
+      setPriority(res?.suggestNextTask.priority || priority);
+      setDueDate(res?.suggestNextTask.dueDate || dueDate);
     }
   }, [taskSuggestionData]);
 
@@ -115,17 +115,19 @@ const NewTask = ({ newTaskOpened, setNewTaskOpened, createMore, setCreateMore }:
 
   const onCreateTask = async () => {
     const res = await fetchCreateTask({
-      title: title,
-      description: description.length ? description : null,
-      status: statusName(status),
-      priority: priorityName(priority),
-      dueDate: dueDate,
-      projectId: project?.id,
-      leadId: lead?.id,
-      labels: selectedLabels,
-      assignees: selectedAssignees,
-      subtasks: parseSubtasks(subtasks),
-      parentId: taskId,
+      input: {
+        title: title,
+        description: description.length ? description : null,
+        status: statusName(status),
+        priority: priorityName(priority),
+        dueDate: dueDate,
+        projectId: project?.id,
+        leadId: lead?.id,
+        labels: selectedLabels,
+        assignees: selectedAssignees,
+        subtasks: parseSubtasks(subtasks),
+        parentId: taskId,
+      },
     });
 
     if (res.data) {
